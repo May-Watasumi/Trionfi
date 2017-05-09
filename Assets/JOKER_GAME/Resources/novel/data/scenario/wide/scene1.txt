@@ -1,0 +1,299 @@
+@call file=wide/libs/utils
+[bg_new name="background" storage="room"]
+[bg_show name="background"]
+
+;メッセージ表示
+[showmessage]
+[call file=wide/system target="*system_setting_buttons"]
+[text_new name=_sp_chara_name layer=ui x="-168" y=-108.5 val="" color="DDFF00" fontsize=16 anchor="MiddleLeft"]
+[text_show name="_sp_chara_name"] 
+
+
+;---------------キャラ定義
+
+@tag_default tag="chara"
+[chara_new name="yuko" storage="chara" jname="ゆうこ" scale=2 jcolor=FF77FF]
+[chara_new name="mai" storage="kiri" jname="麻衣" scale=2 jcolor=22FFFF]
+@reset_tag_default
+
+;ゆうこの表情登録
+[chara_face name="yuko" face="angry" storage=chara_a ]
+[chara_face name="yuko" face="komaru" storage=chara_k ]
+[chara_face name="yuko" face="warau" storage=chara_w ]
+
+;麻衣の表情登録
+[chara_face name="mai" face="angry" storage=kiri_a ]
+[chara_face name="mai" face="komaru" storage=kiri_k ]
+
+
+@chara_pos name="yuko" x=0 y=-0.7
+@chara_pos name="mai" x=-5 y=-0.7
+
+;@show name=yuko
+
+[playbgm wait=false time=1 storage="music"]
+
+#俺
+さて、、、なにやら新しいゲームエンジンができたとかいうから[p]
+
+来てみたものの、、、、[p]
+誰もいないな。。。。[l]どうしようか。[p]
+
+[autosave]
+
+[select_new text="帰る" target=*select_a1 ]
+[select_new text="もう少し待つ" target=*select_a2 ]
+[select_new text="歌ってみる" target=*select_a3 ]
+
+[select_show sound=click ]
+
+[s]
+
+*select_a1
+#俺
+まぁ、いいや。帰ろう[p]
+#？
+ちょっと待ったーーーーーー![p]
+#俺
+誰だ!?[p]
+@jump target=*a_common
+
+*select_a2
+#俺
+もう少し待ってみるか[p]
+#？
+ガラッ。おまたせーーー。[p]
+#俺
+お。[p]
+@jump target=*a_common
+
+*select_a3
+#俺
+・・・・・[l]
+あ、あ〜♫　このょ[p]
+#？
+ガラ[p]
+#俺
+ぎゃ!?誰だ[p]
+
+@jump target=*a_common
+
+*a_common 
+@show name=yuko
+
+
+[autosave]
+
+#yuko
+こんにちは。私の名前はゆうこ[p]
+
+[chara_mod name="yuko" face="warau"]
+新しいゲームエンジンに興味を持ってくれてありがとう。[p]
+[chara_mod name="yuko" face="default"]
+このゲームをプレイするだけで、ひと通り機能を確認すること[r]
+ができるよ[p]
+まず、最大の特徴はUnity上で動作するということだよ。[p]
+[image_new name="unity_logo" storage="unity_logo" scale=1.7 ]
+[show name="unity_logo" x=4 y=1.5]
+Unityというのはスマートフォン向けに高度なゲームを作れる[r]
+エンジンとして[r]
+広く使われているよ。[p]
+最近では[r]
+スクウェアエニックスのスマホ版「ドラゴンクエストⅦ」や[l][r]
+コロプラの「黒猫のウィズ」なんかが有名だよ。[p]
+
+#俺
+おぉ、すごいね。[p]
+でも、俺そんな本格的なツールなんか使えないよ…[p]
+
+#yuko
+大丈夫！[p]
+新しいエンジンではUnityの知識は必要ないの！[p]
+Nscriptやティラノスクリプトのような[r]
+簡単な命令だけでUnity製のゲームがつくれちゃうよ。[p]
+
+[hide name="unity_logo"]
+[remove name="unity_logo"]
+
+
+#俺
+へぇー。それなら俺にもできそうだな[p]
+
+#yuko
+しかも作ったゲームはiphone・Android はもちろん。[p]
+Windowsゲームやブラウザゲームとして簡単に出力する[r]
+ことができるよ。[p]
+
+#俺
+それはすごいな。[p]
+
+#yuko
+じゃあ、動作デモをしてみるね[p]
+
+まずは、場面の移動から[p]
+外に出てみるね[p]
+
+[bg_mod name="background" storage="rouka"]
+
+#俺
+外に出たね。[p]
+
+#yuko
+寒いから、中に戻るね[p]
+
+[bg_mod name="background" storage="room"]
+
+
+#yuko 
+次は友達を画面に呼んでみるね。[p]
+おーい。麻衣〜[p]
+
+[anim name="yuko" x=-3 type="easeInOutCirc"]
+
+@show name="mai" x=3
+#mai
+呼んだ？[p]
+
+#yuko
+こんなかんじで画面に何人でも登場させる事ができるよ。[p]
+
+#俺
+へー。[p]
+
+#mai
+お。新しいユーザさんだね。[l]
+[chara_mod name="mai" face=angry]
+はじめまして。[p]
+
+[chara_mod name="mai" face=default]
+#mai
+せっかくだから、私も機能を紹介させてよ[p]
+
+[chara_mod name="yuko" face=angry]
+#yuko 
+えー。今いいところだったのに。。[p]
+
+#mai
+いいじゃない。じゃあ私からは[p]
+BGMや効果音の設定を教えてあげる[p]
+
+じゃあ、BGMを切り替えてみるね。[p]
+[stopbgm]
+@playbgm storage="dream" 
+
+#mai
+切り替わったかな。[p]
+ボリュームを調整したり、[p]
+徐々に音量を上げながら再生することもできるよ[p]
+
+#俺
+いいなぁ。[p]
+
+[chara_mod name="yuko" face=komaru]
+
+#mai
+でしょー。[p]
+
+あ、今日バイトがあるんだった[p]
+またねー[p]
+
+[anim name="mai" x=15]
+[hide name="mai"]
+@anim name=yuko x=0 
+
+#俺
+忙しい子だなぁ[p]
+
+#yuko
+あー。じゃあ、気を取りなおして[p]
+
+#yuko 
+さて、次は脱出ゲームの制作などで活躍する[r]
+クリッカブルもサポートしているよ[p]
+
+@hide name=yuko
+
+ガラ　バタン！[p]
+
+#俺
+あ、閉じ込められた！[p]
+
+#yuko
+部屋から出たければ、その部屋のどこかにある鍵をみつけだすのじゃ[p]
+*cli
+#俺
+（もぉ、、、面倒くさい人だな）[p]
+*c
+この部屋の中を隈なく調べて、鍵を見つけてね。[p]
+
+[clickable name="click1" tag=clickable a=0  scale_x=2.37 scale_y =0.55 x=0.1 y=0.8 ]
+[clickable name="click2" tag=clickable a=0 scale_x=0.4 scale_y=0.3 x=1.64 y=2.07 ]
+[clickable name="click3" tag=clickable a=0 scale_x=1.31 scale_y=1.18 x=-6.08 y=1.52 ]
+[evt name="click1" target="*clickable1"]
+[evt name="click2" target="*clickable2"]
+[evt name="click3" target="*clickable3"]
+
+[calc exp="f.clock=0"]
+
+*clickable_again
+@evt_resume
+[cm]
+
+[s]
+
+*clickable1
+@evt_stop
+これは黒板だ。特に怪しいところはない[p]
+@jump target=*clickable_again
+
+*clickable2
+@evt_stop
+
+[if exp="{f.clock}==1"]
+		お、時計の裏に何かあるぞ[p]
+		鍵を見つけた[p]
+		@jump target="clear"
+[else]
+	時計だ。特にあやしいところはないな。[p]
+	[calc exp="f.clock=1"]
+[endif]	
+
+@jump target=*clickable_again
+
+*clickable3
+@evt_stop
+
+窓だ。今日はいい天気だな[p]
+@jump target=*clickable_again
+
+[s]
+
+*clear
+@clickable_remove tag=clickable
+@evt_resume
+#俺
+よし。この鍵で外に出よう[p]
+ガチャガチャ あれ？[p]
+開かない[p]
+
+@show name=yuko
+
+#yuko
+ごめーーん。鍵まちがえちゃった。[p]
+
+#俺
+・・・・・[p]
+
+#yuko
+まぁ、こんなところかな。[p]
+まだまだココでは説明しきれていない機能が盛りだくさんで[p]
+みんなといっしょに使いやすいツールにしていきたいので[p]
+ご協力よろしくお願いします[p]
+
+タイトルに戻ります[p]
+@jump scene=new file=wide/title
+
+[s]
+
+
+

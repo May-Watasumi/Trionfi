@@ -1,0 +1,36 @@
+
+*title
+;タイトル画面
+[bg_new name="background" layer="background" storage="title"]
+[bg_show name="background"]
+
+;開始ボタンとロードボタンを実装
+@image_new name="button_start" tag="button" x=4 y=-1.0  storage="title_start" scale=2
+@image_new name="button_load" tag="button" x=4 y=-3.2  storage="title_load" scale=2
+
+@show tag=button
+@anim name=button_start storage="onmouse"
+
+[evt name="button_start" act="click" target="*click_start" ]
+[evt name="button_load" act="click" target="*click_load" ]
+
+[s]
+
+*click_start
+;効果音を鳴らす
+
+[playse storage="start"]
+
+@anim name="button_start" scale=2.5 wait=false
+@hide tag="button" time=1
+
+@bg_hide name="background" time=1.5
+
+[wait time=2]
+@jump file=wide/scene1 scene=new
+
+*click_load
+[playse storage="start"]
+@anim name="button_load" scale=2.5 wait=true
+@sleepgame file="wide/libs/save" target="*loadstart"
+@jump scene=new target="*title"

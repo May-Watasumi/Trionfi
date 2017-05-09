@@ -1,0 +1,48 @@
+
+*system_setting_buttons
+
+@button_new name="button_save" tag="message_button" x=-60 y=-80 scale=0.7 sort=5 layer=ui storage="save" 
+@button_new name="button_load" tag="message_button" x=10 y=-80 scale=0.7 sort=5 layer=ui storage="load" 
+@button_new name="button_skip" tag="message_button" x=80 y=-80 scale=0.7 sort=5 layer=ui storage="skip" 
+@button_new name="button_auto" tag="message_button" x=150 y=-80 scale=0.7 sort=5 layer=ui storage="auto" 
+@button_new name="button_log" tag="message_button" x=220 y=-80 scale=0.7 sort=5 layer=ui storage="log" 
+
+;@image_new name="button_title" tag="message_button" x=6.5 y=-3.25 sort=5 layer=ui storage="title" 
+;@image_new name="button_config" tag="message_button" x=6.5 y=-3.75 sort=5 layer=ui storage="config" 
+
+;_sp_button_close は特別な意味を持つ名前。close 機能が自動的に付与される
+@button_new name="_sp_button_close" tag="message_button" x=270 y=-80 sort=5 scale=0.5 layer=ui storage="close" 
+
+@button_show tag="message_button" time=0
+
+[evt tag="message_button" act="click" target="*click_system_button" ]
+
+[return]
+
+
+*click_system_button
+
+[if exp="{evt.caller_name}==button_save"]
+	@sleepgame file="wide/libs/save" target="*savestart"
+[elsif exp="{evt.caller_name}==button_load"]
+	@sleepgame file="wide/libs/save" target="*loadstart"
+[elsif exp="{evt.caller_name}==button_auto"]
+;autoの時間はコンフィグなどで設定できる
+	[autostart]
+[elsif exp="{evt.caller_name}==button_skip"]
+	[skipstart]
+[elsif exp="{evt.caller_name}==button_title"]
+	;タイトルへ戻る
+[elsif exp="{evt.caller_name}==button_config"]
+	@sleepgame file="wide/libs/config"
+[elsif exp="{evt.caller_name}==button_log"]
+	[evt_stop]
+	@hidemessage
+	@showlog
+@showmessage
+[endif]
+
+[evt_resume]
+
+[jump file={evt.caller_file} index={evt.caller_index} next=false ]
+
