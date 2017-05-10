@@ -33,7 +33,7 @@ namespace NovelEx {
 
 			string color = this.param ["color"];
 
-			Color objColor =  ColorX.HexToRGB(color);
+			Color objColor = TRUtility.HexToRGB(color);
 			objColor.a = 0;
 			guiText.color = objColor;
 			guiText.fontSize = int.Parse(this.param ["fontsize"]);
@@ -119,7 +119,7 @@ namespace NovelEx {
 			this.rootObject.GetComponent<Text>().color = color;
 		}
 
-		//アニメーションの終了をいじょうするための
+		//アニメーションの終了を委譲するための
 		private void finishAnimation() {
 			if (this.completeDeletgate != null)
 				this.completeDeletgate();

@@ -7,20 +7,14 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO.Compression;
 using System.Text;
-using NovelEx;
 
-namespace NovelEx {
-	public class Serializer {
+namespace NovelEx
+{
+	public class Serializer
+    {
 		public Serializer() { }
 
-		private SaveGlobalObject globalObject = new SaveGlobalObject();
-		public SaveGlobalObject globalSetting {
-			get {
-				return globalObject;
-			}
-		}
-
-		//グローバルセッティングを保存します
+		//グローバルを保存します
 		public void SaveGlobalObject(string storage)
 		{
 			string json = LitJson.JsonMapper.ToJson(this);
@@ -33,12 +27,12 @@ namespace NovelEx {
 			}
 			else
 #endif
-    {
-				string path = JOKEREX.Instance.StorageManager.path_savedata.path + storage;
+            {
+				string path = StorageManager.Instance.path_savedata.path + storage;
 
 				//ディレクトリ存在チェック
-				if (!Directory.Exists(JOKEREX.Instance.StorageManager.path_savedata.path))
-					Directory.CreateDirectory(JOKEREX.Instance.StorageManager.path_savedata.path);
+				if (!Directory.Exists(StorageManager.Instance.path_savedata.path))
+					Directory.CreateDirectory(StorageManager.Instance.path_savedata.path);
 
 				FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 				StreamWriter sw = new StreamWriter(fs);
@@ -49,7 +43,8 @@ namespace NovelEx {
 			}
 		}
 		public void LoadGlobalObject(string storage) {
-			//WebPlayer の場合保存方法に変化を入れる
+            //WebPlayer の場合保存方法に変化を入れる
+#if false
 			if(Application.platform == RuntimePlatform.WindowsWebPlayer || Application.platform == RuntimePlatform.OSXWebPlayer) {
 				if(!PlayerPrefs.HasKey(storage))
 					SaveGlobalObject(storage);
@@ -59,8 +54,10 @@ namespace NovelEx {
 				SaveGlobalObject obj = LitJson.JsonMapper.ToObject<SaveGlobalObject> (json);
 				globalObject = obj;
 			}
-			else {
-				string path = JOKEREX.Instance.StorageManager.path_savedata.path + storage;
+			else
+#endif
+            {
+                string path = StorageManager.Instance.path_savedata.path + storage;
 
 				//ファイル作成
 				if(!File.Exists(path))
@@ -71,7 +68,7 @@ namespace NovelEx {
 				StreamReader sr = new StreamReader(path, System.Text.Encoding.Default);
 				string json = sr.ReadToEnd();
 
-				SaveGlobalObject obj = LitJson.JsonMapper.ToObject<SaveGlobalObject> (json);
+				SaveGlobalObject obj = LitJson.JsonMapper.ToObject<SaveGlobalObject>(json);
 
 				sr.Close();
 				fs.Close();
@@ -84,25 +81,27 @@ namespace NovelEx {
 			JOKEREX.Instance.ScenarioManager.variable.trace("global");
 		}
 
-		public SaveObject GetSaveObject(string storage) {
-			string fullpath = JOKEREX.Instance.StorageManager.PATH_SAVEDATA + storage;
-			SaveObject obj = (SaveObject)LoadFromBinaryFile(fullpath);
+		public UserSaveData GetSaveObject(string storage)
+        {
+			string fullpath = StorageManager.Instance.PATH_SAVEDATA + storage;
+            UserSaveData obj = (UserSaveData)LoadFromBinaryFile(fullpath);
 			return obj;
 		}
 
-		public void SaveToBinaryFile(SaveObject obj, string storage)
+		public void SaveToBinaryFile(UserSaveData obj, string storage)
 		{
 			string json = LitJson.JsonMapper.ToJson(obj);
-
-			//WebPlayer の場合保存方法に変化を入れる
-			if (Application.platform == RuntimePlatform.WindowsWebPlayer || Application.platform == RuntimePlatform.OSXWebPlayer)
+#if false
+            //WebPlayer の場合保存方法に変化を入れる
+            if (Application.platform == RuntimePlatform.WindowsWebPlayer || Application.platform == RuntimePlatform.OSXWebPlayer)
 				PlayerPrefs.SetString(storage, json);
 			else
+#endif
 			{
-				if (!Directory.Exists(JOKEREX.Instance.StorageManager.PATH_SAVEDATA))
-					Directory.CreateDirectory(JOKEREX.Instance.StorageManager.PATH_SAVEDATA);
+				if (!Directory.Exists(StorageManager.Instance.PATH_SAVEDATA))
+					Directory.CreateDirectory(StorageManager.Instance.PATH_SAVEDATA);
 
-				FileStream fs = new FileStream(JOKEREX.Instance.StorageManager.PATH_SAVEDATA + storage, FileMode.Create, FileAccess.Write);
+				FileStream fs = new FileStream(StorageManager.Instance.PATH_SAVEDATA + storage, FileMode.Create, FileAccess.Write);
 
 				StreamWriter sw = new StreamWriter(fs);
 				sw.Write(json);
@@ -114,6 +113,7 @@ namespace NovelEx {
 
 		public object LoadFromBinaryFile(string storage)
 		{
+#if false
 			//WebPlayer の場合保存方法に変化を入れる
 			if (Application.platform == RuntimePlatform.WindowsWebPlayer || Application.platform == RuntimePlatform.OSXWebPlayer)
 			{
@@ -122,6 +122,7 @@ namespace NovelEx {
 				return obj;
 			}
 			else
+#endif
 			{
 				if (!File.Exists(storage))
 					return null;
@@ -134,7 +135,7 @@ namespace NovelEx {
 				if (json == "")
 					return null;
 
-				SaveObject obj = LitJson.JsonMapper.ToObject<SaveObject>(json);
+                UserSaveData obj = LitJson.JsonMapper.ToObject<UserSaveData>(json);
 
 				sr.Close();
 				fs.Close();
@@ -145,8 +146,8 @@ namespace NovelEx {
 
 		public void applySaveVariable(string storage, Variable variable, string var_name = "save")
 		{
-			//最初のセーブデータを取得するか。
-			SaveObject sobj = GetSaveObject(storage);
+            //最初のセーブデータを取得するか。
+            UserSaveData sobj = GetSaveObject(storage);
 			//this.gameManager.saveManager.getSaveData ("save_"+current_index);
 			variable.set(var_name + ".name", storage);
 			//ToDo:
@@ -170,16 +171,19 @@ namespace NovelEx {
 
 
 		//一時退避しておいたスナップから保存を実行する
-		public void SavefromSnap(string storage) {
+		public void SavefromSnap(string storage)
+        {
 			//一時領域からデータ取得
-			string fullpath = JOKEREX.Instance.StorageManager.PATH_SAVEDATA + storage;
+			string fullpath = StorageManager.Instance.PATH_SAVEDATA + storage;
 			object obj = LoadFromBinaryFile(fullpath);
 
-			if (obj == null) {
+			if (obj == null)
+            {
 			
 			}
-			else {
-				SaveObject sobj = (SaveObject)LoadFromBinaryFile(fullpath);
+			else
+            {
+                UserSaveData sobj = (UserSaveData)LoadFromBinaryFile(fullpath);
 				string w_path = fullpath;
 				SaveToBinaryFile(sobj, w_path);
 			}
@@ -187,25 +191,26 @@ namespace NovelEx {
 
 		//plus が true の場合は、一つ進めたところをロードさせる。sleepgameの後とか戻ってきた時用
 		//EX:たぶんplusとかいらなくなる
-		public void Serialize(string storage, bool plus = false) {
+		public void Serialize(string storage, bool plus = false)
+        {
 			Debug.Log("JOKEREX:SaveData\"" + storage + "\"");
 
-//ToDo_Future:この辺は大幅にOriginalから変わってる
-			SaveObject sobj = new SaveObject();
+            //ToDo_Future:この辺は大幅にOriginalから変わってる
+            UserSaveData sobj = new UserSaveData();
 			sobj.name = storage;
 
 			//タイトルとか、基本情報を格納
-			sobj.title = JOKEREX.Instance.StatusManager.messageForSaveTitle;
+			sobj.title = StatusManager.Instance.messageForSaveTitle;
 			sobj.date = DateTime.Now.ToString ("yyyy/MM/dd HH:mm:ss");
-			sobj.currentMessage = JOKEREX.Instance.StatusManager.messageForSaveTitle;
+			sobj.currentMessage = StatusManager.Instance.messageForSaveTitle;
 
 			sobj.dicImage = JOKEREX.Instance.ImageManager.dicImage;
 			sobj.dicTag = JOKEREX.Instance.ImageManager.dicTag;
 			sobj.dicEvent = JOKEREX.Instance.EventManager.dicEvent;
 			sobj.scenarioManager = JOKEREX.Instance.ScenarioManager;
 			sobj.variable = JOKEREX.Instance.ScenarioManager.variable;
-			sobj.currentFile = JOKEREX.Instance.StatusManager.currentScenario;
-			sobj.currentIndex = JOKEREX.Instance.StatusManager.currentScenarioPosition;
+			sobj.currentFile = StatusManager.Instance.currentScenario;
+			sobj.currentIndex = StatusManager.Instance.currentScenarioPosition;
 //ToDo:
 //			sobj.logManager = JOKEREX.Instance.LogManager;
 //ToDo:
@@ -215,8 +220,8 @@ namespace NovelEx {
 //			sobj.enableEventClick = StatusManager.enableEventClick;
 //			sobj.enableClickOrder = StatusManager.enableClickOrder;
 //ToDo:
-			sobj.currentPlayBgm = JOKEREX.Instance.StatusManager.currentPlayBgm;
-			sobj.isEventStop = JOKEREX.Instance.StatusManager.isEventStop;
+			sobj.currentPlayBgm = StatusManager.Instance.currentPlayBgm;
+			sobj.isEventStop = StatusManager.Instance.isEventStop;
 
 			//画面のキャプチャを作成して保存する
 			//保存先のパス
@@ -225,15 +230,16 @@ namespace NovelEx {
 				sobj.currentIndex++;
 
 			//sobjをシリアライズ化して保存 
-			string path = JOKEREX.Instance.StorageManager.path_savedata.path + storage/*+".sav"*/;
+			string path = StorageManager.Instance.path_savedata.path + storage/*+".sav"*/;
 			SaveToBinaryFile(sobj, path);
 		}
 
 		//ゲームをロードします
-		public void Deserialize(string storage) {
+		public void Deserialize(string storage)
+        {
 			Debug.Log("JOKEREX:LoadData\"" + storage + "\"");
 
-			SaveObject sobj = GetSaveObject(storage);
+            UserSaveData sobj = GetSaveObject(storage);
 
 			Dictionary<string, Image> dic = sobj.dicImage;
 
@@ -259,21 +265,21 @@ namespace NovelEx {
 //			JOKEREX.Instance.Serializer.LoadGlobalObject();
 			//StatusManager.variable.replaceAll("global", NovelSingleton.GameManager.globalSetting.globalVar);
 
-			JOKEREX.Instance.ScenarioManager.loadScenario(JOKEREX.Instance.StatusManager.currentScenario);
+			JOKEREX.Instance.ScenarioManager.loadScenario(StatusManager.Instance.currentScenario);
 			//開始位置の確認
-			//JOKEREX.Instance.StatusManager.currentScenario = sobj.currentFile;
+			//StatusManager.Instance.currentScenario = sobj.currentFile;
 			JOKEREX.Instance.ScenarioManager.currentComponentIndex = sobj.currentIndex - 1;
 			//テキストを復元する
 			//JOKEREX.Instance.MainMessage.CurrentMessage = sobj.currentMessage;
-			JOKEREX.Instance.StatusManager.messageForSaveTitle = sobj.currentMessage;
+			StatusManager.Instance.messageForSaveTitle = sobj.currentMessage;
 
 			//ステータス復元
-//			JOKEREX.Instance.StatusManager.visibleMessageFrame = sobj.visibleMessageFrame;
-///			JOKEREX.Instance.StatusManager.enableNextOrder = sobj.enableNextOrder;
-//			JOKEREX.Instance.StatusManager.enableClickOrder = sobj.enableClickOrder;
-			JOKEREX.Instance.StatusManager.enableEventClick = sobj.enableEventClick;
-			JOKEREX.Instance.StatusManager.currentPlayBgm = sobj.currentPlayBgm;
-			JOKEREX.Instance.StatusManager.isEventStop = sobj.isEventStop;
+//			StatusManager.Instance.visibleMessageFrame = sobj.visibleMessageFrame;
+///			StatusManager.Instance.enableNextOrder = sobj.enableNextOrder;
+//			StatusManager.Instance.enableClickOrder = sobj.enableClickOrder;
+			StatusManager.Instance.enableEventClick = sobj.enableEventClick;
+			StatusManager.Instance.currentPlayBgm = sobj.currentPlayBgm;
+			StatusManager.Instance.isEventStop = sobj.isEventStop;
 			//Debug.Log ("wwww:" + sobj.isEventStop);
 
 			//ToDo:
@@ -290,8 +296,8 @@ namespace NovelEx {
 						NovelSingleton.GameView.hideMessageWithoutNextOrder(0f);
 					}
 			*/
-			if(JOKEREX.Instance.StatusManager.currentPlayBgm != "") {
-				NovelEx.AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag("[playbgm wait=false next=false storage='" + JOKEREX.Instance.StatusManager.currentPlayBgm + "']");
+			if(StatusManager.Instance.currentPlayBgm != "") {
+				NovelEx.AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag("[playbgm wait=false next=false storage='" + StatusManager.Instance.currentPlayBgm + "']");
 				cmp.start();
 			}
 			//何故か、、ここにいれないと。メッセージがすごく遅くなる

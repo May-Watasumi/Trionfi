@@ -19,7 +19,6 @@ namespace NovelEx {
 		//パラメータを保持する
 		public Tag (string str)
 		{
-
 			this.original = str;
 		
 			str = str.Replace ("[", "").Replace ("]", "");
@@ -33,20 +32,22 @@ namespace NovelEx {
 
 			int end_tag_index = 0;
 
-			for (int i = 0; i < str.Length; i++) {
+			for(int i = 0; i < str.Length; i++)
+            {
 				string c = str [i].ToString();
-				if (c == " ") {
+				if (c == " ")
+                {
 					//flag_start_tag = false;
 					this.name = tag_name;
 					end_tag_index = i;
 
-					break;
-
-				} else {
+                    break;
+				}
+                else
+                {
 					tag_name += c;
 					continue;
 				}
-
 			}
 
 			if (this.name == "") {
@@ -54,9 +55,8 @@ namespace NovelEx {
 				flag_finish_tag = true;
 			}
 
-
-			if (!flag_finish_tag) {
-
+			if (!flag_finish_tag)
+            {
 				//ここまでで、タグ解析完了
 				string param_str = str.Substring (end_tag_index).Trim();
 
@@ -68,39 +68,40 @@ namespace NovelEx {
 				string val = "";
 
 				for (int i = 0; i < param_str.Length; i++) {
-
 					string c = param_str [i].ToString();
 
 					//イコール前の空白は無視
-					if (c == " " && flag_eq == false) {
+					if (c == " " && flag_eq == false)
 						continue;
-					}
 
-					if (c == "=" && flag_eq == false) {
+					if (c == "=" && flag_eq == false)
+                    {
 						flag_eq = true;
 						continue;
 					}
 
-					if (flag_eq == false) {
+					if (flag_eq == false)
+                    {
 						key += c;
 						continue;
 					}
 
 					//イコール以後の解析部分
-					if (flag_eq == true) {
-
-						if (flag_eq_ch == false && c == " ") {
+					if (flag_eq == true)
+                    {
+						if (flag_eq_ch == false && c == " ")
 							continue;
-						}
 
-						if (c == "\"" || c == "'") {
-
-							if (flag_qt == false) {
+						if (c == "\"" || c == "'")
+                        {
+							if (flag_qt == false)
+                            {
 								flag_qt = true;
 								flag_eq_ch = true;
 								continue;
-							} else {
-
+							}
+                            else
+                            {
 								//パラメータ設定の終わり
 								flag_eq = false;
 								flag_qt = false;
@@ -110,15 +111,12 @@ namespace NovelEx {
 								this.dicParam [key] = val;
 								key = "";
 								val = "";
-
-
 							}
-
-
-						} else {
-
-							if (c == " " && flag_qt == false) {
-
+						}
+                        else
+                        {
+							if (c == " " && flag_qt == false)
+                            {
 								flag_eq = false;
 								flag_qt = false;
 								flag_eq_ch = false;
@@ -127,12 +125,15 @@ namespace NovelEx {
 								key = "";
 								val = "";
 
-							} else {
+							}
+                            else
+                            {
 								val += c;
 								flag_eq_ch = true;
 							}
 
-							if (i == param_str.Length - 1) {
+							if (i == param_str.Length - 1)
+                            {
 								//最後の文字の場合
 								this.dicParam [key] = val;
 							}
@@ -164,20 +165,15 @@ namespace NovelEx {
 
 		public string getParam (string key)
 		{
-
-			if (this.dicParam.ContainsKey (key)) {
-				return this.dicParam [key];
-			} else {
-				return null;
-			}
-
+            return this.dicParam.ContainsKey(key) ? this.dicParam[key] : null;
 		}
 
 		public Dictionary<string,string> getParamByDictionary()
 		{
 			Dictionary<string,string> dic = new Dictionary<string,string>();
 
-			foreach (KeyValuePair<string, string> pair in this.dicParam) {
+			foreach (KeyValuePair<string, string> pair in this.dicParam)
+            {
 				dic [pair.Key] = pair.Value;
 			}
 
@@ -185,16 +181,11 @@ namespace NovelEx {
 
 		}
 	}
-	//スクリプトファイルを読み込んで、適切な形にパースして返します
-	/*
 
-*start
+    //スクリプトファイルを読み込んで、適切な形にパースして返します
 
-[cm  ]test [l][r]
-[back  storage="room.jpg"  time="5000"  ]
-
-*/
-	public class NovelParser : SingletonMonoBehaviour<NovelParser>{
+    public class NovelParser : SingletonMonoBehaviour<NovelParser>
+    {
 		public string errorMessage = "";
 		public string warningMessage = "";
 
@@ -202,7 +193,8 @@ namespace NovelEx {
 
 		private string classPrerix = "";
 
-		public NovelParser(string classPrefix){
+		public NovelParser(string classPrefix)
+        {
 			this.classPrerix = classPrefix;
 		}
 
@@ -214,7 +206,8 @@ namespace NovelEx {
 			string[] lines = config_text.Split ('\n');
 
 			//lines の前に、一文字ずつ解析してすべての要素を分解する必要がある
-			for (int i = 0; i < lines.Length; i++) {
+			for (int i = 0; i < lines.Length; i++)
+            {
 
 				string line = lines [i].Trim();
 				line = line.Replace ("\r", "").Replace ("\n", "").Replace ("\"", "").Replace ("'", "");
@@ -222,9 +215,8 @@ namespace NovelEx {
 				if (line == "")
 					continue;
 
-				if (line [0].ToString() == ";") {
+				if (line [0].ToString() == ";")
 					continue;
-				}
 
 				string[] arrayVal = line.Split ('=');
 
@@ -249,14 +241,16 @@ namespace NovelEx {
 		}
 
 //EX:予約語	
-		private List<string> RevervedWords = new List<string> {
+		private List<string> RevervedWords = new List<string>
+        {
 			"#SetignoreCR",
 			"#ResetignoreCR",
 			"#include",
 			"#define",
 		};	
 
-		public bool parsePreproseccor(string lineText) {
+		public bool parsePreproseccor(string lineText)
+        {
 			switch (lineText) {
 			case "#SetignoreCR":
 				JOKEREX.Instance.SystemConfig.ignoreCR = true;
@@ -270,7 +264,9 @@ namespace NovelEx {
 			return true;
 		}
 
-		public List<AbstractComponent> parseScript (string script_text) {
+        //パースしたタグクラスのListを返す
+		public List<AbstractComponent> parseScript (string script_text)
+        {
 			//GameManager gameManager = NovelSingleton.GameManager;
 			List<AbstractComponent> components = new List<AbstractComponent>();
 			string[] lines = script_text.Split ('\n');
@@ -280,7 +276,8 @@ namespace NovelEx {
 			bool isCommentNow = false;
 
 			//lines の前に、一文字ずつ解析してすべての要素を分解する必要がある
-			for(int i = 0; i < lines.Length; i++) { 
+			for(int i = 0; i < lines.Length; i++)
+            { 
 				string line = lines[i].Trim();
 //EX:
 				if (line == "\r" || line == "\n" || line == "\r\n" || line == "") { 
@@ -438,16 +435,16 @@ namespace NovelEx {
 			return components;
 		}
 
-		//ラインからタグを作成
 
-		//コンポーネントから即実行されるタグを生成
-		public AbstractComponent makeTag(string line) {
+		//１行のstringからタグを作成
+		public AbstractComponent makeTag(string line)
+        {
 			AbstractComponent cmp = this.makeTag (line, 0);
 			cmp.calcVariable();
 			return cmp;
 		}
 
-		//コンポーネントから即実行されるタグを生成
+		//タグ名と引数の辞書からタグを生成
 		public AbstractComponent makeTag(string tag_name,Dictionary<string,string> param)
         {
 			string line = "["+tag_name+" ";
@@ -478,10 +475,12 @@ namespace NovelEx {
 			//リフレクションで動的型付け
 			Type masterType = Type.GetType(className);
 
-			try {
+			try
+            {
 				cmp = (AbstractComponent)Activator.CreateInstance (masterType);
 			}
-			catch(Exception e) 	{
+			catch(Exception e)
+            {
 				Debug.Log (e.ToString());
 				//マクロとして登録
 				cmp = new _MacrostartComponent();
@@ -494,7 +493,8 @@ namespace NovelEx {
 				cmp.checkVital();
 				cmp.mergeDefaultParam();
 			}
-			return cmp;
+
+            return cmp;
 		}
 	}
 }

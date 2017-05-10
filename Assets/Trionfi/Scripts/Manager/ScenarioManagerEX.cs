@@ -5,8 +5,8 @@ using System;
 
 namespace NovelEx {
 	[Serializable]
-	public class ScenarioManager {
-
+	public class ScenarioManager
+    {
 		//マクロ情報
 		[Serializable]
 		public class Macro

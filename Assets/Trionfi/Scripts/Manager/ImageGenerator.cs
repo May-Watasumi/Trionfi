@@ -9,7 +9,8 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace NovelEx
 {
 	[Serializable]
-	public class Image{
+	public class Image
+    {
 		//セーブ用のパラメータなど、全てココに入れておく必要がある
 		public Dictionary<string,string> dicSave = new Dictionary<string,string>();
 	    
@@ -21,42 +22,41 @@ namespace NovelEx
 
 		public string getParam(string key)
 		{
-			return this.dicSave [key];
+			return dicSave[key];
 		}
 
 		public void setParam(string key,string value)
 		{
-			this.dicSave [key] = value;
+			dicSave[key] = value;
 		}
 
 		public Image(Dictionary<string,string> param)
 		{
-
-			this.dicSave ["name"] = param ["name"];
-			this.dicSave ["tag"] = param["tag"];
-			this.dicSave ["storage"] = param["storage"];
-			this.dicSave ["isShow"] ="false";
-			this.dicSave ["imagePath"] ="";
-			this.dicSave ["className"] ="";
-			this.dicSave ["event"] ="false";
+			dicSave["name"] = param ["name"];
+			dicSave["tag"] = param["tag"];
+			dicSave["storage"] = param["storage"];
+			dicSave["isShow"] ="false";
+			dicSave["imagePath"] ="";
+			dicSave["className"] ="";
+			dicSave["event"] ="false";
 
 			foreach (KeyValuePair<string, string> kvp in param)
 			{
 				//paramの内容は上書きしていく
 				string key = kvp.Key;
-//				this.dicSave [key] = param [key];
-				this.dicSave[key] = kvp.Value;
+//				dicSave [key] = param [key];
+				dicSave[key] = kvp.Value;
 			}
 
 			//デフォルトの表情として登録
-			this.addFace ("default", this.getParam("storage"));
+			addFace ("default", getParam("storage"));
 		}
 
-		public void compile() {
+		public void Compile() {
 			GameObject g = new GameObject ("gameobject");
 
 			AbstractObject imageObject;
-			string className = this.dicSave ["className"];
+			string className = dicSave ["className"];
 
 			switch(className) {
 			case "Canvas":
@@ -84,113 +84,122 @@ namespace NovelEx
 				imageObject = g.AddComponent<Live2dObject>();
 				break;
 			default:
-				imageObject = JOKEREX.Instance.StorageManager.GetCustomObject(className, g);
+				imageObject = StorageManager.Instance.GetCustomObject(className, g);
 				break;
 			}
 
-			imageObject.name = this.getParam ("name");
+			imageObject.name = getParam ("name");
 
 			//画像なりをセット
-			imageObject.imagePath = this.dicSave["imagePath"];
-			imageObject.set (this.dicSave);
+			imageObject.imagePath = dicSave["imagePath"];
+			imageObject.set(dicSave);
 
-			this.imageObject = imageObject;
+//			imageObject = imageObject;
 
 			//このオブジェクトが表示対象の場合は即表示
-
-			this.setPosition(float.Parse(this.dicSave["x"]),float.Parse(this.dicSave["y"]),float.Parse(this.dicSave["z"]));
+			SetPosition(float.Parse(dicSave["x"]), float.Parse(dicSave["y"]), float.Parse(dicSave["z"]));
 
 			//scale の設定
-
-			this.setScale (float.Parse(this.dicSave["scale_x"]),float.Parse(this.dicSave["scale_y"]),float.Parse(this.dicSave["scale_z"]));
+			SetScale (float.Parse(dicSave["scale_x"]), float.Parse(dicSave["scale_y"]), float.Parse(dicSave["scale_z"]));
 
 			//イベントが登録されている場合はcolider 登録
-			if (this.dicSave ["event"] == "true")
-				this.setColider();
+			if (dicSave ["event"] == "true")
+				SetColider();
 
 			if (dicSave ["isShow"] == "true")
-				this.show (0, "linear");
+				Show(0, "linear");
 
 		}
 
-		public void setColider() {
-			this.dicSave ["event"] = "true";
-			this.getObject().setColider();
+		public void SetColider()
+        {
+			dicSave ["event"] = "true";
+			imageObject.setColider();
 		}
 
-		public void addFace(string face,string storage) {
-			this.dicFace [face] = storage;
+		public void AddFace(string face, string storage)
+        {
+			dicFace[face] = storage;
 		}
 
-		public void setFace(string face,float time,string type) {
-
-			if (!this.dicFace.ContainsKey (face)) {
+		public void SetFace(string face, float time, string type)
+        {
+			if(!dicFace.ContainsKey(face))
+            {
 //ToDo:
 //				JOKEREX.Instance.GameManager.showError ("表情「" + face + "」は存在しません。");
 			}
 
-			string storage = this.dicFace [face];
+			string storage = dicFace [face];
 
-			var tmpParam = new Dictionary<string,string>() {
+			var tmpParam = new Dictionary<string,string>()
+            {
 				{ "storage",storage }
 			};
 
-			this.imageObject.set (tmpParam);
-			this.imageObject.show (time,type);
-
+			imageObject.set (tmpParam);
+			imageObject.show (time,type);
 		}
 
-		public void setImage(Dictionary<string,string>param) {
+		public void SetImage(Dictionary<string,string>param)
+        {
 			foreach (KeyValuePair<string, string> kvp in param) {
-//				this.dicSave [kvp.Key] = param [kvp.Key];
-				this.dicSave[kvp.Key] = kvp.Value;
+//				dicSave [kvp.Key] = param [kvp.Key];
+				dicSave[kvp.Key] = kvp.Value;
 			}
 
-			this.imageObject.set(param);
-			this.imageObject.show(float.Parse(param["time"]),param["type"]);
+			imageObject.set(param);
+			imageObject.show(float.Parse(param["time"]),param["type"]);
 		}
 
-		public void remove() {
-			this.imageObject.remove();
-			this.imageObject = null;
+		public void Remove()
+        {
+			imageObject.remove();
+			imageObject = null;
 		}
 
-		public void setScale(float scale_x, float scale_y, float scale_z) {
-			this.dicSave["scale_x"] = ""+scale_x;
-			this.dicSave["scale_y"] = ""+scale_y;
-			this.dicSave["scale_z"] = ""+scale_z;
-			this.imageObject.setScale (scale_x,scale_y,scale_z);
+		public void SetScale(float scale_x, float scale_y, float scale_z)
+        {
+			dicSave["scale_x"] = ""+scale_x;
+			dicSave["scale_y"] = ""+scale_y;
+			dicSave["scale_z"] = ""+scale_z;
+			imageObject.setScale (scale_x,scale_y,scale_z);
 		}
 
-		public void setPosition(float x,float y,float z) {
-			this.dicSave["x"] = ""+x;
-			this.dicSave["y"] = ""+y;
-			this.dicSave["z"] = ""+z;
+		public void SetPosition(float x,float y,float z)
+        {
+			dicSave["x"] = ""+x;
+			dicSave["y"] = ""+y;
+			dicSave["z"] = ""+z;
 
-			this.imageObject.setPosition (x, y, z);	
+			imageObject.setPosition (x, y, z);	
 		}
 
-		public void animPosition(Vector3 position, float scale,float time,string type) {	
-			this.dicSave["x"] = ""+position.x;
-			this.dicSave["y"] = ""+position.y;
-			this.dicSave["z"] = "" + position.z;
-			this.dicSave["scale"] = ""+scale;
+		public void AnimationPosition(Vector3 position, float scale,float time,string type)
+        {	
+			dicSave["x"] = ""+position.x;
+			dicSave["y"] = ""+position.y;
+			dicSave["z"] = "" + position.z;
+			dicSave["scale"] = ""+scale;
 
-			this.getObject().animPosition (position, scale, time, type);
+			imageObject.animPosition(position, scale, time, type);
 		}
 
-		public void show(float time, string type) {
-			this.dicSave["isShow"] ="true";
-			this.imageObject.show (time, type);
+		public void Show(float time, string type)
+        {
+			dicSave["isShow"] = "true";
+			imageObject.show(time, type);
 		}
 
-		public void hide(float time, string type) {
-			this.dicSave["isShow"] ="false";
-			this.imageObject.hide (time, type);
+		public void Hide(float time, string type)
+        {
+			dicSave["isShow"] = "false";
+			imageObject.hide(time, type);
 		}
 
-		public AbstractObject getObject(){
-			return this.imageObject;
+		public AbstractObject GetObject()
+        {
+			return imageObject;
 		}
 	}
 }

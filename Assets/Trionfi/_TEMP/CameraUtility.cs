@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿#if false
+
+using UnityEngine;
 using System.Collections;
 
 [ExecuteInEditMode]
 public class CameraUtility : MonoBehaviour
 {
-
 	private Vector2 aspect = new Vector2(4,3);
 	private Color32 backgroundColor = Color.black;
 	private  float aspectRate ;
@@ -78,3 +79,5 @@ public class CameraUtility : MonoBehaviour
 		_camera.ResetAspect ();
 	}
 }
+
+#endif

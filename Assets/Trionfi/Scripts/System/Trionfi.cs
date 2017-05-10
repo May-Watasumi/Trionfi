@@ -6,30 +6,12 @@ using System.Collections.Generic;
 namespace NovelEx
 {
     [ExecuteInEditMode]
-    public class Trinofi : MonoBehaviour
+    public class Trionfi : SingletonMonoBehaviour<Trionfi>
 	{
-		public static string characterName;
+        public TextAsset initialScriptFile;
+        public static string characterName;
 
-        public Camera _targetCamera = null;
-		public Camera targetCamera
-		{
-			get
-			{
-				return _targetCamera;
-			}
-			set
-			{
-				_targetCamera = value;
-			}
-		}
-
-		private static Trinofi jokerEx;
-        public static NovelParser Parser;
-
-		/// <summary>
-		/// The GUI interface creator.
-		/// defaultのインターフェイスを作成する
-		/// </summary>
+        public Camera targetCamera;
 
 		//シナリオ終端で呼ばれる
 		public static void terminateScenario() { }
@@ -37,6 +19,8 @@ namespace NovelEx
 		//実行すべき命令がないか、チェックする
 		public void check() { }
 
+        //ToDo:UserConfigはprefsへ。命令系統を変える
+/*
 		//moved from SaveDataManager(UserDataManager)
 		public string getConfig(string key)
 		{
@@ -48,54 +32,32 @@ namespace NovelEx
 		{
 			scenarioManager.variable.set("config." + key, val);
 		}
-
+*/
 		//文字列から即時タグを実行することができます。
-		public static void startTag(string tag) {
-			AbstractComponent cmp = Instance.ScenarioManager.NovelParser.makeTag(tag);
+		public static void startTag(string tag)
+        {
+			AbstractComponent cmp = NovelParser.Instance.makeTag(tag);
 			cmp.start();
 		}
 
 		//Awake
 		public void createObject()
 		{
-			jokerEx = this;
-
-			systemConfig = this.GetComponent<SystemConfig>();
+//			jokerEx = this;
+/*			systemConfig =*/ this.GetComponent<SystemConfig>();
 //			selectorManager = this.GetComponent<SelectorManager>();
 			logManager = this.GetComponent<LogManager>();
-			statusManager = this.GetComponent<StatusManager>();
-			storageManager = this.GetComponent<StorageManager>();
+/*			statusManager =*/ this.GetComponent<StatusManager>();
+/*			storageManager =*/ this.GetComponent<StorageManager>();
 
 			scenarioManager = new ScenarioManager();
 			imageManager = new ImageManager();
-			audioManager = new AudioManager();
+/*			audioManager =*/ new AudioManager();
 			eventManager = new EventManager();
 
-			if(systemConfig.useSerializer)
+			if(SystemConfig.Instance.useSerializer)
 				serializer = new Serializer();
 		}
-
-		//public void Reset()
-		/*
-				public static void clearSingleton() {
-					_selectorManager = null;
-					systemConfig = null;
-					imageManager = null;
-					scenarioManager = null;
-					statusManager = null;
-					audioManager = null;
-					eventManager = null;
-					userdataManager = null;
-
-		//			logManager = null;
-				}
-
- 		public void destroyObject()
-		{
-	
-		}
-
-		*/
 
 		/// <summary>
 		/// 一度走らせたScriptの依存関係を切る用の関数
@@ -106,9 +68,6 @@ namespace NovelEx
 //			clearSingleton();
 			ImageManager.initScene();
 			StatusManager.initScene();
-
-			//SystemConfig
-			GetComponent<NovelConfig>().initConfig();
 
 			//グローバルコンフィグ読み込み
 			//ToDo:
@@ -141,10 +100,6 @@ namespace NovelEx
 			targetCamera = Camera.main != null ? Camera.main : Camera.allCameras[0];
 		}
 
-		/// <summary>
-		/// 初期化関数GUIのインターフェイスを渡す
-		/// </summary>
-		/// <param name="guiInterface">GUI interface.</param>
 		public void Init()
 		{
 			Debug.Log("-Starting JOKEREX-");

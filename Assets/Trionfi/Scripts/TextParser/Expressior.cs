@@ -5,24 +5,37 @@ using System.Collections.Generic;
 using System;
 using System.Text.RegularExpressions;
 
-namespace NovelEx {
+namespace NovelEx
+{
 	[Serializable]
-	public class ExpObject {
+	public class ExpObject
+    {
+        ExpObject(ref Variable _v)
+        { _var = _v; }
+
+        //参照渡し
+        public static Variable _var;
 
 		public string type;
 		public string name;
 		public string exp;
 
-		public ExpObject(string exp) {
+		public ExpObject(string exp)
+        {
 			string str_left = "";
 			string str_right = "";
-			for (var i = 0; i < exp.Length; i++) {
+
+            for (var i = 0; i < exp.Length; i++)
+            {
 				string c = exp [i].ToString();
-				if (c == "=") {
+
+                if (c == "=")
+                {
 					str_right = exp.Substring (i+1);
 					break;
 				}
-				str_left += c;
+
+                str_left += c;
 			}
 
 			string[] tmp2 = str_left.Split ('.');
@@ -37,8 +50,8 @@ namespace NovelEx {
 		}
 
 		//変数を実際の値に置き換えて返却する
-		public static string replaceVariable(string str_right) {
-
+		public static string replaceVariable(string str_right)
+        {
 			Dictionary<string,string > dicVar = new Dictionary<string,string>();
 
 			bool flag_var_now = false;
@@ -48,21 +61,26 @@ namespace NovelEx {
 
 			Stack<string> var_stack = new Stack<string>(); //２重、３重カッコに対応
 
-			for (var i = 0; i < str_right.Length; i++) {
+			for (var i = 0; i < str_right.Length; i++)
+            {
 				string c = str_right [i].ToString();
-				if(flag_var_now == true && c == "}") {
+
+                if (flag_var_now == true && c == "}")
+                {
 					//変数を格納
 					//Debug.Log ("var_name ============");
 					//Debug.Log (var_name);
-					string var_val = JOKEREX.Instance.ScenarioManager.variable.get(var_name);
+					string var_val = _var.get(var_name);
 
-					if (var_stack.Count == 0) {
+					if (var_stack.Count == 0)
+                    {
 						dicVar [var_name] = var_val;
 						flag_var_now = false;
 						var_name = "";
 						new_str_right += var_val;
 					}
-					else {
+					else
+                    {
 						//var_nameに変数を差し込む
 						string stack_var_name = var_stack.Pop();
 						var_name = stack_var_name + var_val;
@@ -73,17 +91,21 @@ namespace NovelEx {
 
 				if(c != "{" && flag_var_now == true)
 					var_name += c;
-				if(c == "{" && flag_var_now == true) {
+
+                if (c == "{" && flag_var_now == true)
+                {
 					var_stack.Push (var_name);
 					var_name = "";
 				
 				}
-				else if (c == "{" && flag_var_now == false) {
+				else if (c == "{" && flag_var_now == false)
+                {
 					flag_var_now = true;
 					var_name = "";
 
 				}
-				else{
+				else
+                {
 					//タグに文字を追加
 					if (flag_var_now == false)
 						new_str_right += c;
@@ -102,16 +124,18 @@ namespace NovelEx {
 			return new_str_right;
 		}
 
-		public static string evaluateString(string exp) {
+		public static string evaluateString(string exp)
+        {
 			//変数かどうかを判定する。今のところの定義は「最初の文字がアルファベット＆'.'がある」
 			if(Regex.IsMatch(exp[0].ToString(), "^[a-zA-Z_]+$") && exp.IndexOf(".") != -1)
-				return JOKEREX.Instance.ScenarioManager.variable.get(exp);
+				return _var.get(exp);
 
 			return exp;
 		}
 
 		//式をを計算して結果を返す　評価はまた別
-		public static string calc(string exp) {
+		public static string calc(string exp)
+        {
 			//ToDo:型チェック
 
 			//比較計算とかの場合は、別途
@@ -156,7 +180,7 @@ namespace NovelEx {
 				left = evaluateString(left);
 				right = evaluateString(right);			
 
-				if (float.Parse (left) >= float.Parse (right))
+				if (float.Parse (left) >= float.Parse(right))
 					return "true";
 				else
 					return "false";

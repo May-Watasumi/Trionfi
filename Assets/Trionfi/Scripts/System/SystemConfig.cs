@@ -1,9 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-//using Novel;
 using UnityEngine.UI;
-
-//Singletonに入れるモノはnamespace:JOKER
 
 namespace NovelEx {
     public enum MessageType { Error, Warning, Info };
@@ -11,7 +8,7 @@ namespace NovelEx {
     public enum FirstAction { Start, Load }
 
     [ExecuteInEditMode]
-	public class SystemConfig : MonoBehaviour {
+	public class SystemConfig : SingletonMonoBehaviour<SystemConfig> {
         public static string PATH_PREFAB = "novel/data/prefab/";
         public static string PATH_IMAGE = "novel/data/images/image/";
         public static string PATH_CHARA_IMAGE = "novel/data/images/character/";
@@ -60,6 +57,7 @@ namespace NovelEx {
 
         [SerializeField]
         public bool autoBoot = false;
+        public TextAsset bootScript;
 
         public bool useSerializer = true;
 
@@ -68,27 +66,7 @@ namespace NovelEx {
 
         public bool useLive2D = false;
         public bool useEmote = false;
-
-        /*
-                [SerializeField]
-                private bool _expertMode = true;
-                public bool expertMode {
-                    get {
-                        return _expertMode;
-                    }
-                    set {
-                        _expertMode = value;
-                    }
-                }
-		void Awake()
-        {
-		}
-
-		void Start()
-        {
-		}
-        */
-
+        
         private float oldTime;
         private int frame = 0;
         private float frameRate = 0f;

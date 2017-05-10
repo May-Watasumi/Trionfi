@@ -6,7 +6,8 @@ using System;
 using System.Text.RegularExpressions;
 
 namespace NovelEx {
-	public enum JokerState {
+	public enum TRState
+    {
 		InfiniteStop,
 		MessageShow,
 		MessageShowAll,
@@ -22,21 +23,21 @@ namespace NovelEx {
 		EmptyOrder
 	};
 
-	public enum JokerMessageState {
+	public enum TRMessageState {
 		Normal,
 		SkipRun,
 		SkipStop,
 //		Auto,
 	};
 
-	public class StatusManager : MonoBehaviour
+	public class StatusManager : SingletonMonoBehaviour<StatusManager>
 	{
-		public JokerState currentState
+		public TRState currentState
 		{
 			get; private set;
 		}
 
-		public JokerMessageState currentMessageState = JokerMessageState.Normal;
+		public TRMessageState currentMessageState = TRMessageState.Normal;
 
 		//これが真の場合は命令を無視する
 		public bool skipOrder = false;
@@ -55,14 +56,16 @@ namespace NovelEx {
 		public float autoWaitCounter = -1.0f;
 
 		// 現在スキップ中かどうかを判定する
-		public bool onSkip {
+		public bool onSkip
+        {
 			get {
-				return (currentMessageState == JokerMessageState.SkipRun) || (currentMessageState == JokerMessageState.SkipStop);
+				return (currentMessageState == TRMessageState.SkipRun) || (currentMessageState == TRMessageState.SkipStop);
 			 }
 		}
 
 		//	オート中かどうかを判定する
-		public bool onAuto {
+		public bool onAuto
+        {
 			get {
 				return autoWaitTime > 0.0f;
 //				return currentMessageState == JokerMessageState.Auto;
@@ -91,7 +94,7 @@ namespace NovelEx {
 		{
 			get
 			{
-				return this.currentState != JokerState.EmptyOrder;
+				return this.currentState != TRState.EmptyOrder;
 			}
 		}
 
@@ -101,68 +104,71 @@ namespace NovelEx {
 			this.currentPlayBgm  = "";
 			this.UIClicked       = false;
 			this.currentScenario = currentScenario;
-			this.currentState    = JokerState.EmptyOrder;
+			this.currentState    = TRState.EmptyOrder;
 		}
 
-		public void setSkipOrder() {
-			JOKEREX.Instance.StatusManager.currentState = JokerState.SkipOrder;
+		public void setSkipOrder()
+        {
+            currentState = TRState.SkipOrder;
 //			skipOrder = true;
 //			enableNextOrder = false;
 		}
 
 		public void releaseSkipOrder(){
 //
-			JOKEREX.Instance.StatusManager.currentState = JokerState.NextOrder;
+			currentState = TRState.NextOrder;
 //			skipOrder = false;
 //			enableNextOrder = true;
 		}
 
 		public void EndScenario()
 		{
-			JOKEREX.Instance.uiInstance.Release();
-			JOKEREX.Instance.uiInstance = null;
-			this.currentState = JokerState.EmptyOrder;
-			if (onEndScenario != null)
+//			JOKEREX.Instance.uiInstance.Release();
+//			JOKEREX.Instance.uiInstance = null;
+			this.currentState = TRState.EmptyOrder;
+
+            if (onEndScenario != null)
 			{
 				onEndScenario();
 			}
-			Debug.Log("[NovelEx.StatusManagerEx]EndScenario");
+
+            Debug.Log("[NovelEx.StatusManagerEx]EndScenario");
 		}
 
 		public void NextOrder()
 		{
-			this.currentState = JokerState.NextOrder;
+			currentState = TRState.NextOrder;
 		}
 
 		public void Wait()
 		{
-			this.currentState = JokerState.Wait;
+			currentState = TRState.Wait;
 		}
 
 		public void MessageShow()
 		{
-			this.currentState = JokerState.MessageShow;
+			currentState = TRState.MessageShow;
 		}
 
 		public void WaitClick()
 		{
-			this.currentState = JokerState.WaitClick;
+			currentState = TRState.WaitClick;
 		}
 
 		public void PageWait()
 		{
 			autoWaitCounter = -1.0f;
-			this.currentState = JokerState.PageWait;
+			currentState = TRState.PageWait;
 		}
 
 		public void InfiniteStop()
 		{
-			this.currentState = JokerState.InfiniteStop;
+			currentState = TRState.InfiniteStop;
 		}
 
 		public void MessageHide()
 		{
-			this.currentState = JokerState.MessageHide;
+			currentState = TRState.MessageHide;
 		}
 
 		public void StartAuto(float time = -1.0f)
@@ -178,7 +184,8 @@ namespace NovelEx {
  */
 		}
 
-		public void StopAuto() {
+		public void StopAuto()
+        {
 			autoWaitTime = -1.0f;
 			autoWaitCounter = -1.0f;
 /*
@@ -189,7 +196,8 @@ namespace NovelEx {
 */
 		}
 
-		public bool onAutoWait(float delta) {
+		public bool onAutoWait(float delta)
+        {
 			if(autoWaitCounter < 0.0f)
 				autoWaitCounter = 0.0f;
 			else
@@ -211,13 +219,15 @@ namespace NovelEx {
 			}
 		}
 */
-		public void coroutineAnimation(Animation a, CompleteDelegate completeDeletgate) {
+		public void coroutineAnimation(Animation a, CompleteDelegate completeDeletgate)
+        {
 			object[] parameters = new object[2] { a, completeDeletgate };
 //			enableNextOrder = false;
 			StartCoroutine("animationWait", parameters);
 		}
 
-		private IEnumerator animationWait(object[] param) {
+		private IEnumerator animationWait(object[] param)
+        {
 			Animation a = (Animation)param[0];
 			CompleteDelegate completeDeletgate = (CompleteDelegate)param[1];
 
@@ -251,9 +261,9 @@ namespace NovelEx {
 		public void startSkip() {
 			//＠井筒修正：フラグが立ってるときは無視するように。
 //			if (FlagSkiiping == false)
-			if (!JOKEREX.Instance.StatusManager.onSkip) {
-				JOKEREX.Instance.StatusManager.currentState = JokerState.MessageShowAll;
-				JOKEREX.Instance.StatusManager.currentMessageState = JokerMessageState.SkipRun;		
+			if (!onSkip) {
+				currentState = TRState.MessageShowAll;
+				currentMessageState = TRMessageState.SkipRun;		
 //				StartCoroutine("Loop", 0.01f);
 			}
 		}
@@ -261,9 +271,9 @@ namespace NovelEx {
 		//文字速度とかも変更しないと
 		public void stopSkip() {
 			//＠井筒修正：フラグが立ってるときは無視するように。
-			if (JOKEREX.Instance.StatusManager.onSkip) {
-				JOKEREX.Instance.StatusManager.currentMessageState = JokerMessageState.Normal;		
-				JOKEREX.Instance.StatusManager.currentState = JokerState.MessageShowAll;
+			if(onSkip) {
+				currentMessageState = TRMessageState.Normal;		
+				currentState = TRState.MessageShowAll;
 				//ToDo;
 				//			this.MessageSpeed = float.Parse(this.gameManager.getConfig("messageSpeed"));
 			}
@@ -320,21 +330,20 @@ namespace NovelEx {
 		private IEnumerator ClickButtonCoroutine() {
 			yield return new WaitForSeconds(0.01f);
 
-//			Vector3 aTapPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-			Vector3 aTapPoint = JOKEREX.Instance.targetCamera.ScreenToWorldPoint(Input.mousePosition);
+			Vector3 aTapPoint = Camera.main.ScreenToWorldPoint(Input.mousePosition);
 			Collider2D aCollider2d = Physics2D.OverlapPoint(aTapPoint);
 
 			//Debug.Log ("====EVENT");
 			//Debug.Log (aCollider2d);
 //
-			if (JOKEREX.Instance.StatusManager.UIClicked) {
+			if(UIClicked) {
 //				NovelSingletonEx.StatusManager.UIClicked = false;
 				yield return new WaitForSeconds(0.01f);
 			}
 
 			switch (currentMessageState) {
-			case JokerMessageState.SkipRun:
-				currentMessageState	= JokerMessageState.SkipStop;
+			case TRMessageState.SkipRun:
+				currentMessageState	= TRMessageState.SkipStop;
 				yield break;
 //ToDo:Autoはスキップより優先？
 //			case JokerMessageState.Auto:
@@ -343,18 +352,19 @@ namespace NovelEx {
 			}
 
 			switch(currentState){
-			case JokerState.MessageShow:
-			case JokerState.MessageShowAll:
+			case TRState.MessageShow:
+			case TRState.MessageShowAll:
 //				if (NovelSingletonEx.StatusManager.onSkip || NovelSingletonEx.StatusManager.onAuto) {
 //					NovelSingletonEx.StatusManager.onSkip = false;
 //					NovelSingletonEx.StatusManager.onAuto = false;
 //				}
-				currentState = JokerState.MessageShowAll;
+				currentState = TRState.MessageShowAll;
 				yield break;
-			case JokerState.PageWait:
-				JOKEREX.Instance.uiInstance.Clear();
-				JOKEREX.Instance.LogManager.ApplyLog();
-				currentState = JokerState.NextOrder;
+			case TRState.PageWait:
+                    //ToDo:
+//                uiInstance.Clear();
+//				LogManager.ApplyLog();
+				currentState = TRState.NextOrder;
 				break;
 //			case JokerState.OnAuto:
 //			case JokerState.OnSkip:
@@ -373,64 +383,66 @@ namespace NovelEx {
 //				}
 //				yield break;
 */
-			case JokerState.WaitClick:
-					currentState = JokerState.NextOrder;
+			case TRState.WaitClick:
+				currentState = TRState.NextOrder;
 				yield break;
-			case JokerState.Wait:
-				yield break;
-			}
-
-			if (JOKEREX.Instance.StatusManager.isEventButtonStop == true) {
-				JOKEREX.Instance.StatusManager.isEventButtonStop = false;
+			case TRState.Wait:
 				yield break;
 			}
 
-			if (JOKEREX.Instance.StatusManager.isEventStop == false && aCollider2d) {
+			if(isEventButtonStop == true)
+            {
+				isEventButtonStop = false;
+				yield break;
+			}
+            
+            if (isEventStop == false && aCollider2d) {
 				GameObject obj = aCollider2d.transform.gameObject;
-				JOKEREX.Instance.EventManager.checkEvent(obj.name, "click");
-			}
-/*
-			else
-			{
-				if (NovelSingletonEx.StatusManager.inUiClick == true) {
-					NovelSingletonEx.StatusManager.inUiClick = false;
-					yield break;
-				}
+                //ToDo:
+                //				EventManager. checkEvent(obj.name, "click");
+            }
+            /*
+                        else
+                        {
+                            if (NovelSingletonEx.StatusManager.inUiClick == true) {
+                                NovelSingletonEx.StatusManager.inUiClick = false;
+                                yield break;
+                            }
 
-				//skip中にクリックされた場合、Skipを止める
-				if (NovelSingletonEx.StatusManager.FlagSkiiping == true) {
-					NovelSingletonEx.StatusManager.FlagSkiiping = false;
-					//＠井筒追加：
-					//イベントの名前はクリックされたオブジェクトの名前
-					string name = NovelSingletonEx.UserDataManager.variable.get("evt.caller_name");
-					//＠井筒修正。かなりその場つなぎ感があるのでα２以降の大改造物語でリファクタリングします。
-					string act = NovelSingletonEx.UserDataManager.variable.get("evt.call_action");
-					if (NovelSingletonEx.EventManager.dicEvent.ContainsKey(name) && NovelSingletonEx.EventManager.dicEvent[name].act == act)
-						NovelSingletonEx.EventManager.dicEvent[name].onCalling = false;
-EmptyOrder
-					yield break;
-				}
+                            //skip中にクリックされた場合、Skipを止める
+                            if (NovelSingletonEx.StatusManager.FlagSkiiping == true) {
+                                NovelSingletonEx.StatusManager.FlagSkiiping = false;
+                                //＠井筒追加：
+                                //イベントの名前はクリックされたオブジェクトの名前
+                                string name = NovelSingletonEx.UserDataManager.variable.get("evt.caller_name");
+                                //＠井筒修正。かなりその場つなぎ感があるのでα２以降の大改造物語でリファクタリングします。
+                                string act = NovelSingletonEx.UserDataManager.variable.get("evt.call_action");
+                                if (NovelSingletonEx.EventManager.dicEvent.ContainsKey(name) && NovelSingletonEx.EventManager.dicEvent[name].act == act)
+                                    NovelSingletonEx.EventManager.dicEvent[name].onCalling = false;
+            EmptyOrder
+                                yield break;
+                            }
 
-				//ステータスマネージャみたいなの持たせてもいいよね
-				if (NovelSingletonEx.StatusManager.isMessageShowing == true) {
-					NovelSingletonEx.StatusManager.isMessageShowing = false;
-					//速度を上げる
-					//ToDo:
-					//gameManager.scene.MessageSpeed = 0.001f;
-					yield break;
-				}
+                            //ステータスマネージャみたいなの持たせてもいいよね
+                            if (NovelSingletonEx.StatusManager.isMessageShowing == true) {
+                                NovelSingletonEx.StatusManager.isMessageShowing = false;
+                                //速度を上げる
+                                //ToDo:
+                                //gameManager.scene.MessageSpeed = 0.001f;
+                                yield break;
+                            }
 
-				//Auto中にクリックされた場合、Autoを止める
-				if (NovelSingletonEx.StatusManager.FlagAuto == true)
-				{
-					NovelSingletonEx.StatusManager.FlagAuto = false;
-					yield break;
-				}
-				if (NovelSingletonEx.StatusManager.enableClickOrder == true) {
-					clickNextOrder();
-				}
-			}
-*/
-		}
+                            //Auto中にクリックされた場合、Autoを止める
+                            if (NovelSingletonEx.StatusManager.FlagAuto == true)
+                            {
+                                NovelSingletonEx.StatusManager.FlagAuto = false;
+                                yield break;
+                            }
+                            if (NovelSingletonEx.StatusManager.enableClickOrder == true) {
+                                clickNextOrder();
+                            }
+                        }
+            */
+        }
 	}
 }

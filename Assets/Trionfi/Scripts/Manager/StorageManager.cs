@@ -19,7 +19,7 @@ namespace NovelEx {
 	}
 
 //	[System.Serializable]
-	public class StorageManager : MonoBehaviour
+	public class StorageManager : SingletonMonoBehaviour<StorageManager>
 	{
 		[SerializeField]		
 		public string basepath = "novelex/data/";
@@ -40,7 +40,7 @@ namespace NovelEx {
 
 		public StorageInfo path_savedata = new StorageInfo() { path = /*Application.persistentDataPath+*/"/novel/", type = StorageTypes.LocalFile };
 		private const string globaldatafile = "setting.dat";
-		private const string savesnapfile = "savesnap.sav";
+		private const string savesnapfile = "_TEMPSAVE_.dat";
 
 		public string PATH_SERVER {
 			get {
@@ -242,7 +242,7 @@ namespace NovelEx {
 			return  g.AddComponent<ImageObject>();
 		}
 
-		public void Awake() {
+		public void Start() {
 			path_savedata.path = Application.persistentDataPath+"/novel/";
 		 }
 

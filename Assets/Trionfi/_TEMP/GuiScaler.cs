@@ -1,4 +1,6 @@
-﻿using System;
+﻿#if false
+
+using System;
 using UnityEngine;
 using Novel;
 
@@ -74,7 +76,6 @@ public class GuiScaler
 
 	}
 
-
 	public void fontResize (){
 
 		if (this.guiText == null)
@@ -111,7 +112,6 @@ public class GuiScaler
 		guiText.fontSize = (int)reFontSize;
 		Vector2 v = new Vector2 (rePixOffsetX,rePixOffsetY);
 		guiText.pixelOffset = v;
-
 	}
-
 }
+#endif

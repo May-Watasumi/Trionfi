@@ -54,10 +54,11 @@ namespace NovelEx {
 				this.animCompleteDeletgate();
 		}
 
+        //toDo:分離
 		public virtual void playAnim(string state){
 			//Animationクリップの読み込み
 //			AnimationClip ap = Resources.Load(GameSetting.PATH_ANIM_FILE + state) as AnimationClip;
-			AnimationClip ap = JOKEREX.Instance.StorageManager.loadAnimation(state);
+			AnimationClip ap = StorageManager.Instance.loadAnimation(state);
 
 			this.rootObject.AddComponent<Animation>();
 			Animation anim = this.rootObject.GetComponent<Animation>();

@@ -7,23 +7,26 @@ namespace NovelEx {
 //	[Serializable]
 	public class BackLogWindow : MonoBehaviour
 	{
-		public event Action OnApplyLog;
+        public struct LogData
+        {
+            public string name;
+            public string message;
+        }
 
-		public struct LogData
-		{
-			public string name;
-			public string message;
-		}
+        [SerializeField]
+        public GameObject LogContentPrefab;
 
-		public List<LogData> arrLog = new List<LogData>();
-		public List<GameObject> arrLogContent = new List<GameObject>();
+        public event Action OnApplyLog;
 
-		public int logCount = -1;
+		public List<LogData> LogDataList = new List<LogData>();
+		public List<GameObject> LogObjectList = new List<GameObject>();
+
+        [SerializeField]
+		public int dataSize = 30;
 
 		public bool isAdd = true;
 
-		private string temporaryLog  = "";
-		private string characterName = "";
+        LogData _tempLogData = new LogData();
 
 		/// <summary>
 		/// ログを一時的に貯める機構
@@ -31,16 +34,16 @@ namespace NovelEx {
 		/// <param name="name">Name.</param>
 		/// <param name="name_color">Name color.</param>
 		/// <param name="text">Text.</param>
-		public void AddLog(string name, string name_color, string text)
+		public void SetLogData(string name, string name_color, string text)
 		{
 			if(!isAdd)
 			{
 				return;
 			}
 			//キャラクター名が変化した！ログも残ってる
-			if (characterName != name && string.IsNullOrEmpty(temporaryLog))
+			if(_tempLogData.name != name && string.IsNullOrEmpty(_tempLogData.message))
 			{
-				ApplyLog();
+				SaveLogData();
 			}
 
 			string str = "";
@@ -51,68 +54,54 @@ namespace NovelEx {
 			str = text;
 			str = str.Replace("\r", "").Replace("\n", "");
 
-			if(this.logCount == -1) {
-				this.logCount = JOKEREX.Instance.SystemConfig.backLogCount;
-			}
-
-			temporaryLog += str;
-			characterName = name;
+            _tempLogData.message += str;
+            _tempLogData.name = name;
 		}
 
 		/// <summary>
 		/// ためたログを保存する
 		/// </summary>
-		public void ApplyLog()
+		public void SaveLogData()
 		{
-			if(!isAdd)
-			{
+			if(!isAdd || string.IsNullOrEmpty(_tempLogData.message))
 				return;
-			}
 
-			if (string.IsNullOrEmpty(temporaryLog))
-			{
-				return;
-			}
-
-			this.arrLog.Add(new LogData(){
-				name    = characterName,
-				message = temporaryLog,
-			});
+            LogDataList.Add(_tempLogData);
 
 			//上限を超えていたら指定分の配列を削除する
-			if( (this.logCount + 1) < this.arrLog.Count) {
-				this.arrLog.RemoveRange(0, 1);
-			}
-			temporaryLog = "";
+			if( (dataSize + 1) < LogDataList.Count)
+                LogDataList.RemoveRange(0, 1);
 
-			if (OnApplyLog != null)
+            _tempLogData.message = "";
+
+            if (OnApplyLog != null)
 			{
 				OnApplyLog();
 			}
 		}
 
-		public void ClearList()
+		public void ClearLog()
 		{
-			arrLog.Clear();
-		}
+            LogDataList.Clear();
+        }
 
 		//ログ配列データ取得
-		public List<LogData> getLogList()
+		public List<LogData> GetLogList()
 		{
-			return this.arrLog;
+			return LogDataList;
 		}
 
-		public string getLogText()
+		public string GetLogText()
 		{
 			string logtext = "";
 
-			this.arrLog.Reverse();
+			LogDataList.Reverse();
 
-			foreach (var item in this.arrLog) {
+			foreach (var item in LogDataList) {
 				logtext += item.message + "\n\n";
 			}
 
-			this.arrLog.Reverse();
+            LogDataList.Reverse();
 
 			return logtext;
 		}
@@ -120,36 +109,36 @@ namespace NovelEx {
 		public void Open()
 		{
 			isAdd = false;
-			this.gameObject.GetComponent<Canvas>().enabled = true;
+			gameObject.GetComponent<Canvas>().enabled = true;
 
-			GameObject _prefab = JOKEREX.Instance.StorageManager.loadPrefab("LogContent") as GameObject;
+//			GameObject _prefab = JOKEREX.Instance.StorageManager.loadPrefab("LogContent") as GameObject;
+
 			//ToDo:
-			GameObject content = this.gameObject.GetComponentInChildren<UnityEngine.UI.VerticalLayoutGroup>().gameObject;
-			foreach (var item in arrLog) {
-				GameObject logcontent = GameObject.Instantiate(_prefab) as GameObject;
+			GameObject content = gameObject.GetComponentInChildren<UnityEngine.UI.VerticalLayoutGroup>().gameObject;
+			foreach (var item in LogDataList)
+            {
+				GameObject logcontent = GameObject.Instantiate(LogContentPrefab) as GameObject;
 				logcontent.GetComponentInChildren<UnityEngine.UI.Text>().text = item.message;
 				logcontent.transform.SetParent(content.transform);
 //何故か引き延ばされる
 				logcontent.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-				arrLogContent.Add(logcontent);
+				LogObjectList.Add(logcontent);
 			}
 		}
 
-		public void Close() {
-			this.gameObject.GetComponent<Canvas>().enabled = false;
+		public void Close()
+        {
+			gameObject.GetComponent<Canvas>().enabled = false;
 
-			for (int num = 0; num < arrLogContent.Count; num++) {
-				GameObject.Destroy(arrLogContent[num]);
+			for (int num = 0; num < LogObjectList.Count; num++)
+            {
+				GameObject.Destroy(LogObjectList[num]);
 			}
-			arrLogContent.Clear();
 
-			JOKEREX.Instance.StatusManager.NextOrder();
+            LogObjectList.Clear();
+
+//			JOKEREX.Instance.StatusManager.NextOrder();
 			isAdd = true;
 		}
-/*
-		void Awake()
-		{
-		}
-*/
 	}
 }

@@ -1,17 +1,20 @@
-﻿using UnityEngine;
+﻿#if false
+using UnityEngine;
 using System.Collections;
 
 namespace NovelEx {
-	public class AnimationEvent : MonoBehaviour { 
+	public class AnimationEvent : SingletonMonoBehaviour<AnimationEvent>
+    { 
 		// Use this for initialization
 		void Start() { }
 	
 		// Update is called once per frame
 		void Update() { }
 
-		public void endTransBackground(){
+		public void endTransBackground()
+        {
 			//Debug.Log ("アニメーションの終了を検知");
 		}
 	}
-
 }
+#endif

@@ -1,11 +1,11 @@
-﻿using UnityEngine;
+﻿#if false
+using UnityEngine;
 using System.Collections;
 using UnityEditor;
 using System.Collections.Generic;
 using Novel;
 using System.IO;
 using System;
-
 
 public class Exporter
 {
@@ -251,3 +251,5 @@ public class DocGenerator{
 	}
 
 }
+
+#endif

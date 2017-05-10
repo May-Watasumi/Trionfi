@@ -11,7 +11,7 @@ using System.Text;
 
 namespace NovelEx {
 	[Serializable]
-	public class SaveObject {
+	public class UserSaveData {
 		public string currentFile ="";
 		public int  currentIndex =-1;
 

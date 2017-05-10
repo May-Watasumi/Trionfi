@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿#if false
+using System.Collections.Generic;
 using System.IO;
 using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
@@ -15,3 +16,4 @@ namespace NovelEx {
 		public Dictionary<string,string> globalVar = new Dictionary<string,string>() ;
 	}
 }
+#endif

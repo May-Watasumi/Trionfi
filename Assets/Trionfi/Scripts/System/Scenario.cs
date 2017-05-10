@@ -3,9 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace NovelEx {
+namespace NovelEx
+{
 	[Serializable]
-	public class Scenario {
+	public class Scenario
+    {
 		public string name;
 		public List<AbstractComponent> arrayComponent;
 		public Dictionary<string,int> dicLabel = new Dictionary<string,int>();
@@ -17,16 +19,24 @@ namespace NovelEx {
 			arrayComponent = list;
 		}
 
-		public void addLabel(string label_name,int index) {
+        public Scenario( string scriptText )
+        {
+            name = "__EXTERNAL__";
+            arrayComponent = NovelParser.Instance.parseScript(scriptText);
+        }
+
+		public void addLabel(string label_name,int index)
+        {
 			this.dicLabel [label_name] = index;
 		}
 
-		public int getIndex(string label_name) {
+		public int getIndex(string label_name)
+        {
 			if(label_name == "")
 				return -1;
 
 			if(!this.dicLabel.ContainsKey (label_name))
-				ErrorChecker.Instance.stopError(name + "にラベル「" + label_name + "」が見つかりません。");	
+				ErrorLogger.stopError(name + "にラベル「" + label_name + "」が見つかりません。");	
 
 			return this.dicLabel[label_name];
 		}

@@ -2,13 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
+#if false
 namespace NovelEx{
-
 	public class JoinComponent:AbstractComponent
 	{
 		public JoinComponent ()
 		{
-
 			//必須項目
 			this.arrayVitalParam = new List<string> {
 				"var","arg1","arg2"
@@ -19,13 +18,9 @@ namespace NovelEx{
 				{"arg1",""},
 				{"arg2",""},
 			};
-
 		}
-
-
 		public override void start ()
 		{
-
 			string var_name = this.param ["var"];
 			string arg1 = this.param ["arg1"];
 			string arg2 = this.param ["arg2"];
@@ -37,9 +32,7 @@ namespace NovelEx{
 
 			//次のシナリオに進む処理
 			this.gameManager.nextOrder ();
-
 		}
-
 	}
-
 }
+#endif

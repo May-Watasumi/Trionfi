@@ -3,16 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace NovelEx {
-	public class ErrorChecker : SingletonMonoBehaviour<ErrorChecker> {
-		private List<string> errorMessage = new List<string>();
-		private List<string> warningMessage = new List<string>();
+	public class ErrorLogger {
+		private static List<string> errorMessage = new List<string>();
+		private static List<string> warningMessage = new List<string>();
 
-		public void Clear() {
+		public static void Clear() {
 			errorMessage.Clear();
 			warningMessage.Clear();
 		}
 
-		public void addLog(string message, string file, int line, bool stop) {
+		public static void addLog(string message, string file, int line, bool stop) {
 			if (stop) {
 				string str = "<color=green>Novel</color>[" + file + "]:<color=red>Error:" + line + "行目 " + message + "</color>";
 				errorMessage.Add(str);
@@ -23,7 +23,7 @@ namespace NovelEx {
 			}
 		}
 
-		public bool showAll() {
+		public static bool showAll() {
 			foreach (string message in errorMessage) {
 				Debug.LogError(message);
 			}
@@ -33,7 +33,7 @@ namespace NovelEx {
 			return errorMessage.Count > 0 ? true : false;
 		}
 
-		public void stopError(string message) {
+		public static void stopError(string message) {
 			Debug.LogError(message);
 			throw new UnityException(message);		
 		}

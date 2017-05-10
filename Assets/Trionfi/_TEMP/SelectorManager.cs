@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿#if false
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using NovelEx;
@@ -38,3 +39,4 @@ namespace NovelEx
 		}
 	}
 }
+#endif
