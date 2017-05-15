@@ -41,9 +41,9 @@ namespace NovelEx {
 			this.spriteBack = (GameObject)GameObject.Instantiate(g, new Vector3(0, 0f, -3.2f), Quaternion.identity);
 			this.spriteFore.transform.parent = ImageObjectManager.frontRoot.transform;
 			this.spriteBack.transform.parent = ImageObjectManager.backRoot.transform;
-			this.spriteFore.name = name;
-			this.spriteBack.name = name;
-			instanceObject = g;//this.spriteFore;
+			this.spriteFore.name = paramDic["name"];
+			this.spriteBack.name = paramDic["name"];
+            instanceObject = g;//this.spriteFore;
 //			instanceObject = (GameObject)Instantiate(g,new Vector3(0,0f,-3.2f),Quaternion.identity); 
 //			instanceObject.name = this.name;
 //			this.spriteFore = instanceObject.transform.FindChild("fore").gameObject;
@@ -88,7 +88,7 @@ namespace NovelEx {
 				}
 			}
 			else {
-				string filename = this.imagePath + param ["storage"];
+				string filename = param["imagePath"] + param ["storage"];
 				this.filename = filename;
 				this.targetSprite = StorageManager.Instance.loadSprite(filename); //Resources.Load<Sprite>(filename);
 			}

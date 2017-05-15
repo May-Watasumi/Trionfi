@@ -208,7 +208,7 @@ namespace NovelEx
 			sobj.currentMessage = StatusManager.Instance.messageForSaveTitle;
 
             sobj.dicObject = ImageObjectManager.dicObject;
-			sobj.dicTag = ImageObjectManager.dicTag;
+//			sobj.dicTag = ImageObjectManager.dicTag;
 			sobj.dicEvent = EventManager.dicEvent;
 			sobj.scriptManager = ScriptManager.Instance;
 			sobj.variable = ScriptManager.Instance.variable;
@@ -256,7 +256,7 @@ namespace NovelEx
 			}
 
 			//タグも復元
-			ImageObjectManager.dicTag = sobj.dicTag;
+//			ImageObjectManager.dicTag = sobj.dicTag;
 			EventManager.dicEvent = sobj.dicEvent;
 //ToDo:Save
 //			ScenarioManager = sobj.scenarioManager;

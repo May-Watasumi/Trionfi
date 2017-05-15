@@ -151,8 +151,8 @@ namespace NovelEx
 
 			if(sce == null) 
 			{
-				string fullpath = useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO : "";
-				string script_text = StorageManager.Instance.loadTextAsset(fullpath + storage);
+				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
+				string script_text = StorageManager.Instance.LoadTextAsset(fullpath + storage);
 
 				sce = LoadScenariofromString(script_text, storage);
 			}

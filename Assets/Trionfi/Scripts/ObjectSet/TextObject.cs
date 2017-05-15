@@ -40,8 +40,6 @@ namespace NovelEx {
 			objColor.a = 0;
 			guiText.color = objColor;
 			guiText.fontSize = int.Parse(paramDic ["fontsize"]);
-
-			instanceObject.name = this.name;
 		}
 
 		public override void SetParam(Dictionary<string,string> param)

@@ -11,9 +11,11 @@ namespace NovelEx
 		public GameObject instanceObject;
 		public Dictionary<string,string> paramDic;
 
-		public string imagePath ="";
+        public string GetParam(string key) { return paramDic[key]; }
+/*
+        public string imagePath ="";
         public string name;
-
+*/
         protected CompleteDelegate completeDeletgate = null;
 		public CompleteDelegate animCompleteDeletgate = null; //アニメーションのデリゲート指定
 
@@ -103,7 +105,8 @@ namespace NovelEx
    
 		public virtual void Show(float time,string easeType){}
 		public virtual void Hide(float time,string easeType){}
-		public virtual void SetParam(Dictionary<string,string> param)
+
+        public virtual void SetParam(Dictionary<string,string> param)
         {
             if (instanceObject == null)
             {

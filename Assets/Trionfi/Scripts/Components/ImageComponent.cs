@@ -141,9 +141,9 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 
 			ImageObject image = ImageObjectManager.GetObject(name) as ImageObject;
 
-			float x = (paramDic["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.getParam("x"));
-			float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.getParam ("y"));
-			float z = (paramDic["z"]!="") ? float.Parse(paramDic["z"]) : float.Parse(image.getParam ("z"));
+			float x = (paramDic["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.GetParam("x"));
+			float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.GetParam ("y"));
+			float z = (paramDic["z"]!="") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam ("z"));
 
 			image.SetPosition (x, y, z);
 
@@ -154,9 +154,9 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 				paramDic ["scale_z"] = paramDic ["scale"];
 			}
 
-			float scale_x = (paramDic["scale_x"]!="") ? float.Parse(paramDic["scale_x"]) : float.Parse(image.getParam ("scale_x"));
-			float scale_y = (paramDic["scale_y"]!="") ? float.Parse(paramDic["scale_y"]) : float.Parse(image.getParam ("scale_y"));
-			float scale_z = (paramDic["scale_z"]!="") ? float.Parse(paramDic["scale_z"]) : float.Parse(image.getParam ("scale_z"));
+			float scale_x = (paramDic["scale_x"]!="") ? float.Parse(paramDic["scale_x"]) : float.Parse(image.GetParam ("scale_x"));
+			float scale_y = (paramDic["scale_y"]!="") ? float.Parse(paramDic["scale_y"]) : float.Parse(image.GetParam ("scale_y"));
+			float scale_z = (paramDic["scale_z"]!="") ? float.Parse(paramDic["scale_z"]) : float.Parse(image.GetParam ("scale_z"));
 
 			image.SetScale(scale_x,scale_y,scale_z);
 
@@ -250,7 +250,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
             {
 				ImageObject image = ImageObjectManager.GetObject(image_name) as ImageObject;
 
-				float x = (paramDic["x"] != "") ? float.Parse(paramDic["x"]) : float.Parse(image.GetParam("x"));
+				float x = (paramDic["x"] != "") ? float.Parse(paramDic["x"]) : float.Parse(image.paramDic["x"]);
 				float y = (paramDic["y"] != "") ? float.Parse(paramDic["y"]) : float.Parse(image.GetParam("y"));
 				float z = (paramDic["z"] != "") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam("z"));
 

@@ -31,7 +31,7 @@ namespace NovelEx
 			this.show_x_position = x;
 
 			instanceObject = (GameObject)GameObject.Instantiate(g, new Vector3 (x, y, z), Quaternion.identity); 
-			instanceObject.name = this.name;
+			instanceObject.name = param["name"];
 
 			this.image = g;
 

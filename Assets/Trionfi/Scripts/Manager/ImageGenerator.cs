@@ -23,7 +23,7 @@ namespace NovelEx
 		private static AbstractObject imageObject;
         [NonSerialized]
         public static ImageObjectManager Instance;
-
+/*
         public static string GetParam(string key)
 		{
 			return dicSave[key];
@@ -33,10 +33,10 @@ namespace NovelEx
 		{
 			dicSave[key] = value;
 		}
-
-		protected static void SetParam(Dictionary<string,string> param)
+*/
+		protected static void InitParam(Dictionary<string,string> param)
 		{
-			dicSave["name"] = param ["name"];
+            dicSave.Clear();
 			dicSave["tag"] = param["tag"];
 			dicSave["storage"] = param["storage"];
 			dicSave["isShow"] ="false";
@@ -75,12 +75,11 @@ namespace NovelEx
 
         public static void CreateObject(Dictionary<string, string> param)
         {
-            SetParam(param);
-
-            GameObject g = new GameObject("gameobject");
+            GameObject g = new GameObject(param["name"]);
 
 			AbstractObject imageObject;
-			string className = dicSave["className"];
+
+            string className = dicSave["className"];
 
             switch(className) {
 //ToDo:
@@ -105,36 +104,36 @@ namespace NovelEx
 				break;
 #endif
             case "Text":
-                imageObject = g.AddComponent<TextObject>();
+                imageObject = new TextObject();
                 break;
             case "Sd":
-                imageObject = g.AddComponent<SdObject>();
+                imageObject = new SdObject();
                 break;
             default:
-				imageObject = StorageManager.Instance.GetCustomObject(className, g);
+				imageObject = StorageManager.GetCustomObject(className);
 				break;
 			}
 
-			imageObject.name = GetParam("name");
+            InitParam(param);
 
-			//画像なりをセット
-			imageObject.imagePath = dicSave["imagePath"];
-			imageObject.SetParam(dicSave);
-
-//			imageObject = imageObject;
+            g.tag = dicSave["tag"];
+//            imageObject.name = dicSave["name"];
+//            imageObject.imagePath = dicSave["imagePath"];
+            imageObject.instanceObject = g;
+            imageObject.SetParam(dicSave);
 
 			//このオブジェクトが表示対象の場合は即表示
-			SetPosition(float.Parse(dicSave["x"]), float.Parse(dicSave["y"]), float.Parse(dicSave["z"]));
+			imageObject.SetPosition(float.Parse(dicSave["x"]), float.Parse(dicSave["y"]), float.Parse(dicSave["z"]));
 
-			//scale の設定
-			SetScale (float.Parse(dicSave["scale_x"]), float.Parse(dicSave["scale_y"]), float.Parse(dicSave["scale_z"]));
+            //scale の設定
+            imageObject.SetScale (float.Parse(dicSave["scale_x"]), float.Parse(dicSave["scale_y"]), float.Parse(dicSave["scale_z"]));
 
 			//イベントが登録されている場合はcolider 登録
 			if (dicSave ["event"] == "true")
-				SetColider();
+                imageObject.SetColider();
 
 			if (dicSave ["isShow"] == "true")
-				Show(0, "linear");
+                imageObject.Show(0, "linear");
 		}
 #if false
         public static void SetColider()
