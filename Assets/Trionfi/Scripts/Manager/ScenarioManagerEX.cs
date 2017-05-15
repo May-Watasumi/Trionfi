@@ -3,12 +3,16 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace NovelEx {
-	[Serializable]
-	public class ScenarioManager
+namespace NovelEx
+{
+    [Serializable]
+	public class ScriptManager
     {
-		//マクロ情報
-		[Serializable]
+        [NonSerialized]
+        public static ScriptManager Instance = null;
+
+        //マクロ情報はシステム共通
+        [Serializable]
 		public class Macro
 		{
 			public string name;
@@ -62,16 +66,8 @@ namespace NovelEx {
 
 		public Dictionary<string, Macro> dicMacro = new Dictionary<string,Macro>();
 
-		[NonSerialized]
-		NovelParser Parser = new NovelParser("NovelEx");
-		public  NovelParser NovelParser{
-			get{
-				return Parser;
-			}
-		}
-
-		//シナリオ変数
-		[NonSerialized]
+        //変数インスタンスは１つ
+        [NonSerialized]
 		public Variable variable = new Variable();
 
 		//stackを配列に置き換える
@@ -85,59 +81,60 @@ namespace NovelEx {
 		public int macroNum = 0;
 
 		public List<AbstractComponent> arrayComponents = new List<AbstractComponent>();
-		public int currentComponentIndex = -1;		//-1は未初期化		//EX変更点：０からスタート
+		public int currentComponentIndex = -1;		//-1は未初期化		//EX変更点：0からスタート
 
-		public ScenarioManager() { }
+		public ScriptManager() { Instance = this; }
 
 		public void StartScenario(string currentScenario, int index, List<AbstractComponent> arrayComponents = null)
 		{
 			if (arrayComponents != null)
 			{
 				this.arrayComponents = arrayComponents;
-			}
-			this.currentComponentIndex = index;
-			JOKEREX.Instance.StatusManager.currentScenario = currentScenario;
-			JOKEREX.Instance.StatusManager.MessageShow();
+            }
+
+            this.currentComponentIndex = index;
+			StatusManager.Instance.currentScenario = currentScenario;
+			StatusManager.Instance.MessageShow();
 		}
 
-
-		private Scenario getScenario(string file_name) {
+		private Scenario GetInstance(string file_name)
+        {
 //			JOKEREX.Instance.showLog("JOKEREX:LoadScenario \"" + file_name + "\"" + " exist=\"" + dicScenario.ContainsKey (file_name) + "\"");
 
 			//シナリオからロードしてきた時はnull になってるからね
-			if (this.dicScenario == null)
-				this.dicScenario = new Dictionary<string,Scenario>();
+			if(dicScenario == null)
+				dicScenario = new Dictionary<string,Scenario>();
 
-			if(this.dicScenario.ContainsKey(file_name))
-				return this.dicScenario[file_name];
+			if(dicScenario.ContainsKey(file_name))
+				return dicScenario[file_name];
 			else
 				return null;
 		}
 
 		const string dummyScenarioKey = "DUMMY_SCENARIO_KEY";	
 
-		public Scenario loadScenariofromString(string text, string dicKey) {
+		public Scenario LoadScenariofromString(string text, string dicKey) {
 			Debug.Log("JOKEREX:LoadScenario \"" + dicKey + "\"");	
 
-			Scenario sce = String.IsNullOrEmpty(dicKey) ? null : getScenario(dicKey);
+			Scenario sce = String.IsNullOrEmpty(dicKey) ? null : GetInstance(dicKey);
 
-			if (String.IsNullOrEmpty(dicKey))
+			if(String.IsNullOrEmpty(dicKey))
 				dicKey = dummyScenarioKey;	
 
-			if (sce == null)
+			if(sce == null)
 			{
 				sce = new Scenario();
 
-				JOKEREX.Instance.errorManager.Clear();
+				ErrorLogger.Clear();
 
 				//パーサーを動作させる
-				sce.arrayComponent = Parser.parseScript(text);
+				sce.arrayComponent = NovelParser.Instance.parseScript(text);
 
-				if (JOKEREX.Instance.errorManager.showAll())
+				if(ErrorLogger.showAll())
 				{
-					JOKEREX.Instance.errorManager.stopError("<color=red>致命的なエラーがあります。ゲームを開始できません</color>");
+					ErrorLogger.stopError("<color=red>致命的なエラーがあります。ゲームを開始できません</color>");
 				}
-				addScenario(dicKey, sce.arrayComponent);
+				AddScenario(dicKey, sce.arrayComponent);
 			}
 
 			arrayComponents = sce.arrayComponent;
@@ -147,17 +144,17 @@ namespace NovelEx {
 			return sce;
 		}
 
-		public Scenario loadScenario(string storage)
+		public Scenario LoadScenario(string storage)
 		{
 //			Debug.Log("JOKEREX:LoadScenario \"" + storage + "\"");
-			Scenario sce = getScenario(storage);
+			Scenario sce = GetInstance(storage);
 
 			if(sce == null) 
 			{
-//				string fullpath = useStoragePath ? JOKEREX.Instance.StorageManager.PATH_SD_SCENARIO : "";
-//				string script_text = JOKEREX.Instance.StorageManager.loadTextAsset(fullpath + storage);
+				string fullpath = useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO : "";
+				string script_text = StorageManager.Instance.loadTextAsset(fullpath + storage);
 
-				sce = loadScenariofromString(script_text, storage);
+				sce = LoadScenariofromString(script_text, storage);
 			}
 			else
 			{
@@ -168,27 +165,29 @@ namespace NovelEx {
 		}
 
 		//シナリオの追加 ラベルの位置計算もここでやる
-		public void addScenario(string scenario_name, List<AbstractComponent> list) {
-			this.dicScenario [scenario_name] = new Scenario(scenario_name,list);
+		public void AddScenario(string scenario_name, List<AbstractComponent> list) {
+			dicScenario [scenario_name] = new Scenario(scenario_name,list);
 			int index = 0;
 
-			foreach(AbstractComponent cmp in list){
+			foreach(AbstractComponent cmp in list)
+            {
 				if (cmp.tagName == "label")
-					this.dicScenario [scenario_name].addLabel(cmp.originalParam["name"],index);
+					dicScenario[scenario_name].addLabel(cmp.originalParamDic["name"],index);
 
 				index++;
 			}	
 		}
 
-		public int getIndex(string scenario_name,string label_name) {
+		public int GetIndex(string scenario_name, string label_name)
+        {
 			//シナリオがまだ読み込まれていない場合は読み込みを行う
-			if (!this.dicScenario.ContainsKey (scenario_name))
+			if (!dicScenario.ContainsKey (scenario_name))
 				return -1;
 
-			return this.dicScenario[scenario_name].getIndex (label_name);
+			return dicScenario[scenario_name].getIndex (label_name);
 		}
 
-		public void addStack(string scenario_name,int index,Dictionary<string,string> dicVar) {
+		public void AddStack(string scenario_name, int index, Dictionary<string,string> dicVar) {
 			//stack追加時にdicVarに呼び出し元情報を入れる
 			//呼び出し元の情報はcaller_indexに入る。
 			dicVar ["caller_index"] = ""+index;
@@ -205,15 +204,15 @@ namespace NovelEx {
 			}
 			*/
 
-			this.qStack.Add (new CallStack(scenario_name,index,mp));
+			qStack.Add(new CallStack(scenario_name,index,mp));
 
 			//スタックを追加した時点で使用できる引数変数を格納する
 			variable.replaceAll("mp", dicVar); ;
 		}
 
-		public CallStack popStack() {
+		public CallStack PopStack() {
 			try{
-				CallStack c = this.qStack[this.qStack.Count-1];
+				CallStack c = qStack[qStack.Count-1];
 
 				//var mp = StatusManager.variable.getType ("mp");
 
@@ -226,73 +225,77 @@ namespace NovelEx {
 				*/
 				variable.replaceAll("mp", c.dicVar);
 
-				this.qStack.RemoveAt(this.qStack.Count-1);
+				qStack.RemoveAt(qStack.Count-1);
 
 				return c;
 
 			}
 			catch(System.Exception e) {
-				JOKEREX.Instance.errorManager.stopError("スタックが不足しています。callとreturnの関係を確認して下さい");
+				ErrorLogger.stopError("スタックが不足しています。callとreturnの関係を確認して下さい");
 				Debug.Log (e.ToString());
 				return null;
 			}
 		}
 
-		public int countStack(){
-			return this.qStack.Count;
+		public int CountStack()
+        {
+			return qStack.Count;
 		}
 
 		/// <summary>
 		/// //////if 周りのスタック管理
 		/// </summary>
 
-		public void addIfStack(bool proccess) {
-			this.ifStack.Add (new IfStack(proccess));
+		public void AddIfStack(bool proccess) {
+			ifStack.Add (new IfStack(proccess));
 		}
 
-		public IfStack popIfStack() {
+		public IfStack PopIfStack() {
 			try{ 
-				IfStack c = this.ifStack[this.ifStack.Count-1];
-				this.ifStack.RemoveAt(this.ifStack.Count-1);
+				IfStack c = ifStack[ifStack.Count-1];
+				ifStack.RemoveAt(ifStack.Count-1);
 
 				return c;
-
 			}
-			catch(System.Exception e) {
-				JOKEREX.Instance.errorManager.stopError("スタックが不足しています。callとreturnの関係を確認して下さい");
+			catch(System.Exception e)
+            {
+				ErrorLogger.stopError("スタックが不足しています。callとreturnの関係を確認して下さい");
 				Debug.Log(e.ToString());
 				return null;
 			}
 		}
 
 		//現在のifスタックの状態を確認する
-		public bool currentIfStack() {
-			return this.ifStack[this.ifStack.Count-1].isIfProcess;	
+		public bool CurrentIfStack()
+        {
+			return ifStack[ifStack.Count-1].isIfProcess;	
 		}
 
 		//スタックの状態を変更する
-		public void changeIfStack(bool proccess) {
-			IfStack s = this.popIfStack();
+		public void ChangeIfStack(bool proccess)
+        {
+			IfStack s = PopIfStack();
 			s.isIfProcess = proccess;
-			this.ifStack.Add (s);
+			ifStack.Add(s);
 		}
 
-		public int countIfStack() {
+		public int CountIfStack()
+        {
 			return this.ifStack.Count;
 		}
 
 		//スタックをすべて削除します
-		public void removeAllStacks() {
+		public void RemoveAllStacks() {
 			//未実装
-			this.qStack.Clear();
-			this.ifStack.Clear();
-			this.ifNum = 0;
+			qStack.Clear();
+			ifStack.Clear();
+			ifNum = 0;
 		}
 
 //// macro ///////
-		public void addMacro(string macro_name,string file_name, int index)
+		public void AddMacro(string macro_name,string file_name, int index)
 		{
-			this.dicMacro[macro_name] = new Macro(macro_name,file_name,index);
+			dicMacro[macro_name] = new Macro(macro_name,file_name,index);
 		}
 
 		/*
@@ -304,11 +307,12 @@ namespace NovelEx {
 		}
 		*/
 
-		public Macro getMacro(string macro_name) {
-			if(!this.dicMacro.ContainsKey (macro_name))
-				JOKEREX.Instance.errorManager.stopError("マクロ「" + macro_name + "」は見つかりませんでした");
+		public Macro GetMacro(string macro_name)
+        {
+			if(!dicMacro.ContainsKey (macro_name))
+				ErrorLogger.stopError("マクロ「" + macro_name + "」は見つかりませんでした");
 
-			return this.dicMacro [macro_name]; 
+			return dicMacro [macro_name]; 
 		}
 
 		public bool hasComponent = false;
@@ -336,34 +340,34 @@ namespace NovelEx {
 			{
 				AbstractComponent cmp = arrayComponents[currentComponentIndex];
 
-				cmp.before();
+				cmp.Before();
 
 				//タグ
-				if (JOKEREX.Instance.StatusManager.currentState == JokerState.SkipOrder)
+				if (StatusManager.Instance.currentState == JokerState.SkipOrder)
 				{
 					Debug.Log("SkipOrderされました");
 				}
 				else
 				{
-					cmp.calcVariable();
-					cmp.validate();
+					cmp.CalcVariable();
+					cmp.Validate();
 
 					string p = "";
-					foreach (KeyValuePair<string, string> kvp in cmp.param)
+					foreach (KeyValuePair<string, string> kvp in cmp.paramDic)
 					{
 						p += kvp.Key + "=" + kvp.Value + " ";
 					}
 
-					if(JOKEREX.Instance.SystemConfig.showTag)
+					if(SystemConfig.Instance.showTag)
 					{
 						Debug.Log("[" + cmp.tagName + " " + p + " ]");
 					}
 
-					cmp.start();
+					cmp.Start();
 				}
 
 				//EX変更：Afterも必ず実行される
-				cmp.after();
+				cmp.After();
 
 				//ToDo:flag
 				currentComponentIndex++;
@@ -372,13 +376,13 @@ namespace NovelEx {
 			}
 			//シナリオファイルの最後まで来た時。スタックが存在するならreturn する
 			//スタックがあるならreturn する
-			if (JOKEREX.Instance.ScenarioManager.countStack() > 0)
+			if(CountStack() > 0)
 			{
-				JOKEREX.startTag("[return]");
+				NovelParser.Instance.StartTag("[return]");
 			}
 			else
 			{
-				JOKEREX.Instance.StatusManager.EndScenario();
+				StatusManager.Instance.EndScenario();
 			}
 			return false;			
 		}

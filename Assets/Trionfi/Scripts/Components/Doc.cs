@@ -5,41 +5,35 @@ using System.Collections;
 //using UnityEditor;
 
 using System.Collections.Generic;
-using Novel;
+using NovelEx;
 using System.IO;
 using System;
 
-namespace Novel{
-
-	public class DocObject{
-
+namespace NovelEx
+{
+	public class DocObject
+    {
 		public string desc = "";
 		public string sample ="";
 		public Dictionary<string,string> dicParam = new Dictionary<string,string> ();
 		public Dictionary<string,string> dicParamVital = new Dictionary<string,string> ();
 		public Dictionary<string,string> dicParamDefault = new Dictionary<string,string> ();
-
 		public Dictionary<string,string> dicTag = new Dictionary<string,string> ();
-
 	}
 
-	public class DocManager{
-
-
+	public class DocManager
+    {
 		List<DocObject> arrDoc = new List<DocObject>();
 		DocObject obj = new DocObject();
 		string status ="";
 
-		public DocManager(){
-
-		}
+		public DocManager() { }
 
 		public void showInfo(){
 
 			string html = "";
 
 			//html += "<div class='howtoArea'> \n";
-
 
 			var dicNav = new Dictionary<string,List<DocObject>> ();
 
@@ -71,7 +65,6 @@ namespace Novel{
 				//グループ作製ここまで
 
 				string html_main = "";
-
 
 				//html += d.dicTag["title"]+ "\n";
 				//howtoMain作製
@@ -267,7 +260,7 @@ namespace Novel{
 			AbstractComponent cmp;
 			cmp = (AbstractComponent)Activator.CreateInstance (masterType);
 
-			this.obj.dicParamDefault = cmp.originalParam;
+			this.obj.dicParamDefault = cmp.originalParamDic;
 
 			Dictionary<string,string> tmpDic = new Dictionary<string,string> ();
 			List<string> l = cmp.arrayVitalParam;
@@ -289,20 +282,15 @@ namespace Novel{
 
 
 	public class DocGenerator{
-
-		public static void start(){
-
-			Debug.Log ("start document generator ");
-
+		public static void Start(){
+            Debug.Log ("start document generator ");
 			Debug.Log (System.Environment.CurrentDirectory);
-
 		
 			string path = System.Environment.CurrentDirectory +"/Assets/JOKER/Scripts/Novel/Components/";
 
 			//指定フォルダ以下のディレクトリ全部読み込み
 			string[] files = System.IO.Directory.GetFiles(
 				path, "*", System.IO.SearchOption.AllDirectories);
-
 
 			List<string > arrDoc = new List<string> ();
 
@@ -339,10 +327,7 @@ namespace Novel{
 
 				// cReader を閉じる (正しくは オブジェクトの破棄を保証する を参照)
 				cReader.Close();
-
-
 			}
-
 
 			DocManager dm = new DocManager ();
 
@@ -356,16 +341,7 @@ namespace Novel{
 			dm.showInfo ();
 
 			Debug.Log ("finish export doc ");
-
 		}
-
 	}
-
-	
-
 }
-
 #endif
-
-
-

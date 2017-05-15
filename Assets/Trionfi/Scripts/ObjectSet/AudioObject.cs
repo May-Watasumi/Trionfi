@@ -5,21 +5,21 @@ using NovelEx;
 
 namespace NovelEx
 {
-    public class AudioObjectBase:MonoBehaviour
+    public class AudioObjectBase : MonoBehaviour
     {
-        float volume1;
-        float volume2;
+        public float volume1;
+        public float volume2;
 
         public virtual void Load(string resourceName) { }
         public virtual void Play(float time = 0.0f) { }
         public virtual void Stop(float time = 0.0f) { }
-        public virtual void FadeIn(float time) { }
-        public virtual void FadeOUt(float time) { }
+        public virtual IEnumerator FadeIn(float time) { return null; }
+        public virtual IEnumerator FadeOut(float time) { return null; }
     }
 
-    public class AudioObject:AudioObjectBase
+    public class AudioObject : AudioObjectBase
 	{
-		private AudioSource audioSource;
+		public  AudioSource audioSource;
         private AudioClip audioClip;
 		public bool isWait;
 		public CompleteDelegate completeDelegate ;
@@ -36,14 +36,14 @@ namespace NovelEx
         {
             audioSource.Play();
 
-            if (time > 0.0f)
-                FadeIn(time);
+            if(time > 0.0f)
+                StartCoroutine(FadeIn(time));
 		}
 
         public override void Stop(float time = 0.0f)
         {
-            if (time > 0.0f)
-                FadeOUt(time);
+            if(time > 0.0f)
+                StartCoroutine(FadeOut(time));
             else
                 audioSource.Stop();
 		}

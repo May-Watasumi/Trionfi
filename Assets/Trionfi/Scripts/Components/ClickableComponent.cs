@@ -48,18 +48,19 @@ scale_y=クリッカブルの縦幅の拡大率を指定できます。
 --------------------
  */
 
-
 	public class ClickableComponent:AbstractComponent {
-		public ClickableComponent() {
+		public ClickableComponent()
+        {
 			//string imagePath = GameSetting.PATH_SYSTEM_IMAGE;
 
 			//必須項目
 
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string>
+            {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name", "" },
 				{ "tag", "" },
 				{ "layer", "Default" },
@@ -74,27 +75,25 @@ scale_y=クリッカブルの縦幅の拡大率を指定できます。
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 //			Debug.Log("start----------");
 
-			//string name = this.param ["name"];
-			//string tag = this.param ["tag"];
-			this.param ["storage"] = "black";
-			this.param["className"] ="Clickable";
+			//string name = paramDic ["name"];
+			//string tag = paramDic ["tag"];
+			paramDic ["storage"] = "black";
+			paramDic["className"] ="Clickable";
 
-			Image image = new Image(this.param);
-			JOKEREX.Instance.ImageManager.addImage(image);
+			ImageObject image = new ImageObject(paramDic);
+			ImageObjectManager.AddObject(image);
 //			this.gameManager.nextOrder();
 		}
 	}
 
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Clickable_removeComponent:Image_removeComponent {
-		public Clickable_removeComponent():base() { }
-
-		public override void start() {
-			base.start();
-		}
+	public class Clickable_removeComponent : Image_removeComponent
+    {
+		public Clickable_removeComponent() : base() { }
+        public override void Start() { base.Start(); }
 	}
 }

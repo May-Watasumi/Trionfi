@@ -9,11 +9,11 @@ namespace NovelEx {
 	public class Uiimage_newComponent : AbstractComponent {
 		public Uiimage_newComponent() : base() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name" 
 			};
 
-			this.originalParam = new Dictionary<string, string>() {
+			originalParamDic = new Dictionary<string, string>() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -28,14 +28,14 @@ namespace NovelEx {
 				{ "cut","" },
 			};
 		}
-		public override void start()
+		public override void Start()
 		{
-			this.param["className"] = "UIImage";
-			this.param["scale_x"] = this.param["scale"];
-			this.param["scale_y"] = this.param["scale"];
-			this.param["scale_z"] = this.param["scale"];
-			Image image = new Image(this.param);
-			JOKEREX.Instance.ImageManager.addImage(image);
+			paramDic["className"] = "UIImage";
+			paramDic["scale_x"] = paramDic["scale"];
+			paramDic["scale_y"] = paramDic["scale"];
+			paramDic["scale_z"] = paramDic["scale"];
+			ImageObject image = new ImageObject(paramDic);
+			ImageObjectManager.AddObject(image);
 		}
 	}
 }

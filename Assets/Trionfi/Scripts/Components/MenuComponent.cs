@@ -28,14 +28,13 @@ skipstopタグに到達するか
 --------------------
  */
 
-
 	//イベント登録用のコンポーネント
 	public class SkipstartComponent:AbstractComponent{
 		public SkipstartComponent() { }
 
-		public override void start() {
+		public override void Start() {
 			//skip start 
-			JOKEREX.Instance.StatusManager.startSkip();
+			StatusManager.Instance.startSkip();
 //			StatusManager.enableNextOrder = true;
 //			this.gameManager.nextOrder();
 //			this.gameManager.scene.startSkip();
@@ -72,9 +71,9 @@ title=スキップ停止
 	public class SkipstopComponent:AbstractComponent {
 		public SkipstopComponent() { }
 
-		public override void start()
+		public override void Start()
 		{
-			JOKEREX.Instance.StatusManager.stopSkip();
+			StatusManager.Instance.stopSkip();
 //			this.gameManager.scene.stopSkip();
 		}
 
@@ -112,11 +111,12 @@ gamesleepタグを使った場合は暗黙的にsavesnapが実行されます。
  */
 
 	//セーブ用の状態を作る
-	public class SavesnapComponent:AbstractComponent {
+	public class SavesnapComponent : AbstractComponent {
 		public SavesnapComponent() { }
 
-		public override void start() {
-			JOKEREX.Instance.Serializer.Serialize("savesnap", true);
+		public override void Start()
+        {
+			Serializer.Serialize("savesnap", true);
 //			this.gameManager.nextOrder();
 		}
 	}
@@ -155,33 +155,33 @@ savesnap=trueを指定するとゲームを一時停止する直前の状態をs
  */
 
 	//ゲーム情報を一時退避させる
-	public class SleepgameComponent:AbstractComponent {
+	public class SleepgameComponent : AbstractComponent {
 		public SleepgameComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string>{ };
+			arrayVitalParam = new List<string>{ };
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "file","" },
 				{ "target","" },
 				{ "savesnap","true" }, //セーブ用に使うなら。。。使わないかな
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 //			GameManager gameManager = NovelSingleton.GameManager;
-			JOKEREX.Instance.Serializer.Serialize("gametmp", true); //一時領域に退避させる。これはawakeのタイミングで戻ってくるために使う。
-			JOKEREX.Instance.Serializer.Serialize("savesnap", true); //セーブ用のスナップも同じタイミングで作る
+			Serializer.Serialize("gametmp", true); //一時領域に退避させる。これはawakeのタイミングで戻ってくるために使う。
+			Serializer.Serialize("savesnap", true); //セーブ用のスナップも同じタイミングで作る
 
 			Debug.Log ("Save success");
 
 			//ジャンプする シーンをnew状態で
-			string tag_str ="[jump file='"+this.param["file"]+"' target='"+ this.param["target"] +"' scene=new ]";
+			string tag_str ="[jump file='"+paramDic["file"]+"' target='"+ paramDic["target"] +"' scene=new ]";
 
 			Debug.Log (tag_str);
 
 			//タグを実行
-			AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag (tag_str);
-			cmp.start();
+			AbstractComponent cmp = NovelParser.Instance.makeTag (tag_str);
+			cmp.Start();
 		}
 	}
 
@@ -208,15 +208,15 @@ title=一時停止から復帰
 --------------------
  */
 
-	public class AwakegameComponent:AbstractComponent {
-		public AwakegameComponent() {
-		}
+	public class AwakegameComponent : AbstractComponent {
+		public AwakegameComponent() { }
 
-		public override void start() {
+		public override void Start()
+        {
 			//次にシナリオ読み込みます。nextOrder はしてほしくない。
 			nextOrder = false;
-			JOKEREX.Instance.StatusManager.NextOrder();
-			JOKEREX.Instance.Serializer.Deserialize("gametmp");
+			StatusManager.Instance.NextOrder();
+			Serializer.Deserialize("gametmp");
 			//Application.LoadLevel("NovelPlayer");
 		}
 	}
@@ -253,42 +253,31 @@ time=何秒間隔で自動的にストーリーが進むかを設定すること
 	public class AutostartComponent:AbstractComponent {
 		public AutostartComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 //				"time"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"time","-1"}
 			};
 		}
 
-		public override void start() {
-			float time = float.Parse(this.param["time"]);
+		public override void Start() {
+			float time = float.Parse(paramDic["time"]);
 
 			if(time < 0.0f)
-				time = float.Parse(JOKEREX.Instance.ScenarioManager.variable.get("config.autoModeWait"));
+				time = float.Parse(ScriptManager.Instance.variable.get("config.autoModeWait"));
 
-			//string time = this.param ["time"];
-			JOKEREX.Instance.StatusManager.StartAuto(time);
+			//string time = paramDic ["time"];
+			StatusManager.Instance.StartAuto(time);
 		}
 	}
-	public class AutostopComponent : AbstractComponent
+
+    public class AutostopComponent : AbstractComponent
 	{
-		public AutostopComponent()
+		public override void Start()
 		{
-			//必須項目
-			this.arrayVitalParam = new List<string> {
-			};
-
-			this.originalParam = new Dictionary<string, string>() {
-			};
-		}
-
-		public override void start()
-		{
-			JOKEREX.Instance.StatusManager.StopAuto();
+			StatusManager.Instance.StopAuto();
 		}
 	}
-
-
 }

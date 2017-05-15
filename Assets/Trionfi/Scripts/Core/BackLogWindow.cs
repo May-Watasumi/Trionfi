@@ -111,7 +111,7 @@ namespace NovelEx {
 			isAdd = false;
 			gameObject.GetComponent<Canvas>().enabled = true;
 
-//			GameObject _prefab = JOKEREX.Instance.StorageManager.loadPrefab("LogContent") as GameObject;
+//			GameObject _prefab = StorageManager.Instance.loadPrefab("LogContent") as GameObject;
 
 			//ToDo:
 			GameObject content = gameObject.GetComponentInChildren<UnityEngine.UI.VerticalLayoutGroup>().gameObject;
@@ -137,7 +137,7 @@ namespace NovelEx {
 
             LogObjectList.Clear();
 
-//			JOKEREX.Instance.StatusManager.NextOrder();
+//			StatusManager.Instance.NextOrder();
 			isAdd = true;
 		}
 	}

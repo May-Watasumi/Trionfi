@@ -68,15 +68,15 @@ cut=数値を指定します。指定した文字数でカットします。
 		protected string imagePath = "";
 
 		public Button_newComponent() {
-			this.imagePath = JOKEREX.Instance.StorageManager.PATH_SYSTEM_IMAGE;
+			this.imagePath = StorageManager.Instance.PATH_SYSTEM_IMAGE;
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name",
 				"storage"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 
 				{ "name","" },
 				{ "val","" },
@@ -100,37 +100,37 @@ cut=数値を指定します。指定した文字数でカットします。
 				{ "color","FFFFFF" },
 				{ "fontsize","24" },
 				{ "cut","" },
-				{ "imagePath", JOKEREX.Instance.StorageManager.PATH_SYSTEM_IMAGE },
+				{ "imagePath", StorageManager.Instance.PATH_SYSTEM_IMAGE },
 				{ "path","false"}
 			};
 		}
 
-		public override void start() {
-			this.param ["className"] = "Button";
+		public override void Start() {
+			paramDic ["className"] = "Button";
 
-			if (this.param ["scale"] != "") {
+			if (paramDic ["scale"] != "") {
 
-				this.param ["scale_x"] = this.param ["scale"];
-				this.param ["scale_y"] = this.param ["scale"];
-				this.param ["scale_z"] = this.param ["scale"];
+				paramDic ["scale_x"] = paramDic ["scale"];
+				paramDic ["scale_y"] = paramDic ["scale"];
+				paramDic ["scale_z"] = paramDic ["scale"];
 
 			}
 			else
-				this.param ["scale"] = "1";
+				paramDic ["scale"] = "1";
 
 			/*
-			if (this.param ["width"] == "") {
-				this.param ["width"] = "0";
+			if (paramDic ["width"] == "") {
+				paramDic ["width"] = "0";
 			}
 
-			if (this.param ["height"] == "") {
-				this.param ["height"] = "0";
+			if (paramDic ["height"] == "") {
+				paramDic ["height"] = "0";
 			}
 			*/
 
-			Image image = new Image (this.param);
+			ImageObject image = new ImageObject(paramDic);
 
-			JOKEREX.Instance.ImageManager.addImage(image);
+            ImageObjectManager.AddObject(image);
 		}
 	}
 
@@ -161,9 +161,7 @@ y=中心からのy位置を指定します
 	public class Button_posComponent:Image_posComponent {
 		public Button_posComponent() : base() { }
 
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
 	/*		
@@ -203,10 +201,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 
 	public class Button_showComponent:Image_showComponent {
 		public Button_showComponent() : base() { }
-
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
 	/*		
@@ -241,10 +236,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 
 	public class Button_hideComponent:Image_hideComponent {
 		public Button_hideComponent() : base() { }
-
-		public override void start(){
-			base.start();
-		}
+        public override void Start() { base.Start(); }
 	}
 
 
@@ -281,11 +273,11 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 	public class Button_modComponent:Image_modComponent {
 		public Button_modComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" },
 				{ "face","" },
 				{ "val",""},
@@ -296,27 +288,26 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 //ToDo:
 //			StatusManager.enableNextOrder = false;
-			string name = this.param ["name"];
-			string val = this.param ["val"];
-			this.param ["storage"] = val;
+			string name = paramDic ["name"];
+			string val = paramDic ["val"];
+			paramDic ["storage"] = val;
 
-			Image image = JOKEREX.Instance.ImageManager.getImage(name);
-
-			//textObject.set (this.param);
-			image.setImage (this.param);
+			ImageObject image = ImageObjectManager.GetObject(name) as ImageObject;
+			image.SetParam(paramDic);
 //			this.gameManager.nextOrder();
 			nextOrder = false;
 		}
 
-		public override void finishAnimation() {
+        public override void OnAnimationFinished()
+        {
 			//アニメーション完了後にここにくる
-			if (this.param ["wait"] == "true") {
+			if (paramDic ["wait"] == "true") {
 //				StatusManager.enableNextOrder = true;
 //				this.gameManager.nextOrder();
-				JOKEREX.Instance.StatusManager.NextOrder();
+				StatusManager.Instance.NextOrder();
 			}
 
 		}
@@ -346,22 +337,22 @@ name=削除するテキストオブジェクト名
 --------------------
  */
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Button_removeComponent:Image_removeComponent {
+	public class Button_removeComponent : Image_removeComponent {
 		public Button_removeComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" },
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
+		public override void Start() {
+			string name = paramDic ["name"];
 
-			JOKEREX.Instance.ImageManager.removeImage(name);
+			ImageObjectManager.RemoveObject(name);
 //			this.gameManager.nextOrder();
 		}
 	}

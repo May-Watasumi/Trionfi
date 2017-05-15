@@ -5,7 +5,8 @@ using System;
 using UnityEngine.UI;
 
 namespace NovelEx {
-	public class TextObject : AbstractObject {
+	public class TextObject : AbstractObject
+    {
 		//private string name;
 
 //		private Sprite targetSprite ;
@@ -13,58 +14,60 @@ namespace NovelEx {
 
 		public string filename = "";
 
-		public override void init(Dictionary<string,string> param){
+		public override void Init(Dictionary<string,string> param)
+        {
 //ToDo:
-			this.param = param;
-			this.transform.parent = JOKEREX.Instance.transform; ;
-			GameObject g = JOKEREX.Instance.StorageManager.loadPrefab("Text") as GameObject;
-			this.rootObject = (GameObject)Instantiate(g,new Vector3(0,0.5f,-3.2f),Quaternion.identity); 
+			paramDic = param;
+            instanceObject.transform.parent = RootObject.transform;
+
+            GameObject g = StorageManager.Instance.loadPrefab("Text") as GameObject;
+			instanceObject = (GameObject)GameObject.Instantiate(g,new Vector3(0.0f, 0.0f, 0.0f),Quaternion.identity); 
 
 			GameObject canvas = GameObject.Find ("Canvas") as GameObject;
 
-			this.rootObject.name = param ["name"];
-			this.rootObject.transform.parent = canvas.transform;
+			instanceObject.name = param ["name"];
+			instanceObject.transform.parent = canvas.transform;
 
-			UnityEngine.UI.Text guiText = this.rootObject.GetComponent<Text>();
+			UnityEngine.UI.Text guiText = instanceObject.GetComponent<Text>();
 
-			//Debug.Log (this.param ["anchor"]);
-			//Debug.Log (TextEnum.textAnchor (this.param ["anchor"]));
-			guiText.alignment = TextEnum.textAnchor (this.param ["anchor"]);
+			//Debug.Log (paramDic ["anchor"]);
+			//Debug.Log (TextEnum.textAnchor (paramDic ["anchor"]));
+//			guiText.alignment = TextEnum.textAnchor (paramDic ["anchor"]);
 
-			string color = this.param ["color"];
+            string color = paramDic ["color"];
 
 			Color objColor = TRUtility.HexToRGB(color);
 			objColor.a = 0;
 			guiText.color = objColor;
-			guiText.fontSize = int.Parse(this.param ["fontsize"]);
+			guiText.fontSize = int.Parse(paramDic ["fontsize"]);
 
-			this.rootObject.name = this.name;
+			instanceObject.name = this.name;
 		}
 
-		public override void set(Dictionary<string,string> param){
-			if (this.rootObject == null) {
-				this.init (param);
-			}
+		public override void SetParam(Dictionary<string,string> param)
+        {
+            base.SetParam(param);
 
-			string text = this.param["val"];
+			string text = paramDic["val"];
 
-			if (this.param ["cut"] != "") {
-				int cut = int.Parse (this.param ["cut"]);
+			if (paramDic ["cut"] != "") {
+				int cut = int.Parse (paramDic ["cut"]);
 				if (cut < text.Length) {
 					text = text.Substring (0,cut);
 			
-					this.param ["val"] = text;
+					paramDic ["val"] = text;
 
 				}
 			}
-			this.rootObject.GetComponent<Text>().text = text;
-			//this.rootObject.GetComponent<Text>().resizeTextForBestFit = true;
+			instanceObject.GetComponent<Text>().text = text;
+			//instanceObject.GetComponent<Text>().resizeTextForBestFit = true;
 		}
 
-		public override void setColider(){
+		public override void SetColider()
+        {
 			/*
-			this.rootObject.AddComponent<BoxCollider2D>();
-			BoxCollider2D b = this.rootObject.GetComponent<BoxCollider2D>();
+			instanceObject.AddComponent<BoxCollider2D>();
+			BoxCollider2D b = instanceObject.GetComponent<BoxCollider2D>();
 			b.isTrigger = true;
 			if (this.isShow == true) {
 				b.enabled = true;
@@ -76,59 +79,51 @@ namespace NovelEx {
 			*/
 		}
 
-		public override void setPosition(float x,float y,float z){
-			this.rootObject.transform.localPosition = new Vector3(x,y,z);
+		public override void SetPosition(float x,float y,float z)
+        {
+			instanceObject.transform.localPosition = new Vector3(x,y,z);
 		}
 
-		public override void show(float time,string easeType){
+		public override void Show(float time,string easeType)
+        {
 //			this.isShow = true;
 
 			//通常の表示切り替えの場合
-			iTween.ValueTo(this.gameObject,iTween.Hash(
+			iTween.ValueTo( instanceObject,iTween.Hash(
 				"from",0,
 				"to",1,
 				"time",time,
 				"oncomplete","finishAnimation",
-				"oncompletetarget",this.gameObject,
+				"oncompletetarget", instanceObject,
 				"easeType",easeType,
 				"onupdate","crossFade"
 			));
 		}
 
-		public override void hide(float time,string easeType){
+		public override void Hide(float time,string easeType)
+        {
 //			this.isShow = false;
 
-			//BoxCollider2D b = this.rootObject.GetComponent<BoxCollider2D>();
+			//BoxCollider2D b = instanceObject.GetComponent<BoxCollider2D>();
 			//b.enabled = false;
 
 			//通常の表示切り替えの場合
-			iTween.ValueTo(this.gameObject,iTween.Hash(
+			iTween.ValueTo( instanceObject,iTween.Hash(
 				"from",1,
 				"to",0,
 				"time",time,
 				"oncomplete","finishAnimation",
-				"oncompletetarget",this.gameObject,
+				"oncompletetarget", instanceObject,
 				"easeType",easeType,
 				"onupdate","crossFade"
 			));
 		}
 
-		private void crossFade(float val){
-			var color = this.rootObject.GetComponent<Text>().color;
+		private void CrossFade(float val)
+        {
+			var color = instanceObject.GetComponent<Text>().color;
 			color.a = val;
-			this.rootObject.GetComponent<Text>().color = color;
+			instanceObject.GetComponent<Text>().color = color;
 		}
-
-		//アニメーションの終了を委譲するための
-		private void finishAnimation() {
-			if (this.completeDeletgate != null)
-				this.completeDeletgate();
-		}
-
-		// Use this for initialization
-		void Start() { }
-
-		// Update is called once per frame
-		void Update() { }
 	}
 }

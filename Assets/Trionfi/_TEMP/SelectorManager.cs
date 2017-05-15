@@ -29,13 +29,13 @@ namespace NovelEx
 
 		public void Begin()
 		{
-			JOKEREX.Instance.StatusManager.Wait();
+			StatusManager.Instance.Wait();
 //			selectorObject.SetActive(true);
 		}
 
 		public void End() {
 			gameObject.SetActive(false);
-			JOKEREX.Instance.StatusManager.UIClicked = false;
+			StatusManager.Instance.UIClicked = false;
 		}
 	}
 }

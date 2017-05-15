@@ -39,26 +39,27 @@ jcolor=jnameの表示色を指定することができます。
 --------------------
  */
 
-	public class Chara_newComponent:Image_newComponent {
+	public class Chara_newComponent : Image_newComponent
+    {
 		public Chara_newComponent() : base() {
 			//画像のルートパスが異なってくる
-			base.imagePath = JOKEREX.Instance.StorageManager.PATH_CHARA_IMAGE;
+			base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE;
 		}
 
-		public override void start() {
-			this.param["className"] = "Chara";
+		public override void Start() {
+			paramDic["className"] = "Chara";
 
-			this.param ["layer"] ="character";
-			this.param["imagePath"] = JOKEREX.Instance.StorageManager.PATH_CHARA_IMAGE;
+			paramDic ["layer"] ="character";
+			paramDic["imagePath"] = StorageManager.Instance.PATH_CHARA_IMAGE;
 
 			//jname jcolor  名前表示のときに色と名前を指定できます
-			if (this.param.ContainsKey ("jname"))
-				JOKEREX.Instance.ScenarioManager.variable.set("_chara_jname." + this.param["name"], this.param["jname"]);
+			if (paramDic.ContainsKey ("jname"))
+				ScriptManager.Instance.variable.set("_chara_jname." + paramDic["name"], paramDic["jname"]);
 
-			if (this.param.ContainsKey ("jcolor"))
-				JOKEREX.Instance.ScenarioManager.variable.set("_chara_jcolor." + this.param["name"], this.param["jcolor"]);
+			if (paramDic.ContainsKey ("jcolor"))
+				ScriptManager.Instance.variable.set("_chara_jcolor." + paramDic["name"], paramDic["jcolor"]);
 
-			base.start();
+			base.Start();
 		}
 	}
 
@@ -89,12 +90,10 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 --------------------
  */
 
-	public class Chara_posComponent:Image_posComponent {
+	public class Chara_posComponent : Image_posComponent
+    {
 		public Chara_posComponent() : base() { }
-
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
 	/*	
@@ -133,12 +132,10 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Chara_showComponent:Image_showComponent {
+	public class Chara_showComponent:Image_showComponent
+    {
 		public Chara_showComponent() : base() { }
-
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
 	/*	
@@ -178,12 +175,10 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Chara_hideComponent : Image_hideComponent {
+	public class Chara_hideComponent : Image_hideComponent
+    {
 		public Chara_hideComponent():base() {  }
-
-		public override void start() {
-			base.start();
-		}
+        public override void Start() { base.Start(); }
 	}
 
 	/*	
@@ -227,14 +222,10 @@ storage=画像ファイル名を指定します。ファイルはcharacterフォ
  */
 
 	//キャラの表情登録用
-	public class Chara_faceComponent:Image_faceComponent {
-		public Chara_faceComponent():base() {
-			base.imagePath = JOKEREX.Instance.StorageManager.PATH_CHARA_IMAGE;
-		}
-
-		public override void start() {
-			base.start();
-		}
+	public class Chara_faceComponent : Image_faceComponent
+    {
+		public Chara_faceComponent():base() { base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE; }
+		public override void Start() { base.Start(); }
 	}
 
 
@@ -282,12 +273,10 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Chara_modComponent:Image_modComponent {
+	public class Chara_modComponent:Image_modComponent
+    {
 		public Chara_modComponent() : base() { }
-
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
 	/*
@@ -316,11 +305,9 @@ name=削除するキャラクターをchara_new の時に設定したnameを指�
 --------------------
  */
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Chara_removeComponent : Image_removeComponent {
+	public class Chara_removeComponent : Image_removeComponent
+    {
 		public Chara_removeComponent() : base() { }
-
-		public override void start() {
-			 base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 }

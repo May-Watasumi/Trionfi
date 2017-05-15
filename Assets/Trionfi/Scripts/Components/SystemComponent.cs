@@ -3,25 +3,27 @@ using System.Collections;
 using System.Collections.Generic;
 //using ExpressionParser;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 //using NovelEx;
 
 namespace NovelEx {
-	public class LabelComponent:AbstractComponent {
+	public class LabelComponent : AbstractComponent {
 		public LabelComponent() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" }
 			};
 
 		}
 
-		public override void start() {
+		public override void Start()
+        {
 //ToDo:
 //			this.gameManager.nextOrder();
 
@@ -64,27 +66,26 @@ name=ラベル名を指定してください
  */
 
 	//マクロを作成して管理する
-	public class MacroComponent:AbstractComponent {
+	public class MacroComponent : AbstractComponent {
 		public MacroComponent() {
-
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" },
 			};
 
 		}
 
-		public override void start() {
+		public override void Start() {
 			//macro 
-			JOKEREX.Instance.StatusManager.setSkipOrder();
+			StatusManager.Instance.setSkipOrder();
 
-			string name = this.param ["name"];
+			string name = paramDic ["name"];
 //ToDo:
-			JOKEREX.Instance.ScenarioManager.addMacro(name, JOKEREX.Instance.StatusManager.currentScenario, JOKEREX.Instance.ScenarioManager.currentComponentIndex);
+			ScriptManager.Instance.AddMacro(name, StatusManager.Instance.currentScenario, ScriptManager.Instance.currentComponentIndex);
 //			this.gameManager.nextOrder();
 
 		}
@@ -96,31 +97,31 @@ name=ラベル名を指定してください
 		public _MacrostartComponent() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 			//	"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 			};
 		}
 
-		public override void start() {
-			this.param["name"] = this.tagName;
+		public override void Start() {
+			paramDic["name"] = tagName;
 
-			ScenarioManager.Macro macro = JOKEREX.Instance.ScenarioManager.getMacro (this.param ["name"]);
+			ScriptManager.Macro macro = ScriptManager.Instance.GetMacro (paramDic ["name"]);
 
-			if (macro == null) {
-				JOKEREX.Instance.errorManager.stopError("マクロ「"+this.param["name"]+"」は存在しません。");
+			if(macro == null) {
+				ErrorLogger.stopError("マクロ「"+paramDic["name"]+"」は存在しません。");
 				return;
 			}
 
-			this.param["index"] = ""+macro.index ;
-			this.param["file"]  = macro.file_name;
+			paramDic["index"] = ""+macro.index ;
+			paramDic["file"]  = macro.file_name;
 
-			JOKEREX.Instance.ScenarioManager.macroNum++;
-			//this.gameManager.scenarioManager.addMacroStack (macro.name, this.param);
-			AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag ("call", this.param);
-			cmp.start();
+			ScriptManager.Instance.macroNum++;
+			//this.gameManager.scenarioManager.addMacroStack (macro.name, this.paramDic);
+			AbstractComponent cmp = NovelParser.Instance.makeTag ("call", paramDic);
+			cmp.Start();
 		}
 	}
 
@@ -153,31 +154,22 @@ title=マクロの終端
 	//マクロを作成して管理する
 	public class EndmacroComponent:AbstractComponent
 	{
-		public EndmacroComponent()
-		{
+		public EndmacroComponent() { }
 
-			//必須項目
-			this.arrayVitalParam = new List<string> {
-			};
-
-			this.originalParam = new Dictionary<string,string>() {
-			};
-
+		public override void Before(){
+			StatusManager.Instance.releaseSkipOrder();
 		}
 
-		public override void before(){
-			JOKEREX.Instance.StatusManager.releaseSkipOrder();
-		}
-
-		public override void start() {
-			if (JOKEREX.Instance.ScenarioManager.macroNum > 0) {
-				JOKEREX.Instance.ScenarioManager.macroNum--;
+		public override void Start() {
+			if(ScriptManager.Instance.macroNum > 0) {
+				ScriptManager.Instance.macroNum--;
 				//ココに来た場合はreturn を実行する 
-				AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag ("[return]");
-				cmp.start();
+				AbstractComponent cmp = NovelParser.Instance.makeTag ("[return]");
+				cmp.Start();
 				nextOrder = false;
 			}
-			else {
+			else
+            {
 //ToDo:
 //				this.gameManager.nextOrder();
 			}
@@ -237,11 +229,11 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 		public JumpComponent() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				//"target"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "target","" },
 				{ "file","" },
 				{ "index",""},
@@ -250,67 +242,67 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			string target = this.param ["target"].Replace ("*", "").Trim();
-			string file = this.param ["file"];
+			string target = this.paramDic["target"].Replace ("*", "").Trim();
+			string file = this.paramDic["file"];
 
 			if (file == "")
-				file = JOKEREX.Instance.StatusManager.currentScenario;
+				file = StatusManager.Instance.currentScenario;
 
 			int index = -1;
 
 			//ファイルが異なるものになる場合、シナリオをロードする
 
-			if (JOKEREX.Instance.StatusManager.currentScenario != file)
+			if (StatusManager.Instance.currentScenario != file)
 			{
 				//ToDo:
-				JOKEREX.Instance.ScenarioManager.loadScenario(file);
+				ScriptManager.Instance.LoadScenario(file);
 			}
 
 			//index直指定の場合はそれに従う
-			if (this.param["index"] != "")
-				index = int.Parse(this.param["index"]);
+			if (this.paramDic["index"] != "")
+				index = int.Parse(this.paramDic["index"]);
 			else
-				index = JOKEREX.Instance.ScenarioManager.getIndex(file, target);
+				index = ScriptManager.Instance.GetIndex(file, target);
 
 			if(index == -1)
 				index = 0;
 
 			//mp変数の中身を書き換える jumpのpmの内容で
-			//NovelSingleton.GameManager.JOKEREX.Instance.StatusManager.variable.replaceAll("mp",this.param);;
+			//NovelSingleton.GameManager.StatusManager.Instance.variable.replaceAll("mp",this.paramDic);;
 
 			//ゲームマネージャーの現在の位置をそこに書き換えてnextOrderでどうだ。
 //ToDo:
-//			JOKEREX.Instance.ScenarioManager.currentComponentIndex = index;
-			JOKEREX.Instance.ScenarioManager.StartScenario(file, index);
+//			ScriptManager.Instance.currentComponentIndex = index;
+			ScriptManager.Instance.StartScenario(file, index);
 
 			//シーンをクリアして作りなおす
-			if (this.param ["scene"] == "new") {
+			if (this.paramDic ["scene"] == "new") {
 				//new の場合はスタックをすべて削除する
-				JOKEREX.Instance.ScenarioManager.removeAllStacks();
-				JOKEREX.Instance.StatusManager.nextFileName = file;
-				JOKEREX.Instance.StatusManager.nextTargetName = target;
+				ScriptManager.Instance.RemoveAllStacks();
+				StatusManager.Instance.nextFileName = file;
+				StatusManager.Instance.nextTargetName = target;
 
 				//jumpから来たことを通知するためのパラメータが必要
-				Application.LoadLevel("NovelPlayer");
+				SceneManager.LoadScene("NovelPlayer");
 			}
 
-			Debug.Log("JUMP:scn=\"" + JOKEREX.Instance.StatusManager.currentScenario + "\" " + "index=\"" + JOKEREX.Instance.ScenarioManager.currentComponentIndex + "\"");
-			// + " param=\"" + this.param.ToStringFull());
+			Debug.Log("JUMP:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + ScriptManager.Instance.currentComponentIndex + "\"");
+			// + " param=\"" + this.paramDic.ToStringFull());
 
-//			if (this.param ["next"] != "false") {
+//			if (this.paramDic ["next"] != "false") {
 //				nextOrder = false;
-//				JOKEREX.Instance.StatusManager.currentState = JokerState.NextOrder;
+//				StatusManager.Instance.currentState = JokerState.NextOrder;
 //			}
 //			else {
 //				this.gameManager.nextOrder();
 //			}
 		}
-		public override void after() {
+		public override void After() {
 			//SkipOrder中もafterが実行される（のが仕様としては正しいんだけども）
-			if(JOKEREX.Instance.StatusManager.currentState != JokerState.SkipOrder)
-				JOKEREX.Instance.ScenarioManager.currentComponentIndex--;
+			if(StatusManager.Instance.currentState != JokerState.SkipOrder)
+				ScriptManager.Instance.currentComponentIndex--;
 		}
 
 	}
@@ -352,44 +344,43 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 	//Call は Jumpと同様にストレージを移動する。ただし、呼び出しは スタックトレースに保存され、return で元の位置に戻ります
 	public class CallComponent:AbstractComponent {
 		public CallComponent() {
-
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				//"target"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "target","" },
 				{ "file","" },
 				//{ "index",""},
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			string target = this.param ["target"].Replace("*", "").Trim();
-			string file = this.param ["file"];
+			string target = this.paramDic ["target"].Replace("*", "").Trim();
+			string file = this.paramDic ["file"];
 
 			string index = "";
 
-			if (this.param.ContainsKey("index"))
-				index = this.param ["index"];
+			if (this.paramDic.ContainsKey("index"))
+				index = this.paramDic ["index"];
 
 			string tag_str ="[jump file='"+file+"' target='"+target+"' index="+ index +" ]";
 //ToDo:
-			Debug.Log("PUSH:scn=\"" + JOKEREX.Instance.StatusManager.currentScenario + "\" " + "index=\"" + (JOKEREX.Instance.ScenarioManager.currentComponentIndex).ToString()+ "\"");
+			Debug.Log("PUSH:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + (ScriptManager.Instance.currentComponentIndex).ToString()+ "\"");
 
-			JOKEREX.Instance.ScenarioManager.addStack(JOKEREX.Instance.StatusManager.currentScenario, JOKEREX.Instance.ScenarioManager.currentComponentIndex, this.param);
+			ScriptManager.Instance.AddStack(StatusManager.Instance.currentScenario, ScriptManager.Instance.currentComponentIndex, this.paramDic);
 			
 			//タグを実行
-			AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag(tag_str);
-			cmp.start();
+			AbstractComponent cmp = NovelParser.Instance.makeTag(tag_str);
+			cmp.Start();
 
 //nextOrder分
-			JOKEREX.Instance.ScenarioManager.currentComponentIndex--;
+			ScriptManager.Instance.currentComponentIndex--;
 
 //			nextOrder = false;
-//			JOKEREX.Instance.StatusManager.currentState = JokerState.NextOrder;
+//			StatusManager.Instance.currentState = JokerState.NextOrder;
 
 			//ゲームマネージャーの現在の位置をそこに書き換えてnextOrderでどうだ。
 
@@ -399,8 +390,8 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 			//this.gameManager.nextOrder();
 
 		}
-		public override void after(){
-//			JOKEREX.Instance.ScenarioManager.currentComponentIndex--;
+		public override void After(){
+//			ScriptManager.Instance.currentComponentIndex--;
 //			 base.after();
 		}
 	}
@@ -438,42 +429,42 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 --------------------
  */
 
-	public class ReturnComponent:AbstractComponent {
+	public class ReturnComponent : AbstractComponent {
 		public ReturnComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				//"target"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"file",""},
 				{"target",""},
 			};
 		}
 
-		public override void start() {
-			ScenarioManager.CallStack stack = JOKEREX.Instance.ScenarioManager.popStack();
+		public override void Start() {
+			ScriptManager.CallStack stack = ScriptManager.Instance.PopStack();
 
 			string tag_str = "";
 
 			//return 時の戻り場所を指定できます
-			if (this.param ["file"] != "" || this.param ["target"] != "")
-				tag_str = "[jump file='" + this.param["file"] + "' target='" + this.param["target"] + "' ]";
+			if (this.paramDic ["file"] != "" || this.paramDic ["target"] != "")
+				tag_str = "[jump file='" + this.paramDic["file"] + "' target='" + this.paramDic["target"] + "' ]";
 			else
 				tag_str = "[jump file='" + stack.scenarioNname + "' index='" + stack.index + "' ]";
 
-			Debug.Log("RETURN scn=\"" + stack.scenarioNname + "\" " + "index=\"" + stack.index.ToString()+ "\"");// + " param=\"" + this.param.ToStringFull());
+			Debug.Log("RETURN scn=\"" + stack.scenarioNname + "\" " + "index=\"" + stack.index.ToString()+ "\"");// + " param=\"" + this.paramDic.ToStringFull());
 
 			//タグを実行
-			AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag(tag_str);
-			cmp.start();
+			AbstractComponent cmp = NovelParser.Instance.makeTag(tag_str);
+			cmp.Start();
 
 //			nextOrder = false;
-//			JOKEREX.Instance.StatusManager.currentState = JokerState.NextOrder;
+//			StatusManager.Instance.currentState = JokerState.NextOrder;
 			//this.gameManager.nextOrder();
 		}
-		public override void after(){
-//			JOKEREX.Instance.ScenarioManager.currentComponentIndex--;
+		public override void After(){
+//			ScriptManager.Instance.currentComponentIndex--;
 //			 base.after();
 		}
 	}
@@ -504,23 +495,24 @@ file=呼び出したいシーン名
  */
 
 	//Call は Jumpと同様に　ストレージを移動する。ただし、呼び出しは スタックトレースに保存され、return で元の位置に戻ります
-	public class SceneComponent:AbstractComponent {
+	public class SceneComponent : AbstractComponent {
 		public SceneComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				//"target"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "file","" },
 				//{ "index",""},
 			};
 		}
 
-		public override void start() {
-			string file = this.param ["file"];
+		public override void Start()
+        {
+			string file = paramDic ["file"];
 
-			Application.LoadLevel(file);
+            SceneManager.LoadScene(file);
 
 			//処理終了
 
@@ -566,26 +558,26 @@ exp=数式を指定します
 --------------------
  */
 
-	public class CalcComponent:AbstractComponent {
+	public class CalcComponent : AbstractComponent {
 		public CalcComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"exp"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"exp",""}
 			};
 		}
 
-		public override void start() {
-			string exp = this.param ["exp"];
+		public override void Start() {
+			string exp = this.paramDic ["exp"];
 
 			ExpObject eo = new ExpObject (exp);
 
 			string result = ExpObject.calc (eo.exp);
 
-			JOKEREX.Instance.ScenarioManager.variable.set(eo.type + "." + eo.name, result);
+			ScriptManager.Instance.variable.set(eo.type + "." + eo.name, result);
 //ToDo:
 //			this.gameManager.nextOrder();
 
@@ -624,23 +616,23 @@ exp=文字式を指定します
 --------------------
  */
 
-	public class FlagComponent:AbstractComponent {
+	public class FlagComponent : AbstractComponent {
 		public FlagComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"exp"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"exp",""}
 			};
 		}
 
-		public override void start() {
-			string exp = this.param ["exp"];
+		public override void Start() {
+			string exp = paramDic ["exp"];
 
 			ExpObject eo = new ExpObject (exp);
-			JOKEREX.Instance.ScenarioManager.variable.set(eo.type + "." + eo.name, eo.exp);
+			ScriptManager.Instance.variable.set(eo.type + "." + eo.name, eo.exp);
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -676,32 +668,32 @@ exp=評価する変数を格納します。
 --------------------
  */
 
-	public class EmbComponent:AbstractComponent {
+	public class EmbComponent : AbstractComponent {
 		public EmbComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"exp"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"exp",""}
 			};
 		}
 
-		public override void start() {
-			string exp = this.param ["exp"];
-			string val = this.param ["exp"];
+		public override void Start() {
+			string exp = paramDic ["exp"];
+			string val = paramDic ["exp"];
 
 			nextOrder = false;
 
 			//変数なら素直に代入
 			if(val.IndexOf(".") != -1)
-				val = JOKEREX.Instance.ScenarioManager.variable.get(exp);
+				val = ScriptManager.Instance.variable.get(exp);
 
 			string tag_str ="[story val='"+val+"' ]";
 
-			AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag(tag_str);
-			cmp.start();
+			AbstractComponent cmp = NovelParser.Instance.makeTag(tag_str);
+			cmp.Start();
 		}
 	}
 
@@ -763,28 +755,28 @@ exp=評価する式を指定します。この式の結果が false ( または 
 --------------------
  */
 
-	public class IfComponent:AbstractComponent {
+	public class IfComponent : AbstractComponent {
 		public IfComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"exp"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"exp",""}
 			};
 		}
 
-		public override void before() {
+		public override void Before() {
 			//スキップ中ならここは通過しない
-			JOKEREX.Instance.ScenarioManager.ifNum++;
+			ScriptManager.Instance.ifNum++;
 		}
 
-		public override void start() {
-			JOKEREX.Instance.ScenarioManager.addIfStack(true);
+		public override void Start() {
+			ScriptManager.Instance.AddIfStack(true);
 
-			string exp = this.param ["exp"];
-			if (this.param.ContainsKey ("mobile")) {
+			string exp = paramDic ["exp"];
+			if (this.paramDic.ContainsKey ("mobile")) {
 			
 			}
 			string result = ExpObject.calc (exp);
@@ -792,11 +784,11 @@ exp=評価する式を指定します。この式の結果が false ( または 
 			//条件に合致した場合はそのままifの中へ
 			if (result == "true") {
 				//ifスタックが完了している
-				JOKEREX.Instance.ScenarioManager.changeIfStack(false);
+				ScriptManager.Instance.ChangeIfStack(false);
 			}
 			else {
 				//elsif か　endif まで処理を進める
-				JOKEREX.Instance.StatusManager.setSkipOrder();
+				StatusManager.Instance.setSkipOrder();
 			}
 		}
 	}
@@ -832,42 +824,42 @@ exp=評価する変数を格納します。
 
 //正直elseifに変更したい
 
-	public class ElsifComponent:AbstractComponent {
+	public class ElsifComponent : AbstractComponent {
 		public ElsifComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"exp"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"exp",""}
 			};
 		}
 
-		public override void before() {
-			JOKEREX.Instance.StatusManager.setSkipOrder();
+		public override void Before() {
+			StatusManager.Instance.setSkipOrder();
 
-			if (JOKEREX.Instance.ScenarioManager.countIfStack() == JOKEREX.Instance.ScenarioManager.ifNum) {
-				if (JOKEREX.Instance.ScenarioManager.currentIfStack() == true)
-					JOKEREX.Instance.StatusManager.releaseSkipOrder();
+			if (ScriptManager.Instance.CountIfStack() == ScriptManager.Instance.ifNum) {
+				if (ScriptManager.Instance.CurrentIfStack() == true)
+					StatusManager.Instance.releaseSkipOrder();
 			}
 		}
 
-		public override void start() {
-			string exp = this.param ["exp"];
+		public override void Start() {
+			string exp = paramDic ["exp"];
 			string result = ExpObject.calc (exp);
 
 			//条件に合致した場合はそのままifの中へ
 			if (result == "true") {
 				//ifスタックが完了している
-				JOKEREX.Instance.ScenarioManager.changeIfStack(false);
+				ScriptManager.Instance.ChangeIfStack(false);
 //ToDo:
 //				this.gameManager.nextOrder();
 			}
 			else
 			{
 				//elsif か　endif まで処理を進める
-				JOKEREX.Instance.StatusManager.setSkipOrder();
+				StatusManager.Instance.setSkipOrder();
 //ToDo:
 //				this.gameManager.nextOrder();
 			}
@@ -896,27 +888,27 @@ if タグもしくは elsif タグ と endif タグの間で用いられます�
 --------------------
  */
 
-	public class ElseComponent:AbstractComponent {
+	public class ElseComponent : AbstractComponent {
 		public ElseComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 			};
 		}
 
-		public override void before() {
-			JOKEREX.Instance.StatusManager.setSkipOrder();
+		public override void Before() {
+			StatusManager.Instance.setSkipOrder();
 
-			if (JOKEREX.Instance.ScenarioManager.countIfStack() == JOKEREX.Instance.ScenarioManager.ifNum) {
-				if (JOKEREX.Instance.ScenarioManager.currentIfStack() == true)
-					JOKEREX.Instance.StatusManager.releaseSkipOrder();
+			if (ScriptManager.Instance.CountIfStack() == ScriptManager.Instance.ifNum) {
+				if (ScriptManager.Instance.CurrentIfStack() == true)
+					StatusManager.Instance.releaseSkipOrder();
 			}
 		}
 
-		public override void start() {
-			JOKEREX.Instance.ScenarioManager.changeIfStack(false);
+		public override void Start() {
+			ScriptManager.Instance.ChangeIfStack(false);
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -944,29 +936,29 @@ if文を終了します。必ずif文の終わりに記述する必要があり�
 --------------------
  */
 
-	public class EndifComponent:AbstractComponent {
+	public class EndifComponent : AbstractComponent {
 		public EndifComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 			};
 		}
 
-		public override void before() {
+		public override void Before() {
 			//if文とスタックの数が同一の場合はスキップをやめて、endif を実行
-			JOKEREX.Instance.StatusManager.setSkipOrder();
+			StatusManager.Instance.setSkipOrder();
 
-			if (JOKEREX.Instance.ScenarioManager.countIfStack() == JOKEREX.Instance.ScenarioManager.ifNum)
-				JOKEREX.Instance.StatusManager.releaseSkipOrder();		
+			if (ScriptManager.Instance.CountIfStack() == ScriptManager.Instance.ifNum)
+				StatusManager.Instance.releaseSkipOrder();		
 
-			JOKEREX.Instance.ScenarioManager.ifNum--;
+			ScriptManager.Instance.ifNum--;
 		}
 
-		public override void start() {
+		public override void Start() {
 			//ifスタックが取り除かれる
-			JOKEREX.Instance.ScenarioManager.popIfStack();
+			ScriptManager.Instance.PopIfStack();
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -1002,21 +994,13 @@ title=ゲームを停止する
 --------------------
  */
 
-	public class SComponent:AbstractComponent {
-		public SComponent() {
+	public class SComponent : AbstractComponent {
+		public SComponent() { }
 
-			//必須項目
-			this.arrayVitalParam = new List<string> {
-			};
-
-			this.originalParam = new Dictionary<string,string>() {
-			};
-		}
-
-		public override void start() {
-			JOKEREX.Instance.StatusManager.InfiniteStop();
-//			JOKEREX.Instance.StatusManager.enableNextOrder = false;
-//			JOKEREX.Instance.StatusManager.enableClickOrder = false;
+		public override void Start() {
+			StatusManager.Instance.InfiniteStop();
+//			StatusManager.Instance.enableNextOrder = false;
+//			StatusManager.Instance.enableClickOrder = false;
 			//その他 enableNextOrder が来るまで進めない
 		}
 	}
@@ -1056,26 +1040,25 @@ tag=付与するタグ名を指定します
 --------------------
  */
 
-	public class Tag_defaultComponent:AbstractComponent
+	public class Tag_defaultComponent : AbstractComponent
 	{
 		public Tag_defaultComponent()
 		{
-
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"tag"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"tag",""}
 			};
 
 		}
 
-		public override void start()
+		public override void Start()
 		{
 			//ifスタックが取り除かれる
-			JOKEREX.Instance.StatusManager.TagDefaultVal = this.param ["tag"];
+			StatusManager.Instance.TagDefaultVal = paramDic["tag"];
 //ToDo:
 //			this.gameManager.nextOrder();
 			//その他 enableNextOrder が来るまで進めない
@@ -1104,17 +1087,14 @@ title=デフォルトタグ設定を解除する
 --------------------
  */
 
-	public class Reset_tag_defaultComponent:AbstractComponent
+	public class Reset_tag_defaultComponent : AbstractComponent
 	{
-		public Reset_tag_defaultComponent()
-		{
+		public Reset_tag_defaultComponent() { }
 
-		}
-
-		public override void start()
+		public override void Start()
 		{
 			//ifスタックが取り除かれる
-			JOKEREX.Instance.StatusManager.TagDefaultVal = "";
+			StatusManager.Instance.TagDefaultVal = "";
 //ToDo:
 //			this.gameManager.nextOrder();
 
@@ -1122,29 +1102,27 @@ title=デフォルトタグ設定を解除する
 	}
 
 	//使用停止　ウィンドウを閉じる。クリックで再度表示されるやつ
-	public class ClosemessageComponent:AbstractComponent
+	public class ClosemessageComponent : AbstractComponent
 	{
 		public ClosemessageComponent()
 		{
-
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"time","0.5"}
 			};
 		}
 
-		public override void start() {
-//			nextOrder = false;
-//			JOKEREX.Instance.StatusManager.currentState = JokerState.WaitClick;
-//			JOKEREX.Instance.StatusManager.enableClickOrder = false;
-//			JOKEREX.Instance.StatusManager.nextClickShowMessage = true;
-//ToDo:
-			JOKEREX.Instance.MainMessage.Hide();
-			Debug.Log("NoUse:closemessage");
-			//float time = float.Parse (this.param ["time"]);
+		public override void Start() {
+            //			nextOrder = false;
+            //			StatusManager.Instance.currentState = JokerState.WaitClick;
+            //			StatusManager.Instance.enableClickOrder = false;
+            //			StatusManager.Instance.nextClickShowMessage = true;
+            //ToDo:
+//            Trionfi.Instance.currentMessageWindow.hideFlags();
+			//float time = float.Parse (this.paramDic ["time"]);
 //			NovelSingleton.GameView.hideMessage (time);
 		}
 	}
@@ -1179,24 +1157,24 @@ title=メッセージ非表示
  */
 
 	//メッセージを削除する showMessage を行わないと表示されない
-	public class HidemessageComponent:AbstractComponent {
+	public class HidemessageComponent : AbstractComponent {
 		public HidemessageComponent() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"time","0.5"}
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
 //ToDo:
 //			nextOrder = false;
-//			JOKEREX.Instance.StatusManager.currentState = JokerState.MessageHide;
-			//float time = float.Parse (this.param ["time"]);
+//			StatusManager.Instance.currentState = JokerState.MessageHide;
+			//float time = float.Parse (this.paramDic ["time"]);
 		}
 	}
 
@@ -1229,18 +1207,18 @@ title=メッセージ表示
  */
 
 	//メッセージを表示する
-	public class ShowmessageComponent:AbstractComponent {
+	public class ShowmessageComponent : AbstractComponent {
 		public ShowmessageComponent() {
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"time","0.5"}
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 //ToDo:
 //			nextOrder = false;
-//			JOKEREX.Instance.StatusManager.currentState = JokerState.MessageShow;
-//			float time = float.Parse(this.param["time"]);
+//			StatusManager.Instance.currentState = JokerState.MessageShow;
+//			float time = float.Parse(this.paramDic["time"]);
 //TODO:Magic用拡張なので、汎用化が必要(string nextStorage = "")
 			//JOKEREX.Instance.MainMessage.Show();
 		}
@@ -1279,16 +1257,16 @@ exp=確認したい変数名を指定します。
 --------------------
  */
 
-	public class TraceComponent:AbstractComponent {
+	public class TraceComponent : AbstractComponent {
 		public TraceComponent() {
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"exp",""}
 			};
 		}
 
-		public override void start() {
-			string exp = this.param ["exp"];
-			JOKEREX.Instance.ScenarioManager.variable.trace(exp);
+		public override void Start() {
+			string exp = paramDic ["exp"];
+			ScriptManager.Instance.variable.trace(exp);
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -1336,26 +1314,22 @@ val=名前を表示します。キャラクター情報と絡めたい場合はc
  */
 
 	//メッセージを表示する
-	public class Talk_nameComponent:AbstractComponent
+	public class Talk_nameComponent : AbstractComponent
 	{
 		public Talk_nameComponent()
 		{
-			this.originalParam = new Dictionary<string,string>()
+			originalParamDic = new Dictionary<string,string>()
 			{
 				{"val",""}
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			string name = this.param ["val"];
-			string show_name = name;
+			string name = this.paramDic ["val"];
 
-			JOKEREX.characterName = show_name;
-			if (JOKEREX.Instance.uiInstance != null)
-			{
-				JOKEREX.Instance.uiInstance.talkName = show_name;
-			}
+			Trionfi.Instance.characterName = name;
+            Trionfi.Instance.currentMessageWindow.currentName.text = name;
 		}
 	}
 
@@ -1385,27 +1359,27 @@ time=停止する時間を秒で指定します
  */
 
 	//メッセージを表示する
-	public class WaitComponent:AbstractComponent
+	public class WaitComponent : AbstractComponent
 	{
 		public WaitComponent()
 		{
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"time"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"time",""}
 			};
 		}
 
-		public override void start() {
-			JOKEREX.Instance.StatusManager.Wait();
+		public override void Start() {
+			StatusManager.Instance.Wait();
 
 			//時間を止める。
 			//ToDo:
 			Debug.Log("ToDo:wait");
-//			string time = this.param ["time"];
+//			string time = this.paramDic ["time"];
 //			this.gameManager.scene.wait (float.Parse(time));
 
 		}
@@ -1437,20 +1411,21 @@ url=移動したいURLをhttpから指定します
 --------------------
  */
 
-	public class WebComponent:AbstractComponent {
+	public class WebComponent : AbstractComponent {
 		public WebComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"url"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"url",""}
 			};
 		}
 
-		public override void start() {
-			string url = this.param ["url"];
+		public override void Start()
+        {
+			string url = paramDic ["url"];
 			Application.OpenURL(url);
 		}
 	}
@@ -1489,22 +1464,22 @@ name=削除する変数名を指定してください。
 
 
 	//変数クリア
-	public class ClearvarComponent:AbstractComponent {
+	public class ClearvarComponent : AbstractComponent {
 		public ClearvarComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"name",""}
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 			//削除
-			string name = this.param["name"];
-			JOKEREX.Instance.ScenarioManager.variable.remove(name);
+			string name = paramDic["name"];
+			ScriptManager.Instance.variable.remove(name);
 		}
 	}
 
@@ -1532,23 +1507,16 @@ title=バックログ表示
  */
 
 
-	public class ShowlogComponent:AbstractComponent {
-		public ShowlogComponent() {
-			//必須項目
-			this.arrayVitalParam = new List<string> {
-			};
+	public class ShowlogComponent : AbstractComponent {
+		public ShowlogComponent() { }
 
-			this.originalParam = new Dictionary<string,string>() {
-			};
-		}
+		public override void Start() {
+			StatusManager.Instance.Wait();
 
-		public override void start() {
-			JOKEREX.Instance.StatusManager.Wait();
-
-			//イベントを停止する
-//			JOKEREX.Instance.StatusManager.enableEventClick = false;
-			
-			JOKEREX.Instance.LogManager.Open();
+            //イベントを停止する
+            //			StatusManager.Instance.enableEventClick = false;
+            //ToDo:
+//            Trionfi.Instance.currentBackLogWindow;
 			nextOrder = false;
 			//nextorder しない。
 		}

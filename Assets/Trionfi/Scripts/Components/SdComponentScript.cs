@@ -3,11 +3,8 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
-
-namespace NovelEx {
-
-
-
+namespace NovelEx
+{
 		/*			
 --------------
 
@@ -54,20 +51,18 @@ rot_z=3DモデルのZ軸角度を指定します。0〜360の間で指定しま�
 --------------------
  */
 
-
-
 	public class Sd_newComponent : AbstractComponent {
 		public Sd_newComponent() {
 			//string imagePath = GameSetting.PATH_SD_OBJECT;
 
 			//必須項目
 
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name",
 				"storage"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "storage",""},
 				{ "tag",""},
@@ -87,15 +82,13 @@ rot_z=3DモデルのZ軸角度を指定します。0〜360の間で指定しま�
 			};
 		}
 
-		public override void start() {
-			Debug.Log("start----------");
+		public override void Start() {
+			//string name = paramDic ["name"];
+			//string tag = paramDic ["tag"];
+			paramDic["className"] ="Sd";
 
-			//string name = this.param ["name"];
-			//string tag = this.param ["tag"];
-			this.param["className"] ="Sd";
-
-			Image image = new Image (this.param);
-			JOKEREX.Instance.ImageManager.addImage(image);
+			ImageObject image = new ImageObject(paramDic);
+			ImageObjectManager.AddObject(image);
 //			this.gameManager.nextOrder();
 		}
 	}
@@ -132,16 +125,11 @@ z=中心からのz位置を指定します
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Sd_showComponent:Image_showComponent {
+	public class Sd_showComponent:Image_showComponent
+    {
 		public Sd_showComponent() : base() { }
-
-		public override void start() {
-			base.start();
-//			this.gameManager.nextOrder();
-		}
+		public override void Start() { base.Start(); }
 	}
-
-
 
 
 	/*	
@@ -177,12 +165,10 @@ tag=識別するためのタグを指定します
 	  --------------------
 	  */
 
-	public class Sd_removeComponent:Image_removeComponent {
-		public Sd_removeComponent():base() { }
-
-		public override void start() {
-			base.start();
-		}
+	public class Sd_removeComponent : Image_removeComponent
+    {
+		public Sd_removeComponent() : base() { }
+		public override void Start() { base.Start(); }
 	}
 
 
@@ -223,14 +209,10 @@ tag=識別するためのタグを指定します
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Sd_hideComponent:Image_hideComponent {
+	public class Sd_hideComponent:Image_hideComponent
+    {
 		public Sd_hideComponent() : base() { }
-
-		public override void start() {
-			base.start();
-//			this.gameManager.nextOrder();
-		}
-
+		public override void Start() { base.Start(); }
 	}
 
 
@@ -271,14 +253,14 @@ condition=stateで指定するステートをtrue or falseで指定すること�
 
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Sd_animComponent:AbstractComponent {
+	public class Sd_animComponent : AbstractComponent {
 		public Sd_animComponent() {
 
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name","state"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "tag",""},
 				{ "stete",""},
@@ -286,22 +268,22 @@ condition=stateで指定するステートをtrue or falseで指定すること�
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
-			string tag = this.param ["tag"];
+		public override void Start() {
+			string name = paramDic ["name"];
+			string tag = paramDic ["tag"];
 			List<string> images = new List<string>();
 			if (tag != "")
-				images = JOKEREX.Instance.ImageManager.getImageNameByTag (tag);	
+				images = ImageObjectManager.getImageNameByTag (tag);	
 			else
 				images.Add (name);
 
 			foreach(string image_name in images) {
-				Image image = JOKEREX.Instance.ImageManager.getImage(image_name);
+				ImageObject image = ImageObjectManager.GetObject(image_name) as ImageObject;
 
-				if (this.param ["condition"] == "true")
-					image.getObject().playAnim (this.param["state"]);
+				if (paramDic ["condition"] == "true")
+					image.PlayAnimation(paramDic["state"]);
 				else
-					image.getObject().stopAnim (this.param["state"]);
+					image.StopAnimation(paramDic["state"]);
 			}
 //			this.gameManager.nextOrder();
 		}

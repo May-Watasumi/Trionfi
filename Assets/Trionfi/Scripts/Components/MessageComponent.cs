@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 
-
 namespace NovelEx {
 
 	/*	
@@ -33,22 +32,22 @@ speed=１文字が表示される秒数を指定します。
 --------------------
  */
 
-	public class DelayComponent:AbstractComponent {
+	public class DelayComponent : AbstractComponent {
 		public DelayComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"speed",
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"speed","0.02"}
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 //ToDo:
-			//this.gameManager.setConfig ("messageSpeed",this.param["speed"]);
-//			this.gameManager.scene.MessageSpeed = float.Parse (this.param["speed"]);
+			//this.gameManager.setConfig ("messageSpeed",paramDic["speed"]);
+//			this.gameManager.scene.MessageSpeed = float.Parse (paramDic["speed"]);
 //			this.gameManager.nextOrder();
 		}
 	}
@@ -56,11 +55,10 @@ speed=１文字が表示される秒数を指定します。
 
 	public class Message_newComponent : AbstractComponent
 	{
-		public Message_newComponent()
-			: base()
+		public Message_newComponent() : base()
 		{
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name", 
 				"x",
 				"y",
@@ -69,7 +67,7 @@ speed=１文字が表示される秒数を指定します。
 				"isMain"
 			};
 
-			this.originalParam = new Dictionary<string, string>() {
+			originalParamDic = new Dictionary<string, string>() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -88,25 +86,24 @@ speed=１文字が表示される秒数を指定します。
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			this.param["className"] = "Message";
-			this.param["storage"] = "";
-			this.param["scale_x"] = this.param["scale"];
-			this.param["scale_y"] = this.param["scale"];
-			this.param["scale_z"] = this.param["scale"];
-			Image image = new Image(this.param);
-			JOKEREX.Instance.ImageManager.addImage(image);
+			paramDic["className"] = "Message";
+			paramDic["storage"] = "";
+			paramDic["scale_x"] = paramDic["scale"];
+			paramDic["scale_y"] = paramDic["scale"];
+			paramDic["scale_z"] = paramDic["scale"];
+			ImageObject image = new ImageObject(paramDic);
+			ImageObjectManager.AddObject(image);
 		}
 	}
 
 	public class MessageframeComponent : AbstractComponent
 	{
-		public MessageframeComponent()
-			: base()
+		public MessageframeComponent() : base()
 		{
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 //				"name", 
 				"x",
 				"y",
@@ -115,7 +112,7 @@ speed=１文字が表示される秒数を指定します。
 				"storage"
 			};
 
-			this.originalParam = new Dictionary<string, string>() {
+			originalParamDic = new Dictionary<string, string>() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -134,23 +131,25 @@ speed=１文字が表示される秒数を指定します。
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			JOKEREX.Instance.MainMessage.Frame.gameObject.GetComponent<RectTransform>().position = new Vector3(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
+            //ToDo:?
+            /*
+            JOKEREX.Instance.MainMessage.Frame.gameObject.GetComponent<RectTransform>().position = new Vector3(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
 
-			Sprite frame = JOKEREX.Instance.StorageManager.loadImage(param["storage"]);
+			Sprite frame = StorageManager.Instance.loadImage(param["storage"]);
 			JOKEREX.Instance.MainMessage.Frame.sprite = frame;
 			JOKEREX.Instance.MainMessage.Frame.SetNativeSize();
+            */
 		}
 	}
 
 	public class MessagenameComponent : AbstractComponent
 	{
-		public MessagenameComponent()
-			: base()
-		{
+		public MessagenameComponent() : base()
+        {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 //				"name", 
 				"x",
 				"y",
@@ -161,7 +160,7 @@ speed=１文字が表示される秒数を指定します。
 //				"storage"
 			};
 
-			this.originalParam = new Dictionary<string, string>() {
+			originalParamDic = new Dictionary<string, string>() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -180,29 +179,31 @@ speed=１文字が表示される秒数を指定します。
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			JOKEREX.Instance.MainMessage.UIName.GetComponent<RectTransform>().position = new Vector3(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
+//            ToDo:
+/*
+            JOKEREX.Instance.MainMessage.UIName.GetComponent<RectTransform>().position = new Vector3(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
 			JOKEREX.Instance.MainMessage.UIName.GetComponent<RectTransform>().sizeDelta = new Vector2(float.Parse(param["width"]), float.Parse(param["height"]));
 			JOKEREX.Instance.MainMessage.UIName.fontSize = int.Parse(param["size"]);
 			JOKEREX.Instance.MainMessage.UIName.color = ColorX.HexToRGB(param["color"]);
+            */
 		}
 	}
 
 	public class MessageareaComponent : AbstractComponent
 	{
-		public MessageareaComponent()
-			: base()
+		public MessageareaComponent() : base()
 		{
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"x",
 				"y",
 				"width",
 				"height",
 			};
 
-			this.originalParam = new Dictionary<string, string>() {
+			originalParamDic = new Dictionary<string, string>() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -221,11 +222,14 @@ speed=１文字が表示される秒数を指定します。
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			JOKEREX.Instance.MainMessage.UIMessage.GetComponent<RectTransform>().position = new Vector3(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
+            //ToDo:
+            /*
+            JOKEREX.Instance.MainMessage.UIMessage.GetComponent<RectTransform>().position = new Vector3(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
 			JOKEREX.Instance.MainMessage.UIMessage.GetComponent<RectTransform>().sizeDelta = new Vector2(float.Parse(param["width"]), float.Parse(param["height"]));
 			JOKEREX.Instance.MainMessage.Reset();
+            */
 		}
 	}
 
@@ -259,29 +263,29 @@ color=色コードを指定します。16進数形式で指定してください
 --------------------
  */
 
-	public class FontComponent:AbstractComponent {
+	public class FontComponent : AbstractComponent {
 		public FontComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"size",""},
 				{"color",""},
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 			//this.gameView.messageArea.GetComponent<GUIText>().guiText.fontSize = int.Parse(this.gameManager.getConfig ("messageFontSize"));
 
-			if (this.param ["size"] != "") {
-				int size = int.Parse (this.param["size"]);
-				JOKEREX.Instance.MainMessage.UIMessage.fontSize = size;
+			if (paramDic ["size"] != "") {
+				int size = int.Parse (paramDic["size"]);
+				Trionfi.Instance.currentMessageWindow.currentMessage.fontSize = size;
 			}
 
-			if (this.param ["color"] != "") {
-				string color = this.param ["color"];
-				JOKEREX.Instance.MainMessage.UIMessage.color = ColorX.HexToRGB(color);
+			if (paramDic ["color"] != "") {
+				string color = paramDic ["color"];
+                Trionfi.Instance.currentMessageWindow.currentMessage.color = TRUtility.HexToRGB(color);
 			}
 //			this.gameManager.nextOrder();
 		}
@@ -314,22 +318,15 @@ title=メッセージ設定のリセット
 [_doc]
 --------------------
  */
-	public class FontresetComponent:AbstractComponent
+	public class FontresetComponent : AbstractComponent
 	{
-
 		public FontresetComponent()
 		{
-			//必須項目
-			this.arrayVitalParam = new List<string> {
-			};
-
-			this.originalParam = new Dictionary<string,string>() {
-			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			JOKEREX.Instance.MainMessage.Reset();
+            Trionfi.Instance.currentMessageWindow.Reset();
 //			this.gameView.messageArea.GetComponent<GUIText>().guiText.color = ColorX.HexToRGB (this.gameManager.getConfig ("messageFontColor"));
 //			this.gameView.messageArea.GetComponent<GUIText>().guiText.fontSize = int.Parse(this.gameManager.getConfig ("messageFontSize"));
 //			this.gameManager.nextOrder();

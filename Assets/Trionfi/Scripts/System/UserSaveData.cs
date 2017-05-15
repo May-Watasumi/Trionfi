@@ -1,13 +1,5 @@
 ﻿using System;
-using UnityEngine;
-using System.Collections;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO.Compression;
-using System.Text;
-//using MiniJSON;
 
 namespace NovelEx {
 	[Serializable]
@@ -32,9 +24,10 @@ namespace NovelEx {
 		//画面のキャプチャ情報
 		public string cap_img_file ="";
 
-		public Variable variable;
+        //スタック管理
+        public Variable variable;
+        public Dictionary<string, AbstractObject> dicObject;
 
-		//スタック管理
-		public ScenarioManager scenarioManager;
+        public ScriptManager scriptManager;
 	}
 }

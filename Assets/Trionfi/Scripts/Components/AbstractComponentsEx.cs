@@ -6,10 +6,11 @@ namespace NovelEx {
 	//完了通知用のデリゲートメソッド
 	public delegate void CompleteDelegate();
 
-	public abstract class AbstractComponent {
+	public abstract class AbstractComponent
+    {
  		//デフォルトで定義しておくパラメータ初期値。継承先で定義する
-		public Dictionary<string,string> originalParam = new Dictionary<string,string>();
-		public Dictionary<string,string> param = new Dictionary<string,string>();
+		public Dictionary<string,string> originalParamDic = new Dictionary<string,string>();
+		public Dictionary<string,string> paramDic = new Dictionary<string,string>();
 
 		public List<string> arrayVitalParam = new List<string>();
 
@@ -26,20 +27,23 @@ namespace NovelEx {
 
 		public AbstractComponent() { }
 
-		public void init (Tag tag, int line_num) {
+		public void Init(Tag tag, int line_num)
+        {
 			this.tag = tag;
 			this.tagName = tag.Name;
 			this.line_num = line_num;
-			this.finishAnimationDeletgate = this.finishAnimation;
+            this.finishAnimationDeletgate = OnAnimationFinished;
 		}
 
-		public void checkVital() {
+		public void CheckParam() {
 			//タグから必須項目が漏れていないか、デフォルト値が入ってない場合はエラーとして警告を返す
-			foreach (string vital in this.arrayVitalParam) {
-				if (this.tag.getParam (vital) == null) {
+			foreach (string vital in arrayVitalParam)
+            {
+				if(tag.getParam (vital) == null)
+                {
 					//エラーを追加
 					string message = "必須パラメータ「" + vital + "」が不足しています";
-					JOKEREX.Instance.errorManager.addLog(message, this.line_num, false);
+					ErrorLogger.addLog(message, "", line_num, false);
 				}
 			}
 		}
@@ -47,47 +51,51 @@ namespace NovelEx {
 		//EX:自動で次へ進むかどうか。基本的にtrueが多いはず
 		public virtual bool allowNextOrder() { return nextOrder; }
 
-		//アニメーション完了時の処理委譲先
-		public virtual void finishAnimation() { }
+        //アニメーション完了時の処理委譲先
+        public virtual void OnAnimationFinished() { }
 
-		//継承先で渡されたパラメータについて正常かどうかをチェックします
-		public virtual void validate() { }
+        //継承先で渡されたパラメータについて正常かどうかをチェックします
+        public virtual void Validate() { }
 
 		//スタート前にかならず実行されます。skip中でも実行されるのでチェックしたい項目があれば、継承先で実装してください
-		public virtual void before() { }
+		public virtual void Before() { }
 
 		//EX変更点：スタート後ににかならず実行されます。skip中でも実行されるのでチェックしたい項目があれば、継承先で実装してください
-		public virtual void after() { }
+		public virtual void After() { }
 
 		//実行前にパラメータを解析して変数を格納する
-		public void calcVariable() {
+		public void CalcVariable()
+        {
 			Dictionary<string,string> tmp_param = new Dictionary<string,string>();
 
 			//タグに入れる
-			foreach (KeyValuePair<string, string> pair in this.originalParam) {
-				tmp_param[pair.Key] = ExpObject.replaceVariable(pair.Value/*this.originalParam[pair.Key]*/);
+			foreach (KeyValuePair<string, string> pair in originalParamDic)
+            {
+				tmp_param[pair.Key] = ExpObject.replaceVariable(pair.Value/*originalParamDic[pair.Key]*/);
 			}
 
 			//タグにデフォルト値を設定中かつ、tag が指定されていない場合
-			if(JOKEREX.Instance.StatusManager.TagDefaultVal != "") {
+			if(StatusManager.Instance.TagDefaultVal != "")
+            {
 				if (tmp_param.ContainsKey("tag") && tmp_param["tag"] =="")
-					tmp_param["tag"] = JOKEREX.Instance.StatusManager.TagDefaultVal;
+					tmp_param["tag"] = StatusManager.Instance.TagDefaultVal;
 			}
-			this.param = tmp_param;
+
+            paramDic = tmp_param;
 		}
 
 		//パラメータとの差分を確認して、ファイルを作成
-		public void mergeDefaultParam() {
+		public void MergeDefaultParam()
+        {
 			Dictionary<string,string> param = this.tag.getParamByDictionary();
 
 			//タグに入れる
 			foreach(KeyValuePair<string, string> pair in param) {
-
-				this.originalParam [pair.Key] = pair.Value;
+				originalParamDic[pair.Key] = pair.Value;
 
 				/*
-				if (this.param.ContainsKey (pair.Key)) {
-					this.param [pair.Key] = pair.Value;
+				if (paramDic.ContainsKey (pair.Key)) {
+					paramDic [pair.Key] = pair.Value;
 				} else {
 
 					string message = "パラメータ「" + pair.Key + "」は存在しません";
@@ -98,11 +106,13 @@ namespace NovelEx {
 			}
 		}
 
-		public void show() { 
+        public virtual string GetText() { return ""; }
+
+        public void Show() { 
 //			Debug.Log ("this is show:" + this.tag.Original);
 		}
 		//始まった時
-		abstract public void start();
+		abstract public void Start();
 	}
 
 /*
@@ -131,42 +141,37 @@ val=表示するテキストを指定します
 
  */
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class StoryComponent:AbstractComponent {
+	public class StoryComponent : AbstractComponent {
 		public StoryComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"val"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "val","" }
 			};
 		}
 
-		public string getText() {
-			return "";
-		}
+		public override void Start()
+        {
+//			if(	StatusManager.Instance.currentState == JokerState.NextOrder)
+//				StatusManager.Instance.MessageShow();
 
-		public override void start() {
-			if(	JOKEREX.Instance.StatusManager.currentState == JokerState.NextOrder)
-				JOKEREX.Instance.StatusManager.MessageShow();
-
-			string message = this.param["val"];
-			//			JOKEREX.Instance.StatusManager.enableNextOrder = false;
+			string message = paramDic["val"];
+			//			StatusManager.Instance.enableNextOrder = false;
 //ToDo:
-			JOKEREX.Instance.uiInstance.ShowMessage(message);
-			string color = ColorX.RGBToHex(JOKEREX.Instance.uiInstance.color);
-			JOKEREX.Instance.LogManager.AddLog(JOKEREX.characterName, color, message);
+			Trionfi.Instance.currentMessageWindow.ShowMessage(message);
+//			string color = TRUtility.RGBToHex(JOKEREX.Instance.uiInstance.color);
+//			JOKEREX.Instance.LogManager.AddLog(JOKEREX.characterName, color, message);
 			//JOKEREX.Instance.MainMessage.coroutineShowMessage(message);
 //			while (JOKEREX.Instance.MainMessage.isShow) {
-//				JOKEREX.Instance.StatusManager.wait(0.02f);
+//				StatusManager.Instance.wait(0.02f);
 //			}
 //			JOKEREX.Instance.MainMessage.showMessage(message);
 		
-			if(JOKEREX.Instance.StatusManager.currentState == JokerState.MessageShow)
-				nextOrder = false;
-
-//			nextOrder = false;
+//			if(StatusManager.Instance.currentState == JokerState.MessageShow)
+//    		nextOrder = false;
 			//this.gameManager.nextOrder();
 			//Debug.Log(this.tag.getParam("val"));
 		}
@@ -196,18 +201,16 @@ title=改行する
  */
 
 	//改行命令 [r]
-	public class RComponent:AbstractComponent {
-		public RComponent() {
-			this.originalParam = new Dictionary<string,string>() { };
+	public class RComponent : AbstractComponent
+    {
+		public RComponent()
+        {
+			originalParamDic = new Dictionary<string,string>() { };
 		}
 
-		public override void start() {
-			if (JOKEREX.Instance.StatusManager.currentState == JokerState.NextOrder)
-				JOKEREX.Instance.StatusManager.MessageShow();
-			JOKEREX.Instance.uiInstance.message += "\n";
-			//this.gameView.messageArea.guiText.text += "\n";
-//ToDo:
-//			this.gameManager.scene.coroutineShowMessage ("\n");
+		public override void Start()
+        {
+            Trionfi.Instance.currentMessageWindow.currentMessage.text += "\n";
 		}
 	}
 
@@ -232,18 +235,19 @@ title=クリック待ち
 --------------------
  */
 
-	public class LComponent:AbstractComponent {
-		public LComponent() {
+	public class LComponent : AbstractComponent
+    {
+		public LComponent()
+        {
 			//デフォルトのパラメータを指定
-			this.originalParam = new Dictionary<string,string>() {
-			};
+			originalParamDic = new Dictionary<string,string>() { };
 		}
 
-		public override void start() {
+		public override void Start() {
 			//一旦処理を止めてクリックを待つ
 			nextOrder = false;
-			JOKEREX.Instance.StatusManager.WaitClick();
-//			JOKEREX.Instance.StatusManager.enableNextOrder = true;
+			StatusManager.Instance.WaitClick();
+//			StatusManager.Instance.enableNextOrder = true;
 		}
 	}
 
@@ -270,27 +274,20 @@ title=改ページクリック待ち
  */
 
 	//改ページをいれて、クリックを待つ [r]
-	public class PComponent:AbstractComponent {
+	public class PComponent:AbstractComponent
+    {
 		public PComponent() {
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>()
+            {
 				{ "name","" },
 				{ "","" }
 			};
 		}
 
-		public override void start() {
-			//一旦処理を止めてクリックを待つ
-			if(JOKEREX.Instance.StatusManager.currentMessageState == JokerMessageState.SkipRun) {
-				JOKEREX.Instance.uiInstance.Clear();
-				JOKEREX.Instance.LogManager.ApplyLog();
-			}
-			else {
-				if(JOKEREX.Instance.StatusManager.currentMessageState == JokerMessageState.SkipStop)
-					JOKEREX.Instance.StatusManager.currentMessageState = JokerMessageState.Normal;
-
+		public override void Start()
+        {
 				nextOrder = false;
-				JOKEREX.Instance.StatusManager.PageWait();
-			}
+				StatusManager.Instance.PageWait();
 		}
 	}
 
@@ -319,44 +316,36 @@ title=改ページクリック無し
 
 	public class CmComponent : AbstractComponent {
 		public CmComponent() {
-			this.originalParam = new Dictionary<string,string>() { };
+			originalParamDic = new Dictionary<string,string>() { };
 		}
 
-		public override void start() {
-			//画面に表示されている文字列も消す
-//			JOKEREX.Instance.StatusManager.enableNextOrder = true;
-//ToDO:
-			JOKEREX.Instance.uiInstance.Clear();
-			JOKEREX.Instance.LogManager.ApplyLog();
-
-			//JOKEREX.Instance.MainMessage.clearCurrentMessage();
-//			this.gameManager.scene.clearCurrentMessage();
-//			this.gameView.messageArea.text = "";
-//			this.gameManager.nextOrder();
+		public override void Start() {
+            //画面に表示されている文字列も消す
+            //			StatusManager.Instance.enableNextOrder = true;
+            //ToDo:
+            Trionfi.Instance.currentMessageWindow.ClearMessage();
+//			JOKEREX.Instance.LogManager.ApplyLog();
 		}
 	}
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class NoneComponent:AbstractComponent
+	public class NoneComponent : AbstractComponent
 	{
 		public NoneComponent()
 		{
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" },
 				{ "","" }
 			};
 		
 		}
 
-		public string getText() {
-			return "";	
-		}
-
-		public override void start() {	
-			Debug.Log ("none component start");
+		public override void Start()
+        {	
+//			Debug.Log ("none component start");
 		
 			//タグのファイルを取得
-			Debug.Log (this.tag.Original);
+//			Debug.Log (this.tag.Original);
 		}
 	}
 }

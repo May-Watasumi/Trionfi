@@ -8,15 +8,14 @@ using UnityEngine.UI;
 namespace NovelEx {
 	public class Canvas_newComponent : AbstractComponent
 	{
-		public Canvas_newComponent()
-			: base()
+		public Canvas_newComponent() : base()
 		{
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 					"name" 
 				};
 
-			this.originalParam = new Dictionary<string, string>() {
+			originalParamDic = new Dictionary<string, string>() {
 					{ "name","" },
 					{ "val","" },
 					{ "tag","" },
@@ -31,15 +30,15 @@ namespace NovelEx {
 					{ "cut","" },
 				};
 		}
-		public override void start()
+		public override void Start()
 		{
-			this.param["className"] = "Canvas";
-			this.param["storage"] = "";
-			this.param["scale_x"] = this.param["scale"];
-			this.param["scale_y"] = this.param["scale"];
-			this.param["scale_z"] = this.param["scale"];
-			Image image = new Image(this.param);
-			JOKEREX.Instance.ImageManager.addImage(image);
+			paramDic["className"] = "Canvas";
+			paramDic["storage"] = "";
+			paramDic["scale_x"] = paramDic["scale"];
+			paramDic["scale_y"] = paramDic["scale"];
+			paramDic["scale_z"] = paramDic["scale"];
+			ImageObject image = new ImageObject(paramDic);
+			ImageObjectManager.AddObject(image);
 		}
 	}
 
@@ -47,21 +46,17 @@ namespace NovelEx {
 	public class Canvas_posComponent : Image_posComponent
 	{
 		public Canvas_posComponent() : base() { }
-
-		public override void start()
-		{
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
 	public class Canvas_showComponent : Image_showComponent
 	{
 		public Canvas_showComponent() : base() { }
-		public override void start()
+		public override void Start()
 		{
 			//ToDo:
-			//			this.param["wait"] = "false";
-			base.start();
+			//			paramDic["wait"] = "false";
+			base.Start();
 			//			this.gameManager.nextOrder();
 		}
 	}
@@ -69,10 +64,6 @@ namespace NovelEx {
 	public class Canvas_hideComponent : Image_hideComponent
 	{
 		public Canvas_hideComponent() : base() { }
-		public override void start()
-		{
-			base.start();
-		}
+		public override void Start() {  base.Start(); }
 	}
-
 }

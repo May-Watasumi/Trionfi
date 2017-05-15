@@ -253,7 +253,7 @@ namespace NovelEx {
 
 			if (NovelSingletonEx.StatusManager.enableClickOrder == true && NovelSingletonEx.StatusManager.enableNextOrder == true)
 			{
-				NovelSingletonEx.ScenarioManager.nextOrder();
+				NovelSingletonEx.ScriptManager.Instance.nextOrder();
 			}
 		}
 */
@@ -297,7 +297,7 @@ namespace NovelEx {
 			while (true) {
 				yield return new WaitForSeconds(time);
 //				clickNextOrder();
-				if (JOKEREX.Instance.StatusManager.onSkip || JOKEREX.Instance.StatusManager.onAuto)
+				if (StatusManager.Instance.onSkip || StatusManager.Instance.onAuto)
 					break;
 			}
 			StopCoroutine("Loop");
@@ -316,7 +316,7 @@ namespace NovelEx {
 			NovelSingletonEx.StatusManager.enableClickOrder = true;
 			NovelSingletonEx.StatusManager.enableNextOrder = true;
 
-			NovelSingletonEx.ScenarioManager.nextOrder();
+			NovelSingletonEx.ScriptManager.Instance.nextOrder();
 */
 //			yield return null;
 		}

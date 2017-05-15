@@ -198,38 +198,49 @@ namespace NovelEx {
 			this.classPrerix = classPrefix;
 		}
 
-		//コンフィグファイルを読み込んで返す
-		public Dictionary<string,string> parseConfig (string config_text)
-		{
-			Dictionary<string,string> dicConfig = new Dictionary<string,string>(); //コンフィグ
+        [SerializeField]
+        public bool ignoreCR = true;
 
-			string[] lines = config_text.Split ('\n');
+        [SerializeField]
+        public string actorMarker = "【】";
 
-			//lines の前に、一文字ずつ解析してすべての要素を分解する必要がある
-			for (int i = 0; i < lines.Length; i++)
-            {
+        [SerializeField]
+        public string actorTag = "talk_name";
 
-				string line = lines [i].Trim();
-				line = line.Replace ("\r", "").Replace ("\n", "").Replace ("\"", "").Replace ("'", "");
+        //ToDo:PlayerPrefsへ
+        /*
+                //コンフィグファイルを読み込んで返す
+                public Dictionary<string,string> parseConfig (string config_text)
+                {
+                    Dictionary<string,string> dicConfig = new Dictionary<string,string>(); //コンフィグ
 
-				if (line == "")
-					continue;
+                    string[] lines = config_text.Split ('\n');
 
-				if (line [0].ToString() == ";")
-					continue;
+                    //lines の前に、一文字ずつ解析してすべての要素を分解する必要がある
+                    for (int i = 0; i < lines.Length; i++)
+                    {
 
-				string[] arrayVal = line.Split ('=');
+                        string line = lines [i].Trim();
+                        line = line.Replace ("\r", "").Replace ("\n", "").Replace ("\"", "").Replace ("'", "");
 
-				string key = arrayVal [0].Trim();
-				string val = arrayVal [1].Trim();
+                        if (line == "")
+                            continue;
 
-				dicConfig [key] = val;
-			}
+                        if (line [0].ToString() == ";")
+                            continue;
 
-			return dicConfig;
-		}
+                        string[] arrayVal = line.Split ('=');
 
-		struct LineObject
+                        string key = arrayVal [0].Trim();
+                        string val = arrayVal [1].Trim();
+
+                        dicConfig [key] = val;
+                    }
+
+                    return dicConfig;
+                }
+        */
+        struct LineObject
         {
 			public int line_num;
 			public string line;
@@ -253,10 +264,10 @@ namespace NovelEx {
         {
 			switch (lineText) {
 			case "#SetignoreCR":
-				JOKEREX.Instance.SystemConfig.ignoreCR = true;
+				ignoreCR = true;
 				break;
 			case "#ResetignoreCR":
-				JOKEREX.Instance.SystemConfig.ignoreCR = false;
+				ignoreCR = false;
 				break;
 			default:
 				return false;
@@ -366,16 +377,16 @@ namespace NovelEx {
 
 //EX:プリプロセッサ的なアレ。
 //ToDo:名前タグを【】にする
-				if(!string.IsNullOrEmpty(JOKEREX.Instance.SystemConfig.ActorMarker)) {
-					if (firstChar == JOKEREX.Instance.SystemConfig.ActorMarker.Substring(0, 1)) {
-						if(JOKEREX.Instance.SystemConfig.ActorMarker.Length <= 1) {
-							line = "[" + JOKEREX.Instance.SystemConfig.ActorCallBack/*  talk_name */ + " val='" + line.Replace(firstChar, "") + "' ]";
+				if(!string.IsNullOrEmpty(actorMarker)) {
+					if (firstChar == actorMarker.Substring(0, 1)) {
+						if(actorMarker.Length <= 1) {
+							line = "[" + actorTag/*  talk_name */ + " val='" + line.Replace(firstChar, "") + "' ]";
 							AbstractComponent cmp = this.makeTag(line, line_num);
 							components.Add(cmp);
 						}
-						else if (line[line.Length-1] == JOKEREX.Instance.SystemConfig.ActorMarker[1]) {
-								line = line.Replace(JOKEREX.Instance.SystemConfig.ActorMarker[1].ToString() , "");
-								line = "[" + JOKEREX.Instance.SystemConfig.ActorCallBack/*  talk_name */ + " val='" + line.Replace(firstChar, "") + "' ]";
+						else if (line[line.Length-1] == actorMarker[1]) {
+								line = line.Replace(actorMarker[1].ToString() , "");
+								line = "[" + actorTag/*  talk_name */ + " val='" + line.Replace(firstChar, "") + "' ]";
 								AbstractComponent cmp = this.makeTag(line, line_num);
 								components.Add(cmp);
 						}
@@ -389,7 +400,7 @@ namespace NovelEx {
 						parsePreproseccor(line);
 					}
 					else {
-						line = "[" + JOKEREX.Instance.SystemConfig.ActorCallBack/* talk_name */ + " val='" + line.Replace("#", "") + "' ]";
+						line = "[" + actorTag/* talk_name */ + " val='" + line.Replace("#", "") + "' ]";
 						AbstractComponent cmp = this.makeTag(line, line_num);
 						components.Add(cmp);
 					}
@@ -398,7 +409,7 @@ namespace NovelEx {
 
 				if(line == "\r"){
 //ToDo:直前のRを消す
-					if(isText == true && JOKEREX.Instance.SystemConfig.ignoreCR)
+					if(isText == true && ignoreCR)
 						components.Add(new PComponent());
 					
 					isText = false;
@@ -425,7 +436,7 @@ namespace NovelEx {
 					components.Add (cmp);
 				}
 
-				if(isText == true && JOKEREX.Instance.SystemConfig.ignoreCR)
+				if(isText == true && ignoreCR)
 					components.Add(new RComponent());
 
 			}
@@ -440,7 +451,7 @@ namespace NovelEx {
 		public AbstractComponent makeTag(string line)
         {
 			AbstractComponent cmp = this.makeTag (line, 0);
-			cmp.calcVariable();
+			cmp.CalcVariable();
 			return cmp;
 		}
 
@@ -459,7 +470,7 @@ namespace NovelEx {
 			Debug.Log (line);
 
 			AbstractComponent cmp = this.makeTag (line, 0);
-			cmp.calcVariable();
+			cmp.CalcVariable();
 
 			return cmp;
 		}
@@ -487,11 +498,11 @@ namespace NovelEx {
 			}
 
 			if (cmp != null) {
-				cmp.init (tag, line_num);
+				cmp.Init(tag, line_num);
 
 				//エラーメッセージの蓄積
-				cmp.checkVital();
-				cmp.mergeDefaultParam();
+				cmp.CheckParam();
+				cmp.MergeDefaultParam();
 			}
 
             return cmp;

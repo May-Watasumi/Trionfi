@@ -42,12 +42,12 @@ scale=Live2Dモデルの表示サイズを指定できます。つまり2と指�
 
 		public Live2d_newComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name",
 				"storage" 
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" },
 				{ "storage","" },
 				{ "tag","" },
@@ -63,20 +63,20 @@ scale=Live2Dモデルの表示サイズを指定できます。つまり2と指�
 			};
 		}
 
-		public override void start()
+		public override void Start()
 		{
-			//			string name = this.param ["name"];
-			//			string tag = this.param ["tag"];
-			this.param ["className"] = "Live2d";
-			this.param ["scale_x"] = this.param ["scale"];
-			this.param ["scale_y"] = this.param ["scale"];
-			this.param ["scale_z"] = this.param ["scale"];
+			//			string name = paramDic ["name"];
+			//			string tag = paramDic ["tag"];
+			paramDic ["className"] = "Live2d";
+			paramDic ["scale_x"] = paramDic ["scale"];
+			paramDic ["scale_y"] = paramDic ["scale"];
+			paramDic ["scale_z"] = paramDic ["scale"];
 //		
-			string storage = param["storage"];
-			param["storage"] = storage;
-			Image image = new Image (this.param);
+			string storage = paramDic["storage"];
+			paramDic["storage"] = storage;
+			ImageObject image = new ImageObject(paramDic);
 
-			JOKEREX.Instance.ImageManager.addImage(image);
+			ImageObjectManager.AddObject(image);
 //			this.gameManager.nextOrder();
 		}
 	}
@@ -105,12 +105,10 @@ y=中心からのy位置を指定します
  */
 
     //キャラのポジションを変更する
-	public class Live2d_posComponent:Image_posComponent {
+	public class Live2d_posComponent : Image_posComponent
+    {
 		public Live2d_posComponent() : base() { }
-
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
     /*			
@@ -144,12 +142,10 @@ z=中心からのz位置を指定します
 --------------------
  */
 
-
-	public class Live2d_showComponent:Image_showComponent { 
+	public class Live2d_showComponent : Image_showComponent
+    { 
 		public Live2d_showComponent() : base() { }
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
     /*			
@@ -174,11 +170,10 @@ tag=識別するためのタグを指定します
 --------------------
  */
 
-	public class Live2d_hideComponent:Image_hideComponent {
+	public class Live2d_hideComponent : Image_hideComponent
+    {
 		public Live2d_hideComponent() : base() { }
-		public override void start() {
-			base.start();
-		}
+		public override void Start() { base.Start(); }
 	}
 
 /*				
@@ -205,11 +200,10 @@ name=削除するテキストオブジェクト名 all と入力することで�
 --------------------
  */
     //IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Live2d_removeComponent:Image_removeComponent {
-		public Live2d_removeComponent(): base() { }
-		public override void start() {
-			base.start();
-		}
+	public class Live2d_removeComponent : Image_removeComponent
+    {
+		public Live2d_removeComponent() : base() { }
+		public override void Start() { base.Start(); }
 	}
 
     /*				
@@ -235,17 +229,17 @@ storage=モーションファイル名を指定してください
 --------------------
  */
     //IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Live2d_motionComponent:AbstractComponent {
+	public class Live2d_motionComponent : AbstractComponent {
 		public Live2d_motionComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name",
 				"motion",
 				"face",
 //				"storage"
 			};
 		
-			this.originalParam = new Dictionary<string, string>() {
+            originalParamDic = new Dictionary<string, string>() {
 //				{ "name","" },
 				{ "motion", "-1"},
 				{ "face", "" },
@@ -257,15 +251,15 @@ storage=モーションファイル名を指定してください
 	        };
 		}
 
-		public override void start() {
-			string name = this.param["name"];
-			string group = this.param["group"];
-			string face = this.param["face"];	
-			int motion =int.Parse(this.param["motion"]);
-			int priority = int.Parse(this.param["priority"]);
-//			string tag = this.param["tag"];
-//			string storage = this.param["storage"];
-//			string idle = this.param["idel"];
+		public override void Start() {
+			string name = paramDic["name"];
+			string group = paramDic["group"];
+			string face = paramDic["face"];	
+			int motion = int.Parse(paramDic["motion"]);
+			int priority = int.Parse(paramDic["priority"]);
+//			string tag = this.paramDic["tag"];
+//			string storage = this.paramDic["storage"];
+//			string idle = this.paramDic["idel"];
 
 			List<string> images = new List<string>();
 
@@ -275,9 +269,11 @@ storage=モーションファイル名を指定してください
 		 		images.Add(name);
 		
 			foreach (string image_name in images) {
-				Image image = JOKEREX.Instance.ImageManager.getImage(image_name);
-				Live2dObject obj = image.getObject() as Live2dObject;
-				obj.setMotion(group, motion, face, priority);
+                //ToDo:
+/*
+                Live2dObject image = ImageObjectManager.GetObject(image_name);
+				obj.SetMotion(group, motion, face, priority);
+*/
 			}
 		}
 	}

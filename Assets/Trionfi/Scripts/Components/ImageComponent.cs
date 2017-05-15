@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx {
+namespace NovelEx
+{
 
 /*	
 --------------
@@ -37,23 +38,23 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Image_newComponent:AbstractComponent {
+	public class Image_newComponent : AbstractComponent {
 		protected string imagePath = "";
 
 		public Image_newComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name",
 				"storage" 
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "storage",""},
 				{ "tag",""},
 				{ "layer","Default"},
 				{ "sort","3"},
-				{ "imagePath", JOKEREX.Instance.StorageManager.PATH_IMAGE},
+				{ "imagePath", StorageManager.Instance.PATH_IMAGE},
 				{ "x","0"},
 				{ "y","0"},
 				{ "z","-3.2"},
@@ -66,19 +67,21 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 			};
 		}
 
-		public override void start() {
-			if (this.param ["scale"] != "") {
-				this.param ["scale_x"] = this.param ["scale"];
-				this.param ["scale_y"] = this.param ["scale"];
-				this.param ["scale_z"] = this.param ["scale"];
+		public override void Start()
+        {
+			if (paramDic ["scale"] != "")
+            {
+				paramDic ["scale_x"] = paramDic ["scale"];
+				paramDic ["scale_y"] = paramDic ["scale"];
+				paramDic ["scale_z"] = paramDic ["scale"];
 		
 			}
 			else
-				this.param ["scale"] = "1";
+				paramDic ["scale"] = "1";
 
-			Image image = new Image (this.param);
+			ImageObject image = new ImageObject(paramDic);
 
-			JOKEREX.Instance.ImageManager.addImage(image);
+			ImageObjectManager.AddObject(image);
 
 			//JOKEREX.Instance.ImameManager.nextOrder();
 			//this.gameManager.scene.MessageSpeed = 0.02f;
@@ -113,15 +116,15 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
  */
 
 	//キャラのポジションを変更する
-	public class Image_posComponent:AbstractComponent {
+	public class Image_posComponent : AbstractComponent {
 		public Image_posComponent() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name" 
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "x",""},
 				{ "y",""},
@@ -133,29 +136,29 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
+		public override void Start() {
+			string name = paramDic ["name"];
 
-			Image image = JOKEREX.Instance.ImageManager.getImage(name);
+			ImageObject image = ImageObjectManager.GetObject(name) as ImageObject;
 
-			float x = (this.param["x"]!="") ? float.Parse(this.param["x"]) : float.Parse(image.getParam("x"));
-			float y = (this.param ["y"] != "") ? float.Parse (this.param ["y"]) : float.Parse(image.getParam ("y"));
-			float z = (this.param["z"]!="") ? float.Parse(this.param["z"]) : float.Parse(image.getParam ("z"));
+			float x = (paramDic["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.getParam("x"));
+			float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.getParam ("y"));
+			float z = (paramDic["z"]!="") ? float.Parse(paramDic["z"]) : float.Parse(image.getParam ("z"));
 
-			image.setPosition (x, y, z);
+			image.SetPosition (x, y, z);
 
 			//scaleが指定されている場合はそっちを優先
-			if (this.param ["scale"] != "") {
-				this.param ["scale_x"] = this.param ["scale"]; 
-				this.param ["scale_y"] = this.param ["scale"];
-				this.param ["scale_z"] = this.param ["scale"];
+			if (paramDic ["scale"] != "") {
+				paramDic ["scale_x"] = paramDic ["scale"]; 
+				paramDic ["scale_y"] = paramDic ["scale"];
+				paramDic ["scale_z"] = paramDic ["scale"];
 			}
 
-			float scale_x = (this.param["scale_x"]!="") ? float.Parse(this.param["scale_x"]) : float.Parse(image.getParam ("scale_x"));
-			float scale_y = (this.param["scale_y"]!="") ? float.Parse(this.param["scale_y"]) : float.Parse(image.getParam ("scale_y"));
-			float scale_z = (this.param["scale_z"]!="") ? float.Parse(this.param["scale_z"]) : float.Parse(image.getParam ("scale_z"));
+			float scale_x = (paramDic["scale_x"]!="") ? float.Parse(paramDic["scale_x"]) : float.Parse(image.getParam ("scale_x"));
+			float scale_y = (paramDic["scale_y"]!="") ? float.Parse(paramDic["scale_y"]) : float.Parse(image.getParam ("scale_y"));
+			float scale_z = (paramDic["scale_z"]!="") ? float.Parse(paramDic["scale_z"]) : float.Parse(image.getParam ("scale_z"));
 
-			image.setScale(scale_x,scale_y,scale_z);
+			image.SetScale(scale_x,scale_y,scale_z);
 
 			//アニメーション中にクリックして次に進めるかどうか。
 //			JOKEREX.Instance.ImageManager.nextOrder();
@@ -196,15 +199,15 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Image_showComponent:AbstractComponent {
+	public class Image_showComponent : AbstractComponent {
 		private List<string> images;
 		private bool isWait = false;
 
 		public Image_showComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> { };		//	"name" 
+			arrayVitalParam = new List<string> { };		//	"name" 
 
-			this.originalParam = new Dictionary<string,string>() {
+		    originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "tag",""},
 				{ "x",""},
@@ -216,58 +219,61 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
-			string tag = this.param ["tag"];
-			string type = this.param["type"];
-			float time = float.Parse(this.param["time"]);
+		public override void Start() {
+			string name = paramDic ["name"];
+			string tag = paramDic ["tag"];
+			string type = paramDic["type"];
+			float time = float.Parse(paramDic["time"]);
 			bool flag_delegate = true;
 
 			List<string> images;
 
 			if(tag != "")
-				images = JOKEREX.Instance.ImageManager.getImageNameByTag (tag);	
+				images = ImageObjectManager.getImageNameByTag (tag);	
 			else{
 				images = new List<string>();
 				images.Add (name);
 			}
 
-			if(JOKEREX.Instance.StatusManager.onSkip)
+			if(StatusManager.Instance.onSkip)
 				time = 0.0f;
 
 			//アニメーション中にクリックして次に進めるかどうか。
-			if(time > 0.0f && this.param["wait"] != "false") {
+			if(time > 0.0f && paramDic["wait"] != "false")
+            {
 				nextOrder = false;
-				JOKEREX.Instance.StatusManager.Wait();
+				StatusManager.Instance.Wait();
 				isWait = true;
 			}
 
-			foreach(string image_name in images) {
-				Image image = JOKEREX.Instance.ImageManager.getImage(image_name);
+			foreach(string image_name in images)
+            {
+				ImageObject image = ImageObjectManager.GetObject(image_name) as ImageObject;
 
-				float x = (this.param["x"] != "") ? float.Parse(this.param["x"]) : float.Parse(image.getParam("x"));
-				float y = (this.param["y"] != "") ? float.Parse(this.param["y"]) : float.Parse(image.getParam("y"));
-				float z = (this.param["z"] != "") ? float.Parse(this.param["z"]) : float.Parse(image.getParam("z"));
+				float x = (paramDic["x"] != "") ? float.Parse(paramDic["x"]) : float.Parse(image.GetParam("x"));
+				float y = (paramDic["y"] != "") ? float.Parse(paramDic["y"]) : float.Parse(image.GetParam("y"));
+				float z = (paramDic["z"] != "") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam("z"));
 
-				image.setPosition (x, y, z);
+				image.SetPosition (x, y, z);
 
 				if(isWait) {
 					//設定するのは一つだけ
 					if (flag_delegate == true) {
 						flag_delegate = false;
-						image.getObject().setFinishAnimationDelegate(this.finishAnimationDeletgate);
+						image.setFinishAnimationDelegate(this.finishAnimationDeletgate);
 					}
 				}
-				image.show(time, type);	
+				image.Show(time, type);	
 			}
 		}
 
-		public override void finishAnimation() {
-//			if(this.param ["wait"] == "true") {
+        public override void OnAnimationFinished()
+        {
+//			if(paramDic ["wait"] == "true") {
 			if(isWait) {
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
-//				JOKEREX.Instance.StatusManager.clickNextOrder();
+				StatusManager.Instance.NextOrder();
+//				StatusManager.Instance.enableNextOrder = true;
+//				StatusManager.Instance.clickNextOrder();
 			}
 		}
 
@@ -303,15 +309,15 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 --------------------
  */
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Image_hideComponent:AbstractComponent {
+	public class Image_hideComponent : AbstractComponent {
 		List<string> images = new List<string>();
 		bool isWait = false;
 
 		public Image_hideComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> { }; //	"name",
+			arrayVitalParam = new List<string> { }; //	"name",
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "tag",""},
 				{ "time","1"},
@@ -320,50 +326,51 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 			};
 		}
 
-		public override void start() {
-			string name = this.param["name"];
-			string type = this.param["type"];
-			string tag = this.param ["tag"];
-			float time = float.Parse(this.param["time"]);
+		public override void Start() {
+			string name = paramDic["name"];
+			string type = paramDic["type"];
+			string tag = paramDic ["tag"];
+			float time = float.Parse(paramDic["time"]);
 
 			bool flag_delegate = true;
 
 			if (tag != "")
-				images = JOKEREX.Instance.ImageManager.getImageNameByTag (tag);	
+				images = ImageObjectManager.getImageNameByTag (tag);	
 			else
-				images.Add (name);
+				images.Add(name);
 
-			if (JOKEREX.Instance.StatusManager.onSkip)
+			if(StatusManager.Instance.onSkip)
 				time = 0.0f;
 
 			//アニメーション中にクリックして次に進めるかどうか。
-			if (time > 0.0f && this.param["wait"] != "false")
+			if (time > 0.0f && paramDic["wait"] != "false")
 			{
 				nextOrder = false;
-				JOKEREX.Instance.StatusManager.Wait();
+				StatusManager.Instance.Wait();
 				isWait = true;
 			}
 
 			foreach(string image_name in images) {
-				Image image = JOKEREX.Instance.ImageManager.getImage(image_name);
+				ImageObject image = ImageObjectManager.GetObject(image_name) as ImageObject;
 
 				if(isWait) {
 					//設定するのは一つだけ
 					if (flag_delegate == true) {
 						flag_delegate = false;
-						image.getObject().setFinishAnimationDelegate(this.finishAnimationDeletgate);
+						image.setFinishAnimationDelegate(finishAnimationDeletgate);
 					}
 				}
-				image.hide(time, type);
+				image.Hide(time, type);
 			}
 		}
 
-		public override void finishAnimation(){
+        public override void OnAnimationFinished()
+        {
 			//アニメーション完了後にここにくる
 			if(isWait) {
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
-//				JOKEREX.Instance.StatusManager.clickNextOrder();
+				StatusManager.Instance.NextOrder();
+//				StatusManager.Instance.enableNextOrder = true;
+//				StatusManager.Instance.clickNextOrder();
 			}
 		}
 	}
@@ -403,45 +410,46 @@ storage=画像ファイル名を直接していできます。フォルダはdat
  */
 
 	//キャラの表情登録用
-	public class Image_faceComponent:AbstractComponent {
+	public class Image_faceComponent : AbstractComponent {
 		protected string imagePath = "";
 
-		public Image_faceComponent() {
-			this.imagePath = JOKEREX.Instance.StorageManager.PATH_IMAGE;
+		public Image_faceComponent()
+        {
+			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name",
 				"face",
 				"storage"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "face",""},
 				{ "storage",""},
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
-			string face = this.param ["face"];
-			string storage = this.param ["storage"];
+		public override void Start() {
+			string name = paramDic ["name"];
+			string face = paramDic ["face"];
+			string storage = paramDic ["storage"];
 
-			Image image = JOKEREX.Instance.ImageManager.getImage(name);
+			ImageObject image = ImageObjectManager.GetObject(name) as ImageObject;
 
-			image.addFace (face, storage);
+			ImageObjectManager.AddFace(face, storage);
 			//this.gameManager.nextOrder();
 			//this.gameManager.scene.MessageSpeed = 0.02f;
 			//this.gameManager.scene.coroutineShowMessage (message);
 
 		}
 
-		public override void validate()
+		public override void Validate()
 		{
 //			ToDo:
 			Debug.Log("ToDo:Validate");
-			//string storage = this.imagePath + this.param ["storage"];
+			//string storage = this.imagePath + paramDic ["storage"];
 			//ToDo
 			//this.gameManager.addMessage(MessageType.Error,this.line_num,Validate.checkStorage(storage));
 		}
@@ -479,15 +487,15 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 --------------------
  */
 
-	public class Image_modComponent:AbstractComponent{ 
+	public class Image_modComponent : AbstractComponent{ 
 		public Image_modComponent() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "face",""},
 				{ "storage",""},
@@ -497,52 +505,52 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 			};
 		}
 
-		public override void start() {
-			JOKEREX.Instance.StatusManager.Wait();
-//			JOKEREX.Instance.StatusManager.enableNextOrder = false;
+		public override void Start() {
+			StatusManager.Instance.Wait();
+//			StatusManager.Instance.enableNextOrder = false;
 
-			string name = this.param ["name"];
-			string face = this.param ["face"];
-			string storage = this.param ["storage"];
+			string name = paramDic ["name"];
+			string face = paramDic ["face"];
+			string storage = paramDic ["storage"];
 
-			float time = float.Parse (this.param["time"]);
-			string type = this.param ["type"];
+			float time = float.Parse (paramDic["time"]);
+			string type = paramDic ["type"];
 
-			Image image = JOKEREX.Instance.ImageManager.getImage(name);
+			ImageObject image = ImageObjectManager.GetObject(name) as ImageObject;
 
 			//storage指定が優先される
-			if (storage != "")
-				image.setImage(this.param);
+			if(storage != "")
+				image.SetParam(paramDic);
 			else
-				image.setFace(face, time, type);
+				image.SetFace(face, time, type);
 
 
-			if (JOKEREX.Instance.StatusManager.onSkip || time <= 0.02f)
+			if (StatusManager.Instance.onSkip || time <= 0.02f)
 			{
-				ImageObject obj = image.getObject() as ImageObject;
-				obj.finishAnimation();
-				return;
+				image.OnAnimationFinished();
+                return;
 			}
 
 			nextOrder = false;
 
 			//処理を待たないなら
-			if (this.param ["wait"] == "false") {
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
+			if (paramDic ["wait"] == "false") {
+				StatusManager.Instance.NextOrder();
+//				StatusManager.Instance.enableNextOrder = true;
 //				this.gameManager.nextOrder();
 			}
 			else
-				image.getObject().setFinishAnimationDelegate (this.finishAnimationDeletgate);
+				image.setFinishAnimationDelegate(this.finishAnimationDeletgate);
 		}
 
-		public override void finishAnimation(){
+		public override void OnAnimationFinished()
+        {
 			//アニメーション完了後にここにくる
 
-			if (this.param ["wait"] == "true") {
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
-//				JOKEREX.Instance.StatusManager.clickNextOrder();
+			if (paramDic ["wait"] == "true") {
+				StatusManager.Instance.NextOrder();
+//				StatusManager.Instance.enableNextOrder = true;
+//				StatusManager.Instance.clickNextOrder();
 			}
 		}
 	}
@@ -575,30 +583,31 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 --------------------
  */
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Image_removeComponent:AbstractComponent {
+	public class Image_removeComponent : AbstractComponent {
 		public Image_removeComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> { };	//"name"
+			arrayVitalParam = new List<string> { };	//"name"
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "tag",""},
 			};
 		}
 
-		public override void start() {
-			string tag = this.param ["tag"];
-			string name = this.param ["name"];
+		public override void Start() {
+			string tag = paramDic ["tag"];
+			string name = paramDic ["name"];
 
 			List<string> images = new List<string>();
 			if(tag != "")
-				images = JOKEREX.Instance.ImageManager.getImageNameByTag(tag);	
+				images = ImageObjectManager.getImageNameByTag(tag);	
 			else
 				images.Add (name);
 
-			foreach(string image_name in images) {
+			foreach(string image_name in images)
+            {
 				//Image image = this.gameManager.imageManager.getImage (image_name);
-				JOKEREX.Instance.ImageManager.removeImage(image_name);
+				ImageObjectManager.RemoveObject(image_name);
 			}
 
 			//JOKEREX.Instance.ImageManager.gameManager.nextOrder();
@@ -639,10 +648,10 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 	--------------------
 	 */
 
-	public class ShowComponent : Image_showComponent {
+	public class ShowComponent : Image_showComponent
+    {
 		public ShowComponent() : base() { }
-		public override void start() {
-			base.start(); }
+		public override void Start() { base.Start(); }
 	}
 
 	/*	
@@ -679,7 +688,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 
 	public class HideComponent : Image_hideComponent {
 		public HideComponent() : base() { }
-		public override void start() { 	base.start(); }
+		public override void Start() { 	base.Start(); }
 	}
 
 	/*	
@@ -708,6 +717,6 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 
 	public class RemoveComponent : Image_removeComponent {
 		public RemoveComponent() : base() { }
-		public override void start() { 	base.start(); }
+		public override void Start() { base.Start(); }
 	}
 }

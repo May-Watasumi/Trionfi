@@ -1,42 +1,62 @@
 ﻿using UnityEngine;
 using System.Collections;
-using Novel;
+using NovelEx;
 using UnityEngine.UI;
 
 public class MessageWindow : MonoBehaviour
 {
-    private Text currentMessage;
+    public float textwaitTime = 0.03f;
+    public bool onSkip = false;
+    public bool onAuto = false;
+
+    [SerializeField]
+    public Text currentMessage;
+    [SerializeField]
+    public Text currentName;
+    [SerializeField]
     private Image MessageFrameImage;
+
     public void Start()
     {
-        currentMessage = GetComponentInChildren<Text>();
-        MessageFrameImage = GetComponent<Image>();
+//        currentMessage = GetComponentInChildren<Text>();
+//        MessageFrameImage = GetComponent<Image>();
     }
 
-    public void Show(string text)
+    public void Reset()
     {
-        StartCoroutine("showMessage", text);
+        //ToDo
     }
 
-    private IEnumerator showMessage(string message)
+    public void ClearMessage()
+    {
+        currentMessage.text = "";
+    }
+
+    public void ShowMessage(string text)
+    {
+        StartCoroutine(ShowMessageSub(text));
+    }
+
+    private IEnumerator ShowMessageSub(string message)
     {
         // this.messageForSaveTitle = message;
-        float mesWait = 0.03f;//float.Parse(JOKEREX.Instance.getConfig("messageSpeed"));// 0.02f;
+        float mesWait = textwaitTime;
+
         string tempMessage = "";
 
-        if(mesWait > 0.0f)//&& !JOKEREX.Instance.StatusManager.onSkip)
+        if(mesWait > 0.0f)//&& !StatusManager.Instance.onSkip)
         {
             currentMessage.text = "";
+
             //スキップモードの場合は速度アップ
-            for (int i = 0; i < message.Length; i++)
+            for(int i = 0; i < message.Length; i++)
             {
                 //スキップモードの場合は一度に複数の文字列を表示する
-//                if (JOKEREX.Instance.StatusManager.currentState != JokerState.MessageShow)
-//                    break;
-//                else
+                if(onSkip)
+                    break;
+                else
                     tempMessage += message[i];
 
-                //Debug.Log(CurrentMessage);
                 yield return new WaitForSeconds(mesWait);
             }
         }

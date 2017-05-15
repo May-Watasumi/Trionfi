@@ -9,11 +9,11 @@ namespace NovelEx{
 		public JoinComponent ()
 		{
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"var","arg1","arg2"
 			};
 
-			this.originalParam = new Dictionary<string,string> () {
+			originalParamDic = new Dictionary<string,string> () {
 				{"var",""},
 				{"arg1",""},
 				{"arg2",""},
@@ -21,9 +21,9 @@ namespace NovelEx{
 		}
 		public override void start ()
 		{
-			string var_name = this.param ["var"];
-			string arg1 = this.param ["arg1"];
-			string arg2 = this.param ["arg2"];
+			string var_name = paramDic ["var"];
+			string arg1 = paramDic ["arg1"];
+			string arg2 = paramDic ["arg2"];
 
 			string arg_result = arg1 + arg2;
 

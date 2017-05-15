@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx {
+namespace NovelEx
+{
 
 /*	
 --------------
@@ -50,12 +51,12 @@ target=イベントが発生した際にジャンプする先のラベル名を�
 		protected string imagePath = "";
 
 		public EvtComponent() {
-			this.imagePath = JOKEREX.Instance.StorageManager.PATH_IMAGE;
+			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			this.arrayVitalParam = new List<string> { };
+			arrayVitalParam = new List<string> { };
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "tag",""},
 				{ "act","click"},
@@ -64,24 +65,25 @@ target=イベントが発生した際にジャンプする先のラベル名を�
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
-			string tag = this.param ["tag"];
+		public override void Start() {
+			string name = paramDic ["name"];
+			string tag = paramDic ["tag"];
 
 			List<string> events = new List<string>();
 
 			if (tag != "")
-				events = JOKEREX.Instance.ImageManager.getImageNameByTag(tag);	
+				events = ImageObjectManager.getImageNameByTag(tag);	
 			else
-				events.Add (name);
+				events.Add(name);
 
 
 			//ファイルが指定されていない場合は現在のシナリオを格納する
-			if (this.param ["file"] == "")
-				this.param["file"] = JOKEREX.Instance.StatusManager.currentScenario;
+			if(paramDic ["file"] == "")
+				paramDic["file"] = StatusManager.Instance.currentScenario;
 
-			foreach (string object_name in events) {
-				JOKEREX.Instance.EventManager.addEvent(object_name, this.param);
+			foreach (string object_name in events)
+            {
+				EventManager.addEvent(object_name, paramDic);
 			}
 
 //			this.gameManager.nextOrder();
@@ -115,30 +117,30 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 		protected string imagePath = "";
 
 		public Evt_removeComponent() {
-			this.imagePath = JOKEREX.Instance.StorageManager.PATH_IMAGE;
+			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			this.arrayVitalParam = new List<string> { 	};
+			arrayVitalParam = new List<string> { 	};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "tag",""},
 				{ "act",""},
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
-			string tag = this.param ["tag"];
+		public override void Start() {
+			string name = paramDic ["name"];
+			string tag = paramDic ["tag"];
 
 			List<string> events = new List<string>();
 			if (tag != "")
-				events = JOKEREX.Instance.ImageManager.getImageNameByTag(tag);	
+				events = ImageObjectManager.getImageNameByTag(tag);	
 			else
 				events.Add (name);
 
 			foreach (string object_name in events)
-				JOKEREX.Instance.EventManager.removeEvent(object_name);
+				EventManager.removeEvent(object_name);
 		}
 	}
 
@@ -170,19 +172,19 @@ title=イベントの一時無効化
 		protected string imagePath = "";
 
 		public Evt_stopComponent() {
-			this.imagePath = JOKEREX.Instance.StorageManager.PATH_IMAGE;
+			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			this.arrayVitalParam = new List<string> { };
-			this.originalParam = new Dictionary<string,string>() { };
+			arrayVitalParam = new List<string> { };
+			originalParamDic = new Dictionary<string,string>() { };
 		}
 
-		public override void start() {
+		public override void Start() {
 			//例外として許可する
-			JOKEREX.Instance.ScenarioManager.variable.remove("_evt_name_permission");
+			ScriptManager.Instance.variable.remove("_evt_name_permission");
 
 			//StatusManager.enableEventClick = false;
-			JOKEREX.Instance.StatusManager.isEventStop = true;
+			StatusManager.Instance.isEventStop = true;
 //			this.gameManager.nextOrder();
 		}
 	}
@@ -214,38 +216,38 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 		protected string imagePath = "";
 
 		public Evt_resumeComponent() {
-			this.imagePath = JOKEREX.Instance.StorageManager.PATH_IMAGE;
+			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			this.arrayVitalParam = new List<string> { };
+			arrayVitalParam = new List<string> { };
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name",""},
 				{ "tag",""},
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 			//例外として許可するイベントを登録
-			string name = this.param ["name"];
-			string tag = this.param ["tag"];
+			string name = paramDic ["name"];
+			string tag = paramDic ["tag"];
 
 			///タグが指定されている場合
 			if (tag != "") {
-				var events = JOKEREX.Instance.ImageManager.getImageNameByTag(tag);	
+				var events = ImageObjectManager.getImageNameByTag(tag);	
 			
 				foreach (string object_name in events) {
-					JOKEREX.Instance.ScenarioManager.variable.set("_evt_name_permission." + object_name, "1");
+					ScriptManager.Instance.variable.set("_evt_name_permission." + object_name, "1");
 				}
 			}
 			else if (name != "") {
-				JOKEREX.Instance.ScenarioManager.variable.set("_evt_name_permission." + name, "1");
+				ScriptManager.Instance.variable.set("_evt_name_permission." + name, "1");
 			}
 			else {
-				JOKEREX.Instance.ScenarioManager.variable.remove("_evt_name_permission");
+				ScriptManager.Instance.variable.remove("_evt_name_permission");
 
 				//StatusManager.enableEventClick = true;
-				JOKEREX.Instance.StatusManager.isEventStop = false;
+				StatusManager.Instance.isEventStop = false;
 
 			}
 //			this.gameManager.nextOrder();

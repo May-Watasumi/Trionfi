@@ -32,23 +32,24 @@ name=セーブファイル名を指定します
 --------------------
  */
 
-	public class SaveComponent:AbstractComponent {
+	public class SaveComponent : AbstractComponent {
 		public SaveComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" }
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
+		public override void Start()
+        {
+			string name = paramDic ["name"];
 
 			//セーブを実行する。指定された名前で
-			JOKEREX.Instance.Serializer.SavefromSnap(name);
+			Serializer.Serialize(name);
 //			this.gameManager.nextOrder();
 		}
 	}
@@ -75,22 +76,22 @@ name=ロードするセーブファイル名を指定します
 --------------------
  */
 
-	public class LoadComponent:AbstractComponent {
+	public class LoadComponent : AbstractComponent {
 		public LoadComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "name","" }
 			};
 		}
 
-		public override void start() {
-			string name = this.param ["name"];
+		public override void Start() {
+			string name = paramDic ["name"];
 //ToDo:これはひどい。
-			JOKEREX.Instance.Serializer.Deserialize(name);
+			Serializer.Deserialize(name);
 			//Application.LoadLevel("NovelPlayer");
 			//this.gameManager.nextOrder();
 		}
@@ -154,38 +155,39 @@ page=ページ。つまり、numが5でpageが1なら５〜10までのセーブ�
  */
 
 
-	public class SaveloopComponent:AbstractComponent {
+	public class SaveloopComponent : AbstractComponent {
 		public SaveloopComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				//	"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "num","5" }, //一度に表示する数
 				{ "page","0" }, // num*page から num個分表示するという意味
 			};
 		}
 
-		public override void start() {
-			int num = int.Parse (this.param ["num"]);
-			int page = int.Parse (this.param ["page"]);
+		public override void Start()
+        {
+			int num = int.Parse (paramDic ["num"]);
+			int page = int.Parse (paramDic ["page"]);
 
 			//セーブを実行する。指定された名前で
 			//ループに入る。
 			int current_index = num * page;
-
-			int max_num = int.Parse(JOKEREX.Instance.getConfig("saveslot_max"));
+            //ToDo?
+//			int max_num = int.Parse(JOKEREX.Instance.getConfig("saveslot_max"));
 			int max_index = current_index + num;
 
 			//セーブ変数の初期化
 			//ジャンプを実行する時に呼び出した位置情報を保持する
-			JOKEREX.Instance.ScenarioManager.variable.set("save.max_num", "" + max_num);
-			JOKEREX.Instance.ScenarioManager.variable.set("save.index", "" + current_index);
-			JOKEREX.Instance.ScenarioManager.variable.set("save.max_index", "" + max_index);
-			JOKEREX.Instance.ScenarioManager.variable.set("save.loop_start_component_index", "" + JOKEREX.Instance.ScenarioManager.currentComponentIndex);
+			ScriptManager.Instance.variable.set("save.max_num", "" + max_num);
+			ScriptManager.Instance.variable.set("save.index", "" + current_index);
+			ScriptManager.Instance.variable.set("save.max_index", "" + max_index);
+			ScriptManager.Instance.variable.set("save.loop_start_component_index", "" + ScriptManager.Instance.currentComponentIndex);
 
-			JOKEREX.Instance.Serializer.applySaveVariable("save_" + current_index, JOKEREX.Instance.ScenarioManager.variable);
+			Serializer.applySaveVariable("save_" + current_index, ScriptManager.Instance.variable);
 
 			//オートセーブのデータが欲しいですね
 //			this.gameManager.nextOrder();
@@ -215,20 +217,20 @@ title=セーブデータの列挙終了
  */
 
 
-	public class End_saveloopComponent:AbstractComponent {
+	public class End_saveloopComponent  :AbstractComponent {
 		public End_saveloopComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				//	"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 			};
 		}
 
-		public override void start() {
-			int index = int.Parse(JOKEREX.Instance.ScenarioManager.variable.get("save.index"));
-			int max_num = int.Parse(JOKEREX.Instance.ScenarioManager.variable.get("save.max_num"));
+		public override void Start() {
+			int index = int.Parse(ScriptManager.Instance.variable.get("save.index"));
+			int max_num = int.Parse(ScriptManager.Instance.variable.get("save.max_num"));
 			//int max_index = int.Parse (StatusManager.variable.get("save.max_index"));
 
 			index++;
@@ -242,17 +244,17 @@ title=セーブデータの列挙終了
 				return;
 			}
 
-			JOKEREX.Instance.ScenarioManager.variable.set("save.index", "" + index);
-			JOKEREX.Instance.Serializer.applySaveVariable("save_" + index, JOKEREX.Instance.ScenarioManager.variable);
+			ScriptManager.Instance.variable.set("save.index", "" + index);
+			Serializer.applySaveVariable("save_" + index, ScriptManager.Instance.variable);
 
 			//ジャンプする。[saveloop]タグの次のところへ
-			string loop_back_index = JOKEREX.Instance.ScenarioManager.variable.get("save.loop_start_component_index");
+			string loop_back_index = ScriptManager.Instance.variable.get("save.loop_start_component_index");
 
 			string tag_str = "[jump index='" + loop_back_index + "' ]";
 		
 			//タグを実行
-			AbstractComponent cmp = JOKEREX.Instance.ScenarioManager.NovelParser.makeTag (tag_str);
-			cmp.start();
+			AbstractComponent cmp = NovelParser.Instance.makeTag (tag_str);
+			cmp.Start();
 		}
 	}
 
@@ -287,19 +289,19 @@ title=オートセーブ
 */
 
 	//自動セーブ。スナップを作成します
-	public class AutosaveComponent:AbstractComponent {
+	public class AutosaveComponent : AbstractComponent {
 		public AutosaveComponent() {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				//	"name"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 			};
 		}
 
-		public override void start() {
-			JOKEREX.Instance.Serializer.Serialize("autosave");
+		public override void Start() {
+			Serializer.Serialize("autosave");
 //			this.gameManager.nextOrder();
 		}
 	}
@@ -338,22 +340,22 @@ var=オートセーブのデータを格納する変数名を指定
 
 */
 
-	public class Get_autosaveComponent:AbstractComponent {
+	public class Get_autosaveComponent : AbstractComponent {
 		public Get_autosaveComponent() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"var"
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{"var","auto"}
 			};
 		}
 
-		public override void start() {
-			string var_name = this.param ["var"];
-			JOKEREX.Instance.Serializer.applySaveVariable("autosave", JOKEREX.Instance.ScenarioManager.variable, var_name);
+		public override void Start() {
+			string var_name = paramDic ["var"];
+			Serializer.applySaveVariable("autosave", ScriptManager.Instance.variable, var_name);
 			//this.gameManager.nextOrder();
 		}
 	}

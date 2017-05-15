@@ -165,7 +165,7 @@ namespace NovelEx {
 			GameObject obj = Resources.Load(storage) as GameObject;
 
 			if (obj == null)
-				JOKEREX.Instance.errorManager.stopError("JOKEREX:\"" + storage + "\"(object)が見つかりませんでした。");
+                ErrorLogger.stopError("JOKEREX:\"" + storage + "\"(object)が見つかりませんでした。");
 
 			return obj;
 		}
@@ -175,7 +175,7 @@ namespace NovelEx {
 			TextAsset stageTextAsset = Resources.Load(storage) as TextAsset;
 
 			if (stageTextAsset == null)
-				JOKEREX.Instance.errorManager.stopError("JOKEREX:\"" + storage + "\"(text)が見つかりませんでした。");			
+                ErrorLogger.stopError("JOKEREX:\"" + storage + "\"(text)が見つかりませんでした。");			
 
 			// 文字列を代入
 			string stageData = stageTextAsset.text;
@@ -189,7 +189,7 @@ namespace NovelEx {
             clip = (AudioClip)(Resources.Load(storage)) as AudioClip;
 
 			if(clip == null)
-				JOKEREX.Instance.errorManager.stopError("JOKEREX:\"" + storage + "\"(audio)が見つかりませんでした。");
+                ErrorLogger.stopError("JOKEREX:\"" + storage + "\"(audio)が見つかりませんでした。");
 
 			return clip	;
 		}
@@ -198,7 +198,7 @@ namespace NovelEx {
 			Sprite sp = Resources.Load<Sprite>(storage);
 
 			if (sp == null)
-				JOKEREX.Instance.errorManager.stopError("JOKEREX:\"" + storage + "\"(sprite)が見つかりませんでした。");			
+                ErrorLogger.stopError("JOKEREX:\"" + storage + "\"(sprite)が見つかりませんでした。");			
 
 			return sp;
 		}
@@ -207,7 +207,7 @@ namespace NovelEx {
 			Sprite sp = Resources.Load<Sprite>(PATH_IMAGE_ROOT + storage);
 
 			if (sp == null)
-				JOKEREX.Instance.errorManager.stopError("JOKEREX:\"" + storage + "\"(Image)が見つかりませんでした。");
+				ErrorLogger.stopError("JOKEREX:\"" + storage + "\"(Image)が見つかりませんでした。");
 
 			return sp;
 		}
@@ -228,7 +228,7 @@ namespace NovelEx {
 		public AnimationClip loadAnimation(string storage) {
 			return Resources.Load(PATH_ANIM_FILE + storage) as AnimationClip;
 		}
-
+/*
 		public AbstractObject GetCustomObject(string type, GameObject g) {
 /*
 			switch (type) {
@@ -239,12 +239,13 @@ namespace NovelEx {
 
 //EX:
 //カスタムオブジェクトを定義する場合はここ。
-			return  g.AddComponent<ImageObject>();
-		}
+//			return  new AbstractObject();
+//		}
 
-		public void Start() {
+		public void Start()
+        {
 			path_savedata.path = Application.persistentDataPath+"/novel/";
-		 }
+		}
 
 	}
 }

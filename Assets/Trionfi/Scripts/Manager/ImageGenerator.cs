@@ -9,28 +9,32 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace NovelEx
 {
 	[Serializable]
-	public class Image
+	public class ImageObjectManager
     {
-		//セーブ用のパラメータなど、全てココに入れておく必要がある
-		public Dictionary<string,string> dicSave = new Dictionary<string,string>();
-	    
-		//face 情報はココに格納
-		public Dictionary<string,string> dicFace = new Dictionary<string,string>();
+        public static Dictionary<string, AbstractObject> dicObject = new Dictionary<string, AbstractObject>();
+
+        //セーブ用のパラメータなど、全てココに入れておく必要がある
+        public static Dictionary<string,string> dicSave = new Dictionary<string,string>();
+
+        //face 情報はココに格納
+        public static Dictionary<string,string> dicFace = new Dictionary<string,string>();
 
 		[NonSerialized]
-		private AbstractObject imageObject;
+		private static AbstractObject imageObject;
+        [NonSerialized]
+        public static ImageObjectManager Instance;
 
-		public string getParam(string key)
+        public static string GetParam(string key)
 		{
 			return dicSave[key];
 		}
 
-		public void setParam(string key,string value)
+		public static void SetParam(string key,string value)
 		{
 			dicSave[key] = value;
 		}
 
-		public Image(Dictionary<string,string> param)
+		protected static void SetParam(Dictionary<string,string> param)
 		{
 			dicSave["name"] = param ["name"];
 			dicSave["tag"] = param["tag"];
@@ -48,18 +52,40 @@ namespace NovelEx
 				dicSave[key] = kvp.Value;
 			}
 
+            //ToDo:
 			//デフォルトの表情として登録
-			addFace ("default", getParam("storage"));
+			//addFace("default", getParam("storage"));
 		}
 
-		public void Compile() {
-			GameObject g = new GameObject ("gameobject");
+        public static void AddObject(AbstractObject instance)
+        {
+            dicObject[instance.name] = instance;
+        }
+
+        public static AbstractObject GetObject(string key)
+        {
+            return dicObject[key];
+        }
+
+        public static void RemoveObject(string key)
+        {
+            GameObject.Destroy(dicObject[key].instanceObject);
+            dicObject.Remove(key);
+        }
+
+        public static void CreateObject(Dictionary<string, string> param)
+        {
+            SetParam(param);
+
+            GameObject g = new GameObject("gameobject");
 
 			AbstractObject imageObject;
-			string className = dicSave ["className"];
+			string className = dicSave["className"];
 
-			switch(className) {
-			case "Canvas":
+            switch(className) {
+//ToDo:
+#if false
+            case "Canvas":
 				imageObject = g.AddComponent<CanvasObject>();
 				break;
 			case "Message":
@@ -68,14 +94,8 @@ namespace NovelEx
 			case "UIImage":
 				imageObject = g.AddComponent<UIImageObject>();
 				break;
-			case "Text":
-				imageObject = g.AddComponent<TextObject>();
-				break;
 			case "Clickable":
 				imageObject = g.AddComponent<ClickableObject>();
-				break;
-			case "Sd":
-				imageObject = g.AddComponent<SdObject>();
 				break;
 			case "Button":
 				imageObject = g.AddComponent<ButtonObject>();
@@ -83,16 +103,23 @@ namespace NovelEx
 			case "Live2d":
 				imageObject = g.AddComponent<Live2dObject>();
 				break;
-			default:
+#endif
+            case "Text":
+                imageObject = g.AddComponent<TextObject>();
+                break;
+            case "Sd":
+                imageObject = g.AddComponent<SdObject>();
+                break;
+            default:
 				imageObject = StorageManager.Instance.GetCustomObject(className, g);
 				break;
 			}
 
-			imageObject.name = getParam ("name");
+			imageObject.name = GetParam("name");
 
 			//画像なりをセット
 			imageObject.imagePath = dicSave["imagePath"];
-			imageObject.set(dicSave);
+			imageObject.SetParam(dicSave);
 
 //			imageObject = imageObject;
 
@@ -108,21 +135,20 @@ namespace NovelEx
 
 			if (dicSave ["isShow"] == "true")
 				Show(0, "linear");
-
 		}
-
-		public void SetColider()
+#if false
+        public static void SetColider()
         {
-			dicSave ["event"] = "true";
-			imageObject.setColider();
+			dicSave["event"] = "true";
+			imageObject.SetColider();
 		}
 
-		public void AddFace(string face, string storage)
+        public static void AddFace(string face, string storage)
         {
 			dicFace[face] = storage;
 		}
 
-		public void SetFace(string face, float time, string type)
+		public static void SetFace(string face, float time, string type)
         {
 			if(!dicFace.ContainsKey(face))
             {
@@ -137,69 +163,65 @@ namespace NovelEx
 				{ "storage",storage }
 			};
 
-			imageObject.set (tmpParam);
-			imageObject.show (time,type);
+			imageObject.SetParam(tmpParam);
+			imageObject.Show(time,type);
 		}
 
-		public void SetImage(Dictionary<string,string>param)
+		public static void SetImage(Dictionary<string,string>param)
         {
 			foreach (KeyValuePair<string, string> kvp in param) {
 //				dicSave [kvp.Key] = param [kvp.Key];
 				dicSave[kvp.Key] = kvp.Value;
 			}
 
-			imageObject.set(param);
-			imageObject.show(float.Parse(param["time"]),param["type"]);
+			imageObject.SetParam(param);
+			imageObject.Show(float.Parse(param["time"]),param["type"]);
 		}
 
-		public void Remove()
+		public static void Remove()
         {
-			imageObject.remove();
+			imageObject.Remove();
 			imageObject = null;
 		}
 
-		public void SetScale(float scale_x, float scale_y, float scale_z)
+		public static void SetScale(float scale_x, float scale_y, float scale_z)
         {
 			dicSave["scale_x"] = ""+scale_x;
 			dicSave["scale_y"] = ""+scale_y;
 			dicSave["scale_z"] = ""+scale_z;
-			imageObject.setScale (scale_x,scale_y,scale_z);
+			imageObject.SetScale (scale_x,scale_y,scale_z);
 		}
 
-		public void SetPosition(float x,float y,float z)
+		public static void SetPosition(float x,float y,float z)
         {
 			dicSave["x"] = ""+x;
 			dicSave["y"] = ""+y;
 			dicSave["z"] = ""+z;
 
-			imageObject.setPosition (x, y, z);	
+			imageObject.SetPosition (x, y, z);	
 		}
 
-		public void AnimationPosition(Vector3 position, float scale,float time,string type)
+		public static void AnimationPosition(Vector3 position, float scale,float time,string type)
         {	
 			dicSave["x"] = ""+position.x;
 			dicSave["y"] = ""+position.y;
 			dicSave["z"] = "" + position.z;
 			dicSave["scale"] = ""+scale;
 
-			imageObject.animPosition(position, scale, time, type);
+			imageObject.AnimationPosition(position, scale, time, type);
 		}
 
-		public void Show(float time, string type)
+		public static void Show(float time, string type)
         {
 			dicSave["isShow"] = "true";
-			imageObject.show(time, type);
+			imageObject.Show(time, type);
 		}
 
-		public void Hide(float time, string type)
+		public static void Hide(float time, string type)
         {
 			dicSave["isShow"] = "false";
-			imageObject.hide(time, type);
+			imageObject.Hide(time, type);
 		}
-
-		public AbstractObject GetObject()
-        {
-			return imageObject;
-		}
-	}
+#endif
+    }
 }

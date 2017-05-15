@@ -86,14 +86,14 @@ namespace NovelEx {
 		}
 
 		public void finishAnimation() {
-			JOKEREX.Instance.StatusManager.NextOrder();
-			//JOKEREX.Instance.StatusManager.enableClickOrder = true;
+			StatusManager.Instance.NextOrder();
+			//StatusManager.Instance.enableClickOrder = true;
 			//			NovelSingleton.GameManager.nextOrder();
 		}
 
 		public void finishAnimationWithoutNextOrder() {
-			JOKEREX.Instance.StatusManager.NextOrder();
-//			JOKEREX.Instance.StatusManager.enableClickOrder = true;
+			StatusManager.Instance.NextOrder();
+//			StatusManager.Instance.enableClickOrder = true;
 		}
 
 		void Awake() {
@@ -101,9 +101,9 @@ namespace NovelEx {
 //ToDo:
 			CanvasScaler scaler = GetComponent<CanvasScaler>();
 			scaler.uiScaleMode = CanvasScaler.ScaleMode.ScaleWithScreenSize;
-			scaler.referenceResolution = new Vector2(JOKEREX.Instance.SystemConfig.CanvasSize.x, JOKEREX.Instance.SystemConfig.CanvasSize.y);
+			scaler.referenceResolution = new Vector2(SystemConfig.Instance.CanvasSize.x, SystemConfig.Instance.CanvasSize.y);
 			RectTransform rect = GetComponent<RectTransform>();
-			rect.sizeDelta = new Vector2(JOKEREX.Instance.SystemConfig.CanvasSize.x, JOKEREX.Instance.SystemConfig.CanvasSize.y);
+			rect.sizeDelta = new Vector2(SystemConfig.Instance.CanvasSize.x, SystemConfig.Instance.CanvasSize.y);
 		}
 
 		// Use this for initialization

@@ -1,29 +1,32 @@
 ﻿using UnityEngine;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using NovelEx;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
 
 //Audio活動を管理する
 namespace NovelEx
 {
-	public class AudioManager
+    [Serializable]
+    public class AudioManager
 	{
-		public Dictionary<string,AudioObject> dicBgm = new Dictionary<string,AudioObject>();
-		public Dictionary<string,AudioObject> dicSound = new Dictionary<string,AudioObject>();
-		public Dictionary<string, AudioObject> dicVoice = new Dictionary<string, AudioObject>();
+	    public static Dictionary<string, AudioObject> dicBgm = new Dictionary<string,AudioObject>();
+		public static Dictionary<string, AudioObject> dicSound = new Dictionary<string,AudioObject>();
+		public static Dictionary<string, AudioObject> dicVoice = new Dictionary<string, AudioObject>();
 
-		public void addAudio(string file,AudioType audioType)
+		public static void AddAudio(string file, AudioType audioType)
 		{
 			GameObject g = new GameObject();
 
 			AudioObject audioObject = g.AddComponent<AudioObject>();
 			audioObject.Load(file);
 
-			this.getDic (audioType)[file] = audioObject;
-
+			GetDic(audioType)[file] = audioObject;
 		}
 
-		private Dictionary<string,AudioObject> getDic(AudioType audioType)
+		private static Dictionary<string,AudioObject> GetDic(AudioType audioType)
         {		
 			switch (audioType) {
 			case AudioType.Bgm:
@@ -32,30 +35,30 @@ namespace NovelEx
 				return dicSound;
 			}
 
-			return null;
-		
+			return null;		
 		}
 
-		public AudioObject getAudio(string file, AudioType audioType)
+        public static AudioObject GetAudio(string file, AudioType audioType)
         {
-			Dictionary<string,AudioObject> dic = this.getDic (audioType);
+			Dictionary<string,AudioObject> dic = GetDic (audioType);
 
-			if (!dic.ContainsKey (file)) {
-				this.addAudio (file, audioType);
-				return this.getAudio (file, audioType);
+			if(!dic.ContainsKey (file))
+            {
+				AddAudio (file, audioType);
+				return GetAudio (file, audioType);
 			}
             else
             {
-				return dic [file];
+				return dic[file];
 			}
 		}
 
-		public void stopAudio(string file,AudioType audioType,float time,CompleteDelegate completeDelegate)
+		public static void StopAudio(string file,AudioType audioType,float time, CompleteDelegate completeDelegate = null)
         {
 			//全部停止する
 			if (file == "")
             {
-				Dictionary<string,AudioObject> dic = this.getDic(audioType);
+				Dictionary<string,AudioObject> dic = GetDic(audioType);
 				foreach (KeyValuePair<string, AudioObject> kvp in dic)
                 {
 					string key = kvp.Key;
@@ -67,7 +70,7 @@ namespace NovelEx
 			}
             else
             {
-				AudioObject audioObject = this.getAudio (file,audioType);
+				AudioObject audioObject = GetAudio(file,audioType);
 //				audioObject.time = time;
 				audioObject.completeDelegate = completeDelegate;
 				audioObject.Stop();

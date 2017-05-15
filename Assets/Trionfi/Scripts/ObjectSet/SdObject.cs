@@ -16,42 +16,42 @@ namespace NovelEx
 		private bool isShow = true;
 		public string filename = "";
 		private float show_x_position = 0; 
+
 		//イメージオブジェクト新規作成
-
-		public override void init (Dictionary<string,string> param)
+		public override void Init(Dictionary<string,string> param)
 		{
-			this.param = param;
+			paramDic = param;
 //ToDo:
-			GameObject g = Resources.Load (/*GameSetting.PATH_SD_OBJECT +*/ "fbx/" + this.param ["storage"]) as GameObject;
+			GameObject g = Resources.Load (/*GameSetting.PATH_SD_OBJECT +*/ "fbx/" + paramDic ["storage"]) as GameObject;
 
-			float x = float.Parse (this.param ["x"]);
-			float y = float.Parse (this.param ["y"]);
-			float z = float.Parse (this.param ["z"]);
+			float x = float.Parse (paramDic ["x"]);
+			float y = float.Parse (paramDic ["y"]);
+			float z = float.Parse (paramDic ["z"]);
 
 			this.show_x_position = x;
 
-			this.rootObject = (GameObject)Instantiate (g, new Vector3 (x, y, z), Quaternion.identity); 
-			this.rootObject.name = this.name;
+			instanceObject = (GameObject)GameObject.Instantiate(g, new Vector3 (x, y, z), Quaternion.identity); 
+			instanceObject.name = this.name;
 
 			this.image = g;
 
-			this.rootObject.AddComponent<Renderer>();
+			instanceObject.AddComponent<Renderer>();
 
-			float scale = float.Parse (this.param ["scale"]);
-			this.rootObject.transform.localScale = new Vector3 (scale, scale, scale);
+			float scale = float.Parse (paramDic ["scale"]);
+			instanceObject.transform.localScale = new Vector3 (scale, scale, scale);
 
-			float rot_x = float.Parse (this.param ["rot_x"]);
-			float rot_y = float.Parse (this.param ["rot_y"]);
-			float rot_z = float.Parse (this.param ["rot_z"]);
+			float rot_x = float.Parse (paramDic ["rot_x"]);
+			float rot_y = float.Parse (paramDic ["rot_y"]);
+			float rot_z = float.Parse (paramDic ["rot_z"]);
 
-			this.rootObject.transform.Rotate (new Vector3 (rot_x, rot_y, rot_z));
+			instanceObject.transform.Rotate (new Vector3 (rot_x, rot_y, rot_z));
 
 			/*
 						this.spriteRenderImage = this.image.GetComponent<SpriteRenderer>();
 						this.targetSprite = this.spriteRenderImage.sprite;
 
 						Color tmp = this.spriteRenderImage.color;
-						tmp.a = float.Parse (this.param ["a"]);
+						tmp.a = float.Parse (paramDic ["a"]);
 						this.spriteRenderImage.color = tmp;
 			*/
 
@@ -59,100 +59,54 @@ namespace NovelEx
 
 
 		}
-
-		public override void set (Dictionary<string,string> param)
+        
+		public override void SetColider()
 		{
-
-			if (this.rootObject == null) {
-				this.init (param);
-			}
-
-
-		}
-
-		public override void setColider()
-		{
-
-			this.rootObject.AddComponent<BoxCollider2D>();
-			BoxCollider2D b = this.rootObject.GetComponent<BoxCollider2D>();
+			instanceObject.AddComponent<BoxCollider2D>();
+			BoxCollider2D b = instanceObject.GetComponent<BoxCollider2D>();
 			b.isTrigger = true;
-			if (this.isShow == true) {
-				b.enabled = true;
-			} else {
-				b.enabled = false;
-			}
-
+            b.enabled = isShow;
 		}
 
-		public override void playAnim (string state)
-		{
-					
-			Animator a = this.rootObject.GetComponent<Animator>();
+		public override void  PlayAnimation(string state)
+		{					
+			Animator a = instanceObject.GetComponent<Animator>();
 			a.SetBool (state, true);
-
 		}
 
-		public override void stopAnim (string state)
+		public override void StopAnimation(string state)
 		{
-
-			Animator a = this.rootObject.GetComponent<Animator>();
+			Animator a = instanceObject.GetComponent<Animator>();
 			a.SetBool (state, false);
-
 		}
 
-		public override void show (float time, string easeType)
+		public override void Show(float time, string easeType)
 		{
+			isShow = true;
+            instanceObject.SetActive(true);
+            Vector3 v = instanceObject.transform.position;
 
-			this.isShow = true;
-			this.enabled = true;
-			Vector3 v = this.rootObject.transform.position;
-
-			v.x = this.show_x_position;
-			this.rootObject.transform.position = v;
+			v.x = show_x_position;
+			instanceObject.transform.position = v;
 				
 		}
 
-		public override void setScale (float scale_x, float scale_y, float scale_z)
+		public override void SetScale (float scale_x, float scale_y, float scale_z)
 		{
-
 			this.image.transform.localScale = new Vector3 (scale_x, scale_y, 1);
-
 		}
 
-		public override void hide (float time, string easeType)
+		public override void Hide(float time, string easeType)
 		{
-
-			this.isShow = false;
-			this.enabled = false;
+			isShow = false;
+			instanceObject.SetActive(false);
 						
-			Vector3 v = this.rootObject.transform.position;
+			Vector3 v = instanceObject.transform.position;
 			v.x = -500f;
-			this.rootObject.transform.position = v;
+			instanceObject.transform.position = v;
 
 			//非表示にする
-			//this.rootObject.GetComponent<Renderer>().enabled = true;
-
-
+			//this.rootObject.GetComponent<Renderer>().enabled = true
 		}
-		//アニメーションの終了をいじょうするための
-		private void finishAnimation()
-		{
-
-			if (this.completeDeletgate != null) {
-				this.completeDeletgate();
-			}
-
-		}
-		// Use this for initialization
-		void Start()
-		{
-
-
-		}
-		// Update is called once per frame
-		void Update()
-		{
-
-		}
-	}
+    }
 }

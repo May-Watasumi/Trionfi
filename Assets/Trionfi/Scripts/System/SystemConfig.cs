@@ -2,13 +2,15 @@
 using System.Collections;
 using UnityEngine.UI;
 
-namespace NovelEx {
+namespace NovelEx
+{
     public enum MessageType { Error, Warning, Info };
     public enum AudioType { Bgm, Sound, Voice }
     public enum FirstAction { Start, Load }
 
     [ExecuteInEditMode]
-	public class SystemConfig : SingletonMonoBehaviour<SystemConfig> {
+	public class SystemConfig : SingletonMonoBehaviour<SystemConfig>
+    {
         public static string PATH_PREFAB = "novel/data/prefab/";
         public static string PATH_IMAGE = "novel/data/images/image/";
         public static string PATH_CHARA_IMAGE = "novel/data/images/character/";
@@ -18,15 +20,6 @@ namespace NovelEx {
         public static string PATH_AUDIO_BGM = "novel/data/bgm/";
         public static string PATH_AUDIO_SE = "novel/data/sound/";
         public static string PATH_ANIM_FILE = "novel/data/anim/";
-
-        [SerializeField]
-		public bool ignoreCR = true;
-
-		[SerializeField]
-        public string actorMarker = "【】";
-
-		[SerializeField]
-        public string atcorTag = "talk_name";
 
         [SerializeField]
         public bool debugMode = false;
@@ -59,7 +52,7 @@ namespace NovelEx {
         public bool autoBoot = false;
         public TextAsset bootScript;
 
-        public bool useSerializer = true;
+//        public bool useSerializer = true;
 
         [SerializeField]
         public bool useCRI = false;

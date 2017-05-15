@@ -3,9 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 namespace NovelEx {
-
-
-	/*	
+    /*	
 --------------
 
 [doc]
@@ -43,31 +41,36 @@ scale=大きさをアニメーションできます。拡大率を指定しま�
 --------------------
  */
 
+    public class AnimComponent : AbstractComponent
+    {
+        public AnimComponent()
+        {
+            //string imagePath = GameSetting.PATH_ANIM_FILE;
+            //必須項目
+            arrayVitalParam = new List<string> { };
 
-	public class AnimComponent:AbstractComponent {
-		public AnimComponent() {
-			//string imagePath = GameSetting.PATH_ANIM_FILE;
-			//必須項目
-			this.arrayVitalParam = new List<string> { 	};
+            originalParamDic = new Dictionary<string, string>() {
+                { "name",""},
+                { "tag",""},
+                { "time","1"},
+                { "type","linear"},
+                { "wait","true"},
+                { "x",""},
+                { "y",""},
+                { "z",""},
+                { "scale",""},
+            };
+        }
 
-			this.originalParam = new Dictionary<string,string>() {
-				{ "name",""},
-				{ "tag",""},
-				{ "time","1"},
-				{ "type","linear"},
-				{ "wait","true"},
-				{ "x",""},
-				{ "y",""},
-				{ "z",""},
-				{ "scale",""},
-			};
-		}
-
-		public override void start() {
-			string name = this.param ["name"];
-			string tag = this.param ["tag"];
-
-			float time = float.Parse(this.param ["time"]);
+        public override void Start()
+        {
+            string name = paramDic["name"];
+            string tag = paramDic["tag"];
+        }
+    }
+}
+/*
+        float time = float.Parse(paramDic ["time"]);
 
 			List<string> images = new List<string>();
 
@@ -77,47 +80,45 @@ scale=大きさをアニメーションできます。拡大率を指定しま�
 				images.Add (name);
 
 			foreach (string image_name in images) {
-				Image image = JOKEREX.Instance.ImageManager.getImage(image_name);
+				ImageObject image = JOKEREX.Instance.ImageManager.getImage(image_name);
 
-				float x = (this.param ["x"]!="") ? float.Parse(this.param["x"]) : float.Parse(image.getParam("x"));
-				float y = (this.param ["y"] != "") ? float.Parse (this.param ["y"]) : float.Parse(image.getParam ("y"));
-				float z = (this.param ["z"] != "") ? float.Parse (this.param ["z"]) : float.Parse(image.getParam ("z"));
+				float x = (paramDic ["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.getParam("x"));
+				float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.getParam ("y"));
+				float z = (paramDic ["z"] != "") ? float.Parse (paramDic ["z"]) : float.Parse(image.getParam ("z"));
 
 				//Debug.Log ("anim--------------");
 				//Debug.Log (x + ":" + y + ":" + z);
 
-				float scale = (this.param["scale"]!="") ? float.Parse(this.param["scale"]) : float.Parse(image.getParam ("scale"));
+				float scale = (paramDic["scale"]!="") ? float.Parse(paramDic["scale"]) : float.Parse(image.getParam ("scale"));
 
-				if (this.param ["wait"] == "true") {
+				if (paramDic ["wait"] == "true") {
 					//クリック無効にする
 					//ToDo
-					//JOKEREX.Instance.StatusManager.enableClickOrder = false;
-					JOKEREX.Instance.StatusManager.Wait();
+					//StatusManager.Instance.enableClickOrder = false;
+					StatusManager.Instance.Wait();
 					image.getObject().animCompleteDeletgate = this.finishAnimation;
 				}
 			
-				image.animPosition (new Vector3(x,y,z),scale,time,this.param["type"]);
+				image.animPosition (new Vector3(x,y,z),scale,time,paramDic["type"]);
 
 				nextOrder = false;
-				if (this.param["wait"] != "true") {
-					JOKEREX.Instance.StatusManager.NextOrder();
+				if (paramDic["wait"] != "true") {
+					StatusManager.Instance.NextOrder();
 //					this.gameManager.nextOrder();
 					nextOrder = true;
 				}
 			}
 		}
 
-		public override void finishAnimation() {
-		if (this.param ["wait"] == "true") {
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				nextOrder = true;
-//				this.gameManager.nextOrder();
-//				JOKEREX.Instance.StatusManager.enableClickOrder = true;
-			}
-		}
+        public override void OnAnimationFinished()
+        {
+		    if (paramDic ["wait"] == "true") {
+				    StatusManager.Instance.NextOrder();
+    //				nextOrder = true;
+    //				this.gameManager.nextOrder();
+    //				StatusManager.Instance.enableClickOrder = true;
+			    }
+		    }
 	}
 }
-
-
-
-
+*/

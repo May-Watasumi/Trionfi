@@ -2,8 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx {
-
+namespace NovelEx
+{
 
 /*	
 --------------
@@ -34,18 +34,18 @@ next=falseを指定すると次の処理に移動することなく、音楽を�
 --------------------
  */
 
-
 	//音楽再生用のコンポーネント
-	public class PlaybgmComponent:AbstractComponent {
+	public class PlaybgmComponent : AbstractComponent {
 		bool isWait;
 
-		public PlaybgmComponent() {
+		public PlaybgmComponent()
+        {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"storage" 
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "storage",""},
 				{ "time","0"},
 				{ "vol","1"}, //ボリューム 0〜1
@@ -54,46 +54,48 @@ next=falseを指定すると次の処理に移動することなく、音楽を�
 			};
 		}
 
-		public override void start() {
-			float time = float.Parse(this.param["time"]);
-			float volume = float.Parse(this.param["vol"]);
-			bool isWait =  this.param["wait"] == "true" ? true : false;
-			string storage = this.param["storage"];
-			string file = JOKEREX.Instance.StorageManager.PATH_AUDIO_BGM + storage;
+		public override void Start()
+        {
+			float time = float.Parse(paramDic["time"]);
+			float volume = float.Parse(paramDic["vol"]);
+			bool isWait =  paramDic["wait"] == "true" ? true : false;
+			string storage = paramDic["storage"];
+			string file = StorageManager.Instance.PATH_AUDIO_BGM + storage;
 //			CompleteDelegate completeDelegate = this.complete;
-			JOKEREX.Instance.StatusManager.currentPlayBgm = storage;
+			StatusManager.Instance.currentPlayBgm = storage;
 
-            AudioObject audioObject = JOKEREX.Instance.AudioManager.getAudio(file, AudioType.Bgm);
-			audioObject.time = time;
-			audioObject.vol = volume;
+            AudioObject audioObject = AudioManager.GetAudio(file, AudioType.Bgm);
+	//		audioObject.time = time;
+			audioObject.volume1 = volume;
 			audioObject.completeDelegate = this.complete; //completeDelegate;
 			audioObject.audioSource.loop = true;
 			audioObject.isWait = false;
 
-			if(JOKEREX.Instance.StatusManager.onSkip)
+			if(StatusManager.Instance.onSkip)
 				time = 0.0f;
 
 			//アニメーション中にクリックして次に進めるかどうか。
-			if (time > 0.0f && this.param["wait"] != "false") { 
+			if (time > 0.0f && paramDic["wait"] != "false")
+            { 
 				nextOrder = false;
-				JOKEREX.Instance.StatusManager.Wait();
+				StatusManager.Instance.Wait();
 				audioObject.isWait = true;
 			}
 
-			audioObject.play();
+			audioObject.Play(time);
 		}
 
 		public void complete() {
 			if(isWait) {
-				JOKEREX.Instance.StatusManager.NextOrder();
+				StatusManager.Instance.NextOrder();
 			}
 /*
 			nextOrder = false;
-			if (this.param ["wait"] == "true") {
-				JOKEREX.Instance.StatusManager.currentState = JokerState.NextOrder;
-				//JOKEREX.Instance.StatusManager.enableNextOrder = true;
-				if(this.param["next"] =="true")
-					JOKEREX.Instance.StatusManager.currentState = JokerState.NextOrder;
+			if (paramDic ["wait"] == "true") {
+				StatusManager.Instance.currentState = JokerState.NextOrder;
+				//StatusManager.Instance.enableNextOrder = true;
+				if(paramDic["next"] =="true")
+					StatusManager.Instance.currentState = JokerState.NextOrder;
 				//ToDo:
 //				nextOrder = true;
 //				this.gameManager.nextOrder();
@@ -132,61 +134,66 @@ wait=trueを指定することでtimeで指定した時間が完了するまで�
  */
 
 	//BGMのwait は　フェードインが終わるのを待つことができる。
-	public class StopbgmComponent:AbstractComponent
+	public class StopbgmComponent : AbstractComponent
 	{
 		private bool endComplete = false; //同時に複数止めた時にコールバックを一回しか実行させないため
 
 		public StopbgmComponent() {
-
 			//必須項目
-			this.arrayVitalParam = new List<string> { 	};
+			arrayVitalParam = new List<string> { 	};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "storage",""},
 				{ "time","1"},
 				{ "wait","true"},
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 			//storage が指定されている場合は、そのAudioのみ停止する
-			JOKEREX.Instance.StatusManager.Wait();
-//			JOKEREX.Instance.StatusManager.enableNextOrder = false;
+			StatusManager.Instance.Wait();
+//			StatusManager.Instance.enableNextOrder = false;
 
-			string storage = this.param ["storage"];
-			float time = float.Parse(this.param ["time"]);
-			//			string wait = this.param ["wait"];
+			string storage = paramDic ["storage"];
+			float time = float.Parse(paramDic ["time"]);
+			//			string wait = paramDic ["wait"];
 
-			CompleteDelegate completeDelegate = this.complete;
+			CompleteDelegate completeDelegate = OnComplete;
 
-			if (storage != "") {
-				string file = JOKEREX.Instance.StorageManager.PATH_AUDIO_BGM + storage;
-				JOKEREX.Instance.AudioManager.stopAudio(file, AudioType.Bgm, time, completeDelegate);
-			} else {
-				JOKEREX.Instance.AudioManager.stopAudio("", AudioType.Bgm, time, completeDelegate);
+			if (storage != "")
+            {
+				string file = StorageManager.Instance.PATH_AUDIO_BGM + storage;
+				AudioManager.StopAudio(file, AudioType.Bgm, time, completeDelegate);
+			}
+            else
+            {
+				AudioManager.StopAudio("", AudioType.Bgm, time, completeDelegate);
 			}
 
 			//this.gameManager.scene.MessageSpeed = 0.02f;
 			//this.gameManager.scene.coroutineShowMessage (message);
-			JOKEREX.Instance.StatusManager.currentPlayBgm = "";
+			StatusManager.Instance.currentPlayBgm = "";
 
 			nextOrder = false;
-			if (this.param ["wait"] != "true") {
-				JOKEREX.Instance.StatusManager.NextOrder();
 
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
+            if (paramDic ["wait"] != "true")
+            {
+				StatusManager.Instance.NextOrder();
+
+//				StatusManager.Instance.enableNextOrder = true;
 //ToDo:
 //				nextOrder = true;
 //				this.gameManager.nextOrder();
 			}
 		}
 
-		public void complete() {
-			if (this.param ["wait"] == "true") {
+		public void OnComplete()
+        {
+			if (paramDic ["wait"] == "true") {
 				if (this.endComplete == false) {
 					this.endComplete = true;
-					JOKEREX.Instance.StatusManager.NextOrder();
-//					JOKEREX.Instance.StatusManager.enableNextOrder = true;
+					StatusManager.Instance.NextOrder();
+//					StatusManager.Instance.enableNextOrder = true;
 					nextOrder = true;
 //					this.gameManager.nextOrder();
 				}
@@ -228,16 +235,15 @@ loop=trueを指定すると音楽を繰り返し再生します。
 
 
 	//効果音は再生が停止するのを待つことができる。
-	public class PlayseComponent:AbstractComponent {
-
-		public PlayseComponent() {
-
+	public class PlayseComponent : AbstractComponent {
+		public PlayseComponent()
+        {
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"storage" 
 			};
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "storage",""},
 				{ "vol","1"},
 				{ "wait","true"},
@@ -245,32 +251,32 @@ loop=trueを指定すると音楽を繰り返し再生します。
 			};
 		}
 
-		public override void start() {
-			JOKEREX.Instance.StatusManager.Wait();
-//			JOKEREX.Instance.StatusManager.enableNextOrder = false;
+		public override void Start() {
+			StatusManager.Instance.Wait();
+//			StatusManager.Instance.enableNextOrder = false;
 
-			string storage = this.param ["storage"];
-			string file = JOKEREX.Instance.StorageManager.PATH_AUDIO_SE + storage;
+			string storage = paramDic ["storage"];
+			string file = StorageManager.Instance.PATH_AUDIO_SE + storage;
 
-			//			string wait = this.param ["wait"];
+			//			string wait = paramDic ["wait"];
 
 			CompleteDelegate completeDelegate = this.complete;
-			AudioObject audioObject = JOKEREX.Instance.AudioManager.getAudio(file, AudioType.Sound);
-			audioObject.time = 0;
-			audioObject.vol  = float.Parse(this.param["vol"]);
+			AudioObject audioObject = AudioManager.GetAudio(file, AudioType.Sound);
+//			audioObject.time = 0;
+			audioObject.volume1  = float.Parse(paramDic["vol"]);
 			audioObject.completeDelegate = completeDelegate;
-			audioObject.audioSource.loop = bool.Parse(this.param["loop"]);
-			audioObject.play();
+			audioObject.audioSource.loop = bool.Parse(paramDic["loop"]);
+			audioObject.Play();
 
 			//this.gameManager.scene.MessageSpeed = 0.02f;
 			//this.gameManager.scene.coroutineShowMessage (message);
 
 			nextOrder = false;
 
-			if (this.param["wait"] != "true")
+			if (paramDic["wait"] != "true")
 			{
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
+				StatusManager.Instance.NextOrder();
+//				StatusManager.Instance.enableNextOrder = true;
 //ToDo:
 //				nextOrder = true;
 //				this.gameManager.nextOrder();
@@ -278,9 +284,9 @@ loop=trueを指定すると音楽を繰り返し再生します。
 		}
 
 		public void complete() {
-			if (this.param ["wait"] == "true") {
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
+			if (paramDic ["wait"] == "true") {
+				StatusManager.Instance.NextOrder();
+//				StatusManager.Instance.enableNextOrder = true;
 //ToDo:
 //				nextOrder = true;
 //					this.gameManager.nextOrder();
@@ -314,56 +320,57 @@ loop=wait 効果音が停止するまで待ちます
 --------------------
  */
 
-	public class StopseComponent:AbstractComponent {
+	public class StopseComponent:AbstractComponent
+    {
 		private bool endComplete = false; //同時に複数止めた時にコールバックを一回しか実行させないため
 
 		public StopseComponent()
 		{
 			//必須項目
-			this.arrayVitalParam = new List<string> { 	};
+			arrayVitalParam = new List<string> { };
 
-			this.originalParam = new Dictionary<string,string>() {
+			originalParamDic = new Dictionary<string,string>() {
 				{ "storage",""},
 				{ "time","0"},
 				{ "wait","true"},
 			};
 		}
 
-		public override void start() {
+		public override void Start() {
 			//storage が指定されている場合は、そのAudioのみ停止する
-//			JOKEREX.Instance.StatusManager.enableNextOrder = false;
-			JOKEREX.Instance.StatusManager.Wait();
+//			StatusManager.Instance.enableNextOrder = false;
+			StatusManager.Instance.Wait();
 
-			string storage = this.param ["storage"];
-			float time = float.Parse(this.param ["time"]);
-			//			string wait = this.param ["wait"];
+			string storage = paramDic ["storage"];
+			float time = float.Parse(paramDic ["time"]);
+			//			string wait = paramDic ["wait"];
 
 			CompleteDelegate completeDelegate = this.complete;
 
 			if (storage != "") {
-				string file = JOKEREX.Instance.StorageManager.PATH_AUDIO_SE + storage;
-				JOKEREX.Instance.AudioManager.stopAudio(file, AudioType.Sound, time, completeDelegate);
+				string file = StorageManager.Instance.PATH_AUDIO_SE + storage;
+				AudioManager.StopAudio(file, AudioType.Sound, time, completeDelegate);
 			} else {
-				JOKEREX.Instance.AudioManager.stopAudio("", AudioType.Sound, time, completeDelegate);
+				AudioManager.StopAudio("", AudioType.Sound, time, completeDelegate);
 			}
 
 			nextOrder = false;
 
-			if (this.param["wait"] != "true")
+			if (paramDic["wait"] != "true")
 			{
-				JOKEREX.Instance.StatusManager.NextOrder();
-//				JOKEREX.Instance.StatusManager.enableNextOrder = true;
+				StatusManager.Instance.NextOrder();
+//				StatusManager.Instance.enableNextOrder = true;
 //				this.gameManager.nextOrder();
 			}
 		}
 
 		public void complete() {
-			if (this.param ["wait"] == "true") {
+			if (paramDic ["wait"] == "true") {
 
 				if (this.endComplete == false) {
 					this.endComplete = true;
-					JOKEREX.Instance.StatusManager.NextOrder();
-//					JOKEREX.Instance.StatusManager.enableNextOrder = true;
+					StatusManager.Instance.NextOrder();
+//					StatusManager.Instance.enableNextOrder = true;
 //					nextOrder = true;
 //					this.gameManager.nextOrder();
 				}

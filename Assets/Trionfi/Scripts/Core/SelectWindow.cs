@@ -6,7 +6,10 @@ namespace NovelEx
 {
 	public class SelectWindow : MonoBehaviour
 	{
-		[SerializeField]
+        [SerializeField]
+        GameObject selectorPrefab;
+
+        [SerializeField]
 		private string returnKey = "f.Selectoresult";
 		private string _resultString = "result";
 

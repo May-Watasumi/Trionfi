@@ -9,9 +9,13 @@ namespace NovelEx
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
 	{
         public TextAsset initialScriptFile;
-        public static string characterName;
+        public string characterName;
 
-        public Camera targetCamera;
+        public Camera targetCamera = Camera.main;
+
+        public MessageWindow currentMessageWindow;
+        public BackLogWindow currentBackLogWindow;
+        public SelectWindow currentSelectWindow;
 
 		//シナリオ終端で呼ばれる
 		public static void terminateScenario() { }
@@ -37,37 +41,21 @@ namespace NovelEx
 		public static void startTag(string tag)
         {
 			AbstractComponent cmp = NovelParser.Instance.makeTag(tag);
-			cmp.start();
+			cmp.Start();
 		}
+                
+        //ToDo
+#if false
 
-		//Awake
-		public void createObject()
-		{
-//			jokerEx = this;
-/*			systemConfig =*/ this.GetComponent<SystemConfig>();
-//			selectorManager = this.GetComponent<SelectorManager>();
-			logManager = this.GetComponent<LogManager>();
-/*			statusManager =*/ this.GetComponent<StatusManager>();
-/*			storageManager =*/ this.GetComponent<StorageManager>();
-
-			scenarioManager = new ScenarioManager();
-			imageManager = new ImageManager();
-/*			audioManager =*/ new AudioManager();
-			eventManager = new EventManager();
-
-			if(SystemConfig.Instance.useSerializer)
-				serializer = new Serializer();
-		}
-
-		/// <summary>
-		/// 一度走らせたScriptの依存関係を切る用の関数
-		/// </summary>
-		public void initScene()
+        /// <summary>
+        /// 一度走らせたScriptの依存関係を切る用の関数
+        /// </summary>
+        public void initScene()
 		{
 			//すべてクリアする。
 //			clearSingleton();
-			ImageManager.initScene();
-			StatusManager.initScene();
+//			ImageManager.initScene();
+//			StatusManager.initScene();
 
 			//グローバルコンフィグ読み込み
 			//ToDo:
@@ -86,7 +74,7 @@ namespace NovelEx
 				string tag_str = "[jump file='" + file + "' target='" + target + "' ]";
 
 				//タグを実行
-				AbstractComponent cmp = ScenarioManager.NovelParser.makeTag(tag_str);
+				AbstractComponent cmp = ScriptManager.Instance.NovelParser.makeTag(tag_str);
 				cmp.start();
 			}
 
@@ -109,25 +97,21 @@ namespace NovelEx
 			initScene();
 
 			//自分のシーンのみOnにしておく。prefabのデフォルトはfalse
-			if (SystemConfig.autoBoot)
+			if(SystemConfig.Instance.autoBoot && initialScriptFile)
 			{
-				string storage = getConfig("first_scenario");
-
-				storage =  StorageManager.PATH_SD_SCENARIO + storage;
-
-				doScript(storage);
+//                doScript(initialScriptFile.text);
 			}
 			//			JOKEREX.StatusManager.currentState = JokerState.EmptyOrder;
 		}
-
-		void Awake()
+        /*
+                void Awake()
+                {
+                    createObject();
+                }
+        */
+        void Update()
 		{
-			createObject();
-		}
-
-		void Update()
-		{
-			if(!ScenarioManager.hasComponent && StatusManager.currentState != JokerState.EmptyOrder)
+			if(!ScriptManager.Instance.hasComponent && StatusManager.currentState != JokerState.EmptyOrder)
 			{
 				//オードモードの設定時間が過ぎた
 				if(StatusManager.currentState == JokerState.PageWait && StatusManager.onAuto && !StatusManager.onAutoWait(Time.deltaTime))
@@ -159,7 +143,7 @@ namespace NovelEx
 
 		private IEnumerator decodeScenario()
 		{
-			ScenarioManager.decodeScenario();
+			ScriptManager.Instance.decodeScenario();
 			yield return null;
 		}
 
@@ -183,8 +167,8 @@ namespace NovelEx
 
 		private IEnumerator CallScenario(string file)
 		{
-			ScenarioManager.loadScenario(file, false);
-			ScenarioManager.decodeScenario();
+			ScriptManager.Instance.loadScenario(file, false);
+			ScriptManager.Instance.decodeScenario();
 			yield return null;
 		}
 		
@@ -209,5 +193,6 @@ namespace NovelEx
 
 			LAppLive2DManager.Instance.ClearScene();
 		}
-	}
+#endif
+    }
 };

@@ -48,35 +48,38 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 --------------------
  */
 
-	public class Bg_newComponent:Image_newComponent {
+	public class Bg_newComponent : Image_newComponent
+    {
 		public Bg_newComponent() : base() {
 
 			//必須項目
-			this.arrayVitalParam = new List<string> {
+			arrayVitalParam = new List<string> {
 				"storage" 
 			};
 
 			//画像のルートパスが異なってくる
-			base.imagePath = JOKEREX.Instance.StorageManager.PATH_BG_IMAGE;
+			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
-		public override void start() {
-			if (this.param ["name"] == "")
-				this.param["name"] = "background";
+		public override void Start()
+        {
+			if (paramDic ["name"] == "")
+				paramDic["name"] = "background";
 
-//			this.param ["layer"] ="background";
-			this.param["imagePath"] = JOKEREX.Instance.StorageManager.PATH_BG_IMAGE;
+//			paramDic ["layer"] ="background";
+			paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
-			base.start();
+			base.Start();
 		}
 	}
 
 	//背景のポジションを変更する
-	public class Bg_posComponent:Image_posComponent {
+	public class Bg_posComponent : Image_posComponent
+    {
 		public Bg_posComponent() : base() { }
 
-		public override void start() {
-			base.start();
+		public override void Start() {
+			base.Start();
 		}
 	}
 
@@ -113,14 +116,15 @@ type=表示のされ方を指定できます。
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Bg_showComponent:Image_showComponent {
-		public Bg_showComponent():base() { }
+	public class Bg_showComponent : Image_showComponent {
+		public Bg_showComponent() : base() { }
 
-		public override void start() {
-			if (this.param ["name"] == "")
-				this.param["name"] = "background";
+		public override void Start()
+        {
+			if (paramDic ["name"] == "")
+				paramDic["name"] = "background";
 
-			base.start();
+			base.Start();
 		}
 	}
 	/*	
@@ -151,25 +155,26 @@ type=非表示のされ方を指定できます。デフォルトはlinear で�
 --------------------
  */
 
-	public class Bg_hideComponent:Image_hideComponent {
-		public Bg_hideComponent():base() {  }
+	public class Bg_hideComponent : Image_hideComponent {
+		public Bg_hideComponent() : base() {  }
 
-		public override void start() {
-			if (this.param ["name"] == "")
-				this.param["name"] = "background";
+		public override void Start()
+        {
+			if (paramDic ["name"] == "")
+				paramDic["name"] = "background";
 
-			base.start();
+			base.Start();
 		}
 	}
 
 	//キャラの表情登録用
-	public class Bg_faceComponent:Image_faceComponent {
-		public Bg_faceComponent():base() {
-			base.imagePath = JOKEREX.Instance.StorageManager.PATH_BG_IMAGE;
+	public class Bg_faceComponent : Image_faceComponent {
+		public Bg_faceComponent() : base() {
+			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
-		public override void start() {
-			base.start();
+		public override void Start() {
+			base.Start();
 		}
 	}
 
@@ -203,19 +208,19 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
  */
 
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class Bg_modComponent:Image_modComponent {
-		public Bg_modComponent():base() {
+	public class Bg_modComponent : Image_modComponent {
+		public Bg_modComponent() : base() {
 			//必須項目
-			this.arrayVitalParam = new List<string> { };
+			arrayVitalParam = new List<string> { };
 		}
 
-		public override void start() {
-			this.param["imagePath"] = JOKEREX.Instance.StorageManager.PATH_BG_IMAGE;
+		public override void Start() {
+			paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
-			if (this.param ["name"] == "")
-				this.param["name"] = "background";
+			if(paramDic ["name"] == "")
+				paramDic["name"] = "background";
 
-			base.start();
+			base.Start();
 		}
 	}
 
@@ -246,13 +251,13 @@ name=削除する背景を指定します。
  */
 
 
-	public class Bg_removeComponent:Image_removeComponent {
+	public class Bg_removeComponent : Image_removeComponent {
 		public Bg_removeComponent() : base() { 	}
 
-		public override void start() {
-			if (this.param ["name"] == "")
-				this.param["name"] = "background";
-			base.start();
+		public override void Start() {
+			if (paramDic ["name"] == "")
+				paramDic["name"] = "background";
+			base.Start();
 		}
 	}
 }
