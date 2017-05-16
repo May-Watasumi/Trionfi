@@ -64,7 +64,7 @@ next=falseを指定すると次の処理に移動することなく、音楽を�
 //			CompleteDelegate completeDelegate = this.complete;
 			StatusManager.Instance.currentPlayBgm = storage;
 
-            AudioObject audioObject = AudioManager.GetAudio(file, AudioType.Bgm);
+            AudioObject audioObject = AudioManager.Instance.GetAudio(file, AudioType.Bgm);
 	//		audioObject.time = time;
 			audioObject.volume1 = volume;
 			audioObject.completeDelegate = this.complete; //completeDelegate;
@@ -163,11 +163,11 @@ wait=trueを指定することでtimeで指定した時間が完了するまで�
 			if (storage != "")
             {
 				string file = StorageManager.Instance.PATH_AUDIO_BGM + storage;
-				AudioManager.StopAudio(file, AudioType.Bgm, time, completeDelegate);
+				AudioManager.Instance.StopAudio(file, AudioType.Bgm, time, completeDelegate);
 			}
             else
             {
-				AudioManager.StopAudio("", AudioType.Bgm, time, completeDelegate);
+				AudioManager.Instance.StopAudio("", AudioType.Bgm, time, completeDelegate);
 			}
 
 			//this.gameManager.scene.MessageSpeed = 0.02f;
@@ -261,7 +261,7 @@ loop=trueを指定すると音楽を繰り返し再生します。
 			//			string wait = paramDic ["wait"];
 
 			CompleteDelegate completeDelegate = this.complete;
-			AudioObject audioObject = AudioManager.GetAudio(file, AudioType.Sound);
+			AudioObject audioObject = AudioManager.Instance.GetAudio(file, AudioType.Sound);
 //			audioObject.time = 0;
 			audioObject.volume1  = float.Parse(paramDic["vol"]);
 			audioObject.completeDelegate = completeDelegate;
@@ -349,9 +349,9 @@ loop=wait 効果音が停止するまで待ちます
 
 			if (storage != "") {
 				string file = StorageManager.Instance.PATH_AUDIO_SE + storage;
-				AudioManager.StopAudio(file, AudioType.Sound, time, completeDelegate);
+				AudioManager.Instance.StopAudio(file, AudioType.Sound, time, completeDelegate);
 			} else {
-				AudioManager.StopAudio("", AudioType.Sound, time, completeDelegate);
+				AudioManager.Instance.StopAudio("", AudioType.Sound, time, completeDelegate);
 			}
 
 			nextOrder = false;

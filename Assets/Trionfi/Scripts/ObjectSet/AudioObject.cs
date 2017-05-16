@@ -26,7 +26,7 @@ namespace NovelEx
 
         public override void Load(string resourceName)
 		{
-//			AudioClip audioClip = Resources.Load(resourceName, typeof(AudioClip)) as AudioClip;
+			AudioClip audioClip =  StorageManager.Instance.LoadAudioAsset(resourceName);
 //			AudioSource audioSource = this.gameObject.AddComponent<AudioSource>();
 			audioSource.clip = audioClip;
 //			audioSource = audioSource;

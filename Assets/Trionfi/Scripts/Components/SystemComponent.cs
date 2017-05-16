@@ -1327,9 +1327,7 @@ val=名前を表示します。キャラクター情報と絡めたい場合はc
 		public override void Start()
 		{
 			string name = this.paramDic ["val"];
-
-			Trionfi.Instance.characterName = name;
-            Trionfi.Instance.currentMessageWindow.currentName.text = name;
+			Trionfi.Instance.currentMessageWindow.currentName.text = name;
 		}
 	}
 

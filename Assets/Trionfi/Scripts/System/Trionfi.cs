@@ -8,28 +8,23 @@ namespace NovelEx
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
 	{
-        public TextAsset initialScriptFile;
-        public string characterName;
-
         public Camera targetCamera;
 
-        public MessageWindow currentMessageWindow;
-        public BackLogWindow currentBackLogWindow;
-        public SelectWindow currentSelectWindow;
+        public GameObject imageBasePrefab;
+        public GameObject defaultMessageWindowPrefab;
+        public GameObject defaultLogWindowPrefab;
+        public GameObject defaultSelectWindowPrefab;
+        public GameObject defaultCanvasManagerPrefab;
 
-        public CanvasManager canvas1;
-        public CanvasManager canvas2;
+        public MessageWindow currentMessageWindow;
+        public MessageWindow currentLogWindow;
+        public MessageWindow currentSelectWindow;
+        public CanvasManager[] currentCanvas;
 
         AudioManager audioManager;
         ImageObjectManager imageObjectManager;
         ScriptDecoder scriptDecoder;
         Serializer serializer;
-
-        //シナリオ終端で呼ばれる
-        public static void terminateScenario() { }
-
-		//実行すべき命令がないか、チェックする
-		public void check() { }
 
         //ToDo:UserConfigはprefsへ。命令系統を変える
 		//文字列から即時タグを実行することができます。
@@ -39,21 +34,27 @@ namespace NovelEx
 			cmp.Start();
 		}
 
-        //ToDo
-
         public void Init()
         {
             audioManager = new AudioManager();
             imageObjectManager = new ImageObjectManager();
             scriptDecoder = new ScriptDecoder();
             serializer = new Serializer();
+            currentCanvas = new CanvasManager[2];
         }
 
-        public void LoadConfig()
+        public void Start()
         {
+            Init();
 
-
+            if (SystemConfig.Instance.initialScriptFile != null)
+            {
+                scriptDecoder.LoadScenariofromString(SystemConfig.Instance.initialScriptFile.text, SystemConfig.Instance.initialScriptFile.name);
+                scriptDecoder.doComponent();
+            }                
         }
+
+        //ToDo
 #if false
 
         /// <summary>

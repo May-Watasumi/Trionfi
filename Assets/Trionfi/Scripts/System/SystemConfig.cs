@@ -12,6 +12,9 @@ namespace NovelEx
 	public class SystemConfig : SingletonMonoBehaviour<SystemConfig>
     {
         [SerializeField]
+        public TextAsset initialScriptFile;
+
+        [SerializeField]
         public bool debugMode = false;
 
         [SerializeField]

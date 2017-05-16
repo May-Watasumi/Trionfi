@@ -35,19 +35,7 @@ namespace NovelEx
             }
             return tagedObject;
         }
-        /*
-         * getImageNameByTag
-         * 
-                public static string GetParam(string key)
-                {
-                    return dicSave[key];
-                }
 
-                public static void SetParam(string key,string value)
-                {
-                    dicSave[key] = value;
-                }
-        */
         protected static void InitParam(Dictionary<string,string> param)
 		{
             dicSave.Clear();
@@ -87,10 +75,17 @@ namespace NovelEx
             dicObject.Remove(key);
         }
 
+        public static void Destroy()
+        {
+            foreach (KeyValuePair<string, AbstractObject> dat in dicObject)
+            {
+                GameObject.Destroy(dat.Value.instanceObject);
+            }
+            dicObject.Clear();
+        }
+
         public static void CreateObject(Dictionary<string, string> param)
         {
-            GameObject g = new GameObject(param["name"]);
-
 			AbstractObject imageObject;
 
             string className = dicSave["className"];
@@ -98,21 +93,6 @@ namespace NovelEx
             switch(className) {
 //ToDo:
 #if false
-            case "Canvas":
-				imageObject = g.AddComponent<CanvasObject>();
-				break;
-			case "Message":
-				imageObject = g.AddComponent<MessageObject>();
-				break;
-			case "UIImage":
-				imageObject = g.AddComponent<UIImageObject>();
-				break;
-			case "Clickable":
-				imageObject = g.AddComponent<ClickableObject>();
-				break;
-			case "Button":
-				imageObject = g.AddComponent<ButtonObject>();
-				break;
 			case "Live2d":
 				imageObject = g.AddComponent<Live2dObject>();
 				break;
@@ -131,10 +111,11 @@ namespace NovelEx
 
             InitParam(param);
 
+            GameObject g = GameObject.Instantiate(Trionfi.Instance.imageBasePrefab);
+            g.name = dicSave["name"];
             g.tag = dicSave["tag"];
-//            imageObject.name = dicSave["name"];
-//            imageObject.imagePath = dicSave["imagePath"];
             imageObject.instanceObject = g;
+
             imageObject.SetParam(dicSave);
 
 			//このオブジェクトが表示対象の場合は即表示
