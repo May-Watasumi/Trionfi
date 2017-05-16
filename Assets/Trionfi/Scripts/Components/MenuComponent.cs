@@ -266,7 +266,7 @@ time=何秒間隔で自動的にストーリーが進むかを設定すること
 			float time = float.Parse(paramDic["time"]);
 
 			if(time < 0.0f)
-				time = float.Parse(ScriptManager.Instance.variable.get("config.autoModeWait"));
+				time = float.Parse(ScriptDecoder.Instance.variable.get("config.autoModeWait"));
 
 			//string time = paramDic ["time"];
 			StatusManager.Instance.StartAuto(time);

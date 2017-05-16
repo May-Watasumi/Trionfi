@@ -56,7 +56,7 @@ namespace NovelEx {
 
 				if(paramDic["storage"] != "") {
 					string filename = StorageManager.Instance.PATH_SYSTEM_IMAGE + paramDic["storage"];
-					Sprite imageSprite = StorageManager.Instance.loadSprite(filename);
+					Sprite imageSprite = StorageManager.Instance.LoadSprite(filename);
 
 					_selector.GetComponent<UnityEngine.UI.Button>().image.sprite = imageSprite;
 					_selector.GetComponent<UnityEngine.UI.Button>().image.SetNativeSize();

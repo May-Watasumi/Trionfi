@@ -226,16 +226,17 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 			float time = float.Parse(paramDic["time"]);
 			bool flag_delegate = true;
 
-			List<string> images;
+			List<AbstractObject> images;
 
-			if(tag != "")
-				images = ImageObjectManager.getImageNameByTag (tag);	
-			else{
-				images = new List<string>();
-				images.Add (name);
-			}
+            if (tag != "")
+                images = ImageObjectManager.GetImageByTag(tag);
+            else
+            {
+                images = new List<AbstractObject>();
+                images.Add(ImageObjectManager.GetObject(name));
+            }
 
-			if(StatusManager.Instance.onSkip)
+            if (StatusManager.Instance.onSkip)
 				time = 0.0f;
 
 			//アニメーション中にクリックして次に進めるかどうか。
@@ -246,10 +247,8 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 				isWait = true;
 			}
 
-			foreach(string image_name in images)
+			foreach(AbstractObject image in images)
             {
-				ImageObject image = ImageObjectManager.GetObject(image_name) as ImageObject;
-
 				float x = (paramDic["x"] != "") ? float.Parse(paramDic["x"]) : float.Parse(image.paramDic["x"]);
 				float y = (paramDic["y"] != "") ? float.Parse(paramDic["y"]) : float.Parse(image.GetParam("y"));
 				float z = (paramDic["z"] != "") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam("z"));
@@ -260,7 +259,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 					//設定するのは一つだけ
 					if (flag_delegate == true) {
 						flag_delegate = false;
-						image.setFinishAnimationDelegate(this.finishAnimationDeletgate);
+						image.SetFinishAnimationDelegate(this.finishAnimationDeletgate);
 					}
 				}
 				image.Show(time, type);	
@@ -310,7 +309,6 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
  */
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
 	public class Image_hideComponent : AbstractComponent {
-		List<string> images = new List<string>();
 		bool isWait = false;
 
 		public Image_hideComponent() {
@@ -334,11 +332,15 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 
 			bool flag_delegate = true;
 
-			if (tag != "")
-				images = ImageObjectManager.getImageNameByTag (tag);	
-			else
-				images.Add(name);
+            List<AbstractObject> images;
 
+            if (tag != "")
+                images = ImageObjectManager.GetImageByTag(tag);
+            else
+            {
+                images = new List<AbstractObject>();
+                images.Add(ImageObjectManager.GetObject(name));
+            }
 			if(StatusManager.Instance.onSkip)
 				time = 0.0f;
 
@@ -350,14 +352,12 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 				isWait = true;
 			}
 
-			foreach(string image_name in images) {
-				ImageObject image = ImageObjectManager.GetObject(image_name) as ImageObject;
-
+			foreach(ImageObject image in images) {
 				if(isWait) {
 					//設定するのは一つだけ
 					if (flag_delegate == true) {
 						flag_delegate = false;
-						image.setFinishAnimationDelegate(finishAnimationDeletgate);
+						image.SetFinishAnimationDelegate(finishAnimationDeletgate);
 					}
 				}
 				image.Hide(time, type);
@@ -434,15 +434,14 @@ storage=画像ファイル名を直接していできます。フォルダはdat
 		public override void Start() {
 			string name = paramDic ["name"];
 			string face = paramDic ["face"];
-			string storage = paramDic ["storage"];
+			string storage = paramDic["storage"];
 
 			ImageObject image = ImageObjectManager.GetObject(name) as ImageObject;
 
-			ImageObjectManager.AddFace(face, storage);
+			ImageObjectManager.AddObject(image);
 			//this.gameManager.nextOrder();
 			//this.gameManager.scene.MessageSpeed = 0.02f;
 			//this.gameManager.scene.coroutineShowMessage (message);
-
 		}
 
 		public override void Validate()
@@ -521,8 +520,9 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 			//storage指定が優先される
 			if(storage != "")
 				image.SetParam(paramDic);
-			else
-				image.SetFace(face, time, type);
+            //ToDo
+            //			else
+//				image.SetFace(face, time, type);
 
 
 			if (StatusManager.Instance.onSkip || time <= 0.02f)
@@ -540,7 +540,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 //				this.gameManager.nextOrder();
 			}
 			else
-				image.setFinishAnimationDelegate(this.finishAnimationDeletgate);
+				image.SetFinishAnimationDelegate(this.finishAnimationDeletgate);
 		}
 
 		public override void OnAnimationFinished()
@@ -598,16 +598,18 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 			string tag = paramDic ["tag"];
 			string name = paramDic ["name"];
 
-			List<string> images = new List<string>();
-			if(tag != "")
-				images = ImageObjectManager.getImageNameByTag(tag);	
-			else
-				images.Add (name);
-
-			foreach(string image_name in images)
+            List<AbstractObject> images;
+            if (tag != "")
+                images = ImageObjectManager.GetImageByTag(tag);
+            else
+            {
+                images = new List<AbstractObject>();
+                images.Add(ImageObjectManager.GetObject(name));
+            }
+			foreach(ImageObject image in images)
             {
 				//Image image = this.gameManager.imageManager.getImage (image_name);
-				ImageObjectManager.RemoveObject(image_name);
+				ImageObjectManager.RemoveObject(image.GetParam("name"));
 			}
 
 			//JOKEREX.Instance.ImageManager.gameManager.nextOrder();

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MiniJSON;
+using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -81,8 +82,8 @@ namespace NovelEx
 
             //ToDo:
 			//グローバル変数を格納する
-			//ScriptManager.Instance.variable.replaceAll("global", globalObject.globalVar);
-			//ScriptManager.Instance.variable.trace("global");
+			//ScriptDecoder.Instance.variable.replaceAll("global", globalObject.globalVar);
+			//ScriptDecoder.Instance.variable.trace("global");
 		}
 
 		public static UserSaveData GetSaveObject(string storage)
@@ -209,9 +210,9 @@ namespace NovelEx
 
             sobj.dicObject = ImageObjectManager.dicObject;
 //			sobj.dicTag = ImageObjectManager.dicTag;
-			sobj.dicEvent = EventManager.dicEvent;
-			sobj.scriptManager = ScriptManager.Instance;
-			sobj.variable = ScriptManager.Instance.variable;
+//			sobj.dicEvent = EventManager.dicEvent;
+			sobj.scriptManager = ScriptDecoder.Instance;
+			sobj.variable = ScriptDecoder.Instance.variable;
 			sobj.currentFile = StatusManager.Instance.currentScenario;
 			sobj.currentIndex = StatusManager.Instance.currentScenarioPosition;
 //ToDo:
@@ -257,10 +258,10 @@ namespace NovelEx
 
 			//タグも復元
 //			ImageObjectManager.dicTag = sobj.dicTag;
-			EventManager.dicEvent = sobj.dicEvent;
+//			EventManager.dicEvent = sobj.dicEvent;
 //ToDo:Save
 //			ScenarioManager = sobj.scenarioManager;
-			ScriptManager.Instance.variable = sobj.variable;
+			ScriptDecoder.Instance.variable = sobj.variable;
 			//ToDo:Logmanagerクリア
 
 			//グローバルで置き換える
@@ -268,10 +269,10 @@ namespace NovelEx
 //			JOKEREX.Instance.Serializer.LoadGlobalObject();
 			//StatusManager.variable.replaceAll("global", NovelSingleton.GameManager.globalSetting.globalVar);
 
-			ScriptManager.Instance.LoadScenario(StatusManager.Instance.currentScenario);
+			ScriptDecoder.Instance.LoadScenario(StatusManager.Instance.currentScenario);
 			//開始位置の確認
 			//StatusManager.Instance.currentScenario = sobj.currentFile;
-			ScriptManager.Instance.currentComponentIndex = sobj.currentIndex - 1;
+			ScriptDecoder.Instance.currentComponentIndex = sobj.currentIndex - 1;
 			//テキストを復元する
 			//JOKEREX.Instance.MainMessage.CurrentMessage = sobj.currentMessage;
 			StatusManager.Instance.messageForSaveTitle = sobj.currentMessage;

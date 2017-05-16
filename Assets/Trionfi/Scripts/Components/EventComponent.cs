@@ -4,50 +4,51 @@ using System.Collections.Generic;
 
 namespace NovelEx
 {
+//    ToDo:
+#if false
+    /*	
+    --------------
 
-/*	
---------------
+    [doc]
+    tag=evt
+    group=イベント関連
+    title=イベントの登録
 
-[doc]
-tag=evt
-group=イベント関連
-title=イベントの登録
+    [desc]
+    画面上のイメージに対してイベントを登録することができます。
+    イベントが発生した際は指定した場所へジャンプをおこないます。
+    ジャンプ先は一方通行でスタックが残りません（return で戻れない）
+    イベントが発生した場所に戻りたい場合はジャンプ先でevt変数に呼び出し元情報が格納されているのでそれを活用します
+    evt.caller_index = イベントが発生した箇所のindexが格納されています　 
+    evt.caller_file  = イベントが発生したファイル名が格納されています
+    evt.caller_name  = イベントが発生したイメージのnameが格納されています。
 
-[desc]
-画面上のイメージに対してイベントを登録することができます。
-イベントが発生した際は指定した場所へジャンプをおこないます。
-ジャンプ先は一方通行でスタックが残りません（return で戻れない）
-イベントが発生した場所に戻りたい場合はジャンプ先でevt変数に呼び出し元情報が格納されているのでそれを活用します
-evt.caller_index = イベントが発生した箇所のindexが格納されています　 
-evt.caller_file  = イベントが発生したファイル名が格納されています
-evt.caller_name  = イベントが発生したイメージのnameが格納されています。
+    [sample]
 
-[sample]
+    [button_new name="button" text="ボタンです" ]
+    [button_show name="button" ]
 
-[button_new name="button" text="ボタンです" ]
-[button_show name="button" ]
+    [evt name="event_button" target="*jump_start" ]
 
-[evt name="event_button" target="*jump_start" ]
-
-*jump_start
-{evt.caller_name}がクリックされました
-
-
-[param]
-name=イベントを登録するnameを指定します
-tag=指定タグに対してまとめてイベントを登録することができます
-act=補足するイベントの種類をしていします。例えばクリックなどを指定できます。
-file=イベントが発生した際にジャンプするファイル名を記述します。省略された場合は、現在のファイル名と解釈されます
-target=イベントが発生した際にジャンプする先のラベル名を指定できます。省略されている場合は先頭位置からと解釈されます
+    *jump_start
+    {evt.caller_name}がクリックされました
 
 
+    [param]
+    name=イベントを登録するnameを指定します
+    tag=指定タグに対してまとめてイベントを登録することができます
+    act=補足するイベントの種類をしていします。例えばクリックなどを指定できます。
+    file=イベントが発生した際にジャンプするファイル名を記述します。省略された場合は、現在のファイル名と解釈されます
+    target=イベントが発生した際にジャンプする先のラベル名を指定できます。省略されている場合は先頭位置からと解釈されます
 
-[_doc]
---------------------
- */
 
-	//イベント登録用のコンポーネント
-	public class EvtComponent:AbstractComponent {
+
+    [_doc]
+    --------------------
+     */
+
+    //イベント登録用のコンポーネント
+    public class EvtComponent : AbstractComponent {
 		protected string imagePath = "";
 
 		public EvtComponent() {
@@ -72,16 +73,16 @@ target=イベントが発生した際にジャンプする先のラベル名を�
 			List<string> events = new List<string>();
 
 			if (tag != "")
-				events = ImageObjectManager.getImageNameByTag(tag);	
+				events = ImageObjectManager.GetImageByTag(tag);	
 			else
 				events.Add(name);
 
 
 			//ファイルが指定されていない場合は現在のシナリオを格納する
-			if(paramDic ["file"] == "")
+			if(paramDic["file"] == "")
 				paramDic["file"] = StatusManager.Instance.currentScenario;
 
-			foreach (string object_name in events)
+			foreach(string object_name in events)
             {
 				EventManager.addEvent(object_name, paramDic);
 			}
@@ -135,9 +136,9 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 
 			List<string> events = new List<string>();
 			if (tag != "")
-				events = ImageObjectManager.getImageNameByTag(tag);	
+				events = ImageObjectManager.GetImageByTag(tag);	
 			else
-				events.Add (name);
+				events.Add(name);
 
 			foreach (string object_name in events)
 				EventManager.removeEvent(object_name);
@@ -181,7 +182,7 @@ title=イベントの一時無効化
 
 		public override void Start() {
 			//例外として許可する
-			ScriptManager.Instance.variable.remove("_evt_name_permission");
+			ScriptDecoder.Instance.variable.remove("_evt_name_permission");
 
 			//StatusManager.enableEventClick = false;
 			StatusManager.Instance.isEventStop = true;
@@ -234,17 +235,17 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 
 			///タグが指定されている場合
 			if (tag != "") {
-				var events = ImageObjectManager.getImageNameByTag(tag);	
+				var events = ImageObjectManager.GetImageByTag(tag);	
 			
 				foreach (string object_name in events) {
-					ScriptManager.Instance.variable.set("_evt_name_permission." + object_name, "1");
+					ScriptDecoder.Instance.variable.set("_evt_name_permission." + object_name, "1");
 				}
 			}
 			else if (name != "") {
-				ScriptManager.Instance.variable.set("_evt_name_permission." + name, "1");
+				ScriptDecoder.Instance.variable.set("_evt_name_permission." + name, "1");
 			}
 			else {
-				ScriptManager.Instance.variable.remove("_evt_name_permission");
+				ScriptDecoder.Instance.variable.remove("_evt_name_permission");
 
 				//StatusManager.enableEventClick = true;
 				StatusManager.Instance.isEventStop = false;
@@ -253,4 +254,5 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 //			this.gameManager.nextOrder();
 		}
 	}
+#endif
 }

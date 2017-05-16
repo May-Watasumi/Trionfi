@@ -19,22 +19,36 @@ namespace NovelEx
         //face 情報はココに格納
         public static Dictionary<string,string> dicFace = new Dictionary<string,string>();
 
-		[NonSerialized]
-		private static AbstractObject imageObject;
         [NonSerialized]
         public static ImageObjectManager Instance;
-/*
-        public static string GetParam(string key)
-		{
-			return dicSave[key];
-		}
 
-		public static void SetParam(string key,string value)
-		{
-			dicSave[key] = value;
-		}
-*/
-		protected static void InitParam(Dictionary<string,string> param)
+        [NonSerialized]
+        public static List<AbstractObject> tagedObject = new List<AbstractObject>();
+
+        public static List<AbstractObject> GetImageByTag(string tag)
+        {
+            tagedObject.Clear();
+            foreach (KeyValuePair<string, AbstractObject>abs in dicObject)
+            {
+                if (abs.Value.instanceObject.tag == "tag")// GetParam("tag") == 
+                    tagedObject.Add(abs.Value);
+            }
+            return tagedObject;
+        }
+        /*
+         * getImageNameByTag
+         * 
+                public static string GetParam(string key)
+                {
+                    return dicSave[key];
+                }
+
+                public static void SetParam(string key,string value)
+                {
+                    dicSave[key] = value;
+                }
+        */
+        protected static void InitParam(Dictionary<string,string> param)
 		{
             dicSave.Clear();
 			dicSave["tag"] = param["tag"];
@@ -59,7 +73,7 @@ namespace NovelEx
 
         public static void AddObject(AbstractObject instance)
         {
-            dicObject[instance.name] = instance;
+            dicObject[instance.GetParam("name")] = instance;
         }
 
         public static AbstractObject GetObject(string key)
@@ -110,7 +124,8 @@ namespace NovelEx
                 imageObject = new SdObject();
                 break;
             default:
-				imageObject = StorageManager.GetCustomObject(className);
+                    //ToDo?
+                imageObject = new ImageObject();//StorageManager.GetCustomObject(className);
 				break;
 			}
 

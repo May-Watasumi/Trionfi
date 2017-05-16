@@ -6,10 +6,10 @@ using System;
 namespace NovelEx
 {
     [Serializable]
-	public class ScriptManager
+	public class ScriptDecoder
     {
         [NonSerialized]
-        public static ScriptManager Instance = null;
+        public static ScriptDecoder Instance = null;
 
         //マクロ情報はシステム共通
         [Serializable]
@@ -83,7 +83,7 @@ namespace NovelEx
 		public List<AbstractComponent> arrayComponents = new List<AbstractComponent>();
 		public int currentComponentIndex = -1;		//-1は未初期化		//EX変更点：0からスタート
 
-		public ScriptManager() { Instance = this; }
+		public ScriptDecoder() { Instance = this; }
 
 		public void StartScenario(string currentScenario, int index, List<AbstractComponent> arrayComponents = null)
 		{
@@ -343,11 +343,11 @@ namespace NovelEx
 				cmp.Before();
 
 				//タグ
-				if (StatusManager.Instance.currentState == JokerState.SkipOrder)
+//				if (StatusManager.Instance.currentState == JokerState.SkipOrder)
 				{
 					Debug.Log("SkipOrderされました");
 				}
-				else
+//				else
 				{
 					cmp.CalcVariable();
 					cmp.Validate();
@@ -378,7 +378,9 @@ namespace NovelEx
 			//スタックがあるならreturn する
 			if(CountStack() > 0)
 			{
-				NovelParser.Instance.StartTag("[return]");
+                ReturnComponent _ret = new ReturnComponent();
+                _ret.Start();
+//                NovelParser.Instance.StartTag("[return]");
 			}
 			else
 			{

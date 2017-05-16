@@ -271,15 +271,18 @@ condition=stateで指定するステートをtrue or falseで指定すること�
 		public override void Start() {
 			string name = paramDic ["name"];
 			string tag = paramDic ["tag"];
-			List<string> images = new List<string>();
-			if (tag != "")
-				images = ImageObjectManager.getImageNameByTag (tag);	
-			else
-				images.Add (name);
+			List<AbstractObject> images;
 
-			foreach(string image_name in images) {
-				ImageObject image = ImageObjectManager.GetObject(image_name) as ImageObject;
+            if (tag != "")
+                images = ImageObjectManager.GetImageByTag(tag);
+            else
+            {
+                images = new List<AbstractObject>();
+                images.Add(ImageObjectManager.GetObject(name));
+            }
 
+            foreach (ImageObject image in images)
+            {
 				if (paramDic ["condition"] == "true")
 					image.PlayAnimation(paramDic["state"]);
 				else

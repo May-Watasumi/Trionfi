@@ -85,7 +85,7 @@ name=ラベル名を指定してください
 
 			string name = paramDic ["name"];
 //ToDo:
-			ScriptManager.Instance.AddMacro(name, StatusManager.Instance.currentScenario, ScriptManager.Instance.currentComponentIndex);
+			ScriptDecoder.Instance.AddMacro(name, StatusManager.Instance.currentScenario, ScriptDecoder.Instance.currentComponentIndex);
 //			this.gameManager.nextOrder();
 
 		}
@@ -108,7 +108,7 @@ name=ラベル名を指定してください
 		public override void Start() {
 			paramDic["name"] = tagName;
 
-			ScriptManager.Macro macro = ScriptManager.Instance.GetMacro (paramDic ["name"]);
+			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro (paramDic ["name"]);
 
 			if(macro == null) {
 				ErrorLogger.stopError("マクロ「"+paramDic["name"]+"」は存在しません。");
@@ -118,7 +118,7 @@ name=ラベル名を指定してください
 			paramDic["index"] = ""+macro.index ;
 			paramDic["file"]  = macro.file_name;
 
-			ScriptManager.Instance.macroNum++;
+			ScriptDecoder.Instance.macroNum++;
 			//this.gameManager.scenarioManager.addMacroStack (macro.name, this.paramDic);
 			AbstractComponent cmp = NovelParser.Instance.makeTag ("call", paramDic);
 			cmp.Start();
@@ -161,8 +161,8 @@ title=マクロの終端
 		}
 
 		public override void Start() {
-			if(ScriptManager.Instance.macroNum > 0) {
-				ScriptManager.Instance.macroNum--;
+			if(ScriptDecoder.Instance.macroNum > 0) {
+				ScriptDecoder.Instance.macroNum--;
 				//ココに来た場合はreturn を実行する 
 				AbstractComponent cmp = NovelParser.Instance.makeTag ("[return]");
 				cmp.Start();
@@ -257,14 +257,14 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 			if (StatusManager.Instance.currentScenario != file)
 			{
 				//ToDo:
-				ScriptManager.Instance.LoadScenario(file);
+				ScriptDecoder.Instance.LoadScenario(file);
 			}
 
 			//index直指定の場合はそれに従う
 			if (this.paramDic["index"] != "")
 				index = int.Parse(this.paramDic["index"]);
 			else
-				index = ScriptManager.Instance.GetIndex(file, target);
+				index = ScriptDecoder.Instance.GetIndex(file, target);
 
 			if(index == -1)
 				index = 0;
@@ -274,13 +274,13 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 
 			//ゲームマネージャーの現在の位置をそこに書き換えてnextOrderでどうだ。
 //ToDo:
-//			ScriptManager.Instance.currentComponentIndex = index;
-			ScriptManager.Instance.StartScenario(file, index);
+//			ScriptDecoder.Instance.currentComponentIndex = index;
+			ScriptDecoder.Instance.StartScenario(file, index);
 
 			//シーンをクリアして作りなおす
 			if (this.paramDic ["scene"] == "new") {
 				//new の場合はスタックをすべて削除する
-				ScriptManager.Instance.RemoveAllStacks();
+				ScriptDecoder.Instance.RemoveAllStacks();
 				StatusManager.Instance.nextFileName = file;
 				StatusManager.Instance.nextTargetName = target;
 
@@ -288,7 +288,7 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 				SceneManager.LoadScene("NovelPlayer");
 			}
 
-			Debug.Log("JUMP:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + ScriptManager.Instance.currentComponentIndex + "\"");
+			Debug.Log("JUMP:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + ScriptDecoder.Instance.currentComponentIndex + "\"");
 			// + " param=\"" + this.paramDic.ToStringFull());
 
 //			if (this.paramDic ["next"] != "false") {
@@ -301,8 +301,8 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 		}
 		public override void After() {
 			//SkipOrder中もafterが実行される（のが仕様としては正しいんだけども）
-			if(StatusManager.Instance.currentState != JokerState.SkipOrder)
-				ScriptManager.Instance.currentComponentIndex--;
+//			if(StatusManager.Instance.currentState != JokerState.SkipOrder)
+				ScriptDecoder.Instance.currentComponentIndex--;
 		}
 
 	}
@@ -368,16 +368,16 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 
 			string tag_str ="[jump file='"+file+"' target='"+target+"' index="+ index +" ]";
 //ToDo:
-			Debug.Log("PUSH:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + (ScriptManager.Instance.currentComponentIndex).ToString()+ "\"");
+			Debug.Log("PUSH:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + (ScriptDecoder.Instance.currentComponentIndex).ToString()+ "\"");
 
-			ScriptManager.Instance.AddStack(StatusManager.Instance.currentScenario, ScriptManager.Instance.currentComponentIndex, this.paramDic);
+			ScriptDecoder.Instance.AddStack(StatusManager.Instance.currentScenario, ScriptDecoder.Instance.currentComponentIndex, this.paramDic);
 			
 			//タグを実行
 			AbstractComponent cmp = NovelParser.Instance.makeTag(tag_str);
 			cmp.Start();
 
 //nextOrder分
-			ScriptManager.Instance.currentComponentIndex--;
+			ScriptDecoder.Instance.currentComponentIndex--;
 
 //			nextOrder = false;
 //			StatusManager.Instance.currentState = JokerState.NextOrder;
@@ -391,7 +391,7 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 
 		}
 		public override void After(){
-//			ScriptManager.Instance.currentComponentIndex--;
+//			ScriptDecoder.Instance.currentComponentIndex--;
 //			 base.after();
 		}
 	}
@@ -443,7 +443,7 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 		}
 
 		public override void Start() {
-			ScriptManager.CallStack stack = ScriptManager.Instance.PopStack();
+			ScriptDecoder.CallStack stack = ScriptDecoder.Instance.PopStack();
 
 			string tag_str = "";
 
@@ -464,7 +464,7 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 			//this.gameManager.nextOrder();
 		}
 		public override void After(){
-//			ScriptManager.Instance.currentComponentIndex--;
+//			ScriptDecoder.Instance.currentComponentIndex--;
 //			 base.after();
 		}
 	}
@@ -577,7 +577,7 @@ exp=数式を指定します
 
 			string result = ExpObject.calc (eo.exp);
 
-			ScriptManager.Instance.variable.set(eo.type + "." + eo.name, result);
+			ScriptDecoder.Instance.variable.set(eo.type + "." + eo.name, result);
 //ToDo:
 //			this.gameManager.nextOrder();
 
@@ -632,7 +632,7 @@ exp=文字式を指定します
 			string exp = paramDic ["exp"];
 
 			ExpObject eo = new ExpObject (exp);
-			ScriptManager.Instance.variable.set(eo.type + "." + eo.name, eo.exp);
+			ScriptDecoder.Instance.variable.set(eo.type + "." + eo.name, eo.exp);
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -688,7 +688,7 @@ exp=評価する変数を格納します。
 
 			//変数なら素直に代入
 			if(val.IndexOf(".") != -1)
-				val = ScriptManager.Instance.variable.get(exp);
+				val = ScriptDecoder.Instance.variable.get(exp);
 
 			string tag_str ="[story val='"+val+"' ]";
 
@@ -769,11 +769,11 @@ exp=評価する式を指定します。この式の結果が false ( または 
 
 		public override void Before() {
 			//スキップ中ならここは通過しない
-			ScriptManager.Instance.ifNum++;
+			ScriptDecoder.Instance.ifNum++;
 		}
 
 		public override void Start() {
-			ScriptManager.Instance.AddIfStack(true);
+			ScriptDecoder.Instance.AddIfStack(true);
 
 			string exp = paramDic ["exp"];
 			if (this.paramDic.ContainsKey ("mobile")) {
@@ -784,7 +784,7 @@ exp=評価する式を指定します。この式の結果が false ( または 
 			//条件に合致した場合はそのままifの中へ
 			if (result == "true") {
 				//ifスタックが完了している
-				ScriptManager.Instance.ChangeIfStack(false);
+				ScriptDecoder.Instance.ChangeIfStack(false);
 			}
 			else {
 				//elsif か　endif まで処理を進める
@@ -839,8 +839,8 @@ exp=評価する変数を格納します。
 		public override void Before() {
 			StatusManager.Instance.setSkipOrder();
 
-			if (ScriptManager.Instance.CountIfStack() == ScriptManager.Instance.ifNum) {
-				if (ScriptManager.Instance.CurrentIfStack() == true)
+			if (ScriptDecoder.Instance.CountIfStack() == ScriptDecoder.Instance.ifNum) {
+				if (ScriptDecoder.Instance.CurrentIfStack() == true)
 					StatusManager.Instance.releaseSkipOrder();
 			}
 		}
@@ -852,7 +852,7 @@ exp=評価する変数を格納します。
 			//条件に合致した場合はそのままifの中へ
 			if (result == "true") {
 				//ifスタックが完了している
-				ScriptManager.Instance.ChangeIfStack(false);
+				ScriptDecoder.Instance.ChangeIfStack(false);
 //ToDo:
 //				this.gameManager.nextOrder();
 			}
@@ -901,14 +901,14 @@ if タグもしくは elsif タグ と endif タグの間で用いられます�
 		public override void Before() {
 			StatusManager.Instance.setSkipOrder();
 
-			if (ScriptManager.Instance.CountIfStack() == ScriptManager.Instance.ifNum) {
-				if (ScriptManager.Instance.CurrentIfStack() == true)
+			if (ScriptDecoder.Instance.CountIfStack() == ScriptDecoder.Instance.ifNum) {
+				if (ScriptDecoder.Instance.CurrentIfStack() == true)
 					StatusManager.Instance.releaseSkipOrder();
 			}
 		}
 
 		public override void Start() {
-			ScriptManager.Instance.ChangeIfStack(false);
+			ScriptDecoder.Instance.ChangeIfStack(false);
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -950,15 +950,15 @@ if文を終了します。必ずif文の終わりに記述する必要があり�
 			//if文とスタックの数が同一の場合はスキップをやめて、endif を実行
 			StatusManager.Instance.setSkipOrder();
 
-			if (ScriptManager.Instance.CountIfStack() == ScriptManager.Instance.ifNum)
+			if (ScriptDecoder.Instance.CountIfStack() == ScriptDecoder.Instance.ifNum)
 				StatusManager.Instance.releaseSkipOrder();		
 
-			ScriptManager.Instance.ifNum--;
+			ScriptDecoder.Instance.ifNum--;
 		}
 
 		public override void Start() {
 			//ifスタックが取り除かれる
-			ScriptManager.Instance.PopIfStack();
+			ScriptDecoder.Instance.PopIfStack();
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -1266,7 +1266,7 @@ exp=確認したい変数名を指定します。
 
 		public override void Start() {
 			string exp = paramDic ["exp"];
-			ScriptManager.Instance.variable.trace(exp);
+			ScriptDecoder.Instance.variable.trace(exp);
 //ToDo:
 //			this.gameManager.nextOrder();
 		}
@@ -1479,7 +1479,7 @@ name=削除する変数名を指定してください。
 		public override void Start() {
 			//削除
 			string name = paramDic["name"];
-			ScriptManager.Instance.variable.remove(name);
+			ScriptDecoder.Instance.variable.remove(name);
 		}
 	}
 

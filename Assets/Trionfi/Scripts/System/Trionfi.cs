@@ -11,40 +11,49 @@ namespace NovelEx
         public TextAsset initialScriptFile;
         public string characterName;
 
-        public Camera targetCamera = Camera.main;
+        public Camera targetCamera;
 
         public MessageWindow currentMessageWindow;
         public BackLogWindow currentBackLogWindow;
         public SelectWindow currentSelectWindow;
 
-		//シナリオ終端で呼ばれる
-		public static void terminateScenario() { }
+        public CanvasManager canvas1;
+        public CanvasManager canvas2;
+
+        AudioManager audioManager;
+        ImageObjectManager imageObjectManager;
+        ScriptDecoder scriptDecoder;
+        Serializer serializer;
+
+        //シナリオ終端で呼ばれる
+        public static void terminateScenario() { }
 
 		//実行すべき命令がないか、チェックする
 		public void check() { }
 
         //ToDo:UserConfigはprefsへ。命令系統を変える
-/*
-		//moved from SaveDataManager(UserDataManager)
-		public string getConfig(string key)
-		{
-			return scenarioManager.variable.get("config." + key);
-		}
-
-		//moved from SaveDataManager(UserDataManager)
-		public void setConfig(string key, string val)
-		{
-			scenarioManager.variable.set("config." + key, val);
-		}
-*/
 		//文字列から即時タグを実行することができます。
-		public static void startTag(string tag)
+		public static void StartTag(string tag)
         {
 			AbstractComponent cmp = NovelParser.Instance.makeTag(tag);
 			cmp.Start();
 		}
-                
+
         //ToDo
+
+        public void Init()
+        {
+            audioManager = new AudioManager();
+            imageObjectManager = new ImageObjectManager();
+            scriptDecoder = new ScriptDecoder();
+            serializer = new Serializer();
+        }
+
+        public void LoadConfig()
+        {
+
+
+        }
 #if false
 
         /// <summary>
@@ -52,15 +61,6 @@ namespace NovelEx
         /// </summary>
         public void initScene()
 		{
-			//すべてクリアする。
-//			clearSingleton();
-//			ImageManager.initScene();
-//			StatusManager.initScene();
-
-			//グローバルコンフィグ読み込み
-			//ToDo:
-			//Serializer.LoadGlobalObject();
-
 			//ToDo:jump系でscene=newさせる意味がないような……
 			if(StatusManager.nextFileName != "") {
 				//scene new でジャンプしてきた後。variable は引き継がないとだめ。
@@ -74,7 +74,7 @@ namespace NovelEx
 				string tag_str = "[jump file='" + file + "' target='" + target + "' ]";
 
 				//タグを実行
-				AbstractComponent cmp = ScriptManager.Instance.NovelParser.makeTag(tag_str);
+				AbstractComponent cmp = ScriptDecoder.Instance.NovelParser.makeTag(tag_str);
 				cmp.start();
 			}
 
@@ -84,8 +84,6 @@ namespace NovelEx
 			GameObject canvaslog = GameObject.Instantiate(g) as GameObject;
 			canvaslog.name = "CanvasLog";
 			*/
-
-			targetCamera = Camera.main != null ? Camera.main : Camera.allCameras[0];
 		}
 
 		public void Init()
@@ -111,7 +109,7 @@ namespace NovelEx
         */
         void Update()
 		{
-			if(!ScriptManager.Instance.hasComponent && StatusManager.currentState != JokerState.EmptyOrder)
+			if(!ScriptDecoder.Instance.hasComponent && StatusManager.currentState != JokerState.EmptyOrder)
 			{
 				//オードモードの設定時間が過ぎた
 				if(StatusManager.currentState == JokerState.PageWait && StatusManager.onAuto && !StatusManager.onAutoWait(Time.deltaTime))
@@ -143,7 +141,7 @@ namespace NovelEx
 
 		private IEnumerator decodeScenario()
 		{
-			ScriptManager.Instance.decodeScenario();
+			ScriptDecoder.Instance.decodeScenario();
 			yield return null;
 		}
 
@@ -167,8 +165,8 @@ namespace NovelEx
 
 		private IEnumerator CallScenario(string file)
 		{
-			ScriptManager.Instance.loadScenario(file, false);
-			ScriptManager.Instance.decodeScenario();
+			ScriptDecoder.Instance.loadScenario(file, false);
+			ScriptDecoder.Instance.decodeScenario();
 			yield return null;
 		}
 		

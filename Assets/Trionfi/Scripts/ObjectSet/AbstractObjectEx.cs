@@ -11,11 +11,11 @@ namespace NovelEx
 		public GameObject instanceObject;
 		public Dictionary<string,string> paramDic;
 
+        public AbstractObject() {  }
+        public AbstractObject(Dictionary<string, string> param) { Init(param); }
+
         public string GetParam(string key) { return paramDic[key]; }
-/*
-        public string imagePath ="";
-        public string name;
-*/
+
         protected CompleteDelegate completeDeletgate = null;
 		public CompleteDelegate animCompleteDeletgate = null; //アニメーションのデリゲート指定
 

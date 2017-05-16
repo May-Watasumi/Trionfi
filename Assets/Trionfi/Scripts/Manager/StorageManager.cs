@@ -21,7 +21,10 @@ namespace NovelEx {
 //	[System.Serializable]
 	public class StorageManager : SingletonMonoBehaviour<StorageManager>
 	{
-		[SerializeField]		
+        [SerializeField]
+        public GameObject imageBasePrefab;
+
+        [SerializeField]		
 		public string basepath = "novelex/data/";
 
 		public StorageInfo path_prefab = new StorageInfo() { path = "prefab/", type = StorageTypes.LocalFile };
@@ -39,7 +42,6 @@ namespace NovelEx {
 		public StorageInfo path_live2d = new StorageInfo() { path = "L2DModel/", type = StorageTypes.LocalFile };
 
 		public StorageInfo path_savedata = new StorageInfo() { path = /*Application.persistentDataPath+*/"/novel/", type = StorageTypes.LocalFile };
-		private const string globaldatafile = "setting.dat";
 		private const string savesnapfile = "_TEMPSAVE_.dat";
 
 		public string PATH_SERVER {
@@ -149,7 +151,7 @@ namespace NovelEx {
 			}
 		}
 
-		public string checkStorage(string storage) {
+		public string IsExist(string storage) {
 			Sprite g = Resources.Load<Sprite>(storage);
 
 			Debug.Log(g);
@@ -161,7 +163,7 @@ namespace NovelEx {
 		}
 
 //ToDo:AssetBundle
-		public GameObject loadObject(string storage) {
+		public GameObject LoadObject(string storage) {
 			GameObject obj = Resources.Load(storage) as GameObject;
 
 			if (obj == null)
@@ -170,7 +172,7 @@ namespace NovelEx {
 			return obj;
 		}
 
-		public string loadTextAsset(string storage) {
+		public string LoadTextAsset(string storage) {
 			// TextAssetとして、Resourcesフォルダからテキストデータをロードする
 			TextAsset stageTextAsset = Resources.Load(storage) as TextAsset;
 
@@ -184,7 +186,7 @@ namespace NovelEx {
 			return stageData;
 		}
 
-		public AudioClip loadAudioAsset(string storage) {
+		public AudioClip LoadAudioAsset(string storage) {
 			AudioClip clip = new AudioClip() ;     
             clip = (AudioClip)(Resources.Load(storage)) as AudioClip;
 
@@ -194,7 +196,7 @@ namespace NovelEx {
 			return clip	;
 		}
 
-		public Sprite loadSprite(string storage) {
+		public Sprite LoadSprite(string storage) {
 			Sprite sp = Resources.Load<Sprite>(storage);
 
 			if (sp == null)
@@ -203,7 +205,7 @@ namespace NovelEx {
 			return sp;
 		}
 
-		public Sprite loadImage(string storage) {
+		public Sprite LoadImage(string storage) {
 			Sprite sp = Resources.Load<Sprite>(PATH_IMAGE_ROOT + storage);
 
 			if (sp == null)
@@ -212,17 +214,17 @@ namespace NovelEx {
 			return sp;
 		}
 
-		public AudioClip loadVoice(string storage) {
-			return loadAudioAsset(PATH_AUDIO_VOICE + storage);
+		public AudioClip LoadVoice(string storage) {
+			return LoadAudioAsset(PATH_AUDIO_VOICE + storage);
 		}
 
 
-		public GameObject loadLive2D(string storage) {
-			return loadObject(PATH_LIVE2D_FILE + storage);
+		public GameObject LoadLive2D(string storage) {
+			return LoadObject(PATH_LIVE2D_FILE + storage);
 		}
 
 		public GameObject loadPrefab(string storage) {
-			return loadObject(PATH_PREFAB + storage);
+			return LoadObject(PATH_PREFAB + storage);
 		}
 
 		public AnimationClip loadAnimation(string storage) {

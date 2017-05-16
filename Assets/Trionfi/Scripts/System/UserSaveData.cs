@@ -28,6 +28,6 @@ namespace NovelEx {
         public Variable variable;
         public Dictionary<string, AbstractObject> dicObject;
 
-        public ScriptManager scriptManager;
+        public ScriptDecoder scriptManager;
 	}
 }

@@ -253,7 +253,7 @@ namespace NovelEx {
 
 			if (NovelSingletonEx.StatusManager.enableClickOrder == true && NovelSingletonEx.StatusManager.enableNextOrder == true)
 			{
-				NovelSingletonEx.ScriptManager.Instance.nextOrder();
+				NovelSingletonEx.ScriptDecoder.Instance.nextOrder();
 			}
 		}
 */
@@ -316,7 +316,7 @@ namespace NovelEx {
 			NovelSingletonEx.StatusManager.enableClickOrder = true;
 			NovelSingletonEx.StatusManager.enableNextOrder = true;
 
-			NovelSingletonEx.ScriptManager.Instance.nextOrder();
+			NovelSingletonEx.ScriptDecoder.Instance.nextOrder();
 */
 //			yield return null;
 		}

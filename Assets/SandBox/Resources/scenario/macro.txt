@@ -1,0 +1,70 @@
+;ƒtƒŠ[ƒEƒFƒAƒTƒ“ƒvƒ‹—pEƒ}ƒNƒ
+;
+;
+;iƒhƒLƒhƒL‚µ‚·‚½‚Ÿƒpƒ‰ƒ_ƒCƒXƒLƒƒƒ‰ƒNƒ^[•\îj
+;¦ƒLƒƒƒ‰ƒNƒ^[—p
+;‚Ì‰E•Ó‚ª•ÏŠ·‚³‚ê‚é–½—ß‘®
+;‚Ì¶•Ó‚ªÈ—ª–½—ß
+;á“Ş~‚P‚Q
+;•‘•‚Í‚Q
+;seifuku,sifuku
+macro yukina_sumashi = &char yukina sumashi 
+macro yukina_sumasi = &char yukina sumashi 
+macro yukina_niko = &char yukina niko 
+macro yukina_nikkori = &char yukina nikkori 
+macro yukina_nikkori2 = &char yukina nikkori2 
+macro yukina_makka = &char yukina makka 
+macro yukina_hazukasi = &char yukina hazukasi 
+macro yukina_hazukashi = &char yukina hazukasi 
+macro yukina_hazukasii = &char yukina hazukasi 
+macro yukina_hazukashii = &char yukina hazukasi 
+macro yukina_naki = &char yukina naki 
+macro yukina_shinnkenn = &char yukina shinnkenn 
+macro yukina_shinken = &char yukina shinnkenn 
+macro yukina_sinken = &char yukina shinnkenn 
+macro yukina_eguegu = &char yukina eguegu 
+macro yukina_punn = &char yukina punn 
+macro yukina_pun = &char yukina punn 
+macro yukina_ikari = &char yukina ikari 
+macro yukina_utumuki = &char yukina utumuki 
+;
+;—t~‚P‚P
+;•‘•‚Í‚Qí—Ş
+;seifuku,sifuku
+macro mizuha_sumashi = &char mizuha sumashi 
+macro mizuha_sumasi = &char mizuha sumashi 
+macro mizuha_niko = &char mizuha niko 
+macro mizuha_nikkori = &char mizuha nikkori 
+macro mizuha_nikkori2 = &char mizuha nikkori2 
+macro mizuha_makka = &char mizuha makka 
+macro mizuha_naki = &char mizuha naki 
+macro mizuha_shinnkenn = &char mizuha shinnkenn 
+macro mizuha_shinken = &char mizuha shinnkenn 
+macro mizuha_sinken = &char mizuha shinnkenn 
+macro mizuha_punn = &char mizuha punn 
+macro mizuha_pun = &char mizuha punn 
+macro mizuha_nakimakka = &char mizuha nakimakka 
+macro mizuha_ikari = &char mizuha ikari 
+macro mizuha_utumuki = &char mizuha utumuki 
+;
+
+;||||||||||||||||||||||||||||||||||||||||||
+;¦‰æ‘œƒtƒ@ƒCƒ‹‚Ì©“®•ÏŠ·
+;‚Ì‰E•Ó‚ªŒ³‰æ‘œƒtƒ@ƒCƒ‹
+;‚Ì¶•Ó‚ªÈ—ª–¼
+;
+;ƒRƒŒƒbƒgŠOŠÏ
+alias misemae   = g_01a
+alias misenomae = g_01a
+alias tenngai   = g_01a
+
+;ƒRƒŒƒbƒg“àT‚¦º
+alias hikaeshitu = i_01a
+alias hikaesitu  = i_01a
+
+;ƒRƒŒƒbƒg“X“ài‹qÈj
+alias corretto = j_01a
+alias tennnai  = j_01a
+
+
+

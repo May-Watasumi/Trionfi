@@ -11,16 +11,6 @@ namespace NovelEx
     [ExecuteInEditMode]
 	public class SystemConfig : SingletonMonoBehaviour<SystemConfig>
     {
-        public static string PATH_PREFAB = "novel/data/prefab/";
-        public static string PATH_IMAGE = "novel/data/images/image/";
-        public static string PATH_CHARA_IMAGE = "novel/data/images/character/";
-        public static string PATH_BG_IMAGE = "novel/data/images/background/";
-        public static string PATH_SYSTEM_IMAGE = "novel/data/images/system/";
-        public static string PATH_SD_OBJECT = "novel/data/sd/";
-        public static string PATH_AUDIO_BGM = "novel/data/bgm/";
-        public static string PATH_AUDIO_SE = "novel/data/sound/";
-        public static string PATH_ANIM_FILE = "novel/data/anim/";
-
         [SerializeField]
         public bool debugMode = false;
 
@@ -30,36 +20,31 @@ namespace NovelEx
         [SerializeField]
         public bool showTag = true;
 
-        [SerializeField]
-        private Vector2 canvasSize = new Vector2(1136.0f, 640.0f);
+        //[SerializeField]
+        //private Vector2 canvasSize = new Vector2(1136.0f, 640.0f);
 
-        //        [SerializeField]
-        //        [Range(10, 50)]
-        //        private int _backlogCount = 30;
+        [SerializeField]
+        [Range(10, 50)]
+        private int _backlogCount = 30;
+        private int backlogCount
+        {
+            get { return _backlogCount; }
+        }
 
         [SerializeField]
         [Range(4, 40)]
         private int _saveSlotCount = 5;
         public int saveSlotCount
         {
-            get
-            {
-                return _saveSlotCount;
-            }
+            get { return _saveSlotCount; }
         }
 
-        [SerializeField]
-        public bool autoBoot = false;
-        public TextAsset bootScript;
-
-//        public bool useSerializer = true;
 
         [SerializeField]
         public bool useCRI = false;
-
         public bool useLive2D = false;
         public bool useEmote = false;
-        
+
         private float oldTime;
         private int frame = 0;
         private float frameRate = 0f;

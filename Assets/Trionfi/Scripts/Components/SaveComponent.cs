@@ -176,18 +176,17 @@ page=ページ。つまり、numが5でpageが1なら５〜10までのセーブ�
 			//セーブを実行する。指定された名前で
 			//ループに入る。
 			int current_index = num * page;
-            //ToDo?
-//			int max_num = int.Parse(JOKEREX.Instance.getConfig("saveslot_max"));
+            int max_num = SystemConfig.Instance.saveSlotCount;
 			int max_index = current_index + num;
 
 			//セーブ変数の初期化
 			//ジャンプを実行する時に呼び出した位置情報を保持する
-			ScriptManager.Instance.variable.set("save.max_num", "" + max_num);
-			ScriptManager.Instance.variable.set("save.index", "" + current_index);
-			ScriptManager.Instance.variable.set("save.max_index", "" + max_index);
-			ScriptManager.Instance.variable.set("save.loop_start_component_index", "" + ScriptManager.Instance.currentComponentIndex);
+			ScriptDecoder.Instance.variable.set("save.max_num", "" + max_num);
+			ScriptDecoder.Instance.variable.set("save.index", "" + current_index);
+			ScriptDecoder.Instance.variable.set("save.max_index", "" + max_index);
+			ScriptDecoder.Instance.variable.set("save.loop_start_component_index", "" + ScriptDecoder.Instance.currentComponentIndex);
 
-			Serializer.applySaveVariable("save_" + current_index, ScriptManager.Instance.variable);
+			Serializer.applySaveVariable("save_" + current_index, ScriptDecoder.Instance.variable);
 
 			//オートセーブのデータが欲しいですね
 //			this.gameManager.nextOrder();
@@ -229,8 +228,8 @@ title=セーブデータの列挙終了
 		}
 
 		public override void Start() {
-			int index = int.Parse(ScriptManager.Instance.variable.get("save.index"));
-			int max_num = int.Parse(ScriptManager.Instance.variable.get("save.max_num"));
+			int index = int.Parse(ScriptDecoder.Instance.variable.get("save.index"));
+			int max_num = int.Parse(ScriptDecoder.Instance.variable.get("save.max_num"));
 			//int max_index = int.Parse (StatusManager.variable.get("save.max_index"));
 
 			index++;
@@ -244,11 +243,11 @@ title=セーブデータの列挙終了
 				return;
 			}
 
-			ScriptManager.Instance.variable.set("save.index", "" + index);
-			Serializer.applySaveVariable("save_" + index, ScriptManager.Instance.variable);
+			ScriptDecoder.Instance.variable.set("save.index", "" + index);
+			Serializer.applySaveVariable("save_" + index, ScriptDecoder.Instance.variable);
 
 			//ジャンプする。[saveloop]タグの次のところへ
-			string loop_back_index = ScriptManager.Instance.variable.get("save.loop_start_component_index");
+			string loop_back_index = ScriptDecoder.Instance.variable.get("save.loop_start_component_index");
 
 			string tag_str = "[jump index='" + loop_back_index + "' ]";
 		
@@ -355,7 +354,7 @@ var=オートセーブのデータを格納する変数名を指定
 
 		public override void Start() {
 			string var_name = paramDic ["var"];
-			Serializer.applySaveVariable("autosave", ScriptManager.Instance.variable, var_name);
+			Serializer.applySaveVariable("autosave", ScriptDecoder.Instance.variable, var_name);
 			//this.gameManager.nextOrder();
 		}
 	}
