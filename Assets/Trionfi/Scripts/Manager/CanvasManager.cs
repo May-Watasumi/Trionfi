@@ -7,8 +7,6 @@ namespace NovelEx
 {
 	public class CanvasManager : MonoBehaviour
     {
-        static CanvasManager currentCanvas;
-
         [SerializeField]
         GameObject BGRoot;
         [SerializeField]

@@ -26,7 +26,7 @@ namespace NovelEx {
 
         //スタック管理
         public Variable variable;
-        public Dictionary<string, AbstractObject> dicObject;
+        public Dictionary<string, TRImageObjectBehaviour> dicImage;
 
         public ScriptDecoder scriptManager;
 	}

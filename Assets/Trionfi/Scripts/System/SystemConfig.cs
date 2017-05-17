@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace NovelEx
 {
     public enum MessageType { Error, Warning, Info };
-    public enum AudioType { Bgm, Sound, Voice }
+    public enum ObjectType { None, BG, Stand, Event, Bgm, Sound, Voice }
     public enum FirstAction { Start, Load }
 
     [ExecuteInEditMode]

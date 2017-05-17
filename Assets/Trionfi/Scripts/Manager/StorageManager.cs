@@ -3,7 +3,7 @@ using System.Collections;
 using System;
 
 namespace NovelEx {
-	[System.Serializable]
+//	[System.Serializable]
 	public enum StorageTypes
 	{
 		LocalFile,
@@ -11,7 +11,7 @@ namespace NovelEx {
 		AssetBundle
 	};
 	
-	[System.Serializable]
+//	[System.Serializable]
 	public class StorageInfo
 	{
 		public string path;
@@ -162,7 +162,6 @@ namespace NovelEx {
 			return "";
 		}
 
-//ToDo:AssetBundle
 		public GameObject LoadObject(string storage) {
 			GameObject obj = Resources.Load(storage) as GameObject;
 

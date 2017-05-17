@@ -10,37 +10,29 @@ namespace NovelEx
 	{
         public Camera targetCamera;
 
-        public GameObject imageBasePrefab;
         public GameObject defaultMessageWindowPrefab;
         public GameObject defaultLogWindowPrefab;
         public GameObject defaultSelectWindowPrefab;
-        public GameObject defaultCanvasManagerPrefab;
 
         public MessageWindow currentMessageWindow;
-        public MessageWindow currentLogWindow;
-        public MessageWindow currentSelectWindow;
-        public CanvasManager[] currentCanvas;
+        public BackLogWindow currentLogWindow;
+        public SelectWindow currentSelectWindow;
 
-        AudioManager audioManager;
-        ImageObjectManager imageObjectManager;
         ScriptDecoder scriptDecoder;
         Serializer serializer;
 
         //ToDo:UserConfigはprefsへ。命令系統を変える
 		//文字列から即時タグを実行することができます。
-		public static void StartTag(string tag)
+		public IEnumerator StartTag(string tag)
         {
 			AbstractComponent cmp = NovelParser.Instance.makeTag(tag);
-			cmp.Start();
+			yield return StartCoroutine(cmp.Start());
 		}
 
         public void Init()
         {
-            audioManager = new AudioManager();
-            imageObjectManager = new ImageObjectManager();
             scriptDecoder = new ScriptDecoder();
             serializer = new Serializer();
-            currentCanvas = new CanvasManager[2];
         }
 
         public void Start()
@@ -50,7 +42,7 @@ namespace NovelEx
             if (SystemConfig.Instance.initialScriptFile != null)
             {
                 scriptDecoder.LoadScenariofromString(SystemConfig.Instance.initialScriptFile.text, SystemConfig.Instance.initialScriptFile.name);
-                scriptDecoder.doComponent();
+                StartCoroutine(scriptDecoder.Run());
             }                
         }
 
