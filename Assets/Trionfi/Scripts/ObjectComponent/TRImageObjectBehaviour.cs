@@ -9,39 +9,28 @@ using System.IO;
 namespace NovelEx {
 	public class TRImageObjectBehaviour : AbstractObject {
 
-        public override void UpdateParam(Dictionary<string, string> param)
+        public override Dictionary<string, string> param
         {
-            base.UpdateParam(param);
-
-            paramDic.Clear();
-            paramDic["tag"] = param["tag"];
-            paramDic["storage"] = param["storage"];
-            paramDic["isShow"] = "false";
-            paramDic["imagePath"] = "";
-            paramDic["className"] = "";
-            paramDic["event"] = "false";
-
-            foreach (KeyValuePair<string, string> kvp in param)
+            set
             {
-                //paramの内容は上書きしていく
-                string key = kvp.Key;
-                //				dicSave [key] = param [key];
-                paramDic[key] = kvp.Value;
+//                paramDic = base.param;
+//                base.UpdateParam(param);
+
+                foreach (KeyValuePair<string, string> kvp in param)
+                {
+                    //paramの内容は上書きしていく
+                    string key = kvp.Key;
+                    //				dicSave [key] = param [key];
+                    paramDic[key] = kvp.Value;
+                }
+
+                SetPosition(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
+                SetScale(float.Parse(param["scale_x"]), float.Parse(param["scale_y"]), float.Parse(param["scale_z"]));
+                SetRotate(float.Parse(param["rot_x"]), float.Parse(param["rot_y"]), float.Parse(param["rot_z"]));
+
+//                if (param["isShow"] == "true")
+//                    Show(0, "linear");
             }
-
-            //このオブジェクトが表示対象の場合は即表示
-            SetPosition(float.Parse(param["x"]), float.Parse(param["y"]), float.Parse(param["z"]));
-
-            //scale の設定
-            SetScale(float.Parse(param["scale_x"]), float.Parse(param["scale_y"]), float.Parse(param["scale_z"]));
-
-            //イベントが登録されている場合はcolider 登録
-            if (param["event"] == "true")
-                SetColider();
-
-            if (param["isShow"] == "true")
-                Show(0, "linear");
-
             //ToDo:
             //デフォルトの表情として登録
             //addFace("default", getParam("storage"));
@@ -74,7 +63,7 @@ namespace NovelEx {
                 Load(filename);
             }
 
-            UpdateParam(param);
+            this.param = param;
 #if false
             //EX変更：Image系はSortingOrderのみ見るように
             if (paramDic["name"] == "background" || paramDic["strech"] == "true")
@@ -96,7 +85,7 @@ namespace NovelEx {
 			this.spriteRenderBack.sortingOrder = int.Parse(paramDic ["sort"]);
 #endif
         }
-
+#if false
         /*
                 public override void SetPosition(float x, float y, float z)
                 {
@@ -127,13 +116,15 @@ namespace NovelEx {
                     }
                 }
         */
+        /*
         public override void Show(float time, string easeType)
         {
             gameObject.SetActive(true);
 
-			if(time <= 0.0f)
-                OnAnimationFinished();
-			else {		
+//			if(time <= 0.0f)
+//                OnAnimationFinished();
+			else
+ {		
 				//通常の表示切り替えの場合
 				iTween.ValueTo(gameObject, iTween.Hash(
 					"from",0,
@@ -158,9 +149,9 @@ namespace NovelEx {
 			CompleteDelegate completeDeletgate = this.finishAnimation;
 			this.gameManager.scene.coroutineAnimation (ani_back, completeDeletgate);	
 			*/
-		}
+        //		}
 
-		public override void Hide(float time, string easeType)
+        public override void Hide(float time, string easeType)
         {
 //			isShow = false;
 /*
@@ -194,5 +185,6 @@ namespace NovelEx {
             return null;
         }
 */
+#endif
 	}
 }

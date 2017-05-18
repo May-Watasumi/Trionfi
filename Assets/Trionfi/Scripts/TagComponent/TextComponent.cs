@@ -289,7 +289,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 			TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(name);
 
 //			textObject.set (paramDic);
-			image.UpdateParam(paramDic);
+			image.param = paramDic;
             yield return null;
 
         }

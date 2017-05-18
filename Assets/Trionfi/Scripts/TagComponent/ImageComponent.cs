@@ -134,28 +134,31 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 		}
 
 		public override IEnumerator Start() {
-			string name = paramDic ["name"];
-
+			string name = paramDic["name"];
             TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(paramDic["name"]);
+            image.param = paramDic;
+            /*
+                        TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(paramDic["name"]);
 
-            float x = (paramDic["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.GetParam("x"));
-			float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.GetParam ("y"));
-			float z = (paramDic["z"]!="") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam ("z"));
+                        float x = (paramDic["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.GetParam("x"));
+                        float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.GetParam ("y"));
+                        float z = (paramDic["z"]!="") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam ("z"));
 
-			image.SetPosition (x, y, z);
+                        image.SetPosition (x, y, z);
 
-			//scaleが指定されている場合はそっちを優先
-			if (paramDic ["scale"] != "") {
-				paramDic ["scale_x"] = paramDic ["scale"]; 
-				paramDic ["scale_y"] = paramDic ["scale"];
-				paramDic ["scale_z"] = paramDic ["scale"];
-			}
+                        //scaleが指定されている場合はそっちを優先
+                        if (paramDic ["scale"] != "") {
+                            paramDic ["scale_x"] = paramDic ["scale"]; 
+                            paramDic ["scale_y"] = paramDic ["scale"];
+                            paramDic ["scale_z"] = paramDic ["scale"];
+                        }
 
-			float scale_x = (paramDic["scale_x"]!="") ? float.Parse(paramDic["scale_x"]) : float.Parse(image.GetParam ("scale_x"));
-			float scale_y = (paramDic["scale_y"]!="") ? float.Parse(paramDic["scale_y"]) : float.Parse(image.GetParam ("scale_y"));
-			float scale_z = (paramDic["scale_z"]!="") ? float.Parse(paramDic["scale_z"]) : float.Parse(image.GetParam ("scale_z"));
+                        float scale_x = (paramDic["scale_x"]!="") ? float.Parse(paramDic["scale_x"]) : float.Parse(image.GetParam ("scale_x"));
+                        float scale_y = (paramDic["scale_y"]!="") ? float.Parse(paramDic["scale_y"]) : float.Parse(image.GetParam ("scale_y"));
+                        float scale_z = (paramDic["scale_z"]!="") ? float.Parse(paramDic["scale_z"]) : float.Parse(image.GetParam ("scale_z"));
 
-			image.SetScale(scale_x,scale_y,scale_z);
+                        image.SetScale(scale_x,scale_y,scale_z);
+            */
             yield return null;
 
             //アニメーション中にクリックして次に進めるかどうか。
@@ -247,17 +250,14 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 
 			foreach(AbstractObject image in images)
             {
-				float x = (paramDic["x"] != "") ? float.Parse(paramDic["x"]) : float.Parse(image.paramDic["x"]);
-				float y = (paramDic["y"] != "") ? float.Parse(paramDic["y"]) : float.Parse(image.GetParam("y"));
-				float z = (paramDic["z"] != "") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam("z"));
-
-				image.SetPosition (x, y, z);
+			//ToDo:
+//				image.SetPosition (x, y, z);
 
 				if(isWait) {
 					//設定するのは一つだけ
 					if (flag_delegate == true) {
 						flag_delegate = false;
-						image.SetFinishAnimationDelegate(this.finishAnimationDeletgate);
+//						image.SetFinishAnimationDelegate(this.finishAnimationDeletgate);
 					}
 				}
 				image.Show(time, type);	
@@ -358,7 +358,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 					//設定するのは一つだけ
 					if (flag_delegate == true) {
 						flag_delegate = false;
-						image.SetFinishAnimationDelegate(finishAnimationDeletgate);
+//						image.SetFinishAnimationDelegate(finishAnimationDeletgate);
 					}
 				}
 				image.Hide(time, type);
@@ -524,13 +524,13 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 
             //storage指定が優先される
             if (storage != "")
-                image.UpdateParam(paramDic);
+                image.param = paramDic;
             else
                 image.Load(paramDic);
 
 			if (StatusManager.Instance.onSkip || time <= 0.02f)
 			{
-				image.OnAnimationFinished();
+//				image.OnAnimationFinished();
                 yield break;
 			}
 
@@ -543,7 +543,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 //				this.gameManager.nextOrder();
 			}
 			else
-				image.SetFinishAnimationDelegate(this.finishAnimationDeletgate);
+//				image.SetFinishAnimationDelegate(this.finishAnimationDeletgate);
             yield return null;
 
         }
@@ -614,7 +614,7 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 			foreach(TRImageObjectBehaviour image in images)
             {
 				//Image image = this.gameManager.imageManager.getImage (image_name);
-				ImageObjectManager.Instance.Remove(image.GetParam("name"));
+//				ImageObjectManager.Instance.Remove(image.GetParam("name"));
 			}
             yield return null;
 

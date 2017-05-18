@@ -61,7 +61,7 @@ namespace NovelEx
 
 
 		}
-        
+/*        
 		public override void SetColider()
 		{
 			gameObject.AddComponent<BoxCollider2D>();
@@ -81,7 +81,7 @@ namespace NovelEx
 			Animator a = gameObject.GetComponent<Animator>();
 			a.SetBool (state, false);
 		}
-
+*/
 		public override void Show(float time, string easeType)
 		{
 			isShow = true;

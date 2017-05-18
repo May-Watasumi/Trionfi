@@ -296,10 +296,12 @@ condition=stateで指定するステートをtrue or falseで指定すること�
 
             foreach(TRImageObjectBehaviour image in images)
             {
-				if (paramDic ["condition"] == "true")
+                /*
+                if (paramDic ["condition"] == "true")
 					image.PlayAnimation(paramDic["state"]);
 				else
 					image.StopAnimation(paramDic["state"]);
+                */
 			}
             //			this.gameManager.nextOrder();
             yield return null;

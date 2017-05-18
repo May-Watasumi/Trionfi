@@ -309,7 +309,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 			paramDic ["storage"] = val;
 
 			TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(name) as TRImageObjectBehaviour;
-			image.UpdateParam(paramDic);
+			image.param = paramDic;
 			nextOrder = false;
             yield return null;
 
