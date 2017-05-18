@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace NovelEx {
@@ -25,17 +26,23 @@ namespace NovelEx {
 
 		public static bool showAll() {
 			foreach (string message in errorMessage) {
-				Debug.LogError(message);
+                UnityEngine.Debug.LogError(message);
 			}
 			foreach (string message in warningMessage) {
-				Debug.LogWarning(message);
+                UnityEngine.Debug.LogWarning(message);
 			}
 			return errorMessage.Count > 0 ? true : false;
 		}
 
 		public static void stopError(string message) {
-			Debug.LogError(message);
+            UnityEngine.Debug.LogError(message);
 			throw new UnityException(message);		
 		}
-	};
+
+        [Conditional("TR_DEBUG")]
+        public static void Log(string message)
+        {
+            UnityEngine.Debug.Log(message);
+        }
+    };
 }

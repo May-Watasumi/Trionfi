@@ -255,7 +255,7 @@ title=セーブデータの列挙終了
 			string tag_str = "[jump index='" + loop_back_index + "' ]";
 		
 			//タグを実行
-			AbstractComponent cmp = NovelParser.Instance.makeTag (tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.makeTag (tag_str);
 			yield return cmp.Start();
         }
     }

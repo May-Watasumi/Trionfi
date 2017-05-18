@@ -22,7 +22,7 @@ namespace NovelEx
         public Scenario( string scriptText )
         {
             name = "__EXTERNAL__";
-            arrayComponent = NovelParser.Instance.parseScript(scriptText);
+            arrayComponent = TRScriptParser.Instance.parseScript(scriptText);
         }
 
 		public void addLabel(string label_name,int index)

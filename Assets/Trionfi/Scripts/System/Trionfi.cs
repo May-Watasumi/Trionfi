@@ -25,7 +25,7 @@ namespace NovelEx
 		//文字列から即時タグを実行することができます。
 		public IEnumerator StartTag(string tag)
         {
-			AbstractComponent cmp = NovelParser.Instance.makeTag(tag);
+			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag);
 			yield return StartCoroutine(cmp.Start());
 		}
 
@@ -67,7 +67,7 @@ namespace NovelEx
 				string tag_str = "[jump file='" + file + "' target='" + target + "' ]";
 
 				//タグを実行
-				AbstractComponent cmp = ScriptDecoder.Instance.NovelParser.makeTag(tag_str);
+				AbstractComponent cmp = ScriptDecoder.Instance.TRScriptParser.makeTag(tag_str);
 				cmp.start();
 			}
 

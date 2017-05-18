@@ -128,7 +128,7 @@ namespace NovelEx
 				ErrorLogger.Clear();
 
 				//パーサーを動作させる
-				sce.arrayComponent = NovelParser.Instance.parseScript(text);
+				sce.arrayComponent = TRScriptParser.Instance.parseScript(text);
 
 				if(ErrorLogger.showAll())
 				{
@@ -383,7 +383,7 @@ namespace NovelEx
 			{
                 ReturnComponent _ret = new ReturnComponent();
                 _ret.Start();
-//                NovelParser.Instance.StartTag("[return]");
+//                TRScriptParser.Instance.StartTag("[return]");
 			}
 			else
 			{

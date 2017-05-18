@@ -110,7 +110,7 @@ name=ラベル名を指定してください
         {
 			paramDic["name"] = tagName;
 
-			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro (paramDic ["name"]);
+			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro(paramDic ["name"]);
 
 			if(macro == null) {
 				ErrorLogger.stopError("マクロ「"+paramDic["name"]+"」は存在しません。");
@@ -123,7 +123,7 @@ name=ラベル名を指定してください
 
 			ScriptDecoder.Instance.macroNum++;
 			//this.gameManager.scenarioManager.addMacroStack (macro.name, this.paramDic);
-			AbstractComponent cmp = NovelParser.Instance.makeTag ("call", paramDic);
+			AbstractComponent cmp = TRScriptParser.Instance.makeTag ("call", paramDic);
 			yield return cmp.Start();
         }
     }
@@ -167,7 +167,7 @@ title=マクロの終端
 			if(ScriptDecoder.Instance.macroNum > 0) {
 				ScriptDecoder.Instance.macroNum--;
 				//ココに来た場合はreturn を実行する 
-				AbstractComponent cmp = NovelParser.Instance.makeTag ("[return]");
+				AbstractComponent cmp = TRScriptParser.Instance.makeTag ("[return]");
 				yield return cmp.Start();
 				nextOrder = false;
 			}
@@ -378,7 +378,7 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 			ScriptDecoder.Instance.AddStack(StatusManager.Instance.currentScenario, ScriptDecoder.Instance.currentComponentIndex, this.paramDic);
 			
 			//タグを実行
-			AbstractComponent cmp = NovelParser.Instance.makeTag(tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
 			yield return cmp.Start();
 
 //nextOrder分
@@ -461,7 +461,7 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 			Debug.Log("RETURN scn=\"" + stack.scenarioNname + "\" " + "index=\"" + stack.index.ToString()+ "\"");// + " param=\"" + this.paramDic.ToStringFull());
 
 			//タグを実行
-			AbstractComponent cmp = NovelParser.Instance.makeTag(tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
 			yield return cmp.Start();
             //			nextOrder = false;
             //			StatusManager.Instance.currentState = JokerState.NextOrder;
@@ -701,7 +701,7 @@ exp=評価する変数を格納します。
 
 			string tag_str ="[story val='"+val+"' ]";
 
-			AbstractComponent cmp = NovelParser.Instance.makeTag(tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
 			yield return cmp.Start();
         }
     }

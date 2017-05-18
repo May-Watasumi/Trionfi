@@ -25,7 +25,10 @@ namespace NovelEx {
 		//EX:NextOrderが必要かどうか
 		protected bool nextOrder = true;
 
-		public AbstractComponent() { }
+		public AbstractComponent()
+        {
+            ErrorLogger.Log("Tag:"+GetType().Name);
+        }
 
 		public void Init(Tag tag, int line_num)
         {

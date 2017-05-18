@@ -184,7 +184,7 @@ savesnap=trueを指定するとゲームを一時停止する直前の状態をs
 			Debug.Log (tag_str);
 
 			//タグを実行
-			AbstractComponent cmp = NovelParser.Instance.makeTag (tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.makeTag (tag_str);
 			yield return cmp.Start();
         }
     }

@@ -301,7 +301,7 @@ namespace NovelEx
 			*/
             /*
 			if(StatusManager.Instance.currentPlayBgm != "") {
-				NovelEx.AbstractComponent cmp = NovelParser.Instance.makeTag("[playbgm wait=false next=false storage='" + StatusManager.Instance.currentPlayBgm + "']");
+				NovelEx.AbstractComponent cmp = TRScriptParser.Instance.makeTag("[playbgm wait=false next=false storage='" + StatusManager.Instance.currentPlayBgm + "']");
 				yield return cmp.Start();
 			}
             */
