@@ -27,8 +27,9 @@ namespace NovelEx
 
 		public void hide(float time, bool nextOrder) {
 			if (time > 0.0f) {
-				//通常の表示切り替えの場合
-				iTween.ValueTo(this.gameObject, iTween.Hash(
+                //通常の表示切り替えの場合
+                /*
+                iTween.ValueTo(this.gameObject, iTween.Hash(
 					"from", 1,
 					"to", 0,
 					"time", time,
@@ -37,6 +38,7 @@ namespace NovelEx
 					"easeType", "linear",
 					"onupdate", "crossFade"
 				));
+                */
 			}
 		}
 
@@ -47,6 +49,7 @@ namespace NovelEx
 
 			if (time > 0.0f) {
 				//通常の表示切り替えの場合
+                /*
 				iTween.ValueTo(this.gameObject, iTween.Hash(
 					"from", 0,
 					"to", 1,
@@ -56,6 +59,7 @@ namespace NovelEx
 					"easeType", "linear",
 					"onupdate", "crossFade"
 				));
+                */
 			}
 		}
 		public void CrossFade(float val) {
