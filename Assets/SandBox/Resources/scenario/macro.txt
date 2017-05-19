@@ -1,12 +1,12 @@
-;ƒtƒŠ[ƒEƒFƒAƒTƒ“ƒvƒ‹—pEƒ}ƒNƒ
+;ãƒ•ãƒªãƒ¼ã‚¦ã‚§ã‚¢ã‚µãƒ³ãƒ—ãƒ«ç”¨ãƒ»ãƒã‚¯ãƒ­
 ;
 ;
-;iƒhƒLƒhƒL‚µ‚·‚½‚Ÿƒpƒ‰ƒ_ƒCƒXƒLƒƒƒ‰ƒNƒ^[•\îj
-;¦ƒLƒƒƒ‰ƒNƒ^[—p
-;‚Ì‰E•Ó‚ª•ÏŠ·‚³‚ê‚é–½—ß‘®
-;‚Ì¶•Ó‚ªÈ—ª–½—ß
-;á“Ş~‚P‚Q
-;•‘•‚Í‚Q
+;ï¼ˆãƒ‰ã‚­ãƒ‰ã‚­ã—ã™ãŸããƒ‘ãƒ©ãƒ€ã‚¤ã‚¹ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼è¡¨æƒ…ï¼‰
+;â€»ã‚­ãƒ£ãƒ©ã‚¯ã‚¿ãƒ¼ç”¨
+;ï¼ã®å³è¾ºãŒå¤‰æ›ã•ã‚Œã‚‹å‘½ä»¤æ›¸å¼
+;ï¼ã®å·¦è¾ºãŒçœç•¥å‘½ä»¤
+;é›ªå¥ˆÃ—ï¼‘ï¼’
+;æœè£…ã¯ï¼’
 ;seifuku,sifuku
 macro yukina_sumashi = &char yukina sumashi 
 macro yukina_sumasi = &char yukina sumashi 
@@ -28,8 +28,8 @@ macro yukina_pun = &char yukina punn
 macro yukina_ikari = &char yukina ikari 
 macro yukina_utumuki = &char yukina utumuki 
 ;
-;—t~‚P‚P
-;•‘•‚Í‚Qí—Ş
+;ç‘è‘‰Ã—ï¼‘ï¼‘
+;æœè£…ã¯ï¼’ç¨®é¡
 ;seifuku,sifuku
 macro mizuha_sumashi = &char mizuha sumashi 
 macro mizuha_sumasi = &char mizuha sumashi 
@@ -48,21 +48,21 @@ macro mizuha_ikari = &char mizuha ikari
 macro mizuha_utumuki = &char mizuha utumuki 
 ;
 
-;||||||||||||||||||||||||||||||||||||||||||
-;¦‰æ‘œƒtƒ@ƒCƒ‹‚Ì©“®•ÏŠ·
-;‚Ì‰E•Ó‚ªŒ³‰æ‘œƒtƒ@ƒCƒ‹
-;‚Ì¶•Ó‚ªÈ—ª–¼
+;âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’âˆ’
+;â€»ç”»åƒãƒ•ã‚¡ã‚¤ãƒ«ã®è‡ªå‹•å¤‰æ›
+;ï¼ã®å³è¾ºãŒå…ƒç”»åƒãƒ•ã‚¡ã‚¤ãƒ«
+;ï¼ã®å·¦è¾ºãŒçœç•¥å
 ;
-;ƒRƒŒƒbƒgŠOŠÏ
+;ã‚³ãƒ¬ãƒƒãƒˆå¤–è¦³
 alias misemae   = g_01a
 alias misenomae = g_01a
 alias tenngai   = g_01a
 
-;ƒRƒŒƒbƒg“àT‚¦º
+;ã‚³ãƒ¬ãƒƒãƒˆå†…æ§ãˆå®¤
 alias hikaeshitu = i_01a
 alias hikaesitu  = i_01a
 
-;ƒRƒŒƒbƒg“X“ài‹qÈj
+;ã‚³ãƒ¬ãƒƒãƒˆåº—å†…ï¼ˆå®¢å¸­ï¼‰
 alias corretto = j_01a
 alias tennnai  = j_01a
 

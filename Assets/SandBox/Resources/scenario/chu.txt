@@ -1,44 +1,41 @@
 ;
 ;
 ;
-;�@�w���t�����̂l���������V�X�e���g�p�u���i�����ҁj�x
-;�L�����ړ��A�������߁A���͊֘A�A�T�E���h���[�v�A�����A���r
-;�̍ق͍g�̂`�r�u���ɏ���
+;　『瑞葉ちゃんのＭａｌｉｅシステム使用講座（中級編）』
+;キャラ移動、文字命令、文章関連、サウンドループ、音声、ルビ
+;体裁は紅のＡＳ講座に準拠
 ;
 S:
 &CG BLACK ;
 &SOUND_CTRL LOOP OFF ;
 &SOUND 2 ;
 &CG_BG HIKAESITU ;
-�V�t���[�}���[�ŃV�i���I�����n�߂邱�Ɛ����B
+新フリーマリーでシナリオを作り始めること数日。
 
-�d�����x�݂̓����A�I���̓V�i���I����ɂ̂߂荞��ł����B
+仕事が休みの日も、オレはシナリオ製作にのめり込んでいた。
 
 @MIZUHA_NIKO SIFUKU C ;
-#���t ������A�撣���Ă�݂�����
+#瑞葉 あらっ、頑張ってるみたいね
 
-#1 ���t���c�c�B�ʔ����V�i���I����낤���Ă݂��񂾂��A���ЂƂp�b�Ƃ��Ȃ��݂����Ȃ�
+#1 瑞葉か……。面白いシナリオを作ろうしてみたんだが、今ひとつパッとしないみたいなんだ
 
 @MIZUHA_NIKKORI2 ;
-#���t ���傤���Ȃ���˂��A�����͂ЂƂA���������e�N�j�b�N�������Ă����邩
+#瑞葉 しょうがないわねっ、ここはひとつ、私が高等テクニックを教えてあげるか
 
-#1 ���肢���܂��B�搶�I
+#1 お願いします。先生！
 
 &FO ;
 
-���́@�����ҁ@�`����R�}���h���g�����Ȃ����I�`
+第二章　中級編　〜特殊コマンドを使いこなそう！〜
 
 
-���܂��A�Q�[����ʂ��E�B���h�E���[�h�ɕύX���ĉ������B
+※まず、ゲーム画面をウィンドウモードに変更して下さい。
 
-���w�t���[�}���[�������S�x�̃C���X�g�[���t�H���_���́m�����������������������������n�t�H���_���ɂ���m�������n�Ƃ����t�@�C�����J���āA���ɕ��ׂĉ������B
+※『フリーマリーｖｅｒ４』のインストールフォルダ内の［¥ｄａｔａ¥ｓｃｅｎａｒｉｏ］フォルダ内にある［ｃｈｕ］というファイルを開いて、横に並べて下さい。
 
-�����̃e�L�X�g���Q�Ƃ��Ȃ���A�R�}���h���o���Ă����ĉ�����
+※このテキストを参照しながら、コマンドを覚えていって下さい
 
-������ł́A�`�����@�������@�����������H
-
-
-
+※それでは、Ａｒｅ　ｙｏｕ　ｒｅａｄｙ？
 
 
 
@@ -48,42 +45,45 @@ S:
 
 
 
-�P�E�����f�[�^���g���Ă݂悤
+
+
+
+１・音声データを使ってみよう
 
 
 
 &CG_BG HIKAESITU ;
-�i�������Đ�����̂ɂ́A�w���u�n�h�b�d�@�����t�@�C�����x�A�������́A�Z���t�̓��Ɂi�t�@�C�����j��u�����Ƃɂ���Ė炷���Ƃ��ł��܂��j
+（音声を再生するのには、『＆ＶＯＩＣＥ　音声ファイル名』、もしくは、セリフの頭に（ファイル名）を置くことによって鳴らすことができます）
 
 
-�i�t�@�C���́m�����������������������n�t�H���_���Ɋi�[���Ă��������j
+（ファイルは［¥ｄａｔａ¥ｖｏｉｃｅ］フォルダ内に格納してください）
 
-�i����ł̓T���v���̃f�[�^���g���ĉ����Đ��̗�����������܂��j
+（それではサンプルのデータを使って音声再生の例をお見せします）
 
 @MIZUHA_NIKKORI ;
-#���t (mi1047)�I�[�_�[����܂��B�R�ԃe�[�u���ɃA�C�X�Q���肢���܂��I
+#瑞葉 (mi1047)オーダー入ります。３番テーブルにアイス２お願いします！
 
 @MIZUHA_SUMASI ;
-#���t �c�ƁA����Ȋ�����
+#瑞葉 …と、こんな感じよ
 
-#1 �������I�@��������������Ȃ����I
+#1 おおっ！　かっこいいじゃないか！
 
 @MIZUHA_NIKKORI ;
 (mi1125)
-#���t ���҂������܂������B�����`�̂��q�l�́c�c
+#瑞葉 お待たせしましたぁ。ランチのお客様は……
 
 
 @MIZUHA_SUMASI ;
-#���t ���p���ʂ����u���Ă��Đ��͏o���邩��A�D���ȕ����g���Ă�
+#瑞葉 半角括弧だけ置いても再生は出来るから、好きな方を使ってね
 
 @MIZUHA_NIKKORI ;
 &VOICE mi1797
-#���t ��������Ⴂ�܂��A�R���b�g�ɂ悤������
+#瑞葉 いらっしゃいませ、コレットにようこそ☆
 
 @MIZUHA_SUMASI ;
-#���t �w���u�n�h�b�d�@�x���g�����ꍇ����Ȋ�����
+#瑞葉 『＆ＶＯＩＣＥ　』を使った場合こんな感じね
 
-#1 �悵���B���������c�c
+#1 よしっ。メモメモ……
 
 &CHARCLEAR ;
 
@@ -97,122 +97,122 @@ S:
 
 
 
-�Q�E�L�����N�^�[�ړ��Ɨ����ʒu�w��ɂ���
+２・キャラクター移動と立ち位置指定について
 
 @MIZUHA_SUMASI ;
-#���t ���ꂩ��A�����L�����N�^�[����ʏ�œ�������̂͒m���Ă���H
+#瑞葉 それから、立ちキャラクターを画面上で動かせるのは知っている？
 
-#1 �������c�c�Ȃ񂾂����H
+#1 動かす……なんだそりゃ？
 
 
 @MIZUHA_NIKKORI2 ;
-#���t �ӂӂӂӂӂ��A���̖����w���b�g�`�q�l�n�u�d�@�x��I�I
+#瑞葉 ふふふふふっ、その名も『＆ＣＨＡＲＭＯＶＥ　』よ！！
 
 
-�i�w���b�g�`�q�l�n�u�d�@�x�R�}���h���g���āA�����L�������ړ������邱�Ƃ��ł��܂��j
+（『＆ＣＨＡＲＭＯＶＥ　』コマンドを使って、立ちキャラを移動させることができます）
 
 @MIZUHA_NIKO C ;
-#���t �܂��ŏ��ɕ��ʂɉ�ʂɗ�������ł���
+#瑞葉 まず最初に普通に画面に立たせるでしょ
 
-#���t ����$E�w���b�g�`�q�l�n�u�d�@�L�������@�ړ����������ʒu�@�����ݒ�@�ړ����x�x�̏��ŏ�����ł����ނ�
+#瑞葉 次に$E『＆ＣＨＡＲＭＯＶＥ　キャラ名　移動させたい位置　加速設定　移動速度』の順で書式を打ち込むの
 
-�i�����ݒ�́A�P�������ړ��@�Q�������@�R�������@�ƂȂ�܂��j
+（加速設定は、１＝等速移動　２＝加速　３＝減速　となります）
 
-�i�ړ����������ʒu�́A�k����ʌ������č��@�b����ʒ����@�q����ʌ������ĉE�A�j
+（移動させたい位置は、Ｌ＝画面向かって左　Ｃ＝画面中央　Ｒ＝画面向かって右、）
 
-�i�k�a�������@�b�a���������@�q�a���E���A�k�n����ʊO�����A�q�n����ʊO�E���A�k�a�n����ʊO�����A�q�a�n����ʊO�E���c�̌v�P�O�ӏ��ƂȂ��Ă��܂��j
+（ＬＢ＝左奥　ＣＢ＝中央奥　ＲＢ＝右奥、ＬＯ＝画面外左側、ＲＯ＝画面外右側、ＬＢＯ＝画面外左奥、ＲＢＯ＝画面外右奥…の計１０箇所となっています）
 
 @MIZUHA_NIKKORI2 ;
-#���t ����͗����ʒu�w��ł������悤�ɂ���̂�B���ꂶ��A�ړ����Ă݂邩���
+#瑞葉 これは立ち位置指定でも同じようにやれるのよ。それじゃ、移動してみるからね
 
 
 
 
 
 
-;�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|
+;−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−
 
-�������ʒu�ړ��e�X�g���s���܂��B
+●立ち位置移動テストを行います。
 
-�i�w���b�g�`�q�l�n�u�d�x���g���āA���t����ʓ����ړ����܂��̂ŁA�����ʒu�E�ړ��ʒu�̎Q�l�ɂ��Ă��������j
+（『＆ＣＨＡＲＭＯＶＥ』を使って、瑞葉が画面内を移動しますので、立ち位置・移動位置の参考にしてください）
 
-;�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|�|
+;−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−−
 
 &CHARMOVE MIZUHA L 1 300 ;
 
-�i���t�����Ɍ������ē����łR�O�O�̑��x�ňړ����܂����j
+（瑞葉が左に向かって等速で３００の速度で移動しました）
 
 
-#���t ��������͈ړ�������
+#瑞葉 ここからは移動実験ね
 
-@MIZUHA_NIKO SIFUKU RB ;�E��
-#���t �܂��E���ɗ��ł���B���ɒ����̌��Ɉړ����Ă݂���
+@MIZUHA_NIKO SIFUKU RB ;右奥
+#瑞葉 まず右後ろに立つでしょ。次に中央の後ろに移動してみるわね
 
-&CHARMOVE MIZUHA CB 3 800 ;������
-#���t �����������̌��B�����łW�O�O�̑����ňړ��������ƂɂȂ�̂�
+&CHARMOVE MIZUHA CB 3 800 ;中央奥
+#瑞葉 ここが中央の後ろ。減速で８００の速さで移動したことになるのよ
 
-&CHARMOVE MIZUHA LB 3 300 ;����
-#���t �ŁA�������������ɂȂ�킯
+&CHARMOVE MIZUHA LB 3 300 ;左奥
+#瑞葉 で、こっちが左後ろになるわけ
 
-&CHARMOVE MIZUHA LBO 3 300 ;��ʊO����
-#1 ��ʂ��炢�Ȃ��Ȃ����������
+&CHARMOVE MIZUHA LBO 3 300 ;画面外左奥
+#1 画面からいなくなっちゃったぞ
 
-&CHARMOVE MIZUHA LO 3 300 ;��ʊO��
-#���t �O���Ɉړ�����Ƃ���Ȋ����ɂȂ�̂�
+&CHARMOVE MIZUHA LO 3 300 ;画面外左
+#瑞葉 外側に移動するとこんな感じになるのよ
 
 @MIZUHA_NIKKORI2 LO ;
 &CHARMOVE MIZUHA L 1 300 ;
-#���t ����ƁA��ʊO�ł��\���ς��鎖�͂ł���̂�
+#瑞葉 それと、画面外でも表情を変える事はできるのよ
 
-#1 �Ȃ�قǁc�c
+#1 なるほど……
 
-�i��ʊO���璆�ֈړ������������́A���炩���߉�ʊO�ɗ������Ă���w���b�g�`�q�l�n�u�d�x���g���܂��j
+（画面外から中へ移動させたい時は、あらかじめ画面外に立たせてから『＆ＣＨＡＲＭＯＶＥ』を使います）
 
 @MIZUHA_SUMASI ;
-#���t ���Ƃ͉E�����ɑf���������Ă������
+#瑞葉 あとは右方向に素早く動いていくわね
 
-&CHARMOVE MIZUHA C 2 200 ;��
+&CHARMOVE MIZUHA C 2 200 ;中
 &WAIT 1 ;
-&CHARMOVE MIZUHA R 2 200 ;�E
+&CHARMOVE MIZUHA R 2 200 ;右
 &WAIT 1 ;
-&CHARMOVE MIZUHA RO 2 200 ;��ʊO�E
+&CHARMOVE MIZUHA RO 2 200 ;画面外右
 
-�i�c�c���̂悤�ɉ�ʓ����ړ������邱�Ƃ��ł��܂��j
+（……このように画面内を移動させることができます）
 
 
-#���t �J���^���Ɍ����ƁA�Q���Ƒ����A�R���ƒx���Ȃ���Ă��ƁB�����ڂł͂���ȂɋC�ɂȂ鎖�ł��Ȃ�����A��̖̂ڈ��Ƃ��Ċo���Ă����΂�����
+#瑞葉 カンタンに言うと、２だと速く、３だと遅くなるってこと。見た目ではそんなに気になる事でもないから、大体の目安として覚えておけばいいわ
 
-#1 �Ȃ�قǁc�c������g�����Ȃ��Ƃ��Ȃ�ʔ�����
+#1 なるほど……これを使いこなすとかなり面白いな
 
 
 
 @YUKINA_SUMASI SIFUKU RO ;
 &CHARMOVE YUKINA R 1 500 ;
-#��� �˂��A���t�����A�ɂ������炨�������ɍs���Ă��ė~�����񂾂���
+#雪奈 ねえ、瑞葉ちゃん、暇だったらお買い物に行ってきて欲しいんだけど
 
 @MIZUHA_MAKKA LO ;
 &CHARMOVE MIZUHA L ;
-#���t �ӂ��c�c�B����A�������ǁc�c
+#瑞葉 ふう……。うん、いいけど……
 
 @YUKINA_NIKO ;
-#��� ������A�ȁ`�Ɂ`�H�@���؂点������āB��l���Ă��y���݂̍Œ��������̂�����H
+#雪奈 あらっ、な〜に〜？　息切らせちゃって。二人してお楽しみの最中だったのかしら？
 
 @MIZUHA_PUN ;
-#���t ���A�Ⴄ���I
+#瑞葉 ち、違うわよ！
 
-#��� �Ӂ`�`��A�܂���������
+#雪奈 ふ〜〜ん、まあいいけど
 
 @MIZUHA_SINKEN ;
-#���t �ق���A�Ƃ��Ƃƍs�����$1�I
+#瑞葉 ほらっ、とっとと行くわよ$1！
 
 &CHARMOVE MIZUHA LO 1 300 ;
 
-#1 ���傤���Ȃ��B�s�����c�c
+#1 しょうがない。行くか……
 
 @YUKINA_SUMASI ;
-#��� �҂��āA$1����͂��ꂩ�炨�׋���
+#雪奈 待って、$1くんはこれからお勉強よ
 
-#1 ���`�`�`�I�I
+#1 え〜〜〜！！
 
 &FO ;
 &WAIT 4 ;
@@ -223,184 +223,184 @@ S:
 
 
 
-�R�E�������o�ɂ���
+３・文字演出について
 
 
-;�������T�C�Y
+;■文字サイズ
 &CG_BG HIKAESITU ;
 @YUKINA_NIKO C ;
-#��� �����u���܂ł̘b�Ŋ�{�͗����ł����Ǝv������A���x�͂�����������Z�ɂ��Đ���������
+#雪奈 初級講座までの話で基本は理解できたと思うから、今度はもう少し難しい技について説明するわね
 
-#��� ������傫��������A�F��ς�����ł���̂�
+#雪奈 文字を大きくしたり、色を変えたりできるのよ
 
-#1 �Ȃ�ƁA����͐����I
+#1 なんと、それは凄い！
 
 @YUKINA_NIKKORI2 ;
-#��� �ł́A����������̗�����Ȃ���o���Ă����܂��傤
+#雪奈 では、さっそく具体例を見ながら覚えていきましょう
 
-#��� �����̑傫����ύX���閽�߂́A$e�w���e�n�m�s�r�h�y�d�@�m���l�n�x�Ə����܂�
+#雪奈 文字の大きさを変更する命令は、$e『＆ＦＯＮＴＳＩＺＥ　［数値］』と書きます
 
 &FONTSIZE 35 ;
-#��� �T�C�Y�R�T�Ŏw�肵�Ă݂����
+#雪奈 サイズ３５で指定してみたわよ
 
-#1 ����͑傫�����܂�����
+#1 これは大きすぎますって
 
 &FONTSIZE 6 ;
-#��� �T�C�Y�U�ɂ���Ƃ�������������
+#雪奈 サイズ６にするとこういう感じね
 
-#1 ���������ēǂ߂Ȃ���ł����ǁc
+#1 小さすぎて読めないんですけど…
 
 &FONTSIZE NORMAL ;
 @YUKINA_NIKO ;
-#��� ���̑傫���ɖ߂��ɂ́A���l�̏��Ɂh�m�n�q�l�`�k�h�ƋL�q����Ηǂ���
+#雪奈 元の大きさに戻すには、数値の所に”ＮＯＲＭＡＬ”と記述すれば良いの
 
-#1 �Ȃ�قǂȂ�ق�
+#1 なるほどなるほど
 
-#��� ������傫����������ƁA��ʂɓ��肫��Ȃ���������̂��璍�ӂ��Ă�
+#雪奈 文字を大きくしすぎると、画面に入りきらない事があるのから注意してね
 
 
-;�������F
+;■文字色
 @YUKINA_SUMASI ;
-#��� ���x�͕����̐F��ς��閽�߂�
+#雪奈 今度は文字の色を変える命令ね
 
-#1 �F��ς���c�H
+#1 色を変える…？
 
 &FONTCOLOR YELLOW ;
-�i�w���e�n�m�s�b�n�k�n�q�@�m�F�w��n�x�ŁA�\������镶�͂̃t�H���g�F��ύX�ł��܂��j
+（『＆ＦＯＮＴＣＯＬＯＲ　［色指定］』で、表示される文章のフォント色を変更できます）
 
 @YUKINA_SUMASI ;
-#��� ���̖��߂���x�g���ƁA�ȍ~�̕��͂��ׂĂ̐F���ς���
+#雪奈 この命令を一度使うと、以降の文章すべての色が変わるの
 
 
 &FONTCOLOR WHITE ;
-#��� ���ɖ߂������ꍇ�́A��{�F�ł���m�v�g�h�s�d�n�Ŏw�肵�������B�o���Ă����Ă�
+#雪奈 元に戻したい場合は、基本色である［ＷＨＩＴＥ］で指定し直す事。覚えておいてね
 
-#1 �g����F�͂ǂ�Ȃ̂������ł����H
+#1 使える色はどんなのがあるんですか？
 
 
 @YUKINA_NIKO ;
-#��� �F���̎w��Ŏg������̂́A$E�v�g�h�s�d�A�a�k�`�b�j�A�q�d�c�A�a�k�t�d�A�f�q�d�d�m�A�x�d�k�k�n�v�c�̂U�F�������āc
+#雪奈 色名の指定で使えるものは、$EＷＨＩＴＥ、ＢＬＡＣＫ、ＲＥＤ、ＢＬＵＥ、ＧＲＥＥＮ、ＹＥＬＬＯＷ…の６色があって…
 
-#��� �����ȊO�̐F�c���Ƃ��΃s���N�F�⎇�F���g�������ꍇ�́A�v�d�a�Z�[�t�J���[�ł̎w����s����
+#雪奈 これら以外の色…たとえばピンク色や紫色を使いたい場合は、ＷＥＢセーフカラーでの指定を行うの
 
-#1 �Z�[�t�J���[�H
+#1 セーフカラー？
 
 @YUKINA_SUMASI ;
-#��� ������g�s�l�k�����́h���������������h�Ƃ������w����@�ˁB���ꂾ�Ƃ���ɍׂ����F�w�肪�s����̂�
+#雪奈 いわゆるＨＴＭＬ方式の”＃○○▼▼＊＊”とかいう指定方法ね。これだとさらに細かく色指定が行えるのよ
 
 &FO ;
 &FONTCOLOR "#FF69B4" ;
-#��� �h���e�e�U�X�a�S�h���ƁA������������Ȋ����Ƀs���N�F���ۂ��Ȃ��āc
+#雪奈 ”＃ＦＦ６９Ｂ４”だと、だいたいこんな感じにピンク色っぽくなって…
 
 &FONTCOLOR "#FFA500" ;
-#��� �h���e�e�`�T�O�O�h�ŃI�����W�F
+#雪奈 ”＃ＦＦＡ５００”でオレンジ色
 
-&FONTCOLOR "#FFFFFF" ;WHITE�Ɠ���
-#��� ���̎w����@���g���ꍇ�A�K�����p�́h�i�_�u���N�I�[�c�j�ŋ���ł�
+&FONTCOLOR "#FFFFFF" ;WHITEと同じ
+#雪奈 この指定方法を使う場合、必ず半角の”（ダブルクオーツ）で挟んでね
 
-#1 �Ȃ�قǁ`
-
-
-�܂��A�g�s�l�k�^�O�̂悤�ɁA���e�r���`���^�e�r�������ŁA���͓��̕����T�C�Y�𕔕��I�ɕύX���邱�Ƃ��ł��܂��B
-
-���l�ɁA���e�b���`���^�e�b�������ŁA���͓��̈ꕔ�̐F��ύX���邱�Ƃ��ł��܂��B
+#1 なるほど〜
 
 
+また、ＨＴＭＬタグのように、＜ＦＳ＞〜＜／ＦＳ＞書式で、文章内の文字サイズを部分的に変更することができます。
 
-����ł́A<fc red>�ȒP�Ɏg�p��</fc>�����������܂��B$E<FS 25>�����̕\��</FS>���ω����Ă���̂��킩��܂������H
+同様に、＜ＦＣ＞〜＜／ＦＣ＞書式で、文章内の一部の色を変更することができます。
 
 
-�����̖��߂́A<FS 30><fc yellow>�����I�ɋ�����������</fc></FS>�ɕ֗��ł��B�܂��A�����̏������d�˂Ďg�����Ƃ�<fc "#ffc0cb"><FS 28>�ł�</FS><FS 12>�܂�</FS>�B</FC>
 
-"</FS>"��"</FC>"�ŕ��Ȃ��ƁA����ȍ~�̕��͂�<FS 28>�S��<FC GREEN>�ω�������ԂɂȂ��Ă��܂��܂��B
+それでは、<fc red>簡単に使用例</fc>をお見せします。$E<FS 25>文字の表示</FS>が変化しているのがわかりましたか？
+
+
+これらの命令は、<FS 30><fc yellow>部分的に強調したい時</fc></FS>に便利です。また、複数の書式を重ねて使うことも<fc "#ffc0cb"><FS 28>でき</FS><FS 12>ます</FS>。</FC>
+
+"</FS>"や"</FC>"で閉じないと、それ以降の文章が<FS 28>全て<FC GREEN>変化した状態になってしまいます。
 
 &FONTSIZE NORMAL ;
-�������񏉊��ݒ�ɖ߂��܂��B��{�T�C�Y�͂Q�O�ł��B
+いったん初期設定に戻します。基本サイズは２０です。
 
 
 
 
 
-;�����r�t������
+;■ルビ付き文字
 &CG HIKAESITU ;
 @YUKINA_SUMASI ;
-#��� ���������B����V�������r�t�����߂��g����悤�ɂȂ�����
+#雪奈 そうそう。今回新しくルビ付き命令が使えるようになったの
 
-#1 ���r�H
+#1 ルビ？
 
-#��� ������h�U�艼���h�t���̕����̎���
+#雪奈 いわゆる”振り仮名”付きの文字の事ね
 
-#1 ����͐����ł��ˁ`
+#1 それは凄いですね〜
 
-#��� �g�����́A$E���q�a�@�h�t���K�i�h���m������n���^�q�a���Ə����܂�
+#雪奈 使い方は、$E＜ＲＢ　”フリガナ”＞［文字列］＜／ＲＢ＞と書きます
 
 
-#��� <RB "���L�i">���</RB>�Ƃ�<RB "����Ȃ�">�g</RB>�Ƃ��A<RB "�ڂ��Ƃڂ���̂Ȃ�">�l�ƁA�l��̉�</RB>�̂悤�ɕ\�������鎖���ł���̂�
+#雪奈 <RB "ユキナ">雪奈</RB>とか<RB "くれない">紅</RB>とか、<RB "ぼくとぼくらのなつ">僕と、僕らの夏</RB>のように表示させる事ができるのよ
 
-#1 <RB "�ӂ��݂̂�@�݂���">���V�{�@���t</RB>�c�c<RB "�C�`�����@�L��">�s���@�M��</RB>�c�c�Ȃ�قǁA����Ȋ�����
+#1 <RB "ふじのみや　みずは">藤之宮　瑞葉</RB>……<RB "イチムラ　キリ">市村　貴理</RB>……なるほど、こんな感じか
 
 @YUKINA_NIKKORI ;
-#��� �͂��A�悭�ł��܂�����
+#雪奈 はい、よくできました☆
 
 
 
 
-;���\���ʒu
+;■表示位置
 @YUKINA_SUMASI ;
-#��� ���x�͕��͂̕\���ʒu�ɂ��Đ���������
+#雪奈 今度は文章の表示位置について説明するわね
 
 &CHARCLEAR ;
 
-<FC YELLOW>�u���e�n�m�s�o�n�r�h�s�h�n�m�@�i�ʒu�j�v</FC>�ŁA�\������镶�͂̈ʒu���w��ł��܂��B
+<FC YELLOW>「＆ＦＯＮＴＰＯＳＩＴＩＯＮ　（位置）」</FC>で、表示される文章の位置を指定できます。
 
-�w��ʒu�͑S���ŋ����܂��B
+指定位置は全部で九つあります。
 
 &FONTPOSITION LEFT_TOP ;
-����i�����ݒ�j
+左上（初期設定）
 
 &FONTPOSITION LEFT_CENTER ;
-�����i
+左中段
 
 &FONTPOSITION LEFT_DOWN ;
-����
+左下
 
 &FONTPOSITION CENTER_TOP ;
-������
+中央上
 
 &FONTPOSITION CENTER ;
-����
+中央
 
 &FONTPOSITION CENTER_DOWN ;
-������
+中央下
 
 &FONTPOSITION RIGHT_TOP ;
-�E��
+右上
 
 &FONTPOSITION RIGHT_CENTER ;
-�E���i
+右中段
 
 &FONTPOSITION RIGHT_DOWN ;
-�E��
+右下
 
 &FONTPOSITION LEFT_TOP ;
-�c�ƂȂ��Ă��܂��B�����̑傫���ɒ��ӂ��Ďg�p���Ă��������B
+…となっています。文字の大きさに注意して使用してください。
 
 @YUKINA_NIKO ;
-#��� ��́w�k�d�e�s�Q�s�n�o�x������A�����ɖ߂��悤�ɂ���Ɨǂ����
+#雪奈 基準は『ＬＥＦＴ＿ＴＯＰ』だから、ここに戻すようにすると良いわよ
 
 
-;�����p
-#��� ���̖��߂��ȗ����������̂��A"<C>�E<R>�E<L>"�Łc
+;■応用
+#雪奈 この命令を簡略化したものが、"<C>・<R>・<L>"で…
 
-#��� <C>"<C>"���Z���t�̓��ɒu���Ƃ���ȋ�ɕ\�������́B$K$E"<R>"���E�񂹁A"<L>"�����񂹂�
+#雪奈 <C>"<C>"をセリフの頭に置くとこんな具合に表示されるの。$K$E"<R>"が右寄せ、"<L>"が左寄せね
 
-#1 <R>�E�񂹂��Ɓc�Ȃ�قǂ�����
+#1 <R>右寄せだと…なるほどこうか
 
-#��� <L>���񂹂��ƁA�܂��A�����̊�����
+#雪奈 <L>左寄せだと、まあ、いつもの感じね
 
-#��� <R>������<C>�g�ݍ��킹�Ďg����<L>���������ӂ��ɏo��̂�
+#雪奈 <R>複数を<C>組み合わせて使うと<L>こういうふうに出るのよ
 
-<C>���̏ꍇ�A<R>��ڂ����<L>�����ŉ��s����܂��B
+<C>この場合、<R>二つ目からは<L>自動で改行されます。
 
 &FO ;
 
@@ -411,56 +411,56 @@ S:
 
 
 
-�S�E���͕\���ɂ���
+４・文章表示について
 
 
-;���e�L�X�g�X�s�[�h
+;■テキストスピード
 &CG_BG HIKAESITU ;
 @YUKINA_NIKO ;
-#��� <FC YELLOW>�w���s�d�w�s�r�o�d�d�c�@�i���l�j�x</FC>�̋L�q�Ńe�L�X�g�̕\�����x�̕ύX���s����̂�
+#雪奈 <FC YELLOW>『＆ＴＥＸＴＳＰＥＥＤ　（数値）』</FC>の記述でテキストの表示速度の変更が行えるのよ
 
 &CHARCLEAR ;
 &TEXTSPEED 100 ;
-���l���P��<FC "#800080">�P�~���b</FC>�̑��x�ɂȂ�܂��B�i���̏ꍇ�O�D�P�b�ňꕶ���\���j
+数値が１で<FC "#800080">１ミリ秒</FC>の速度になります。（この場合０．１秒で一文字表示）
 
 &TEXTSPEED 1000 ;
-���l�P�O�O�O�ŁA�ꕶ���\�������̂�<FC "#800080">�P�b</FC>������v�Z�ɂȂ�܂��B
+数値１０００で、一文字表示されるのに<FC "#800080">１秒</FC>かかる計算になります。
 
 
 
 &TEXTSPEED 0 ;
 
-���l�����Ȃ��Ƒ����Ȃ�A��������ƒx���Ȃ�d�g�݂ł��B
+数値が少ないと速くなり、多くすると遅くなる仕組みです。
 
-���l�O�ň�x�ɑS�Ă̕��͂��\������܂��B
+数値０で一度に全ての文章が表示されます。
 
 &TEXTSPEED NORMAL ;
 
-"&TEXTSPEED NORMAL"�Ō��̑��x�i�R���t�B�O�Őݒ肵�����x�j�ɖ߂��܂��B
+"&TEXTSPEED NORMAL"で元の速度（コンフィグで設定した速度）に戻します。
 
-#1 �Ȃ�قǁ`
-
-
+#1 なるほど〜
 
 
 
-;���e�L�X�g�̎�������
+
+
+;■テキストの自動送り
 
 &TEXTMODE SYNC ;
 @YUKINA_NIKO ;
-#��� <FC YELLOW>�w���s�d�w�s�l�n�c�d�@<FC "#FFA500">�r�x�m�b</FC>�x</FC>�ƋL�q���邱�Ƃŕ��͂̎���������s���܂�
+#雪奈 <FC YELLOW>『＆ＴＥＸＴＭＯＤＥ　<FC "#FFA500">ＳＹＮＣ</FC>』</FC>と記述することで文章の自動送りを行えます
 &WAIT 8 ;
 
-#1 �͂͂��A�������傤�ǎ������蒆�Ȃ�ł���
+#1 ははあ、今がちょうど自動送り中なんですね
 &WAIT 6 ;
 
 &CHARCLEAR ;
-<FC RED>������</FC>�@"&TEXTMODE SYNC"�̍ۂ́A<FC GREEN>"&WAIT"</FC>�͕��͂̏�ł͂Ȃ��ĉ��ɔz�u���邱�ƁI
+<FC RED>※注意</FC>　"&TEXTMODE SYNC"の際は、<FC GREEN>"&WAIT"</FC>は文章の上ではなくて下に配置すること！
 &WAIT 8 ;
 
-�܂��A�Ԃ̋���s�͔������Ă��܂��Ă��\���܂���B
+また、間の空改行は抜かしてしまっても構いません。
 &WAIT 8 ;
-���͎�������͓��ʂȉ��o�����������Ɍ����Ă��܂��B
+文章自動送りは特別な演出をしたい時に向いています。
 &WAIT 8 ;
 
 
@@ -468,46 +468,46 @@ S:
 
 &TEXTMODE NORMAL ;
 @YUKINA_SUMASI ;
-#��� ���ɖ߂��ꍇ�́A<FC YELLOW>�w���s�d�w�s�l�n�c�d�@<FC "#FFA500">�m�n�q�l�`�k</FC>�x</FC>�ƋL�q���Ă�
+#雪奈 元に戻す場合は、<FC YELLOW>『＆ＴＥＸＴＭＯＤＥ　<FC "#FFA500">ＮＯＲＭＡＬ</FC>』</FC>と記述してね
 
-#1 �������肪"SYNC"�ŁA�ʏ��"NORMAL"�ł��ˁB���������c�c����
+#1 自動送りが"SYNC"で、通常は"NORMAL"ですね。メモメモ……っと
 
 &FO ;
 
 
 
-�T�E�a�f�l�Đ�����x�����s��
+５・ＢＧＭ再生を一度だけ行う
 
-;���T�E���h�̃��[�v�@�\
+;■サウンドのループ機能
 &CG_BG HIKAESITU ;
 @YUKINA_SUMASI ;
-#��� ���낻��a�f�l���~�܂��Ă��鍠���Ǝv���񂾂��ǁc�c�킩��H
+#雪奈 そろそろＢＧＭが止まっている頃だと思うんだけど……わかる？
 
-#1 �ނ��c���������ΐÂ�����
+#1 むぅ…そういえば静かだな
 
 @YUKINA_NIKO ;
-#��� ���̂��b�̖`���ła�f�l�̃��[�v���~�߂Ă��邩��Ȃ̂�
+#雪奈 このお話の冒頭でＢＧＭのループを止めているからなのよ
 
 @YUKINA_SUMASI ;
-#��� �ʏ킾�ƁA�a�f�l�̓��[�v�Đ����s���Ă��āA�����Ȃ��A�����ė����悤�ɂȂ��Ă���񂾂��ǁc
+#雪奈 通常だと、ＢＧＭはループ再生が行われていて、同じ曲が連続して流れるようになっているんだけど…
 
-#��� ���̃��[�v���Ӑ}�I�Ɏ~�߂鎖���o�����
+#雪奈 そのループを意図的に止める事が出来るの
 
-#��� ���̏����́A$E�w���r�n�t�m�c�Q�b�s�q�k�@�k�n�n�o�@<FC YELLOW>�n�e�e</FC>�x�Ƒł����ނ���
+#雪奈 その書式は、$E『＆ＳＯＵＮＤ＿ＣＴＲＬ　ＬＯＯＰ　<FC YELLOW>ＯＦＦ</FC>』と打ち込むだけ
 
-#��� ����ň�x�Ȃ��I���ƁA������x"&SOUND"�̎w������Ȃ������o�����͖����Ȃ��
+#雪奈 これで一度曲が終わると、もう一度"&SOUND"の指定をしない限り鳴り出す事は無くなるわ
 
-#1 �Ӂ`�`��
+#1 ふ〜〜む
 
 @YUKINA_NIKO ;
-#��� ���ɖ߂������ꍇ�́A�w���r�n�t�m�c�Q�b�s�q�k�@�k�n�n�o�@<FC YELLOW>�n�m</FC>�x�ƋL�q���Ă�
+#雪奈 元に戻したい場合は、『＆ＳＯＵＮＤ＿ＣＴＲＬ　ＬＯＯＰ　<FC YELLOW>ＯＮ</FC>』と記述してね
 
 &CHARCLEAR ;
 &SOUND_CTRL LOOP ON ;
-�i�a�f�l�̃��[�v���n�m�ɂ��܂��j
+（ＢＧＭのループをＯＮにします）
 
 &SOUND 10 ;
-�i���̖��߂����ła�f�l����n�߂�킯�ł͂���܂���̂ŁA��~��Ԃ���Đ�����ꍇ�́A�Ă�"&SOUND"���g���Ă��������j
+（この命令だけでＢＧＭが鳴り始めるわけではありませんので、停止状態から再生する場合は、再び"&SOUND"を使ってください）
 
 
 
@@ -515,19 +515,19 @@ S:
 
 
 @YUKINA_NIKKORI2 C ;
-#��� �����͂���ȏ�������ˁB����ꂳ�܂ł���
+#雪奈 今日はこんな所かしらね。お疲れさまでした
 
-#1 ���₟�`�`�����[���ł��˂��`�`
+#1 いやぁ〜〜奥が深いですねぇ〜〜
 
 @YUKINA_NIKO ;
-#��� �����܂ł̍u���ŁA��{���̃X�g�[���[�͍���Ǝv������A�撣���Ă݂Ă�
+#雪奈 ここまでの講座で、一本道のストーリーは作れると思うから、頑張ってみてね
 
-#1 �͂����A�撣��܂��I�I
+#1 はいっ、頑張ります！！
 
 &SOUNDSTOP FO ;
 &FO ;
 &WAIT 6 ;
-�w���f�n�s�n�s�d�w�s�@�x���߂��g�p���ăT���v���V�i���I�`���ɖ߂�܂��B�I������ꍇ�́A�p�t�h�s��I��ł��������B
+『＆ＧＯＴＯＴＥＸＴ　』命令を使用してサンプルシナリオ冒頭に戻ります。終了する場合は、ＱＵＩＴを選んでください。
 
 &GOTOTEXT SCENARIO ;
 
