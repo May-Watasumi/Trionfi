@@ -54,7 +54,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 				{ "tag",""},
 				{ "layer","Default"},
 				{ "sort","3"},
-				{ "imagePath", StorageManager.Instance.PATH_IMAGE},
+//				{ "imagePath", StorageManager.Instance.PATH_IMAGE},
 				{ "x","0"},
 				{ "y","0"},
 				{ "z","-3.2"},
@@ -79,7 +79,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 			else
 				paramDic ["scale"] = "1";
            
-			TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], ObjectType.BG);
+			TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
             g.Load(paramDic);
             yield return null;
 
@@ -418,7 +418,7 @@ storage=画像ファイル名を直接していできます。フォルダはdat
 
 		public Image_faceComponent()
         {
-			this.imagePath = StorageManager.Instance.PATH_IMAGE;
+//			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
 			arrayVitalParam = new List<string> {

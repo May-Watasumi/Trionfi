@@ -82,7 +82,7 @@ scale_y=クリッカブルの縦幅の拡大率を指定できます。
 			paramDic ["storage"] = "black";
 			paramDic["className"] ="Clickable";
 
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], ObjectType.BG);
+            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
             g.Load(paramDic);
             yield return null;
 

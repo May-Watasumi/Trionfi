@@ -56,7 +56,7 @@ namespace NovelEx {
 //				SelectorManager.Add(_selector);
 
 				if(paramDic["storage"] != "") {
-					string filename = StorageManager.Instance.PATH_SYSTEM_IMAGE + paramDic["storage"];
+					string filename = StorageManager.Instance.PATH_UI_IMAGE + paramDic["storage"];
 					Sprite imageSprite = StorageManager.Instance.LoadSprite(filename);
 
 					_selector.GetComponent<UnityEngine.UI.Button>().image.sprite = imageSprite;

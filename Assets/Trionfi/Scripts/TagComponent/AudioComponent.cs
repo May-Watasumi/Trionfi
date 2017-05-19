@@ -64,7 +64,7 @@ next=falseを指定すると次の処理に移動することなく、音楽を�
 //			CompleteDelegate completeDelegate = this.complete;
 			StatusManager.Instance.currentPlayBgm = storage;
 
-            TRAudioObjectBehaviour audioObject = AudioManager.Instance.Create(paramDic["name"], ObjectType.Bgm).GetComponent<TRAudioObjectBehaviour>();
+            TRAudioObjectBehaviour audioObject = AudioManager.Instance.Create(paramDic["name"], TRObjectType.BGM).GetComponent<TRAudioObjectBehaviour>();
 	//		audioObject.time = time;
 			audioObject.volume1 = volume;
 //			audioObject.completeDelegate = this.complete; //completeDelegate;
@@ -166,11 +166,11 @@ wait=trueを指定することでtimeで指定した時間が完了するまで�
 			if (storage != "")
             {
 				string file = StorageManager.Instance.PATH_AUDIO_BGM + storage;
-				(AudioManager.Instance as AudioManager).Stop(file, ObjectType.Bgm, time, completeDelegate);
+				(AudioManager.Instance as AudioManager).Stop(file, TRObjectType.BGM, time, completeDelegate);
 			}
             else
             {
-				(AudioManager.Instance as AudioManager).Stop("", ObjectType.Bgm, time, completeDelegate);
+				(AudioManager.Instance as AudioManager).Stop("", TRObjectType.BGM, time, completeDelegate);
 			}
 
 			//this.gameManager.scene.MessageSpeed = 0.02f;
@@ -266,7 +266,7 @@ loop=trueを指定すると音楽を繰り返し再生します。
 			//			string wait = paramDic ["wait"];
 
 			CompleteDelegate completeDelegate = this.complete;
-			TRAudioObjectBehaviour audioObject = (AudioManager.Instance as AudioManager).Find(file, ObjectType.Sound);
+			TRAudioObjectBehaviour audioObject = (AudioManager.Instance as AudioManager).Find(file, TRObjectType.SE);
 //			audioObject.time = 0;
 			audioObject.volume1  = float.Parse(paramDic["vol"]);
 //			audioObject.completeDelegate = completeDelegate;
@@ -356,9 +356,9 @@ loop=wait 効果音が停止するまで待ちます
 
 			if (storage != "") {
 				string file = StorageManager.Instance.PATH_AUDIO_SE + storage;
-                (AudioManager.Instance as AudioManager).Stop(file, ObjectType.Sound, time, completeDelegate);
+                (AudioManager.Instance as AudioManager).Stop(file, TRObjectType.SE, time, completeDelegate);
 			} else {
-                (AudioManager.Instance as AudioManager).Stop("", ObjectType.Sound, time, completeDelegate);
+                (AudioManager.Instance as AudioManager).Stop("", TRObjectType.SE, time, completeDelegate);
 			}
 
 			nextOrder = false;

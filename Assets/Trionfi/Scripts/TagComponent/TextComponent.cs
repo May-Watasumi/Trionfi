@@ -2,7 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx {
+namespace NovelEx
+{
 
 	/*	
 --------------
@@ -66,7 +67,7 @@ cut=数値を指定します。指定した文字数でカットします。
 		protected string imagePath = "";
 
 		public Text_newComponent() {
-			this.imagePath = StorageManager.Instance.PATH_IMAGE;
+//			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
 			arrayVitalParam = new List<string> {
@@ -104,7 +105,7 @@ cut=数値を指定します。指定した文字数でカットします。
 			paramDic ["scale_y"] = paramDic ["scale"];
 			paramDic ["scale_z"] = paramDic ["scale"];
 
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], ObjectType.BG);        
+            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);        
             g.Load(paramDic);
             yield return null;
 

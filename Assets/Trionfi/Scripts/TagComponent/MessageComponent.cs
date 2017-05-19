@@ -95,7 +95,7 @@ speed=１文字が表示される秒数を指定します。
 			paramDic["scale_x"] = paramDic["scale"];
 			paramDic["scale_y"] = paramDic["scale"];
 			paramDic["scale_z"] = paramDic["scale"];
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], ObjectType.BG);
+            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
             g.Load(paramDic);
             yield return null;
 

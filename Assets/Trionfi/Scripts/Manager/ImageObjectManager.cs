@@ -11,6 +11,9 @@ namespace NovelEx
 	[Serializable]
 	public class ImageObjectManager : FlipObject<TRImageObjectBehaviour, CanvasManager>
     {
+        [SerializeField]
+        int characterBaseDescent = 0;
+
         //        public static Dictionary<string, AbstractObject> dicObject = new Dictionary<string, AbstractObject>();
         /*
                 //セーブ用のパラメータなど、全てココに入れておく必要がある
@@ -19,6 +22,12 @@ namespace NovelEx
                 //face 情報はココに格納
                 public Dictionary<string,string> dicFace = new Dictionary<string,string>();
         */
+
+        public override TRImageObjectBehaviour Create(string name, TRObjectType type)
+        {
+            return null;
+        }
+
 #if false
         public override TRImageObjectBehaviour Create(string name, ObjectType type)
         {

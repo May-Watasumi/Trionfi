@@ -2,9 +2,25 @@
 using System.Collections;
 using System;
 
-namespace NovelEx {
-//	[System.Serializable]
-	public enum StorageTypes
+namespace NovelEx
+{
+    public enum TRObjectType
+    {
+        None,
+        Character,
+        BG,
+        Event,
+        UI,
+        Live2D,
+        FBX,
+        Emote,
+        BGM,
+        SE,
+        Voice
+    }
+
+    //	[System.Serializable]
+    public enum StorageTypes
 	{
 		LocalFile,
 		URL,
@@ -25,24 +41,21 @@ namespace NovelEx {
         public GameObject imageBasePrefab;
 
         [SerializeField]		
-		public string basepath = "novelex/data/";
+		public string basepath = "TRdata/";
 
 		public StorageInfo path_prefab = new StorageInfo() { path = "prefab/", type = StorageTypes.LocalFile };
-		public StorageInfo path_imageroot = new StorageInfo() { path = "images/", type = StorageTypes.LocalFile };
-		public StorageInfo path_charaimage = new StorageInfo() { path = "images/character/", type = StorageTypes.LocalFile };
-		public StorageInfo path_bgimage = new StorageInfo() { path = "images/background/", type = StorageTypes.LocalFile };
-		public StorageInfo path_standimage = new StorageInfo() { path = "images/sd/", type = StorageTypes.LocalFile };
-		public StorageInfo path_systemimage = new StorageInfo() { path = "images/system/", type = StorageTypes.LocalFile };
-		public StorageInfo path_otherimage = new StorageInfo() { path = "images/image/", type = StorageTypes.LocalFile };
+		public StorageInfo path_spriteroot = new StorageInfo() { path = "sprite/", type = StorageTypes.LocalFile };
+		public StorageInfo path_charaimage = new StorageInfo() { path = "sprite/character/", type = StorageTypes.LocalFile };
+		public StorageInfo path_bgimage = new StorageInfo() { path = "sprite/background/", type = StorageTypes.LocalFile };
+		public StorageInfo path_uiimage = new StorageInfo() { path = "sprite/ui/", type = StorageTypes.LocalFile };
 		public StorageInfo path_scenario = new StorageInfo() { path = "scenario/", type = StorageTypes.LocalFile };
-		public StorageInfo path_bgm = new StorageInfo() { path = "bgm/", type = StorageTypes.LocalFile };
-		public StorageInfo path_se = new StorageInfo() { path = "sound/", type = StorageTypes.LocalFile };
-		public StorageInfo path_voice = new StorageInfo() { path = "voice/", type = StorageTypes.LocalFile };
-		public StorageInfo path_animation = new StorageInfo() { path = "anim", type = StorageTypes.LocalFile };
-		public StorageInfo path_live2d = new StorageInfo() { path = "L2DModel/", type = StorageTypes.LocalFile };
+		public StorageInfo path_bgm = new StorageInfo() { path = "sound/bgm/", type = StorageTypes.LocalFile };
+		public StorageInfo path_se = new StorageInfo() { path = "sound/se/", type = StorageTypes.LocalFile };
+		public StorageInfo path_voice = new StorageInfo() { path = "sound/voice/", type = StorageTypes.LocalFile };
+//		public StorageInfo path_live2d = new StorageInfo() { path = "L2DModel/", type = StorageTypes.LocalFile };
 
 		public StorageInfo path_savedata = new StorageInfo() { path = /*Application.persistentDataPath+*/"/novel/", type = StorageTypes.LocalFile };
-		private const string savesnapfile = "_TEMPSAVE_.dat";
+		private const string savesnapfile = "_TEMPSAVE_";
 
 		public string PATH_SERVER {
 			get {
@@ -57,11 +70,11 @@ namespace NovelEx {
 				return basepath + path_prefab.path;
 			}
 		}
-		public string PATH_IMAGE_ROOT
+		public string PATH_SPRITE_ROOT
 		{
 			get
 			{
-				return basepath + path_imageroot.path;
+				return basepath + path_spriteroot.path;
 			}
 		}
 		public string PATH_CHARA_IMAGE
@@ -78,18 +91,11 @@ namespace NovelEx {
 				return basepath + path_bgimage.path;
 			}
 		}
-		public string PATH_SYSTEM_IMAGE
+		public string PATH_UI_IMAGE
 		{
 			get
 			{
-				return basepath + path_systemimage.path;
-			}
-		}
-		public string PATH_IMAGE
-		{
-			get
-			{
-				return basepath + path_otherimage.path;
+				return basepath + path_uiimage.path;
 			}
 		}
 
@@ -100,14 +106,8 @@ namespace NovelEx {
 				return basepath + path_scenario.path;
 			}
 		}
-		public string PATH_SD_OBJECT
-		{
-			get
-			{
-				return basepath + path_standimage.path;
-			}
-		}
-		public string PATH_AUDIO_BGM
+
+        public string PATH_AUDIO_BGM
 		{
 			get
 			{
@@ -127,22 +127,16 @@ namespace NovelEx {
 			{
 				return basepath + path_voice.path;
 			}
-		}		 
-		public string PATH_ANIM_FILE
-		{
-			get
-			{
-				return basepath + path_animation.path;
-			}
 		}
-		public string PATH_LIVE2D_FILE
+#if false
+        public string PATH_LIVE2D_FILE
 		{
 			get
 			{
 				return /*basepath + */ path_live2d.path;
 			}
 		}
-
+#endif
 		public string PATH_SAVEDATA
 		{
 			get
@@ -205,7 +199,7 @@ namespace NovelEx {
 		}
 
 		public Sprite LoadImage(string storage) {
-			Sprite sp = Resources.Load<Sprite>(PATH_IMAGE_ROOT + storage);
+			Sprite sp = Resources.Load<Sprite>(PATH_SPRITE_ROOT + storage);
 
 			if (sp == null)
 				ErrorLogger.stopError("JOKEREX:\"" + storage + "\"(Image)が見つかりませんでした。");
@@ -216,22 +210,21 @@ namespace NovelEx {
 		public AudioClip LoadVoice(string storage) {
 			return LoadAudioAsset(PATH_AUDIO_VOICE + storage);
 		}
-
-
+/*
 		public GameObject LoadLive2D(string storage) {
 			return LoadObject(PATH_LIVE2D_FILE + storage);
 		}
-
+*/
 		public GameObject loadPrefab(string storage) {
 			return LoadObject(PATH_PREFAB + storage);
 		}
-
+/*
 		public AnimationClip loadAnimation(string storage) {
 			return Resources.Load(PATH_ANIM_FILE + storage) as AnimationClip;
 		}
-/*
+
 		public AbstractObject GetCustomObject(string type, GameObject g) {
-/*
+
 			switch (type) {
 			case "Message_Magic":
 				return g.AddComponent<Message_magicObject>();

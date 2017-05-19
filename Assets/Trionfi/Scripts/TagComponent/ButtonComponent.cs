@@ -68,7 +68,7 @@ cut=数値を指定します。指定した文字数でカットします。
 		protected string imagePath = "";
 
 		public Button_newComponent() {
-			this.imagePath = StorageManager.Instance.PATH_SYSTEM_IMAGE;
+			this.imagePath = StorageManager.Instance.PATH_UI_IMAGE;
 
 			//必須項目
 			arrayVitalParam = new List<string> {
@@ -100,7 +100,7 @@ cut=数値を指定します。指定した文字数でカットします。
 				{ "color","FFFFFF" },
 				{ "fontsize","24" },
 				{ "cut","" },
-				{ "imagePath", StorageManager.Instance.PATH_SYSTEM_IMAGE },
+				{ "imagePath", StorageManager.Instance.PATH_UI_IMAGE },
 				{ "path","false"}
 			};
 		}
@@ -128,7 +128,7 @@ cut=数値を指定します。指定した文字数でカットします。
 			}
 			*/
 
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], ObjectType.BG);
+            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
             g.Load(paramDic);
             yield return null;
 

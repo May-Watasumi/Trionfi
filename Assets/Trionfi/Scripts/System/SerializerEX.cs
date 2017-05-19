@@ -253,7 +253,7 @@ namespace NovelEx
                 //画面を復元していきます
                 //				ImageObject image = new Image(dic[kvp.Key].dicSave);
                 //				image.dicFace = dic[kvp.Key].dicFace;
-                ImageObjectManager.Instance.Create(kvp.Key, ObjectType.BG);
+                ImageObjectManager.Instance.Create(kvp.Key, TRObjectType.BG);
 			}
 
 			//タグも復元

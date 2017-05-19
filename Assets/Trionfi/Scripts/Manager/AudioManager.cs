@@ -23,17 +23,17 @@ namespace NovelEx
 //        public static Dictionary<string, TRAudioObjectBehaviour> dicSound = new Dictionary<string, TRAudioObjectBehaviour>();
 		public static Dictionary<string, TRAudioObjectBehaviour> dicVoice = new Dictionary<string, TRAudioObjectBehaviour>();
 
-		public override TRAudioObjectBehaviour Create(string name, ObjectType type)
+		public override TRAudioObjectBehaviour Create(string name, TRObjectType type)
 		{
             TRAudioObjectBehaviour g = null;
             switch(type)
             {
-            case ObjectType.Bgm:
+            case TRObjectType.BGM:
                 g = currentInstance;
                 currentInstance.Load(name);
                 break;
-            case ObjectType.Sound:
-            case ObjectType.Voice:
+            case TRObjectType.SE:
+            case TRObjectType.Voice:
                 g = GameObject.Instantiate(objectPrefab).GetComponent<TRAudioObjectBehaviour>();
                 g.GetComponent<TRAudioObjectBehaviour>().Load(name);
                 g.transform.parent = seRoot.transform;
@@ -56,17 +56,17 @@ namespace NovelEx
 			return null;		
 		}
         */
-        public TRAudioObjectBehaviour Find(string name, ObjectType type)
+        public TRAudioObjectBehaviour Find(string name, TRObjectType type)
         {
             switch (type)
             {
-                case ObjectType.Bgm:
+                case TRObjectType.BGM:
                     if( currentInstance.gameObject.name != name)
                         currentInstance.Load(name);
                     return currentInstance;
 
-                case ObjectType.Sound:
-                case ObjectType.Voice:
+                case TRObjectType.SE:
+                case TRObjectType.Voice:
                     if (!dicObject.ContainsKey(name))
                         Create(name, type);
                     return dicObject[name];
@@ -74,7 +74,7 @@ namespace NovelEx
             return null;           
 		}
 
-		public void Stop(string file, ObjectType type,float time, CompleteDelegate completeDelegate = null)
+		public void Stop(string file, TRObjectType type,float time, CompleteDelegate completeDelegate = null)
         {
 			//全部停止する
 			if(string.IsNullOrEmpty(file))

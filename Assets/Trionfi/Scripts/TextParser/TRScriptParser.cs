@@ -12,9 +12,8 @@ namespace NovelEx
 
     public class TRScriptParser : SingletonMonoBehaviour<TRScriptParser>
     {
-		public string errorMessage = "";
-		public string warningMessage = "";
-
+		private string errorMessage = "";
+        private string warningMessage = "";
         public bool onRegistMacro = false;
 
         private System.Globalization.TextInfo tf = new System.Globalization.CultureInfo ("en-US", false).TextInfo;

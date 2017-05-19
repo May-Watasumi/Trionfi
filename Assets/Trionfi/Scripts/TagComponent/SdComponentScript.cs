@@ -87,7 +87,7 @@ rot_z=3DモデルのZ軸角度を指定します。0〜360の間で指定しま�
 			//string tag = paramDic ["tag"];
 			paramDic["className"] ="Sd";
 
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], ObjectType.BG);
+            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
             g.Load(paramDic);
             //			this.gameManager.nextOrder();
             yield return null;

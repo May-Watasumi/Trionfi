@@ -4,10 +4,6 @@ using UnityEngine.UI;
 
 namespace NovelEx
 {
-    public enum MessageType { Error, Warning, Info };
-    public enum ObjectType { None, BG, Stand, Event, Bgm, Sound, Voice }
-    public enum FirstAction { Start, Load }
-
     [ExecuteInEditMode]
 	public class SystemConfig : SingletonMonoBehaviour<SystemConfig>
     {

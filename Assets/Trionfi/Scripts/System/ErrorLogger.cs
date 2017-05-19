@@ -4,7 +4,9 @@ using System.Diagnostics;
 using System.Collections.Generic;
 
 namespace NovelEx {
-	public class ErrorLogger {
+    public enum MessageType { Error, Warning, Info };
+
+    public class ErrorLogger {
 		private static List<string> errorMessage = new List<string>();
 		private static List<string> warningMessage = new List<string>();
 

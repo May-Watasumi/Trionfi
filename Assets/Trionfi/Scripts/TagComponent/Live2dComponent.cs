@@ -75,7 +75,7 @@ scale=Live2Dモデルの表示サイズを指定できます。つまり2と指�
 			string storage = paramDic["storage"];
 			paramDic["storage"] = storage;
 
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], ObjectType.BG);
+            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
             g.Load(paramDic);
             yield return null;
 
