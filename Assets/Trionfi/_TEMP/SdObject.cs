@@ -18,7 +18,7 @@ namespace NovelEx
 		private float show_x_position = 0; 
 
 		//イメージオブジェクト新規作成
-		public override void Load(Dictionary<string,string> param)
+		public override void Load(ParamDictionary param)
 		{
 			paramDic = param;
             gameObject.tag = param["tag"];

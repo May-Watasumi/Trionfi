@@ -7,30 +7,191 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO.Compression;
 using System.Text;
-using NovelEx;
+using System.Globalization;
 
-namespace NovelEx {
-	//変数などバリアブルを保持する
-	public class Variable
-	{
-		public Dictionary<string, Dictionary<string, string>> dicVar = new Dictionary<string, Dictionary<string, string>>();
+namespace NovelEx
+{
+    public class ParamDictionary : Dictionary<string, string>
+    {
+        public bool IsValid(ref bool res, string key)
+        {
+            res = false;
+            if (ContainsKey(key))
+            {
+                string v = this[key];
 
-		public void set(string key, string val)
+                if (v == "true")
+                    res = true;
+                else if (v == "false")
+                    res = false;
+                else
+                {
+                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        public bool IsValid(ref float res, string key)
+        {
+            res = 0.0f;
+            if (ContainsKey(key))
+            {
+                string v = this[key];
+
+                if (!float.TryParse(v, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out res))
+                {
+                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
+                    return false;
+                }
+            }
+            else
+            {
+                ErrorLogger.Log("NoParam: key=" + key);
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsValid(ref int res, string key)
+        {
+            res = 0;
+            if (ContainsKey(key))
+            {
+                string v = this[key];
+
+                if (!System.Int32.TryParse(v, out res))
+                {
+                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
+                    return false;
+                }
+            }
+            else
+            {
+                ErrorLogger.Log("NoParam: key=" + key);
+                return false;
+            }
+            return true;
+        }
+
+        public bool IsValid(ref string res, string key)
+        {
+            res = "";
+            if (ContainsKey(key))
+            {
+                res = this[key];
+                return true;
+            }
+            else
+            {
+                ErrorLogger.Log("NoParam: key=" + key);
+                return false;
+            }
+        }
+
+        public float Float(string key)
+        {
+            float res = 0.0f;
+            if (ContainsKey(key))
+            {
+                string v = this[key];
+
+                if (float.TryParse(v, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out res))
+                {
+                    return res;
+                }
+                else
+                {
+                    int _resInt = 0;
+                    if (System.Int32.TryParse(v, out _resInt))
+                        return (float)_resInt;
+                    else
+                    {
+                        ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
+                        return 0.0f;
+                    }
+                }
+            }
+            else
+            {
+                ErrorLogger.Log("NoParam: key=" + key);
+            }
+            return 0.0f;
+        }
+
+        public int Int(string key)
+        {
+            int res = 0;
+            if (ContainsKey(key))
+            {
+                string v = this[key];
+
+                if (!System.Int32.TryParse(v, out res))
+                {
+                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
+                    return 0;
+                }
+            }
+            else
+            {
+                ErrorLogger.Log("NoParam: key=" + key);
+                return 0;
+            }
+            return res;
+        }
+
+        public string String(string key)
+        {
+            string res = "";
+            if (ContainsKey(key))
+            {
+                res = this[key];
+            }
+            else
+            {
+                ErrorLogger.Log("NoParam: key=" + key);
+            }
+            return res;
+        }
+        /*
+        public T ValidParam<T>(string key)
+        {
+            if (typeof(T) == typeof(int))
+            {
+                return (T)(object)ValidInt(key);
+            }
+            else if (typeof(T) == typeof(float))
+            {
+                return (T)(object)ValidFloat(key);
+            }
+            else
+            {
+                return (T)(object)ValidString(key);
+            }
+        }
+        */
+    }
+
+    //変数などバリアブルを保持する
+    public class Variable : Dictionary<string, ParamDictionary>
+    {
+        public void Set(string exp, string val)
 		{
-			key = key.Replace("{", "").Replace("}", "");
+			exp = exp.Replace("{", "").Replace("}", "");
 
-			string[] tmp = key.Split('.');
+			string[] tmp = exp.Split('.');
 
 			string type = tmp[0].Trim();
 			string variable_name = tmp[1].Trim();
 
-			if (!this.dicVar.ContainsKey(type))
+			if(!ContainsKey(type))
 			{
-				//this.dicVar = new Dictionary<string,Dictionary<string,string>>();
-				this.dicVar[type] = new Dictionary<string, string>();
+                //this.dicVar = new Dictionary<string,ParamDictionary>();
+                this[type] = new ParamDictionary();
 			}
 
-			this.dicVar[type][variable_name] = val;
+			this[type][variable_name] = val;
 
 			//グローバルなら即効反映
 			if (type == "global")
@@ -45,11 +206,10 @@ namespace NovelEx {
     //ToDo:
 				//				JOKEREX.Instance.Serializer.SaveGlobalObject(JOKEREX.Instance..globalSetting);
 
-			}
-        
+			}        
 		}
 
-		public string get(string exp)
+		public string Get(string exp)
 		{
 			exp = exp.Replace("{", "").Replace("}", "");
 
@@ -67,48 +227,36 @@ namespace NovelEx {
 			string type = tmp[0].Trim();
 			string variable_name = tmp[1].Trim();
 
-			if (this.dicVar.ContainsKey(type) && this.dicVar[type].ContainsKey(variable_name))
-				return this.dicVar[type][variable_name];
+			if(ContainsKey(type) && this[type].ContainsKey(variable_name))
+				return this[type][variable_name];
 			else
 				return default_val;
 		}
 
-		public bool hasKey(string key)
+		public bool HasKey(string key)
 		{
-			string val = this.get(key);
+			string val = this.Get(key);
 
 			return val == "null" ? false : true;
 		}
 
-		public Dictionary<string, string> getType(string type)
+		public ParamDictionary GetDictionary(string type)
 		{
-			if (!this.dicVar.ContainsKey(type))
+			if (!ContainsKey(type))
 			{
-				//this.dicVar = new Dictionary<string,Dictionary<string,string>>();
-				return new Dictionary<string, string>();
+                //this.dicVar = new Dictionary<string,ParamDictionary>();
+                return new ParamDictionary();
 			}
 			else
-				return this.dicVar[type];
-		}
-
-		//すべてのtypeパラメータを丸ごと置き換えます
-		public void replaceAll(string type, Dictionary<string, string> dicVal)
-		{
-			this.dicVar[type] = dicVal;
-		}
-
-		//特定の変数をすべてクリアします。
-		public void remove(string type)
-		{
-			this.dicVar[type] = new Dictionary<string, string>();
-		}
-
-		public void trace(string type)
+				return this[type];
+		}       
+        
+		public void Trace(string type)
 		{
 			string str = "[trace]" + type + "\n";
 
-			foreach (KeyValuePair<string, string> kvp in dicVar[type])
-				str += kvp.Key + "=" + dicVar[type][kvp.Key] + "\n";
+			foreach (KeyValuePair<string, string> kvp in this[type])
+				str += kvp.Key + "=" + this[type][kvp.Key] + "\n";
 
 			str += "-----------------";
 

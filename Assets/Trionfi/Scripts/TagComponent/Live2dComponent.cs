@@ -47,7 +47,7 @@ scale=Live2Dモデルの表示サイズを指定できます。つまり2と指�
 				"storage" 
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "storage","" },
 				{ "tag","" },
@@ -257,7 +257,7 @@ storage=モーションファイル名を指定してください
 //				"storage"
 			};
 		
-            originalParamDic = new Dictionary<string, string>() {
+            originalParamDic = new ParamDictionary() {
 //				{ "name","" },
 				{ "motion", "-1"},
 				{ "face", "" },

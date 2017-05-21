@@ -16,7 +16,7 @@ namespace NovelEx
         private string warningMessage = "";
         public bool onRegistMacro = false;
 
-        private System.Globalization.TextInfo tf = new System.Globalization.CultureInfo ("en-US", false).TextInfo;
+        private System.Globalization.TextInfo tf = new System.Globalization.CultureInfo ("ja-JP"/*"en-US"*/, false).TextInfo;
 
         [SerializeField]
         public bool ignoreCR = true;
@@ -30,9 +30,9 @@ namespace NovelEx
         //ToDo:PlayerPrefsへ
         /*
                 //コンフィグファイルを読み込んで返す
-                public Dictionary<string,string> parseConfig (string config_text)
+                public ParamDictionary parseConfig (string config_text)
                 {
-                    Dictionary<string,string> dicConfig = new Dictionary<string,string>(); //コンフィグ
+                    ParamDictionary dicConfig = new ParamDictionary(); //コンフィグ
 
                     string[] lines = config_text.Split ('\n');
 
@@ -265,7 +265,6 @@ namespace NovelEx
 			return components;
 		}
 
-
 		//１行のstringからタグを作成
 		public AbstractComponent makeTag(string line)
         {
@@ -275,7 +274,7 @@ namespace NovelEx
 		}
 
 		//タグ名と引数の辞書からタグを生成
-		public AbstractComponent makeTag(string tag_name,Dictionary<string,string> param)
+		public AbstractComponent makeTag(string tag_name,ParamDictionary param)
         {
 			string line = "["+tag_name+" ";
 			string param_str = "";
@@ -295,12 +294,12 @@ namespace NovelEx
 		}
 
 		public AbstractComponent makeTag(string line, int line_num) {
-			Tag tag = new Tag(line);
+			TagParam tag = new TagParam(line);
 
 			//tagの種類によって、実装する命令が変わってくる
 			AbstractComponent cmp = null;
 
-			string className = tf.ToTitleCase(tag.Name) + "Component";
+			string className = "NovelEx." + tf.ToTitleCase(tag.Name) + "Component";
 
 			//リフレクションで動的型付け
 			Type masterType = Type.GetType(className);
@@ -313,7 +312,7 @@ namespace NovelEx
             {
 #if UNITY_EDITOR
                 Debug.Log(e.ToString());
-                Debug.LogError("Tag:" + tag.Name);
+                Debug.LogError("Invalid Tag:\"" + tag.Name+ "\"");
 #else
 				//マクロとして登録
                 ErrorLogger.Log("MacroStart:"+tag.Name);

@@ -57,7 +57,7 @@ namespace NovelEx
 			//必須項目
 			arrayVitalParam = new List<string> { };
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 				{ "act","click"},
@@ -123,7 +123,7 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 			//必須項目
 			arrayVitalParam = new List<string> { 	};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 				{ "act",""},
@@ -177,7 +177,7 @@ title=イベントの一時無効化
 
 			//必須項目
 			arrayVitalParam = new List<string> { };
-			originalParamDic = new Dictionary<string,string>() { };
+			originalParamDic = new ParamDictionary() { };
 		}
 
 		public override IEnumerator Start() {
@@ -222,7 +222,7 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 			//必須項目
 			arrayVitalParam = new List<string> { };
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 			};

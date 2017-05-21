@@ -33,13 +33,13 @@ namespace NovelEx
 		[Serializable]
 		public class CallStack
 		{
-			public Dictionary<string, string> dicVar = new Dictionary<string, string>();
+			public ParamDictionary dicVar = new ParamDictionary();
 			public string scenarioNname;
 			public int index;
 
 			public CallStack() { }
 
-			public CallStack(string scenario_name, int index, Dictionary<string, string> dicVar)
+			public CallStack(string scenario_name, int index, ParamDictionary dicVar)
 			{
 				this.scenarioNname = scenario_name;
 				this.index = index;
@@ -187,13 +187,13 @@ namespace NovelEx
 			return dicScenario[scenario_name].getIndex (label_name);
 		}
 
-		public void AddStack(string scenario_name, int index, Dictionary<string,string> dicVar) {
+		public void AddStack(string scenario_name, int index, ParamDictionary dicVar) {
 			//stack追加時にdicVarに呼び出し元情報を入れる
 			//呼び出し元の情報はcaller_indexに入る。
-			dicVar ["caller_index"] = ""+index;
+			dicVar ["caller_index"] = "" + index;
 			dicVar ["caller_file"] = scenario_name;
-
-			var mp =     variable.getType("mp");
+            //ToDo:
+//			var mp = variable.getType("mp");
 
 			////
 			/*
@@ -204,10 +204,10 @@ namespace NovelEx
 			}
 			*/
 
-			qStack.Add(new CallStack(scenario_name,index,mp));
-
+			qStack.Add(new CallStack(scenario_name, index, dicVar));
+//			qStack.Add(new CallStack(scenario_name, index, mp));
 			//スタックを追加した時点で使用できる引数変数を格納する
-			variable.replaceAll("mp", dicVar); ;
+///			variable["mp"] = dicVar;
 		}
 
 		public CallStack PopStack() {
@@ -223,7 +223,7 @@ namespace NovelEx
 					Debug.Log(kvp.Value);
 				}
 				*/
-				variable.replaceAll("mp", c.dicVar);
+				variable["mp"] = c.dicVar;
 
 				qStack.RemoveAt(qStack.Count-1);
 
@@ -299,7 +299,7 @@ namespace NovelEx
 		}
 
 		/*
-		public void addMacroStack(string macro_name,Dictionary<string,string> dicVar){
+		public void addMacroStack(string macro_name,ParamDictionary dicVar){
 			this.macroNum++;
 			Macro macro = dicMacro [macro_name];
 			this.addStack (macro.file_name, macro.index, dicVar);

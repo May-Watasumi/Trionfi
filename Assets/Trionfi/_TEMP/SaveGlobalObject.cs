@@ -13,7 +13,7 @@ namespace NovelEx {
 	public class SaveGlobalObject {
 		//global変数を保持する。ゲームごとに変わらない変数 global.x みたいなやつ
 		//ToDo_Future:globalの同期周りを自動化したい
-		public Dictionary<string,string> globalVar = new Dictionary<string,string>() ;
+		public ParamDictionary globalVar = new ParamDictionary() ;
 	}
 }
 #endif

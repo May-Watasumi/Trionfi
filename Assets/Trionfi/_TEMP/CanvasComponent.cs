@@ -15,7 +15,7 @@ namespace NovelEx {
 					"name" 
 				};
 
-			originalParamDic = new Dictionary<string, string>() {
+			originalParamDic = new ParamDictionary() {
 					{ "name","" },
 					{ "val","" },
 					{ "tag","" },

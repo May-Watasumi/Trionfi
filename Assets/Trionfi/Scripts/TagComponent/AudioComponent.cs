@@ -45,7 +45,7 @@ next=falseを指定すると次の処理に移動することなく、音楽を�
 				"storage" 
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "storage",""},
 				{ "time","0"},
 				{ "vol","1"}, //ボリューム 0〜1
@@ -145,7 +145,7 @@ wait=trueを指定することでtimeで指定した時間が完了するまで�
 			//必須項目
 			arrayVitalParam = new List<string> { 	};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "storage",""},
 				{ "time","1"},
 				{ "wait","true"},
@@ -248,7 +248,7 @@ loop=trueを指定すると音楽を繰り返し再生します。
 				"storage" 
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "storage",""},
 				{ "vol","1"},
 				{ "wait","true"},
@@ -336,7 +336,7 @@ loop=wait 効果音が停止するまで待ちます
 			//必須項目
 			arrayVitalParam = new List<string> { };
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "storage",""},
 				{ "time","0"},
 				{ "wait","true"},

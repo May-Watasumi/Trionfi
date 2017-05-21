@@ -164,7 +164,7 @@ savesnap=trueを指定するとゲームを一時停止する直前の状態をs
 			//必須項目
 			arrayVitalParam = new List<string>{ };
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "file","" },
 				{ "target","" },
 				{ "savesnap","true" }, //セーブ用に使うなら。。。使わないかな
@@ -262,7 +262,7 @@ time=何秒間隔で自動的にストーリーが進むかを設定すること
 //				"time"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"time","-1"}
 			};
 		}
@@ -271,7 +271,7 @@ time=何秒間隔で自動的にストーリーが進むかを設定すること
 			float time = float.Parse(paramDic["time"]);
 
 			if(time < 0.0f)
-				time = float.Parse(ScriptDecoder.Instance.variable.get("config.autoModeWait"));
+				time = float.Parse(ScriptDecoder.Instance.variable.Get("config.autoModeWait"));
 
 			//string time = paramDic ["time"];
 			StatusManager.Instance.StartAuto(time);

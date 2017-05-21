@@ -9,7 +9,7 @@ using System.IO;
 namespace NovelEx {
 	public class TRImageObjectBehaviour : AbstractObject {
 
-        public override Dictionary<string, string> param
+        public override ParamDictionary param
         {
             set
             {
@@ -44,7 +44,7 @@ namespace NovelEx {
             return gameObject.GetComponent<Image>().sprite != null ? true : false; 
         }
 
-        public override void Load(Dictionary<string,string> param)
+        public override void Load(ParamDictionary param)
         {
             if (paramDic.ContainsKey("path") && paramDic["path"] == "true")
             {
@@ -64,6 +64,7 @@ namespace NovelEx {
             }
 
             this.param = param;
+
 #if false
             //EX変更：Image系はSortingOrderのみ見るように
             if (paramDic["name"] == "background" || paramDic["strech"] == "true")

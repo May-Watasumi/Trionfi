@@ -62,7 +62,7 @@ rot_z=3DモデルのZ軸角度を指定します。0〜360の間で指定しま�
 				"storage"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "storage",""},
 				{ "tag",""},
@@ -273,7 +273,7 @@ condition=stateで指定するステートをtrue or falseで指定すること�
 				"name","state"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 				{ "stete",""},

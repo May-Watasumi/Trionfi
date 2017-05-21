@@ -27,11 +27,11 @@ public class DocObject{
 
 	public string desc = "";
 	public string sample ="";
-	public Dictionary<string,string> dicParam = new Dictionary<string,string> ();
-	public Dictionary<string,string> dicParamVital = new Dictionary<string,string> ();
-	public Dictionary<string,string> dicParamDefault = new Dictionary<string,string> ();
+	public ParamDictionary dicParam = new ParamDictionary ();
+	public ParamDictionary<string,string> dicParamVital = new ParamDictionary<string,string> ();
+	public ParamDictionary<string,string> dicParamDefault = new ParamDictionary<string,string> ();
 
-	public Dictionary<string,string> dicTag = new Dictionary<string,string> ();
+	public ParamDictionary<string,string> dicTag = new ParamDictionary<string,string> ();
 
 }
 
@@ -167,7 +167,7 @@ public class DocManager{
 
 		this.obj.dicParamDefault = cmp.originalParam;
 
-		Dictionary<string,string> tmpDic = new Dictionary<string,string> ();
+		ParamDictionary<string,string> tmpDic = new ParamDictionary<string,string> ();
 		List<string> l = cmp.arrayVitalParam;
 		for (var i = 0; i < l.Count; i++) {
 			string vital = l [i];

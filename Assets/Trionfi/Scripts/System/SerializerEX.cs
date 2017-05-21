@@ -154,22 +154,22 @@ namespace NovelEx
             //最初のセーブデータを取得するか。
             UserSaveData sobj = GetSaveObject(storage);
 			//this.gameManager.saveManager.getSaveData ("save_"+current_index);
-			variable.set(var_name + ".name", storage);
+			variable.Set(var_name + ".name", storage);
 			//ToDo:
 			if (sobj != null)
 			{
-				variable.set(var_name + ".title", sobj.title);
-				variable.set(var_name + ".date", sobj.date);
-				variable.set(var_name + ".description", sobj.description);
-				variable.set(var_name + ".name", storage);
+				variable.Set(var_name + ".title", sobj.title);
+				variable.Set(var_name + ".date", sobj.date);
+				variable.Set(var_name + ".description", sobj.description);
+				variable.Set(var_name + ".name", storage);
 				//StatusManager.variable.set ("save.img", sobj.cap_img_file);
 			}
 			else
 			{
-				variable.set(var_name + ".title", "データがありません");
-				variable.set(var_name + ".date", "");
-				variable.set(var_name + ".description", "");
-				variable.set(var_name + ".name", storage);
+				variable.Set(var_name + ".title", "データがありません");
+				variable.Set(var_name + ".date", "");
+				variable.Set(var_name + ".description", "");
+				variable.Set(var_name + ".name", storage);
 				//StatusManager.variable.set ("save.img", "");
 			}
 		}

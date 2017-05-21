@@ -15,10 +15,10 @@ namespace NovelEx
     {
 		public string desc = "";
 		public string sample ="";
-		public Dictionary<string,string> dicParam = new Dictionary<string,string> ();
-		public Dictionary<string,string> dicParamVital = new Dictionary<string,string> ();
-		public Dictionary<string,string> dicParamDefault = new Dictionary<string,string> ();
-		public Dictionary<string,string> dicTag = new Dictionary<string,string> ();
+		public ParamDictionary dicParam = new ParamDictionary ();
+		public ParamDictionary dicParamVital = new ParamDictionary ();
+		public ParamDictionary dicParamDefault = new ParamDictionary();
+		public ParamDictionary dicTag = new ParamDictionary();
 	}
 
 	public class DocManager
@@ -262,7 +262,7 @@ namespace NovelEx
 
 			this.obj.dicParamDefault = cmp.originalParamDic;
 
-			Dictionary<string,string> tmpDic = new Dictionary<string,string> ();
+			ParamDictionary tmpDic = new ParamDictionary();
 			List<string> l = cmp.arrayVitalParam;
 			for (var i = 0; i < l.Count; i++) {
 				string vital = l [i];

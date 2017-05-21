@@ -49,7 +49,7 @@ scale=大きさをアニメーションできます。拡大率を指定しま�
             //必須項目
             arrayVitalParam = new List<string> { };
 
-            originalParamDic = new Dictionary<string, string>() {
+            originalParamDic = new ParamDictionary() {
                 { "name",""},
                 { "tag",""},
                 { "time","1"},

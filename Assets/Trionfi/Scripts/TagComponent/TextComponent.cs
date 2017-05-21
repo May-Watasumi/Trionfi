@@ -75,7 +75,7 @@ cut=数値を指定します。指定した文字数でカットします。
 				"val" 
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -267,7 +267,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "face","" },
 				{ "val",""},
@@ -338,7 +338,7 @@ name=削除するテキストオブジェクト名 all と入力することで�
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 			};
 		}

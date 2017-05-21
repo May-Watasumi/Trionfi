@@ -17,10 +17,10 @@ namespace NovelEx
         //        public static Dictionary<string, AbstractObject> dicObject = new Dictionary<string, AbstractObject>();
         /*
                 //セーブ用のパラメータなど、全てココに入れておく必要がある
-                public Dictionary<string,string> dicSave = new Dictionary<string,string>();
+                public ParamDictionary dicSave = new ParamDictionary();
 
                 //face 情報はココに格納
-                public Dictionary<string,string> dicFace = new Dictionary<string,string>();
+                public ParamDictionary dicFace = new ParamDictionary();
         */
 
         public override TRImageObjectBehaviour Create(string name, TRObjectType type)
@@ -78,7 +78,7 @@ namespace NovelEx
 
 			string storage = dicFace [face];
 
-			var tmpParam = new Dictionary<string,string>()
+			var tmpParam = new ParamDictionary()
             {
 				{ "storage",storage }
 			};
@@ -87,7 +87,7 @@ namespace NovelEx
 			imageObject.Show(time,type);
 		}
 
-		public static void SetImage(Dictionary<string,string>param)
+		public static void SetImage(ParamDictionaryparam)
         {
 			foreach (KeyValuePair<string, string> kvp in param) {
 //				dicSave [kvp.Key] = param [kvp.Key];

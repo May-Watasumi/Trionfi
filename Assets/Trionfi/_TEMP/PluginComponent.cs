@@ -13,7 +13,7 @@ namespace NovelEx{
 				"var","arg1","arg2"
 			};
 
-			originalParamDic = new Dictionary<string,string> () {
+			originalParamDic = new ParamDictionary () {
 				{"var",""},
 				{"arg1",""},
 				{"arg2",""},

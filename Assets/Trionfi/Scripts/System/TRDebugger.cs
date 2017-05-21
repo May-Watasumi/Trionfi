@@ -25,6 +25,7 @@ public class TRDebugger : EditorWindow
             if (abs != null)
             {
                 IEnumerator t = abs.Start();
+                while(t.MoveNext()) ;
             }
             else
                 Debug.Log("Invalid Tag!");

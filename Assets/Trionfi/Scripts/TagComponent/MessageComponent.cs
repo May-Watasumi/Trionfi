@@ -39,7 +39,7 @@ speed=１文字が表示される秒数を指定します。
 				"speed",
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"speed","0.02"}
 			};
 		}
@@ -69,7 +69,7 @@ speed=１文字が表示される秒数を指定します。
 				"isMain"
 			};
 
-			originalParamDic = new Dictionary<string, string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -116,7 +116,7 @@ speed=１文字が表示される秒数を指定します。
 				"storage"
 			};
 
-			originalParamDic = new Dictionary<string, string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -165,7 +165,7 @@ speed=１文字が表示される秒数を指定します。
 //				"storage"
 			};
 
-			originalParamDic = new Dictionary<string, string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -209,7 +209,7 @@ speed=１文字が表示される秒数を指定します。
 				"height",
 			};
 
-			originalParamDic = new Dictionary<string, string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "val","" },
 				{ "tag","" },
@@ -276,7 +276,7 @@ color=色コードを指定します。16進数形式で指定してください
 			arrayVitalParam = new List<string> {
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"size",""},
 				{"color",""},
 			};

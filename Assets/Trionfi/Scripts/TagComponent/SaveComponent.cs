@@ -39,7 +39,7 @@ name=セーブファイル名を指定します
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" }
 			};
 		}
@@ -84,7 +84,7 @@ name=ロードするセーブファイル名を指定します
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" }
 			};
 		}
@@ -164,7 +164,7 @@ page=ページ。つまり、numが5でpageが1なら５〜10までのセーブ�
 				//	"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "num","5" }, //一度に表示する数
 				{ "page","0" }, // num*page から num個分表示するという意味
 			};
@@ -183,10 +183,10 @@ page=ページ。つまり、numが5でpageが1なら５〜10までのセーブ�
 
 			//セーブ変数の初期化
 			//ジャンプを実行する時に呼び出した位置情報を保持する
-			ScriptDecoder.Instance.variable.set("save.max_num", "" + max_num);
-			ScriptDecoder.Instance.variable.set("save.index", "" + current_index);
-			ScriptDecoder.Instance.variable.set("save.max_index", "" + max_index);
-			ScriptDecoder.Instance.variable.set("save.loop_start_component_index", "" + ScriptDecoder.Instance.currentComponentIndex);
+			ScriptDecoder.Instance.variable.Set("save.max_num", "" + max_num);
+			ScriptDecoder.Instance.variable.Set("save.index", "" + current_index);
+			ScriptDecoder.Instance.variable.Set("save.max_index", "" + max_index);
+			ScriptDecoder.Instance.variable.Set("save.loop_start_component_index", "" + ScriptDecoder.Instance.currentComponentIndex);
 
 			Serializer.applySaveVariable("save_" + current_index, ScriptDecoder.Instance.variable);
 
@@ -226,13 +226,13 @@ title=セーブデータの列挙終了
 				//	"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 			};
 		}
 
 		public override IEnumerator Start() {
-			int index = int.Parse(ScriptDecoder.Instance.variable.get("save.index"));
-			int max_num = int.Parse(ScriptDecoder.Instance.variable.get("save.max_num"));
+			int index = int.Parse(ScriptDecoder.Instance.variable.Get("save.index"));
+			int max_num = int.Parse(ScriptDecoder.Instance.variable.Get("save.max_num"));
 			//int max_index = int.Parse (StatusManager.variable.get("save.max_index"));
 
 			index++;
@@ -246,11 +246,11 @@ title=セーブデータの列挙終了
                 yield break;
 			}
 
-			ScriptDecoder.Instance.variable.set("save.index", "" + index);
+			ScriptDecoder.Instance.variable.Set("save.index", "" + index);
 			Serializer.applySaveVariable("save_" + index, ScriptDecoder.Instance.variable);
 
 			//ジャンプする。[saveloop]タグの次のところへ
-			string loop_back_index = ScriptDecoder.Instance.variable.get("save.loop_start_component_index");
+			string loop_back_index = ScriptDecoder.Instance.variable.Get("save.loop_start_component_index");
 
 			string tag_str = "[jump index='" + loop_back_index + "' ]";
 		
@@ -298,7 +298,7 @@ title=オートセーブ
 				//	"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 			};
 		}
 
@@ -351,7 +351,7 @@ var=オートセーブのデータを格納する変数名を指定
 				"var"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"var","auto"}
 			};
 		}

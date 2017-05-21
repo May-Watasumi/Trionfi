@@ -10,7 +10,7 @@ namespace NovelEx {
 				"name",
 			};
 
-			originalParamDic = new Dictionary<string, string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" }
 			};
 		}
@@ -38,7 +38,7 @@ namespace NovelEx {
 				"storage",
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"text",""},
 //				{"storage",""}
 			};

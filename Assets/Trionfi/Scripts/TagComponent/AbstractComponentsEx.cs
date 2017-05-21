@@ -2,15 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx {
+namespace NovelEx
+{
 	//完了通知用のデリゲートメソッド
 	public delegate void CompleteDelegate();
 
 	public abstract class AbstractComponent
     {
- 		//デフォルトで定義しておくパラメータ初期値。継承先で定義する
-		public Dictionary<string,string> originalParamDic = new Dictionary<string,string>();
-		public Dictionary<string,string> paramDic = new Dictionary<string,string>();
+        //デフォルトで定義しておくパラメータ初期値。継承先で定義する
+        public ParamDictionary originalParamDic = new ParamDictionary();
+        public ParamDictionary paramDic = new ParamDictionary();
 
 		public List<string> arrayVitalParam = new List<string>();
 
@@ -18,8 +19,8 @@ namespace NovelEx {
 		public int line_num;
 		public string tagName;
 
-		//命令の種類を保持する
-		protected Tag tag;
+        //命令の種類を保持する
+        protected TagParam tag;
 		protected CompleteDelegate finishAnimationDeletgate;
 
 		//EX:NextOrderが必要かどうか
@@ -30,7 +31,7 @@ namespace NovelEx {
             ErrorLogger.Log("Tag:"+GetType().Name);
         }
 
-		public void Init(Tag tag, int line_num)
+		public void Init(TagParam tag, int line_num)
         {
 			this.tag = tag;
 			this.tagName = tag.Name;
@@ -42,7 +43,7 @@ namespace NovelEx {
 			//タグから必須項目が漏れていないか、デフォルト値が入ってない場合はエラーとして警告を返す
 			foreach (string vital in arrayVitalParam)
             {
-				if(tag.getParam (vital) == null)
+				if(tag[vital] == null)
                 {
 					//エラーを追加
 					string message = "必須パラメータ「" + vital + "」が不足しています";
@@ -69,7 +70,7 @@ namespace NovelEx {
 		//実行前にパラメータを解析して変数を格納する
 		public void CalcVariable()
         {
-			Dictionary<string,string> tmp_param = new Dictionary<string,string>();
+			ParamDictionary tmp_param = new ParamDictionary();
 
 			//タグに入れる
 			foreach (KeyValuePair<string, string> pair in originalParamDic)
@@ -90,7 +91,7 @@ namespace NovelEx {
 		//パラメータとの差分を確認して、ファイルを作成
 		public void MergeDefaultParam()
         {
-			Dictionary<string,string> param = this.tag.getParamByDictionary();
+            ParamDictionary param = tag;
 
 			//タグに入れる
 			foreach(KeyValuePair<string, string> pair in param) {
@@ -144,14 +145,15 @@ val=表示するテキストを指定します
 
  */
 	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
-	public class StoryComponent : AbstractComponent {
+	public class StoryComponent : AbstractComponent
+    {
 		public StoryComponent() {
 			//必須項目
 			arrayVitalParam = new List<string> {
 				"val"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "val","" }
 			};
 		}
@@ -210,7 +212,7 @@ title=改行する
     {
 		public RComponent()
         {
-			originalParamDic = new Dictionary<string,string>() { };
+			originalParamDic = new ParamDictionary() { };
 		}
 
 		public override IEnumerator Start()
@@ -246,7 +248,7 @@ title=クリック待ち
 		public LComponent()
         {
 			//デフォルトのパラメータを指定
-			originalParamDic = new Dictionary<string,string>() { };
+			originalParamDic = new ParamDictionary() { };
 		}
 
 		public override IEnumerator Start() {
@@ -285,7 +287,7 @@ title=改ページクリック待ち
 	public class PComponent:AbstractComponent
     {
 		public PComponent() {
-			originalParamDic = new Dictionary<string,string>()
+			originalParamDic = new ParamDictionary()
             {
 				{ "name","" },
 				{ "","" }
@@ -326,7 +328,7 @@ title=改ページクリック無し
 
 	public class CmComponent : AbstractComponent {
 		public CmComponent() {
-			originalParamDic = new Dictionary<string,string>() { };
+			originalParamDic = new ParamDictionary() { };
 		}
 
 		public override IEnumerator Start() {
@@ -345,7 +347,7 @@ title=改ページクリック無し
 	{
 		public NoneComponent()
 		{
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "","" }
 			};

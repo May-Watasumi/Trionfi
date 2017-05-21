@@ -1,84 +1,14 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace NovelEx
 {
-	public abstract class AbstractObject : MonoBehaviour
+    public abstract class AbstractObject : MonoBehaviour
     {
- 		protected Dictionary<string,string> paramDic;
+ 		protected ParamDictionary paramDic = new ParamDictionary();
 
-//        public string GetParam(string key) { return paramDic[key]; }
-
-        public float ValidFloatParam(string key)
-        {
-            float res = 0.0f;
-            if (paramDic.ContainsKey(key))
-            {
-                string v = paramDic[key];
-
-                if (!float.TryParse(v, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out res))
-                {
-                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
-                }
-            }
-            else
-            {
-                ErrorLogger.Log("NoParam: key=" + key);
-            }            
-            return res;
-        }
-
-        public int ValidIntParam(string key)
-        {
-            int res = 0;
-            if (paramDic.ContainsKey(key))
-            {
-                string v = paramDic[key];
-
-                if (!System.Int32.TryParse(v, out res))
-                {
-                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
-                }
-            }
-            else
-            {
-                ErrorLogger.Log("NoParam: key=" + key);
-            }
-            return res;
-        }
-
-        public string ValidStringParam(string key)
-        {
-            if (paramDic.ContainsKey(key))
-            {
-                return paramDic[key];
-            }
-            else
-            {
-                ErrorLogger.Log("NoParam: key=" + key);
-                return "";
-            }
-        }
-
-        public T ValidParam<T>(string key)
-        {
-            if (typeof(T) == typeof(int))
-            {
-                return (T)(object)ValidIntParam(key);
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                return (T)(object)ValidFloatParam(key);
-            }
-            else
-            {
-                return (T)(object)ValidStringParam(key);
-            }
-        }
-
-        public virtual Dictionary<string, string> param
+        public virtual ParamDictionary param
         {
             [SerializeField]
             get
@@ -89,13 +19,13 @@ namespace NovelEx
             set
             {
                 paramDic.Clear();
-                gameObject.name = value["name"];
-                gameObject.tag = value["tag"];
                 paramDic = value;
 
-                SetPosition(ValidFloatParam(paramDic["x"]), ValidFloatParam(paramDic["y"]), ValidFloatParam(paramDic["z"]));
-                SetScale(ValidFloatParam(paramDic["scale_x"]), ValidFloatParam(paramDic["scale_y"]), ValidFloatParam(paramDic["scale_z"]));
-                SetRotate(ValidFloatParam(paramDic["rot_x"]), ValidFloatParam(paramDic["rot_y"]), ValidFloatParam(paramDic["rot_z"]));
+                gameObject.name = value["name"];
+                gameObject.tag = value["tag"];
+                SetPosition(paramDic.Float("x"), paramDic.Float("y"), paramDic.Float("z"));
+                SetScale(paramDic.Float("scale_x"), paramDic.Float("scale_y"), paramDic.Float("scale_z"));
+                SetRotate(paramDic.Float("rot_x"), paramDic.Float("rot_y"), paramDic.Float("rot_z"));
                 /*
                                 if (param["isShow"] == "true")
                                     Show(0, "linear");
@@ -134,7 +64,6 @@ namespace NovelEx
         }
 
 #if false
-
 		//position を アニメーションしながら変更します
 		public void AnimationPosition(Vector3 position , float scale, float time, string type)
         {
@@ -196,7 +125,7 @@ namespace NovelEx
         public virtual void SetColider(){}   
 #endif
         public virtual bool Load(string storage) { return true; }
-        public virtual void Load(Dictionary<string, string> param) { }
+        public virtual void Load(ParamDictionary param) { }
 
 		public virtual void Show(float time, string easeType){}
 		public virtual void Hide(float time, string easeType){}

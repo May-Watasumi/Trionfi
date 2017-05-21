@@ -16,7 +16,7 @@ namespace NovelEx {
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" }
 			};
 
@@ -73,7 +73,7 @@ name=ラベル名を指定してください
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 			};
 
@@ -102,7 +102,7 @@ name=ラベル名を指定してください
 			//	"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 			};
 		}
 
@@ -236,7 +236,7 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 				//"target"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "target","" },
 				{ "file","" },
 				{ "index",""},
@@ -354,7 +354,7 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 				//"target"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "target","" },
 				{ "file","" },
 				//{ "index",""},
@@ -441,7 +441,7 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 				//"target"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"file",""},
 				{"target",""},
 			};
@@ -506,7 +506,7 @@ file=呼び出したいシーン名
 				//"target"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "file","" },
 				//{ "index",""},
 			};
@@ -570,7 +570,7 @@ exp=数式を指定します
 				"exp"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"exp",""}
 			};
 		}
@@ -582,7 +582,7 @@ exp=数式を指定します
 
 			string result = ExpObject.calc (eo.exp);
 
-			ScriptDecoder.Instance.variable.set(eo.type + "." + eo.name, result);
+			ScriptDecoder.Instance.variable.Set(eo.type + "." + eo.name, result);
             yield return null;
 
             //ToDo:
@@ -630,7 +630,7 @@ exp=文字式を指定します
 				"exp"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"exp",""}
 			};
 		}
@@ -639,7 +639,7 @@ exp=文字式を指定します
 			string exp = paramDic ["exp"];
 
 			ExpObject eo = new ExpObject (exp);
-			ScriptDecoder.Instance.variable.set(eo.type + "." + eo.name, eo.exp);
+			ScriptDecoder.Instance.variable.Set(eo.type + "." + eo.name, eo.exp);
             yield return null;
 
             //ToDo:
@@ -684,20 +684,20 @@ exp=評価する変数を格納します。
 				"exp"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"exp",""}
 			};
 		}
 
 		public override IEnumerator Start() {
-			string exp = paramDic ["exp"];
-			string val = paramDic ["exp"];
+			string exp = paramDic["exp"];
+			string val = paramDic["exp"];
 
 			nextOrder = false;
 
 			//変数なら素直に代入
 			if(val.IndexOf(".") != -1)
-				val = ScriptDecoder.Instance.variable.get(exp);
+				ScriptDecoder.Instance.variable.Set(exp, val);
 
 			string tag_str ="[story val='"+val+"' ]";
 
@@ -771,7 +771,7 @@ exp=評価する式を指定します。この式の結果が false ( または 
 				"exp"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"exp",""}
 			};
 		}
@@ -842,7 +842,7 @@ exp=評価する変数を格納します。
 				"exp"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"exp",""}
 			};
 		}
@@ -908,7 +908,7 @@ if タグもしくは elsif タグ と endif タグの間で用いられます�
 			arrayVitalParam = new List<string> {
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 			};
 		}
 
@@ -958,7 +958,7 @@ if文を終了します。必ずif文の終わりに記述する必要があり�
 			arrayVitalParam = new List<string> {
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 			};
 		}
 
@@ -1068,7 +1068,7 @@ tag=付与するタグ名を指定します
 				"tag"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"tag",""}
 			};
 
@@ -1132,7 +1132,7 @@ title=デフォルトタグ設定を解除する
 			arrayVitalParam = new List<string> {
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"time","0.5"}
 			};
 		}
@@ -1188,7 +1188,7 @@ title=メッセージ非表示
 			arrayVitalParam = new List<string> {
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"time","0.5"}
 			};
 		}
@@ -1235,7 +1235,7 @@ title=メッセージ表示
 	//メッセージを表示する
 	public class ShowmessageComponent : AbstractComponent {
 		public ShowmessageComponent() {
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"time","0.5"}
 			};
 		}
@@ -1287,14 +1287,14 @@ exp=確認したい変数名を指定します。
 
 	public class TraceComponent : AbstractComponent {
 		public TraceComponent() {
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"exp",""}
 			};
 		}
 
 		public override IEnumerator Start() {
 			string exp = paramDic ["exp"];
-			ScriptDecoder.Instance.variable.trace(exp);
+			ScriptDecoder.Instance.variable.Trace(exp);
             yield return null;
 
             //ToDo:
@@ -1348,7 +1348,7 @@ val=名前を表示します。キャラクター情報と絡めたい場合はc
 	{
 		public Talk_nameComponent()
 		{
-			originalParamDic = new Dictionary<string,string>()
+			originalParamDic = new ParamDictionary()
 			{
 				{"val",""}
 			};
@@ -1398,7 +1398,7 @@ time=停止する時間を秒で指定します
 				"time"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"time",""}
 			};
 		}
@@ -1444,7 +1444,7 @@ url=移動したいURLをhttpから指定します
 				"url"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"url",""}
 			};
 		}
@@ -1497,7 +1497,7 @@ name=削除する変数名を指定してください。
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{"name",""}
 			};
 		}
@@ -1505,7 +1505,7 @@ name=削除する変数名を指定してください。
 		public override IEnumerator Start() {
 			//削除
 			string name = paramDic["name"];
-			ScriptDecoder.Instance.variable.remove(name);
+            ScriptDecoder.Instance.variable.Remove(name);
             yield return null;
         }
     }

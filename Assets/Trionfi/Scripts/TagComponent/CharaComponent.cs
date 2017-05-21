@@ -54,10 +54,10 @@ jcolor=jnameの表示色を指定することができます。
 
 			//jname jcolor  名前表示のときに色と名前を指定できます
 			if (paramDic.ContainsKey ("jname"))
-				ScriptDecoder.Instance.variable.set("_chara_jname." + paramDic["name"], paramDic["jname"]);
+				ScriptDecoder.Instance.variable.Set("_chara_jname." + paramDic["name"], paramDic["jname"]);
 
 			if (paramDic.ContainsKey ("jcolor"))
-				ScriptDecoder.Instance.variable.set("_chara_jcolor." + paramDic["name"], paramDic["jcolor"]);
+				ScriptDecoder.Instance.variable.Set("_chara_jcolor." + paramDic["name"], paramDic["jcolor"]);
 
 			base.Start();
             yield return null;

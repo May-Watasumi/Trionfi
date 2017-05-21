@@ -1,54 +1,60 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System;
 using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using System.IO;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO.Compression;
+using System.Text;
+using System.Globalization;
+
 namespace NovelEx
 {
-    public class Tag
+    public class TagParam: ParamDictionary
     {
-        private string name = "";
-        private string original = "";
-        private Dictionary<string, string> dicParam = new Dictionary<string, string>();
-        //パラメータを保持する
-        public Tag(string str)
+        private string tagName = "";
+        private string statement = "";
+
+        //タグのValidはここの前で保証しよう
+        public TagParam(string str)
         {
-            this.original = str;
+            statement = str;
 
             str = str.Replace("[", "").Replace("]", "");
 
             //storage = 3 name=4 param=5 みたいな文字列が渡ってくる
-            //name storage = 4
-            //bool flag_start_tag = false;
             bool flag_finish_tag = false;
 
-            string tag_name = "";
+            string _tag = "";
 
             int end_tag_index = 0;
 
             for (int i = 0; i < str.Length; i++)
             {
                 string c = str[i].ToString();
-                if (c == " ")
+                if(c == " ")
                 {
                     //flag_start_tag = false;
-                    this.name = tag_name;
+                    tagName = _tag;
                     end_tag_index = i;
 
                     break;
                 }
                 else
                 {
-                    tag_name += c;
+                    _tag += c;
                     continue;
                 }
             }
 
-            if (this.name == "")
+            if(tagName == "")
             {
-                this.name = tag_name;
+                tagName = _tag;
                 flag_finish_tag = true;
             }
 
-            if (!flag_finish_tag)
+            if(!flag_finish_tag)
             {
                 //ここまでで、タグ解析完了
                 string param_str = str.Substring(end_tag_index).Trim();
@@ -102,7 +108,7 @@ namespace NovelEx
                                 flag_eq_ch = false;
 
                                 //値を登録
-                                this.dicParam[key] = val;
+                                this[key] = val;
                                 key = "";
                                 val = "";
                             }
@@ -115,7 +121,7 @@ namespace NovelEx
                                 flag_qt = false;
                                 flag_eq_ch = false;
 
-                                this.dicParam[key] = val;
+                                this[key] = val;
                                 key = "";
                                 val = "";
 
@@ -129,44 +135,41 @@ namespace NovelEx
                             if (i == param_str.Length - 1)
                             {
                                 //最後の文字の場合
-                                this.dicParam[key] = val;
+                                this[key] = val;
                             }
                         }
                     }
                 }
-
-                /*
-            foreach(string t in this.dicParam.Keys)
-            {
-                Debug.Log(t +"="+ this.dicParam[t]);
-            }
-            */
             }
         }
 
-        public string Original
+        public void DebugOutputParams()
         {
-            get { return this.original; }
+            foreach(string t in this.Keys)
+            {
+                ErrorLogger.Log(t +"="+ this[t]);
+            }
+        }
+
+        public string Statement
+        {
+            get { return statement; }
         }
 
         public string Name
         {
-            get { return this.name; }
+            get { return tagName; }
         }
 
-        public string getTagName()
-        {
-            return this.name;
-        }
+        /*
+                public string getParam(string key)
+                {
+                    return this.dicParam.ContainsKey(key) ? this.dicParam[key] : null;
+                }
 
-        public string getParam(string key)
+        public ParamDictionary getParamByDictionary()
         {
-            return this.dicParam.ContainsKey(key) ? this.dicParam[key] : null;
-        }
-
-        public Dictionary<string, string> getParamByDictionary()
-        {
-            Dictionary<string, string> dic = new Dictionary<string, string>();
+            ParamDictionary dic = new ParamDictionary();
 
             foreach (KeyValuePair<string, string> pair in this.dicParam)
             {
@@ -176,5 +179,6 @@ namespace NovelEx
             return dic;
 
         }
+        */
     }
 }

@@ -4,7 +4,8 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
-namespace NovelEx {
+namespace NovelEx
+{
     public class TextObject : AbstractObject
     {
         //private string name;
@@ -14,7 +15,7 @@ namespace NovelEx {
 
         public string filename = "";
 
-        public override void Load(Dictionary<string, string> param)
+        public override void Load(ParamDictionary param)
         {
             //ToDo:
             paramDic = param;
@@ -42,7 +43,7 @@ namespace NovelEx {
             guiText.fontSize = int.Parse(paramDic["fontsize"]);
         }
         /*
-		public override void SetParam(Dictionary<string,string> param)
+		public override void SetParam(ParamDictionary param)
         {
             base.SetParam(param);
 

@@ -60,7 +60,7 @@ scale_y=クリッカブルの縦幅の拡大率を指定できます。
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name", "" },
 				{ "tag", "" },
 				{ "layer", "Default" },

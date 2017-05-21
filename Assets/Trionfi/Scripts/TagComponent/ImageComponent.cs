@@ -44,11 +44,12 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 		public Image_newComponent() {
 			//必須項目
 			arrayVitalParam = new List<string> {
-				"name",
-				"storage" 
+//				"name",
+				"storage",
+                "type"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "storage",""},
 				{ "tag",""},
@@ -57,18 +58,19 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 //				{ "imagePath", StorageManager.Instance.PATH_IMAGE},
 				{ "x","0"},
 				{ "y","0"},
-				{ "z","-3.2"},
-				{ "scale",""},
+				{ "z","0"},
+//				{ "scale",""},
 				{ "scale_x","1"},
 				{ "scale_y","1"},
 				{ "scale_z","1"},
 				{ "strech", "false"},
-				{ "path","false"}, //trueにすると、pathを補完しない
+//				{ "path","false"}, //trueにすると、pathを補完しない
 			};
 		}
 
 		public override IEnumerator Start()
         {
+            /*
 			if (paramDic ["scale"] != "")
             {
 				paramDic ["scale_x"] = paramDic ["scale"];
@@ -78,11 +80,10 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 			}
 			else
 				paramDic ["scale"] = "1";
-           
+           */
 			TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
             g.Load(paramDic);
             yield return null;
-
         }
     }
 
@@ -121,7 +122,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 				"name" 
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "x",""},
 				{ "y",""},
@@ -208,7 +209,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 			//必須項目
 			arrayVitalParam = new List<string> { };		//	"name" 
 
-		    originalParamDic = new Dictionary<string,string>() {
+		    originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 				{ "x",""},
@@ -315,7 +316,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 			//必須項目
 			arrayVitalParam = new List<string> { }; //	"name",
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 				{ "time","1"},
@@ -427,7 +428,7 @@ storage=画像ファイル名を直接していできます。フォルダはdat
 				"storage"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "face",""},
 				{ "storage",""},
@@ -499,7 +500,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 				"name"
 			};
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "face",""},
 				{ "storage",""},
@@ -593,7 +594,7 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 			//必須項目
 			arrayVitalParam = new List<string> { };	//"name"
 
-			originalParamDic = new Dictionary<string,string>() {
+			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 			};

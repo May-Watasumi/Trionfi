@@ -52,7 +52,7 @@ namespace NovelEx
 		//変数を実際の値に置き換えて返却する
 		public static string replaceVariable(string str_right)
         {
-			Dictionary<string,string > dicVar = new Dictionary<string,string>();
+			Dictionary<string,string > dicVar = new ParamDictionary();
 
 			bool flag_var_now = false;
 			string var_name = "";
@@ -70,7 +70,7 @@ namespace NovelEx
 					//変数を格納
 					//Debug.Log ("var_name ============");
 					//Debug.Log (var_name);
-					string var_val = _var.get(var_name);
+					string var_val = _var.Get(var_name);
 
 					if (var_stack.Count == 0)
                     {
@@ -128,7 +128,7 @@ namespace NovelEx
         {
 			//変数かどうかを判定する。今のところの定義は「最初の文字がアルファベット＆'.'がある」
 			if(Regex.IsMatch(exp[0].ToString(), "^[a-zA-Z_]+$") && exp.IndexOf(".") != -1)
-				return _var.get(exp);
+				return _var.Get(exp);
 
 			return exp;
 		}
