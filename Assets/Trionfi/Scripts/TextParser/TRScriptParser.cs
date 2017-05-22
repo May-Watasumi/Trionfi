@@ -254,13 +254,11 @@ namespace NovelEx
 					//リストに追加
 					components.Add (cmp);
 				}
-
-				if(isText == true && ignoreCR)
-					components.Add(new RComponent());
+                //ToDo:
+//				if(isText == true && ignoreCR)
+//					components.Add(new RComponent());
 
 			}
-
-//			Debug.Log ("parse finish!");
 
 			return components;
 		}

@@ -5,9 +5,11 @@ using UnityEngine.UI;
 
 public class MessageWindow : MonoBehaviour
 {
-    public float textwaitTime = 0.03f;
     public bool onSkip = false;
     public bool onAuto = false;
+
+    enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait }
+    MessageState state = MessageState.None;
 
     [SerializeField]
     public Text currentMessage;
@@ -18,8 +20,9 @@ public class MessageWindow : MonoBehaviour
 
     public void Start()
     {
-//        currentMessage = GetComponentInChildren<Text>();
-//        MessageFrameImage = GetComponent<Image>();
+        //        currentMessage = GetComponentInChildren<Text>();
+        //        MessageFrameImage = GetComponent<Image>();
+        TRUIManager.Instance.OnClick += this.OnClick;
     }
 
     public void Reset()
@@ -27,32 +30,43 @@ public class MessageWindow : MonoBehaviour
         //ToDo
     }
 
+    public void OnClick()
+    {
+        if(state == MessageState.OnShow)
+            state = MessageState.OnWait;
+        else if (state == MessageState.OnWait)
+            state = MessageState.None;
+    }
+
     public void ClearMessage()
     {
         currentMessage.text = "";
+        currentName.text = "";
     }
 
-    public void ShowMessage(string text)
+    public void ShowMessage(string text, float mesCurrentWait = 0)
     {
-        StartCoroutine(ShowMessageSub(text));
+        StartCoroutine(ShowMessageSub(text, mesCurrentWait));
     }
 
-    private IEnumerator ShowMessageSub(string message)
+    private IEnumerator ShowMessageSub(string message, float mesCurrentWait)
     {
         // this.messageForSaveTitle = message;
-        float mesWait = textwaitTime;
+        float mesWait = mesCurrentWait;
 
         string tempMessage = "";
 
-        if(mesWait > 0.0f)//&& !StatusManager.Instance.onSkip)
+//        if(mesWait > 0.0f)//&& !StatusManager.Instance.onSkip)
+        if(!onSkip)
         {
+            state = MessageState.OnShow;
             currentMessage.text = "";
 
             //スキップモードの場合は速度アップ
             for(int i = 0; i < message.Length; i++)
             {
                 //スキップモードの場合は一度に複数の文字列を表示する
-                if(onSkip)
+                if(state == MessageState.OnShow)
                     break;
                 else
                     tempMessage += message[i];
@@ -62,7 +76,26 @@ public class MessageWindow : MonoBehaviour
         }
         
         currentMessage.text = message;
+        yield return Wait();
+    }
+
+    public IEnumerator Wait(float autoWait = 1.0f)
+    {
+        if (onAuto)
+            yield return new WaitForSeconds(autoWait);
+        else if (onSkip)
+            yield return null;
+        else
+        {
+            yield return new WaitWhile(() => state == MessageState.OnWait);
+        }
+
         yield return null;
+    }
+
+    public void ShowName(string name, Sprite face = null)
+    {
+        currentName.text = name;
     }
 }
 

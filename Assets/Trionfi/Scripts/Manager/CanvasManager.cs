@@ -13,8 +13,6 @@ namespace NovelEx
         GameObject StandRoot;
         [SerializeField]
         GameObject EventRoot;
-        [SerializeField]
-        GameObject UIRoot;
 
         private Canvas canvas;
 

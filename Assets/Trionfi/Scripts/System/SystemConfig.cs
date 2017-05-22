@@ -19,25 +19,30 @@ namespace NovelEx
         [SerializeField]
         public bool showTag = true;
 
-        //[SerializeField]
-        //private Vector2 canvasSize = new Vector2(1136.0f, 640.0f);
+        //trueの時は自動でクリック待ち（メッセージクリアは手動）falseの時は自動でPタグ（クリック待ち＋メッセージクリア）
+        [SerializeField]
+        public bool isNovelMode = false;
+
+        [SerializeField]
+        public int characterPosdescent = 30;
 
         [SerializeField]
         [Range(10, 50)]
-        private int _backlogCount = 30;
-        private int backlogCount
-        {
-            get { return _backlogCount; }
-        }
+        public int backlogCount = 30;
 
         [SerializeField]
-        [Range(4, 40)]
-        private int _saveSlotCount = 5;
-        public int saveSlotCount
-        {
-            get { return _saveSlotCount; }
-        }
+        [Range(5, 30)]
+        public int saveSlotCount = 5;
 
+        [SerializeField]
+        public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        [SerializeField]
+        public int fontSize = 26;
+
+        [SerializeField]
+        [Range(0, 1.0f)]
+        public float messageShowWait = 0.05f;
 
         [SerializeField]
         public bool useCRI = false;

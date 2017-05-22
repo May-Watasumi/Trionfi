@@ -10,14 +10,6 @@ namespace NovelEx
 	{
         public Camera targetCamera;
 
-        public GameObject defaultMessageWindowPrefab;
-        public GameObject defaultLogWindowPrefab;
-        public GameObject defaultSelectWindowPrefab;
-
-        public MessageWindow currentMessageWindow;
-        public BackLogWindow currentLogWindow;
-        public SelectWindow currentSelectWindow;
-
         ScriptDecoder scriptDecoder;
         Serializer serializer;
 
@@ -33,6 +25,9 @@ namespace NovelEx
         {
             scriptDecoder = new ScriptDecoder();
             serializer = new Serializer();
+            //            TRUIManager.Instance.Init();
+            //TRUIManager.Instance.currentMessageWindow.
+            TRUIManager.Instance.currentSelectWindow.Init(10);
         }
 
         public void Start()
@@ -45,6 +40,9 @@ namespace NovelEx
                 StartCoroutine(scriptDecoder.Run());
             }                
         }
+
+        public delegate void OnClickEvent();
+        public OnClickEvent ClickEvent; 
 
         //ToDo
 #if false

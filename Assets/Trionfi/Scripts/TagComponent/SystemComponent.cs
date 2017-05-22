@@ -8,7 +8,28 @@ using UnityEngine.UI;
 //using NovelEx;
 
 namespace NovelEx {
-	public class LabelComponent : AbstractComponent {
+    //データセーブ
+    public class DatasaveComponent : AbstractComponent
+    {
+        public DatasaveComponent()
+        {
+            arrayVitalParam = new List<string> { "file" };
+
+            originalParamDic = new ParamDictionary()
+            {
+                { "file","SaveData.dat" },
+            };
+        }
+
+        public override IEnumerator Start()
+        {
+            Serializer.Serialize(paramDic["file"], true);
+            //			this.gameManager.nextOrder();
+            yield return null;
+        }
+    }
+
+    public class LabelComponent : AbstractComponent {
 		public LabelComponent() {
 
 			//必須項目
@@ -29,42 +50,15 @@ namespace NovelEx {
             yield return null;
 		}
 	}
-
-	/*	
---------------
-
-[doc]
-tag=macro
-group=シナリオ制御
-title=マクロ定義
-
-[desc]
-
-マクロ記述を開始します。新しいタグを定義することが出来ます。
-このタグから、endmacro タグまでにある文章やタグは
-name 属性で指定されたタグとして登録され、以後使用できるようになります。
-
-マクロには値を渡すことができます。渡された変数には mp という変数に格納され、アクセスすることが可能です。
-
-[sample]
-
-
-
+    
+ /*
 [macro name="newtag"]
 	新しいタグです。[p]
 	{mp.arg1}という値が渡されました。	
 [endmacro]
 
 [newtag arg1="テスト"]
-
-[param]
-name=ラベル名を指定してください
-
-
-[_doc]
---------------------
- */
-
+*/
 	//マクロを作成して管理する
 	public class MacroComponent : AbstractComponent {
 		public MacroComponent() {
@@ -80,13 +74,9 @@ name=ラベル名を指定してください
 		}
 
 		public override IEnumerator Start() {
-			//macro 
-			StatusManager.Instance.setSkipOrder();
-
 			string name = paramDic ["name"];
 //ToDo:
 			ScriptDecoder.Instance.AddMacro(name, StatusManager.Instance.currentScenario, ScriptDecoder.Instance.currentComponentIndex);
-            //			this.gameManager.nextOrder();
             yield return null;
 
         }
@@ -99,7 +89,7 @@ name=ラベル名を指定してください
 
 			//必須項目
 			arrayVitalParam = new List<string> {
-			//	"name"
+				"name"
 			};
 
 			originalParamDic = new ParamDictionary() {
@@ -110,7 +100,7 @@ name=ラベル名を指定してください
         {
 			paramDic["name"] = tagName;
 
-			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro(paramDic ["name"]);
+			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro(paramDic["name"]);
 
 			if(macro == null) {
 				ErrorLogger.stopError("マクロ「"+paramDic["name"]+"」は存在しません。");
@@ -128,48 +118,18 @@ name=ラベル名を指定してください
         }
     }
 
-	/*	
---------------
-
-[doc]
-tag=endmacro
-group=シナリオ制御
-title=マクロの終端
-
-[desc]
-
-マクロ終了を表します
-
-[sample]
-
-
-[macro name="newtag"]
-	新しいタグです。[p]
-	{mp.arg1}という値が渡されました。	
-[endmacro]
-
-
-[_doc]
---------------------
- */
-
-
 	//マクロを作成して管理する
-	public class EndmacroComponent:AbstractComponent
+	public class EndmacroComponent : AbstractComponent
 	{
 		public EndmacroComponent() { }
-
-		public override void Before(){
-			StatusManager.Instance.releaseSkipOrder();
-		}
 
 		public override IEnumerator Start() {
 			if(ScriptDecoder.Instance.macroNum > 0) {
 				ScriptDecoder.Instance.macroNum--;
 				//ココに来た場合はreturn を実行する 
-				AbstractComponent cmp = TRScriptParser.Instance.makeTag ("[return]");
+				AbstractComponent cmp = TRScriptParser.Instance.makeTag("[return]");
 				yield return cmp.Start();
-				nextOrder = false;
+//				nextOrder = false;
 			}
 			else
             {
@@ -693,7 +653,7 @@ exp=評価する変数を格納します。
 			string exp = paramDic["exp"];
 			string val = paramDic["exp"];
 
-			nextOrder = false;
+//			nextOrder = false;
 
 			//変数なら素直に代入
 			if(val.IndexOf(".") != -1)
@@ -1357,7 +1317,7 @@ val=名前を表示します。キャラクター情報と絡めたい場合はc
 		public override IEnumerator Start()
 		{
 			string name = this.paramDic ["val"];
-			Trionfi.Instance.currentMessageWindow.currentName.text = name;
+            TRUIManager.Instance.currentMessageWindow.currentName.text = name;
             yield return null;
 
         }
@@ -1546,7 +1506,7 @@ title=バックログ表示
             //            Trionfi.Instance.currentBackLogWindow;
             //			nextOrder = false;
             //nextorder しない。
-            Trionfi.Instance.currentLogWindow.gameObject.SetActive(true);
+            TRUIManager.Instance.currentLogWindow.gameObject.SetActive(true);
 //ToDo:
             yield return null;
 

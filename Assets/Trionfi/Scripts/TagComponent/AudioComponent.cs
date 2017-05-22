@@ -77,7 +77,7 @@ next=falseを指定すると次の処理に移動することなく、音楽を�
 			//アニメーション中にクリックして次に進めるかどうか。
 			if (time > 0.0f && paramDic["wait"] != "false")
             { 
-				nextOrder = false;
+//				nextOrder = false;
 				StatusManager.Instance.Wait();
 //				audioObject.isWait = true;
 			}
@@ -177,7 +177,7 @@ wait=trueを指定することでtimeで指定した時間が完了するまで�
 			//this.gameManager.scene.coroutineShowMessage (message);
 			StatusManager.Instance.currentPlayBgm = "";
 
-			nextOrder = false;
+//			nextOrder = false;
 
             if (paramDic ["wait"] != "true")
             {
@@ -199,7 +199,7 @@ wait=trueを指定することでtimeで指定した時間が完了するまで�
 					this.endComplete = true;
 					StatusManager.Instance.NextOrder();
 //					StatusManager.Instance.enableNextOrder = true;
-					nextOrder = true;
+//					nextOrder = true;
 //					this.gameManager.nextOrder();
 				}
 			}
@@ -276,7 +276,7 @@ loop=trueを指定すると音楽を繰り返し再生します。
 			//this.gameManager.scene.MessageSpeed = 0.02f;
 			//this.gameManager.scene.coroutineShowMessage (message);
 
-			nextOrder = false;
+//			nextOrder = false;
 
 			if (paramDic["wait"] != "true")
 			{
@@ -361,7 +361,7 @@ loop=wait 効果音が停止するまで待ちます
                 (AudioManager.Instance as AudioManager).Stop("", TRObjectType.SE, time, completeDelegate);
 			}
 
-			nextOrder = false;
+//			nextOrder = false;
 
 			if (paramDic["wait"] != "true")
 			{

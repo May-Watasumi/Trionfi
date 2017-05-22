@@ -244,7 +244,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 			//アニメーション中にクリックして次に進めるかどうか。
 			if(time > 0.0f && paramDic["wait"] != "false")
             {
-				nextOrder = false;
+//				nextOrder = false;
 				StatusManager.Instance.Wait();
 				isWait = true;
 			}
@@ -266,7 +266,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
             yield return null;
 
         }
-
+/*
         public override void OnAnimationFinished()
         {
 //			if(paramDic ["wait"] == "true") {
@@ -276,7 +276,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 //				StatusManager.Instance.clickNextOrder();
 			}
 		}
-
+*/
 	}
 
 	/*	
@@ -349,7 +349,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 			//アニメーション中にクリックして次に進めるかどうか。
 			if (time > 0.0f && paramDic["wait"] != "false")
 			{
-				nextOrder = false;
+//				nextOrder = false;
 				StatusManager.Instance.Wait();
 				isWait = true;
 			}
@@ -367,7 +367,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
             yield return null;
 
         }
-
+/*
         public override void OnAnimationFinished()
         {
 			//アニメーション完了後にここにくる
@@ -377,6 +377,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 //				StatusManager.Instance.clickNextOrder();
 			}
 		}
+*/
 	}
 	/*	
 --------------
@@ -535,7 +536,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
                 yield break;
 			}
 
-			nextOrder = false;
+//			nextOrder = false;
 
 			//処理を待たないなら
 			if (paramDic ["wait"] == "false") {
@@ -548,7 +549,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
             yield return null;
 
         }
-
+/*
         public override void OnAnimationFinished()
         {
 			//アニメーション完了後にここにくる
@@ -559,6 +560,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 //				StatusManager.Instance.clickNextOrder();
 			}
 		}
+*/
 	}
 
 	/*	
