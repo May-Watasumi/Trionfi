@@ -64,11 +64,6 @@ namespace NovelEx
 
         public void Begin()
         {
-            StartCoroutine(BeginSub());
-        }
-
-        public IEnumerator BeginSub()
-        {
             state = SelectState.Wait;
 
             for (int a = 0; a < activeSelector; a++)
@@ -77,6 +72,13 @@ namespace NovelEx
                 selectorList[a].gameObject.transform.localPosition = new Vector3(0, (AreaHeight / activeSelector * a), 0);
             }
 
+            gameObject.SetActive(true);
+
+            StartCoroutine(BeginSub());
+        }
+
+        public IEnumerator BeginSub()
+        {
             while (state == SelectState.Wait)
                 yield return null;
 
@@ -93,6 +95,7 @@ namespace NovelEx
             {
                 selectorList[a].gameObject.SetActive(false);
             }
+            gameObject.SetActive(false);
         }
     }
 }
