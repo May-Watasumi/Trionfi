@@ -75,7 +75,7 @@ scale=Live2Dモデルの表示サイズを指定できます。つまり2と指�
 			string storage = paramDic["storage"];
 			paramDic["storage"] = storage;
 
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
+            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
             g.Load(paramDic);
             yield return null;
 
@@ -289,7 +289,7 @@ storage=モーションファイル名を指定してください
 			foreach (string image_name in images) {
                 //ToDo:
 /*
-                Live2dObject image = ImageObjectManager.GetObject(image_name);
+                Live2dObject image = TRLayerObjectManager.GetObject(image_name);
 				obj.SetMotion(group, motion, face, priority);
 */
 			}

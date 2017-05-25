@@ -151,10 +151,10 @@ namespace NovelEx
 
 			if(sce == null) 
 			{
-				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
-				string script_text = StorageManager.Instance.LoadTextAsset(fullpath + storage);
+//				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
+				TextAsset script_text = StorageManager.Instance.LoadObject(storage, TRDataType.TextAsset) as TextAsset;
 
-				sce = LoadScenariofromString(script_text, storage);
+				sce = LoadScenariofromString(script_text.text, storage);
 			}
 			else
 			{
@@ -358,7 +358,7 @@ namespace NovelEx
 						p += kvp.Key + "=" + kvp.Value + " ";
 					}
 
-					if(SystemConfig.Instance.showTag)
+					if(TRSystemConfig.Instance.showTag)
 					{
 						Debug.Log("[" + cmp.tagName + " " + p + " ]");
 					}

@@ -33,7 +33,7 @@ namespace NovelEx
                                                 paramDic["tag"] = param["tag"];
                                                 paramDic["storage"] = param["storage"];
                                                 paramDic["isShow"] = "false";
-                                                paramDic["imagePath"] = "";
+                                                //paramDic["imagePath"] = "";
                                                 paramDic["className"] = "";
                                                 paramDic["event"] = "false";
                                 */

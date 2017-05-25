@@ -87,7 +87,7 @@ rot_z=3DモデルのZ軸角度を指定します。0〜360の間で指定しま�
 			//string tag = paramDic ["tag"];
 			paramDic["className"] ="Sd";
 
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
+            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
             g.Load(paramDic);
             //			this.gameManager.nextOrder();
             yield return null;
@@ -284,17 +284,17 @@ condition=stateで指定するステートをtrue or falseで指定すること�
 		public override IEnumerator Start() {
 			string name = paramDic ["name"];
 			string tag = paramDic ["tag"];
-			List<TRImageObjectBehaviour> images;
+			List<TRLayerObjectBehaviour> images;
 
             if (tag != "")
-                images = ImageObjectManager.Instance.GetImageByTag(tag);
+                images = TRLayerObjectManager.Instance.GetImageByTag(tag);
             else
             {
-                images = new List<TRImageObjectBehaviour>();
-                images.Add(ImageObjectManager.Instance.Find(name));
+                images = new List<TRLayerObjectBehaviour>();
+                images.Add(TRLayerObjectManager.Instance.Find(name));
             }
 
-            foreach(TRImageObjectBehaviour image in images)
+            foreach(TRLayerObjectBehaviour image in images)
             {
                 /*
                 if (paramDic ["condition"] == "true")

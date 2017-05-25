@@ -30,11 +30,11 @@ namespace NovelEx
 			else
 #endif
             {
-				string path = StorageManager.Instance.path_savedata.path + storage;
+				string path = StorageManager.Instance.userdataPath + storage;
 
 				//ディレクトリ存在チェック
-				if (!Directory.Exists(StorageManager.Instance.path_savedata.path))
-					Directory.CreateDirectory(StorageManager.Instance.path_savedata.path);
+				if (!Directory.Exists(StorageManager.Instance.userdataPath))
+					Directory.CreateDirectory(StorageManager.Instance.userdataPath);
 
 				FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 				StreamWriter sw = new StreamWriter(fs);
@@ -60,7 +60,7 @@ namespace NovelEx
 			else
 #endif
             {
-                string path = StorageManager.Instance.path_savedata.path + storage;
+                string path = StorageManager.Instance.userdataPath + storage;
 
 				//ファイル作成
 				if(!File.Exists(path))
@@ -88,7 +88,7 @@ namespace NovelEx
 
 		public static UserSaveData GetSaveObject(string storage)
         {
-			string fullpath = StorageManager.Instance.PATH_SAVEDATA + storage;
+			string fullpath = /*StorageManager.Instance.PATH_SAVEDATA +*/ storage;
             UserSaveData obj = (UserSaveData)LoadFromBinaryFile(fullpath);
 			return obj;
 		}
@@ -103,10 +103,10 @@ namespace NovelEx
 			else
 #endif
 			{
-				if (!Directory.Exists(StorageManager.Instance.PATH_SAVEDATA))
-					Directory.CreateDirectory(StorageManager.Instance.PATH_SAVEDATA);
+				if (!Directory.Exists(StorageManager.Instance.userdataPath))
+					Directory.CreateDirectory(StorageManager.Instance.userdataPath);
 
-				FileStream fs = new FileStream(StorageManager.Instance.PATH_SAVEDATA + storage, FileMode.Create, FileAccess.Write);
+				FileStream fs = new FileStream(StorageManager.Instance.userdataPath + storage, FileMode.Create, FileAccess.Write);
 
 				StreamWriter sw = new StreamWriter(fs);
 				sw.Write(json);
@@ -178,7 +178,7 @@ namespace NovelEx
 		public void SavefromSnap(string storage)
         {
 			//一時領域からデータ取得
-			string fullpath = StorageManager.Instance.PATH_SAVEDATA + storage;
+			string fullpath = StorageManager.Instance.userdataPath + storage;
 			object obj = LoadFromBinaryFile(fullpath);
 
 			if (obj == null)
@@ -208,8 +208,8 @@ namespace NovelEx
 			sobj.date = DateTime.Now.ToString ("yyyy/MM/dd HH:mm:ss");
 			sobj.currentMessage = StatusManager.Instance.messageForSaveTitle;
 
-            sobj.dicImage = ImageObjectManager.Instance.dicObject;
-//			sobj.dicTag = ImageObjectManager.dicTag;
+            sobj.dicImage = TRLayerObjectManager.Instance.dicObject;
+//			sobj.dicTag = TRLayerObjectManager.dicTag;
 //			sobj.dicEvent = EventManager.dicEvent;
 			sobj.scriptManager = ScriptDecoder.Instance;
 			sobj.variable = ScriptDecoder.Instance.variable;
@@ -234,7 +234,7 @@ namespace NovelEx
 				sobj.currentIndex++;
 
 			//sobjをシリアライズ化して保存 
-			string path = StorageManager.Instance.path_savedata.path + storage/*+".sav"*/;
+			string path = StorageManager.Instance.userdataPath + storage/*+".sav"*/;
 			SaveToBinaryFile(sobj, path);
 		}
 
@@ -245,15 +245,15 @@ namespace NovelEx
 
             UserSaveData sobj = GetSaveObject(storage);
 
-			Dictionary<string, TRImageObjectBehaviour> dic = sobj.dicImage;
+			Dictionary<string, TRLayerObjectBehaviour> dic = sobj.dicImage;
 
 			//イメージオブジェクトを画面に復元する
-			foreach (KeyValuePair<string, TRImageObjectBehaviour>kvp in sobj.dicImage)
+			foreach (KeyValuePair<string, TRLayerObjectBehaviour>kvp in sobj.dicImage)
 			{
                 //画面を復元していきます
                 //				ImageObject image = new Image(dic[kvp.Key].dicSave);
                 //				image.dicFace = dic[kvp.Key].dicFace;
-                ImageObjectManager.Instance.Create(kvp.Key, TRObjectType.BG);
+                TRLayerObjectManager.Instance.Create(kvp.Key, TRDataType.BG);
 			}
 
 			//タグも復元

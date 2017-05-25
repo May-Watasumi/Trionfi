@@ -5,7 +5,7 @@ using UnityEngine.UI;
 namespace NovelEx
 {
     [ExecuteInEditMode]
-	public class SystemConfig : SingletonMonoBehaviour<SystemConfig>
+	public class TRSystemConfig : SingletonMonoBehaviour<TRSystemConfig>
     {
         [SerializeField]
         public TextAsset initialScriptFile;

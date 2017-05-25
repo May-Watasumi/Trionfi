@@ -73,7 +73,7 @@ namespace NovelEx
 			List<string> events = new List<string>();
 
 			if (tag != "")
-				events = ImageObjectManager.GetImageByTag(tag);	
+				events = TRLayerObjectManager.GetImageByTag(tag);	
 			else
 				events.Add(name);
 
@@ -136,7 +136,7 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 
 			List<string> events = new List<string>();
 			if (tag != "")
-				events = ImageObjectManager.GetImageByTag(tag);	
+				events = TRLayerObjectManager.GetImageByTag(tag);	
 			else
 				events.Add(name);
 
@@ -235,7 +235,7 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 
 			///タグが指定されている場合
 			if (tag != "") {
-				var events = ImageObjectManager.GetImageByTag(tag);	
+				var events = TRLayerObjectManager.GetImageByTag(tag);	
 			
 				foreach (string object_name in events) {
 					ScriptDecoder.Instance.variable.set("_evt_name_permission." + object_name, "1");

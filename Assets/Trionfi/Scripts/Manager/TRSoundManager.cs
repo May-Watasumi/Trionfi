@@ -10,7 +10,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace NovelEx
 {
     [Serializable]
-    public class AudioManager : FlipObject<TRAudioObjectBehaviour, TRAudioObjectBehaviour>
+    public class TRSoundObjectManager : FlipObject<TRSoundObjectBehaviour, TRSoundObjectBehaviour>
     {
         [NonSerialized]
         public GameObject seRoot;
@@ -19,32 +19,32 @@ namespace NovelEx
         [NonSerialized]
         public GameObject BGMRoot;
 
-//        public static Dictionary<string, TRAudioObjectBehaviour> dicBgm = new Dictionary<string, TRAudioObjectBehaviour>();
-//        public static Dictionary<string, TRAudioObjectBehaviour> dicSound = new Dictionary<string, TRAudioObjectBehaviour>();
-		public static Dictionary<string, TRAudioObjectBehaviour> dicVoice = new Dictionary<string, TRAudioObjectBehaviour>();
+//        public static Dictionary<string, TRSoundObjectBehaviour> dicBgm = new Dictionary<string, TRSoundObjectBehaviour>();
+//        public static Dictionary<string, TRSoundObjectBehaviour> dicSound = new Dictionary<string, TRSoundObjectBehaviour>();
+		public static Dictionary<string, TRSoundObjectBehaviour> dicVoice = new Dictionary<string, TRSoundObjectBehaviour>();
 
-		public override TRAudioObjectBehaviour Create(string name, TRObjectType type)
+		public override TRSoundObjectBehaviour Create(string name, TRDataType type)
 		{
-            TRAudioObjectBehaviour g = null;
+            TRSoundObjectBehaviour g = null;
             switch(type)
             {
-            case TRObjectType.BGM:
+            case TRDataType.BGM:
                 g = currentInstance;
                 currentInstance.Load(name);
                 break;
-            case TRObjectType.SE:
-            case TRObjectType.Voice:
-                g = GameObject.Instantiate(objectPrefab).GetComponent<TRAudioObjectBehaviour>();
-                g.GetComponent<TRAudioObjectBehaviour>().Load(name);
+            case TRDataType.SE:
+            case TRDataType.Voice:
+                g = GameObject.Instantiate(objectPrefab).GetComponent<TRSoundObjectBehaviour>();
+                g.GetComponent<TRSoundObjectBehaviour>().Load(name);
                 g.transform.parent = seRoot.transform;
-                dicObject[name] = (g.GetComponent<TRAudioObjectBehaviour>());
+                dicObject[name] = (g.GetComponent<TRSoundObjectBehaviour>());
                 break;
             }
                
             return g;
 		}
         /*
-		private Dictionary<string, TRAudioObjectBehaviour> GetDic(ObjectType type)
+		private Dictionary<string, TRSoundObjectBehaviour> GetDic(ObjectType type)
         {		
 			switch (type) {
 			case ObjectType.Bgm:
@@ -56,17 +56,17 @@ namespace NovelEx
 			return null;		
 		}
         */
-        public TRAudioObjectBehaviour Find(string name, TRObjectType type)
+        public TRSoundObjectBehaviour Find(string name, TRDataType type)
         {
             switch (type)
             {
-                case TRObjectType.BGM:
+                case TRDataType.BGM:
                     if( currentInstance.gameObject.name != name)
                         currentInstance.Load(name);
                     return currentInstance;
 
-                case TRObjectType.SE:
-                case TRObjectType.Voice:
+                case TRDataType.SE:
+                case TRDataType.Voice:
                     if (!dicObject.ContainsKey(name))
                         Create(name, type);
                     return dicObject[name];
@@ -74,25 +74,25 @@ namespace NovelEx
             return null;           
 		}
 
-		public void Stop(string file, TRObjectType type,float time, CompleteDelegate completeDelegate = null)
+		public void Stop(string file, TRDataType type,float time, CompleteDelegate completeDelegate = null)
         {
 			//全部停止する
 			if(string.IsNullOrEmpty(file))
             {
                 currentInstance.Stop(time);
 
-				foreach (KeyValuePair<string, TRAudioObjectBehaviour> kvp in dicObject)
+				foreach (KeyValuePair<string, TRSoundObjectBehaviour> kvp in dicObject)
                 {
 					kvp.Value.Stop(time);
 				}
-                foreach (KeyValuePair<string, TRAudioObjectBehaviour> kvp in dicVoice)
+                foreach (KeyValuePair<string, TRSoundObjectBehaviour> kvp in dicVoice)
                 {
                     kvp.Value.Stop(time);
                 }
             }
             else
             {
-                TRAudioObjectBehaviour audioObject = Find(file, type);
+                TRSoundObjectBehaviour audioObject = Find(file, type);
 //				audioObject.time = time;
 //				audioObject.completeDelegate = completeDelegate;
                 if(audioObject != null)

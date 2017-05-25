@@ -34,7 +34,7 @@ namespace NovelEx {
 			paramDic["scale_x"] = paramDic["scale"];
 			paramDic["scale_y"] = paramDic["scale"];
 			paramDic["scale_z"] = paramDic["scale"];
-            TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
+            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
             g.Load(paramDic);
             yield return null;
         }

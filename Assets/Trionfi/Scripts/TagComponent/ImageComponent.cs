@@ -81,7 +81,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 			else
 				paramDic ["scale"] = "1";
            */
-			TRImageObjectBehaviour g = ImageObjectManager.Instance.Create(paramDic["name"], TRObjectType.BG);
+			TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
             g.Load(paramDic);
             yield return null;
         }
@@ -136,10 +136,10 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 
 		public override IEnumerator Start() {
 			string name = paramDic["name"];
-            TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(paramDic["name"]);
+            TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(paramDic["name"]);
             image.param = paramDic;
             /*
-                        TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(paramDic["name"]);
+                        TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(paramDic["name"]);
 
                         float x = (paramDic["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.GetParam("x"));
                         float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.GetParam ("y"));
@@ -228,14 +228,14 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 			float time = float.Parse(paramDic["time"]);
 			bool flag_delegate = true;
 
-			List<TRImageObjectBehaviour> images;
+			List<TRLayerObjectBehaviour> images;
 
             if (tag != "")
-                images = ImageObjectManager.Instance.GetImageByTag(tag);
+                images = TRLayerObjectManager.Instance.GetImageByTag(tag);
             else
             {
-                images = new List<TRImageObjectBehaviour>();
-                images.Add(ImageObjectManager.Instance.Find(name));
+                images = new List<TRLayerObjectBehaviour>();
+                images.Add(TRLayerObjectManager.Instance.Find(name));
             }
 
             if (StatusManager.Instance.onSkip)
@@ -333,14 +333,14 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 
 			bool flag_delegate = true;
 
-            List<TRImageObjectBehaviour> images;
+            List<TRLayerObjectBehaviour> images;
 
             if (tag != "")
-                images = ImageObjectManager.Instance.GetImageByTag(tag);
+                images = TRLayerObjectManager.Instance.GetImageByTag(tag);
             else
             {
-                images = new List<TRImageObjectBehaviour>();
-                images.Add(ImageObjectManager.Instance.Find(name));
+                images = new List<TRLayerObjectBehaviour>();
+                images.Add(TRLayerObjectManager.Instance.Find(name));
             }
 
             if (StatusManager.Instance.onSkip)
@@ -354,7 +354,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 				isWait = true;
 			}
 
-			foreach(TRImageObjectBehaviour image in images) {
+			foreach(TRLayerObjectBehaviour image in images) {
 				if(isWait) {
 					//設定するのは一つだけ
 					if (flag_delegate == true) {
@@ -441,9 +441,9 @@ storage=画像ファイル名を直接していできます。フォルダはdat
 			string face = paramDic ["face"];
 			string storage = paramDic["storage"];
 
-            TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(name);
+            TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(name);
 
-			ImageObjectManager.Instance.Find(name);
+			TRLayerObjectManager.Instance.Find(name);
             //this.gameManager.nextOrder();
             //this.gameManager.scene.MessageSpeed = 0.02f;
             //this.gameManager.scene.coroutineShowMessage (message);
@@ -522,7 +522,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 			float time = float.Parse (paramDic["time"]);
 			string type = paramDic ["type"];
 
-            TRImageObjectBehaviour image = ImageObjectManager.Instance.Find(name);
+            TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(name);
 
             //storage指定が優先される
             if (storage != "")
@@ -606,18 +606,18 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 			string tag = paramDic ["tag"];
 			string name = paramDic ["name"];
 
-            List<TRImageObjectBehaviour> images;
+            List<TRLayerObjectBehaviour> images;
             if (tag != "")
-                images = ImageObjectManager.Instance.GetImageByTag(tag);
+                images = TRLayerObjectManager.Instance.GetImageByTag(tag);
             else
             {
-                images = new List<TRImageObjectBehaviour>();
-                images.Add(ImageObjectManager.Instance.Find(name));
+                images = new List<TRLayerObjectBehaviour>();
+                images.Add(TRLayerObjectManager.Instance.Find(name));
             }
-			foreach(TRImageObjectBehaviour image in images)
+			foreach(TRLayerObjectBehaviour image in images)
             {
 				//Image image = this.gameManager.imageManager.getImage (image_name);
-//				ImageObjectManager.Instance.Remove(image.GetParam("name"));
+//				TRLayerObjectManager.Instance.Remove(image.GetParam("name"));
 			}
             yield return null;
 

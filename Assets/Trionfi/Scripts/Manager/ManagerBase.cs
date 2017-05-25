@@ -39,7 +39,7 @@ namespace NovelEx
 
         public Dictionary<string, T> dicObject = new Dictionary<string, T>();
 
-        public virtual T Create(string name, TRObjectType type = TRObjectType.None)
+        public virtual T Create(string name, TRDataType type = TRDataType.None)
         {
             if(!dicObject.ContainsKey(name))
                 return GameObject.Instantiate(objectPrefab).GetComponent<T>();

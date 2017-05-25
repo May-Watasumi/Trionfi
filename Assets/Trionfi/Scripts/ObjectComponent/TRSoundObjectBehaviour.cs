@@ -5,7 +5,7 @@ using NovelEx;
 
 namespace NovelEx
 {
-    public class TRAudioObjectBehaviour : MonoBehaviour
+    public class TRSoundObjectBehaviour : MonoBehaviour
 	{
         public float volume1 = 1.0f;   //本来の音量
         public float volume2 = 1.0f;   //フェーダー用。普段は1.0
@@ -24,7 +24,7 @@ namespace NovelEx
 
         public void Load(string storage)
 		{
-			AudioClip audioClip =  StorageManager.Instance.LoadAudioAsset(storage);
+			AudioClip audioClip =  StorageManager.Instance.LoadObject(storage, TRDataType.BGM) as AudioClip;
             gameObject.name = storage;
 			audioSource.clip = audioClip;
 		}

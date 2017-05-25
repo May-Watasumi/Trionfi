@@ -43,14 +43,14 @@ jcolor=jnameの表示色を指定することができます。
     {
 		public Chara_newComponent() : base() {
 			//画像のルートパスが異なってくる
-			base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE;
+//			base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE;
 		}
 
 		public override IEnumerator Start() {
 			paramDic["className"] = "Chara";
 
 			paramDic ["layer"] ="character";
-			paramDic["imagePath"] = StorageManager.Instance.PATH_CHARA_IMAGE;
+			//paramDic["imagePath"] = StorageManager.Instance.PATH_CHARA_IMAGE;
 
 			//jname jcolor  名前表示のときに色と名前を指定できます
 			if (paramDic.ContainsKey ("jname"))
@@ -237,7 +237,7 @@ storage=画像ファイル名を指定します。ファイルはcharacterフォ
 	//キャラの表情登録用
 	public class Chara_faceComponent : Image_faceComponent
     {
-		public Chara_faceComponent():base() { base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE; }
+//		public Chara_faceComponent():base() { base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE; }
 		public override IEnumerator Start()
         {
             base.Start();

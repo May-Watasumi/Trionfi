@@ -21,7 +21,7 @@ namespace NovelEx
             paramDic = param;
             //            gameObject.transform.parent = RootObject.transform;
 
-            GameObject g = StorageManager.Instance.loadPrefab("Text") as GameObject;
+//            GameObject g = StorageManager.Instance.loadPrefab("Text") as GameObject;
             //			gameObject = (GameObject)GameObject.Instantiate(g,new Vector3(0.0f, 0.0f, 0.0f),Quaternion.identity); 
 
             GameObject canvas = GameObject.Find("Canvas") as GameObject;

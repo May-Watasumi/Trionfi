@@ -22,7 +22,7 @@ namespace NovelEx
         public override IEnumerator Start()
         {
             string message = paramDic["val"];
-            TRUIManager.Instance.currentMessageWindow.ShowMessage(message, SystemConfig.Instance.messageShowWait);
+            TRUIManager.Instance.currentMessageWindow.ShowMessage(message, TRSystemConfig.Instance.messageShowWait);
             yield return null;
         }
     }
@@ -132,8 +132,8 @@ namespace NovelEx
 		public override IEnumerator Start()
 		{
 //            TRUIManager.Instance.currentMessageWindow.Reset();
-            TRUIManager.Instance.currentMessageWindow.currentMessage.fontSize = SystemConfig.Instance.fontSize;
-            TRUIManager.Instance.currentMessageWindow.currentMessage.color = SystemConfig.Instance.fontColor;
+            TRUIManager.Instance.currentMessageWindow.currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
+            TRUIManager.Instance.currentMessageWindow.currentMessage.color = TRSystemConfig.Instance.fontColor;
             yield return null;
         }
     }

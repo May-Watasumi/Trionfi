@@ -7,7 +7,7 @@ using System.Text;
 using System.IO;
 
 namespace NovelEx {
-	public class TRImageObjectBehaviour : AbstractObject {
+	public class TRLayerObjectBehaviour : AbstractObject {
 
         public override ParamDictionary param
         {
@@ -40,7 +40,7 @@ namespace NovelEx {
         {
 //            if(gameObject == null)
 //                gameObject = GameObject.Instantiate(StorageManager.Instance.imageBasePrefab);
-            gameObject.GetComponent<Image>().sprite = StorageManager.Instance.LoadImage(storage);
+            gameObject.GetComponent<Image>().sprite = StorageManager.Instance.LoadObject(storage, TRDataType.Character) as Sprite;
             return gameObject.GetComponent<Image>().sprite != null ? true : false; 
         }
 

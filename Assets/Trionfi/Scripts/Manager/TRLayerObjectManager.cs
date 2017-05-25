@@ -9,7 +9,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 namespace NovelEx
 {
 	[Serializable]
-	public class ImageObjectManager : FlipObject<TRImageObjectBehaviour, CanvasManager>
+	public class TRLayerObjectManager : FlipObject<TRLayerObjectBehaviour, CanvasManager>
     {
         [SerializeField]
         int characterBaseDescent = 0;
@@ -23,13 +23,13 @@ namespace NovelEx
                 public ParamDictionary dicFace = new ParamDictionary();
         */
 
-        public override TRImageObjectBehaviour Create(string name, TRObjectType type)
+        public override TRLayerObjectBehaviour Create(string name, TRDataType type)
         {
             return null;
         }
 
 #if false
-        public override TRImageObjectBehaviour Create(string name, ObjectType type)
+        public override TRLayerObjectBehaviour Create(string name, ObjectType type)
         {
             //ToDo:
             string className = param["className"];

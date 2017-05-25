@@ -58,7 +58,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 			};
 
 			//画像のルートパスが異なってくる
-			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
+//			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
 		public override IEnumerator Start()
@@ -67,7 +67,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 				paramDic["name"] = "background";
 
 //			paramDic ["layer"] ="background";
-			paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
+			//paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
 			base.Start();
             yield return null;
@@ -178,7 +178,7 @@ type=非表示のされ方を指定できます。デフォルトはlinear で�
 	//キャラの表情登録用
 	public class Bg_faceComponent : Image_faceComponent {
 		public Bg_faceComponent() : base() {
-			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
+//			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
 		public override IEnumerator Start() {
@@ -225,7 +225,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 		}
 
 		public override IEnumerator Start() {
-			paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
+			//paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
 			if(paramDic ["name"] == "")
 				paramDic["name"] = "background";

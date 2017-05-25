@@ -34,9 +34,9 @@ namespace NovelEx
         {
             Init();
 
-            if (SystemConfig.Instance.initialScriptFile != null)
+            if(TRSystemConfig.Instance.initialScriptFile != null)
             {
-                scriptDecoder.LoadScenariofromString(SystemConfig.Instance.initialScriptFile.text, SystemConfig.Instance.initialScriptFile.name);
+                scriptDecoder.LoadScenariofromString(TRSystemConfig.Instance.initialScriptFile.text, TRSystemConfig.Instance.initialScriptFile.name);
                 StartCoroutine(scriptDecoder.Run());
             }                
         }
