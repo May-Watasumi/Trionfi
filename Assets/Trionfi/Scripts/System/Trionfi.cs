@@ -42,7 +42,11 @@ namespace NovelEx
         }
 
         public delegate void OnClickEvent();
-        public OnClickEvent ClickEvent; 
+        public OnClickEvent ClickEvent;
+
+        public void OnGlobalTapEvent()
+        {
+        }
 
         //ToDo
 #if false

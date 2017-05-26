@@ -17,6 +17,8 @@ public class MessageWindow : MonoBehaviour
     public Text currentName;
     [SerializeField]
     private Image MessageFrameImage;
+    [SerializeField]
+    public Image waitCursor;
 
     public void Start()
     {

@@ -75,14 +75,20 @@ namespace NovelEx
 
         public string MakeStoragePath(string file, TRDataType dataType)
         {
-            //　"/"でパスはターミネートされていること前提。ToDo:補完
-            return file + dataPath[dataType];
+            string _basePath = dataPath[dataType];
+
+            // "/"補完
+            if (!_basePath.EndsWith("/"))
+               _basePath += "/";
+
+            return _basePath + file;
         }
 
         public Object LoadObject(string storage, TRDataType dataType, TRStorageType storageType = TRStorageType.LocalFile)
         {
             Object resultObject;
 
+            //ToDo:
             string fullPath = storagePath[storageType] + MakeStoragePath(storage, dataType);
 
             //            if(IsExistLocal(storage) != )
