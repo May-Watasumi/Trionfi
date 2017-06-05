@@ -90,9 +90,9 @@ namespace NovelEx
             }
         }
 
-        public float Float(string key)
+        public float Float(string key, float defaultValue = 0.0f)
         {
-            float res = 0.0f;
+            float res = defaultValue;
             if (ContainsKey(key))
             {
                 string v = this[key];
@@ -109,7 +109,7 @@ namespace NovelEx
                     else
                     {
                         ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
-                        return 0.0f;
+                        return defaultValue;
                     }
                 }
             }
@@ -117,12 +117,12 @@ namespace NovelEx
             {
                 ErrorLogger.Log("NoParam: key=" + key);
             }
-            return 0.0f;
+            return defaultValue;
         }
 
-        public int Int(string key)
+        public int Int(string key, int defaultValue = 0)
         {
-            int res = 0;
+            int res = defaultValue;
             if (ContainsKey(key))
             {
                 string v = this[key];
@@ -130,20 +130,20 @@ namespace NovelEx
                 if (!System.Int32.TryParse(v, out res))
                 {
                     ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
-                    return 0;
+                    return defaultValue;
                 }
             }
             else
             {
                 ErrorLogger.Log("NoParam: key=" + key);
-                return 0;
+                return defaultValue;
             }
             return res;
         }
 
-        public string String(string key)
+        public string String(string key, string defaultValue = "")
         {
-            string res = "";
+            string res = defaultValue;
             if (ContainsKey(key))
             {
                 res = this[key];

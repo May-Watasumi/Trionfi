@@ -5,7 +5,9 @@ using UnityEngine.UI;
 
 namespace NovelEx
 {
-	public class CanvasManager : MonoBehaviour
+    public enum TRlayerOrder { BG, Stand, Event, UI };
+
+    public class CanvasManager : MonoBehaviour
     {
         [SerializeField]
         GameObject BGRoot;
@@ -14,68 +16,19 @@ namespace NovelEx
         [SerializeField]
         GameObject EventRoot;
 
-        private Canvas canvas;
+//        private Canvas canvas;
 
         private void Start()
         {
-            canvas = gameObject.GetComponent<Canvas>();
-        }
+  //          canvas = gameObject.GetComponent<Canvas>();
+        }       
 
-        public enum  layerOrder { BG, Stand, Event, UI };
-
-		public void hide(float time, bool nextOrder) {
-			if (time > 0.0f) {
-                //通常の表示切り替えの場合
-                /*
-                iTween.ValueTo(this.gameObject, iTween.Hash(
-					"from", 1,
-					"to", 0,
-					"time", time,
-					"oncomplete", "finishAnimation",
-					"oncompletetarget", gameObject,
-					"easeType", "linear",
-					"onupdate", "crossFade"
-				));
-                */
-			}
-		}
-
-		public void show(float time, bool nextOrder) {
-			string order = nextOrder ? "finishAnimation" : "finishAnimationWithoutNextOrder";
-
-			gameObject.SetActive(true);
-
-			if (time > 0.0f) {
-				//通常の表示切り替えの場合
-                /*
-				iTween.ValueTo(this.gameObject, iTween.Hash(
-					"from", 0,
-					"to", 1,
-					"time", time,
-					"oncomplete", order,
-					"oncompletetarget", gameObject,
-					"easeType", "linear",
-					"onupdate", "crossFade"
-				));
-                */
-			}
-		}
 		public void CrossFade(float val) {
 			//var test = this.gameObject.GetComponent<Image>();
 			CanvasGroup group = GetComponent<CanvasGroup>();
 			group.alpha = val;
 		}
 
-		public void finishAnimation() {
-			StatusManager.Instance.NextOrder();
-			//StatusManager.Instance.enableClickOrder = true;
-			//			NovelSingleton.GameManager.nextOrder();
-		}
-
-		public void finishAnimationWithoutNextOrder() {
-			StatusManager.Instance.NextOrder();
-//			StatusManager.Instance.enableClickOrder = true;
-		}
 /*
 		void Awake() {
 			canvas = GetComponent<Canvas>();

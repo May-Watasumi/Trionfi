@@ -4,38 +4,105 @@ using System.Collections.Generic;
 
 namespace NovelEx
 {
+    //    [sound type=bgm storage=ggg name=ggg delay=0]
+    //    [soundstop name="" time=0]
+    public class SoundComponent : AbstractComponent
+    {
+        bool isWait;
 
-/*	
---------------
+        public SoundComponent()
+        {
+            //必須項目
+            arrayVitalParam = new List<string> {
+                "storage",
+                "type"
+            };
+/*
+            originalParamDic = new ParamDictionary() {
+                { "storage",""},
+                { "time","0"},
+                { "vol","1"}, //ボリューム 0〜1
+				{ "wait","true"},
+                { "next","true"},
+            };
+*/
+        }
 
-[doc]
-tag=playbgm
-group=オーディオ関連
-title=BGM再生
+        public override IEnumerator Start()
+        {
+            string type = paramDic["type"];
+            string storage = paramDic["storage"];
+            string name = paramDic.String("name", null);
+            float playDelay = paramDic.Float("delay");
 
-[desc]
-BGMを再生します。
-対応ファイル形式は .aif、.wav、.mp3、 .oggファイルです
- 
-[sample]
+            if (string.IsNullOrEmpty(name))
+                name = storage;
 
-;BGMの再生
-[playbgm wait=false time=1 storage="music"]
+            TRDataType _type = StorageManager.dataTypes[type];
+            TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Create(paramDic["name"], _type).GetComponent<TRSoundObjectBehaviour>();
+            
+            if(_type == TRDataType.BGM)
+                audioObject.audioSource.loop = true;
 
-[param]
+            //ToDo:同期待ちするときある？
+            audioObject.Play(playDelay);
+            yield return null;
 
-storage=再生する音楽ファイルを指定します
-time=音が最大ボリュームになるまでにかかる秒数をしていします。つまり値をおおきくすると長い時間をかけて徐々に音楽が再生されます
-vol=再生時のボリュームを指定します（0〜1.0）１が最大です。
-wait=trueを指定することでtimeで指定した時間が完了するまで次の処理に移動しなくなります。
-next=falseを指定すると次の処理に移動することなく、音楽を再生します。
+        }
 
-[_doc]
---------------------
- */
+        public void complete()
+        {
+            if (isWait)
+            {
+                StatusManager.Instance.NextOrder();
+            }
+            /*
+                        nextOrder = false;
+                        if (paramDic ["wait"] == "true") {
+                            StatusManager.Instance.currentState = JokerState.NextOrder;
+                            //StatusManager.Instance.enableNextOrder = true;
+                            if(paramDic["next"] =="true")
+                                StatusManager.Instance.currentState = JokerState.NextOrder;
+                            //ToDo:
+            //				nextOrder = true;
+            //				this.gameManager.nextOrder();
+                        }
+             */
+        }
+    }
 
-	//音楽再生用のコンポーネント
-	public class PlaybgmComponent : AbstractComponent {
+
+    /*	
+    --------------
+
+    [doc]
+    tag=playbgm
+    group=オーディオ関連
+    title=BGM再生
+
+    [desc]
+    BGMを再生します。
+    対応ファイル形式は .aif、.wav、.mp3、 .oggファイルです
+
+    [sample]
+
+    ;BGMの再生
+    [playbgm wait=false time=1 storage="music"]
+
+    [param]
+
+    storage=再生する音楽ファイルを指定します
+    time=音が最大ボリュームになるまでにかかる秒数をしていします。つまり値をおおきくすると長い時間をかけて徐々に音楽が再生されます
+    vol=再生時のボリュームを指定します（0〜1.0）１が最大です。
+    wait=trueを指定することでtimeで指定した時間が完了するまで次の処理に移動しなくなります。
+    next=falseを指定すると次の処理に移動することなく、音楽を再生します。
+
+    [_doc]
+    --------------------
+     */
+
+    //音楽再生用のコンポーネント
+    public class PlaybgmComponent : AbstractComponent {
 		bool isWait;
 
 		public PlaybgmComponent()

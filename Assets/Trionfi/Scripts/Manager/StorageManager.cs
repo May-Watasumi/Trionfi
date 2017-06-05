@@ -44,6 +44,25 @@ namespace NovelEx
 	{
         bool onDataLoading;
 
+        static public Dictionary<string, TRDataType> dataTypes =  new Dictionary<string, TRDataType>()
+        {
+ //            { "BG", TRDataType.None },
+            { "TEXT", TRDataType.TextAsset },
+            { "JSON", TRDataType.JsonText },
+            { "BIN", TRDataType.BinaryData },
+            { "CHARA", TRDataType.Character },
+            { "BG", TRDataType.BG },
+            { "EVENT", TRDataType. Event },
+            { "UI", TRDataType. UI },
+            { "LIVE2D", TRDataType.Live2D },
+            { "FBX", TRDataType.FBX },
+            { "EMOTE", TRDataType. Emote },
+            { "BGM", TRDataType.BGM },
+            { "SE", TRDataType.SE },
+            { "VOICE", TRDataType. Voice },
+            { "", TRDataType.Terminate },              
+        };
+
         [SerializeField]
         public GameObject imageBasePrefab;
 
