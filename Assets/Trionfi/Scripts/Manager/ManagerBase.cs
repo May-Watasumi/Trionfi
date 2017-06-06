@@ -46,18 +46,19 @@ namespace NovelEx
             else
                 return dicObject[name];
         }
-/*
-        public static void AddObject(T instance)
-        {
-            dicObject[instance.GetParam("name")] = instance;
-        }
-*/
-        public T Find(string key)
+        
+        public virtual T Find(string key, TRDataType type)
         {
             return dicObject[key];
         }
 
-        public void Remove(string key)
+        public virtual T Find(string key)
+        {
+            return dicObject[key];
+        }
+
+
+        public virtual void Remove(string key)
         {
             GameObject.Destroy((dicObject[key] as GameObject).gameObject);
             dicObject.Remove(key);

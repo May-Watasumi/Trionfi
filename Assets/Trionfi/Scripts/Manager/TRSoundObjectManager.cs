@@ -21,7 +21,7 @@ namespace NovelEx
 
 //        public static Dictionary<string, TRSoundObjectBehaviour> dicBgm = new Dictionary<string, TRSoundObjectBehaviour>();
 //        public static Dictionary<string, TRSoundObjectBehaviour> dicSound = new Dictionary<string, TRSoundObjectBehaviour>();
-		public static Dictionary<string, TRSoundObjectBehaviour> dicVoice = new Dictionary<string, TRSoundObjectBehaviour>();
+		public Dictionary<string, TRSoundObjectBehaviour> dicVoice = new Dictionary<string, TRSoundObjectBehaviour>();
 
 		public override TRSoundObjectBehaviour Create(string name, TRDataType type)
 		{
@@ -30,51 +30,36 @@ namespace NovelEx
             {
             case TRDataType.BGM:
                 g = currentInstance;
-                currentInstance.Load(name);
+                g.gameObject.name = name;
                 break;
             case TRDataType.SE:
             case TRDataType.Voice:
+                if(dicObject.ContainsKey(name))
+                     return null;
+
                 g = GameObject.Instantiate(objectPrefab).GetComponent<TRSoundObjectBehaviour>();
-                g.GetComponent<TRSoundObjectBehaviour>().Load(name);
                 g.transform.parent = seRoot.transform;
                 dicObject[name] = (g.GetComponent<TRSoundObjectBehaviour>());
                 break;
-            }
-               
+            }               
             return g;
 		}
-        /*
-		private Dictionary<string, TRSoundObjectBehaviour> GetDic(ObjectType type)
-        {		
-			switch (type) {
-			case ObjectType.Bgm:
-//				return currentInstance;
-			case ObjectType.Sound:
-				return dicSound;
-			}
 
-			return null;		
-		}
-        */
-        public TRSoundObjectBehaviour Find(string name, TRDataType type)
+        public override TRSoundObjectBehaviour Find(string name, TRDataType type)
         {
             switch (type)
             {
                 case TRDataType.BGM:
-                    if( currentInstance.gameObject.name != name)
-                        currentInstance.Load(name);
                     return currentInstance;
 
                 case TRDataType.SE:
                 case TRDataType.Voice:
-                    if (!dicObject.ContainsKey(name))
-                        Create(name, type);
-                    return dicObject[name];
+                    return dicObject.ContainsKey(name) ? dicObject[name] : null;
             }
             return null;           
 		}
 
-		public void Stop(string file, TRDataType type,float time, CompleteDelegate completeDelegate = null)
+		public void Stop(string file, TRDataType type, float time, CompleteDelegate completeDelegate = null)
         {
 			//全部停止する
 			if(string.IsNullOrEmpty(file))
@@ -93,9 +78,8 @@ namespace NovelEx
             else
             {
                 TRSoundObjectBehaviour audioObject = Find(file, type);
-//				audioObject.time = time;
-//				audioObject.completeDelegate = completeDelegate;
-                if(audioObject != null)
+
+                if (audioObject != null)
     				audioObject.Stop(time);
 			}
 		}

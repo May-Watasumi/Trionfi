@@ -22,22 +22,22 @@ namespace NovelEx
 //        public bool 
 //		public CompleteDelegate completeDelegate ;
 
-        public void Load(string storage)
+        public void Load(string storage, TRDataType type, string name = null)
 		{
-			AudioClip audioClip =  StorageManager.Instance.LoadObject(storage, TRDataType.BGM) as AudioClip;
+			AudioClip audioClip =  StorageManager.Instance.LoadObject(storage, type) as AudioClip;
             gameObject.name = storage;
 			audioSource.clip = audioClip;
 		}
 
-        public void Play(float time = 0.0f)
+        public IEnumerator Play(float time = 0.0f)
         {
             audioSource.volume = volume1;
-            StartCoroutine(FadeIn(time));
+            yield return FadeIn(time);
 		}
 
-        public void Stop(float time = 0.0f)
+        public IEnumerator Stop(float time = 0.0f)
         {
-            StartCoroutine(FadeOut(time));
+            yield return FadeOut(time);
 		}
 
         public IEnumerator FadeIn(float time)

@@ -154,6 +154,34 @@ namespace NovelEx
             }
             return res;
         }
+
+        public bool Bool(string key, bool defaultValue = false)
+        {
+            bool res = defaultValue;
+            if(ContainsKey(key) && this[key] == "true" || this[key] == "TRUE")
+            {
+                res = true;
+            }
+            else
+            {
+                res = false;
+
+                if(!ContainsKey(key) || (this[key] != "false" && this[key] != "FALSE"))
+                    ErrorLogger.Log("InvalidParam: key=" + key);
+            }
+            return res;
+        }
+
+        public TRDataType Type(string key = "type", TRDataType defaultValue = TRDataType.None)
+        {
+            if(ContainsKey(key))
+            {
+                string _type = this[key];
+                return StorageManager.dataTypes.ContainsKey(_type) ? defaultValue : StorageManager.dataTypes[_type];
+            }
+            return defaultValue;
+        }
+
         /*
         public T ValidParam<T>(string key)
         {
