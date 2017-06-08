@@ -18,7 +18,7 @@ namespace NovelEx
 		public IEnumerator StartTag(string tag)
         {
 			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag);
-			yield return StartCoroutine(cmp.Start());
+			yield return StartCoroutine(cmp.Exec());
 		}
 
         public void Init()

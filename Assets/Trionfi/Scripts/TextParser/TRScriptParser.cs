@@ -266,13 +266,12 @@ namespace NovelEx
 		//１行のstringからタグを作成
 		public AbstractComponent makeTag(string line)
         {
-			AbstractComponent cmp = this.makeTag (line, 0);
-			cmp.CalcVariable();
-			return cmp;
+			AbstractComponent _component = this.makeTag(line, 0);
+			return _component;
 		}
 
 		//タグ名と引数の辞書からタグを生成
-		public AbstractComponent makeTag(string tag_name,ParamDictionary param)
+		public AbstractComponent makeTag(string tag_name, ParamDictionary param)
         {
 			string line = "["+tag_name+" ";
 			string param_str = "";
@@ -285,32 +284,31 @@ namespace NovelEx
 
 			Debug.Log (line);
 
-			AbstractComponent cmp = this.makeTag (line, 0);
-			cmp.CalcVariable();
+			AbstractComponent cmp = this.makeTag(line, 0);
 
 			return cmp;
 		}
 
-		public AbstractComponent makeTag(string line, int line_num) {
-			TagParam tag = new TagParam(line);
+		public AbstractComponent makeTag(string statement, int lineNum) {
+            TagParam tag = new TagParam(statement, lineNum);
 
 			//tagの種類によって、実装する命令が変わってくる
 			AbstractComponent cmp = null;
 
-			string className = "NovelEx." + tf.ToTitleCase(tag.Name) + "Component";
+			string className = "NovelEx." + tf.ToTitleCase(tag.tagName + "Component");
 
 			//リフレクションで動的型付け
 			Type masterType = Type.GetType(className);
 
 			try
             {
-				cmp = (AbstractComponent)Activator.CreateInstance(masterType);
+                cmp = (AbstractComponent)Activator.CreateInstance(masterType);
 			}
 			catch(Exception e)
             {
 #if UNITY_EDITOR
                 Debug.Log(e.ToString());
-                Debug.LogError("Invalid Tag:\"" + tag.Name+ "\"");
+                Debug.LogError("Invalid Tag:\"" + tag.tagName+ "\"");
 #else
 				//マクロとして登録
                 ErrorLogger.Log("MacroStart:"+tag.Name);
@@ -320,7 +318,7 @@ namespace NovelEx
 
             if(cmp != null)
             {
-				cmp.Init(tag, line_num);
+				cmp.Init(tag, lineNum);
 				//エラーメッセージの蓄積
 				cmp.CheckParam();
 				cmp.MergeDefaultParam();

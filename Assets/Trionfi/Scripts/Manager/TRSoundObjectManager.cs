@@ -59,7 +59,7 @@ namespace NovelEx
             return null;           
 		}
 
-		public void Stop(string file, TRDataType type, float time, CompleteDelegate completeDelegate = null)
+		public void Stop(string file, TRDataType type, float time)
         {
 			//全部停止する
 			if(string.IsNullOrEmpty(file))

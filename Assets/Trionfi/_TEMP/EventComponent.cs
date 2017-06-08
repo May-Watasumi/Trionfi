@@ -55,7 +55,7 @@ namespace NovelEx
 			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			arrayVitalParam = new List<string> { };
+			essentialParams = new List<string> { };
 
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
@@ -66,9 +66,9 @@ namespace NovelEx
 			};
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic ["name"];
-			string tag = paramDic ["tag"];
+		protected override IEnumerator Start() {
+			string name = expressionedParams ["name"];
+			string tag = expressionedParams ["tag"];
 
 			List<string> events = new List<string>();
 
@@ -79,12 +79,12 @@ namespace NovelEx
 
 
 			//ファイルが指定されていない場合は現在のシナリオを格納する
-			if(paramDic["file"] == "")
-				paramDic["file"] = StatusManager.Instance.currentScenario;
+			if(expressionedParams["file"] == "")
+				expressionedParams["file"] = StatusManager.Instance.currentScenario;
 
 			foreach(string object_name in events)
             {
-				EventManager.addEvent(object_name, paramDic);
+				EventManager.addEvent(object_name, expressionedParams);
 			}
 
 //			this.gameManager.nextOrder();
@@ -121,7 +121,7 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			arrayVitalParam = new List<string> { 	};
+			essentialParams = new List<string> { 	};
 
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
@@ -130,9 +130,9 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 			};
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic ["name"];
-			string tag = paramDic ["tag"];
+		protected override IEnumerator Start() {
+			string name = expressionedParams ["name"];
+			string tag = expressionedParams ["tag"];
 
 			List<string> events = new List<string>();
 			if (tag != "")
@@ -176,11 +176,11 @@ title=イベントの一時無効化
 			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			arrayVitalParam = new List<string> { };
+			essentialParams = new List<string> { };
 			originalParamDic = new ParamDictionary() { };
 		}
 
-		public override IEnumerator Start() {
+		protected override IEnumerator Start() {
 			//例外として許可する
 			ScriptDecoder.Instance.variable.remove("_evt_name_permission");
 
@@ -228,10 +228,10 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 			};
 		}
 
-		public override IEnumerator Start() {
+		protected override IEnumerator Start() {
 			//例外として許可するイベントを登録
-			string name = paramDic ["name"];
-			string tag = paramDic ["tag"];
+			string name = expressionedParams ["name"];
+			string tag = expressionedParams ["tag"];
 
 			///タグが指定されている場合
 			if (tag != "") {

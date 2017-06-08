@@ -9,10 +9,10 @@ namespace NovelEx {
 	public class Uiimage_newComponent : AbstractComponent {
 		public Uiimage_newComponent() : base() {
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name" 
 			};
-
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "val","" },
@@ -27,15 +27,16 @@ namespace NovelEx {
 				{ "anchor","MiddleCenter" },
 				{ "cut","" },
 			};
+*/
 		}
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
 		{
-			paramDic["className"] = "UIImage";
-			paramDic["scale_x"] = paramDic["scale"];
-			paramDic["scale_y"] = paramDic["scale"];
-			paramDic["scale_z"] = paramDic["scale"];
-            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
-            g.Load(paramDic);
+			expressionedParams["className"] = "UIImage";
+			expressionedParams["scale_x"] = expressionedParams["scale"];
+			expressionedParams["scale_y"] = expressionedParams["scale"];
+			expressionedParams["scale_z"] = expressionedParams["scale"];
+            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(expressionedParams["name"], TRDataType.BG);
+            g.Load(expressionedParams);
             yield return null;
         }
     }

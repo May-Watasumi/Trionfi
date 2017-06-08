@@ -42,11 +42,11 @@ scale=Live2Dモデルの表示サイズを指定できます。つまり2と指�
 
 		public Live2d_newComponent() {
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name",
 				"storage" 
 			};
-
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name","" },
 				{ "storage","" },
@@ -61,22 +61,23 @@ scale=Live2Dモデルの表示サイズを指定できます。つまり2と指�
 				{ "rot_y","0" },
 				{ "rot_z","0" },
 			};
+*/
 		}
 
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
 		{
-			//			string name = paramDic ["name"];
-			//			string tag = paramDic ["tag"];
-			paramDic ["className"] = "Live2d";
-			paramDic ["scale_x"] = paramDic ["scale"];
-			paramDic ["scale_y"] = paramDic ["scale"];
-			paramDic ["scale_z"] = paramDic ["scale"];
+			//			string name = expressionedParams ["name"];
+			//			string tag = expressionedParams ["tag"];
+			expressionedParams ["className"] = "Live2d";
+			expressionedParams ["scale_x"] = expressionedParams ["scale"];
+			expressionedParams ["scale_y"] = expressionedParams ["scale"];
+			expressionedParams ["scale_z"] = expressionedParams ["scale"];
 //		
-			string storage = paramDic["storage"];
-			paramDic["storage"] = storage;
+			string storage = expressionedParams["storage"];
+			expressionedParams["storage"] = storage;
 
-            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
-            g.Load(paramDic);
+            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(expressionedParams["name"], TRDataType.BG);
+            g.Load(expressionedParams);
             yield return null;
 
             //			this.gameManager.nextOrder();
@@ -110,7 +111,7 @@ y=中心からのy位置を指定します
 	public class Live2d_posComponent : Image_posComponent
     {
 		public Live2d_posComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -151,7 +152,7 @@ z=中心からのz位置を指定します
 	public class Live2d_showComponent : Image_showComponent
     { 
 		public Live2d_showComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -183,7 +184,7 @@ tag=識別するためのタグを指定します
 	public class Live2d_hideComponent : Image_hideComponent
     {
 		public Live2d_hideComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -217,7 +218,7 @@ name=削除するテキストオブジェクト名 all と入力することで�
 	public class Live2d_removeComponent : Image_removeComponent
     {
 		public Live2d_removeComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -250,13 +251,13 @@ storage=モーションファイル名を指定してください
 	public class Live2d_motionComponent : AbstractComponent {
 		public Live2d_motionComponent() {
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name",
 				"motion",
 				"face",
 //				"storage"
 			};
-		
+/*		
             originalParamDic = new ParamDictionary() {
 //				{ "name","" },
 				{ "motion", "-1"},
@@ -267,17 +268,18 @@ storage=モーションファイル名を指定してください
 //				{ "storage",""},
 //				{ "idol", ""}
 	        };
+*/
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic["name"];
-			string group = paramDic["group"];
-			string face = paramDic["face"];	
-			int motion = int.Parse(paramDic["motion"]);
-			int priority = int.Parse(paramDic["priority"]);
-//			string tag = this.paramDic["tag"];
-//			string storage = this.paramDic["storage"];
-//			string idle = this.paramDic["idel"];
+		protected override IEnumerator Start() {
+			string name = expressionedParams["name"];
+			string group = expressionedParams["group"];
+			string face = expressionedParams["face"];	
+			int motion = int.Parse(expressionedParams["motion"]);
+			int priority = int.Parse(expressionedParams["priority"]);
+//			string tag = this.expressionedParams["tag"];
+//			string storage = this.expressionedParams["storage"];
+//			string idle = this.expressionedParams["idel"];
 
 			List<string> images = new List<string>();
 

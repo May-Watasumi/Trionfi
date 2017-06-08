@@ -49,15 +49,14 @@ namespace NovelEx
 			// タグの名前
 			string array_script_str = "";
 
-			foreach (DocObject d in this.arrDoc) {
-
+			foreach (DocObject d in this.arrDoc)
+            {
 				array_script_str += "'"+d.dicTag["tag"]+"',";
 
 				//グループの作製
-				if (!dicNav.ContainsKey (d.dicTag ["group"])) {
-
+				if (!dicNav.ContainsKey (d.dicTag ["group"]))
+                {
 					dicNav [d.dicTag ["group"]] = new List<DocObject> ();
-
 				}
 
 				dicNav [d.dicTag ["group"]].Add (d);
@@ -75,7 +74,6 @@ namespace NovelEx
 								<p>
 									"+d.desc.Replace("\n","<br />")+@"
 								</p>            
-
 							";
 
 				string html_param = "";
@@ -86,18 +84,16 @@ namespace NovelEx
 					              ";
 
 				//パラメータを作っていく
-				foreach (KeyValuePair<string, string> pair in d.dicParam) {
-
+				foreach (KeyValuePair<string, string> pair in d.dicParam)
+                {
 					string def ="";
 					string vital = "×";
 
-					if (d.dicParamVital.ContainsKey (pair.Key)) {
+					if (d.dicParamVital.ContainsKey (pair.Key))
 						vital = "◯";
-					}
 
-					if (d.dicParamDefault.ContainsKey (pair.Key)) {
+					if (d.dicParamDefault.ContainsKey (pair.Key))
 						def = d.dicParamDefault [pair.Key];
-					}
 
 					//ここを繰り返して、パラメータを作る
 					html_param +=@"
@@ -108,23 +104,16 @@ namespace NovelEx
 					              <td>"+pair.Value+@"</td>
 								  </tr>              
 					            ";
-
 //html += pair.Key +"="+ pair.Value+":default= "+def+"|vital="+vital +"\n"; 
-
 				}
 
-				if (d.dicParam.Count == 0) {
-
+				if (d.dicParam.Count == 0)
 					html_param += "<tr><td colspan='4'>指定できるパラメータはありません</td></tr>";
-
-				}
-
 
 				html_param +=@"
 					              </tbody>
 					              </table>
 					              ";
-
 
 				string html_foot = "";
 
@@ -141,30 +130,26 @@ namespace NovelEx
 								";
 
 				html += html_main + html_param + html_foot + "";
-
 			}
-
 
 			html += "</div> <!--how_to_main -->";
 
-
 			string html_nav = "<div class='howtoNav'> \n"; 
 
-
-			foreach (KeyValuePair<string, List<DocObject>> pair in dicNav) {
-
+			foreach (KeyValuePair<string, List<DocObject>> pair in dicNav)
+            {
 				html_nav += "<p style='font-weight:bold'>■"+pair.Key+"</p>";
 				html_nav += "<ul>";
-				foreach (DocObject obj in dicNav[pair.Key]) {
+
+                foreach (DocObject obj in dicNav[pair.Key])
 					html_nav += "<div style='padding:2px'><a href='#"+obj.dicTag["tag"]+"'>["+obj.dicTag["tag"]+"]　<span style='font-style:italic;color:gray'>("+obj.dicTag["title"]+")</span></a></div>";
-				}
-				html_nav += "</ul>";
+
+                html_nav += "</ul>";
 
 			}
 
 			html_nav += "</div> <!-- howtoNav -->";
 			html += html_nav;
-
 
 			//quick_search
 			string search_script = "";
@@ -182,15 +167,10 @@ namespace NovelEx
 			StreamWriter writer = new StreamWriter("./doc.txt");
 			writer.WriteLine(html);
 			writer.Close();
-
 		}
 
-
-
-
-		public void addInfo(string line){
-
-
+		public void addInfo(string line)
+        {
 			line = line.Trim ();
 			//タグ情報の作製
 			switch (line) {
@@ -211,39 +191,39 @@ namespace NovelEx
 				this.status = "param";
 				break;
 			case "[_doc]":
-				this.flush ();
+				this.Flush ();
 				break;
 
 			default:
 
-				if (this.status == "tag") {
+				if (this.status == "tag")
+                {
 					if (line == "")
 						break;
-					string[] tmp = line.Split ('=');
+
+                    string[] tmp = line.Split ('=');
 					this.obj.dicTag [tmp [0]] = tmp [1];
-				} else if (this.status == "param") {
+				}
+                else if (this.status == "param")
+                {
 					if (line == "")
 						break;
 
 					string[] tmp = line.Split ('=');
 					this.obj.dicParam [tmp [0]] = tmp [1];
-				} else if (this.status == "desc") {
-					this.obj.desc += line + System.Environment.NewLine;
-				} else if (this.status == "sample") {
-					this.obj.sample += line + System.Environment.NewLine;
 				}
+                else if (this.status == "desc")
+					this.obj.desc += line + System.Environment.NewLine;
+				else if (this.status == "sample")
+					this.obj.sample += line + System.Environment.NewLine;
 
-
-
-				break;
-
-
+                break;
 			}
-
 		}
 
-		public void flush(){
-			System.Console.WriteLine ("FLSH!!!!!!!!!");
+		public void Flush()
+        {
+			System.Console.WriteLine ("FLUSH!!!!!!!!!");
 			
 			string tag = this.obj.dicTag ["tag"];
 
@@ -260,11 +240,13 @@ namespace NovelEx
 			AbstractComponent cmp;
 			cmp = (AbstractComponent)Activator.CreateInstance (masterType);
 
-			this.obj.dicParamDefault = cmp.originalParamDic;
+            this.obj.dicParamDefault = cmp.tagParam;
 
 			ParamDictionary tmpDic = new ParamDictionary();
-			List<string> l = cmp.arrayVitalParam;
-			for (var i = 0; i < l.Count; i++) {
+			List<string> l = cmp.essentialParams;
+
+            for (var i = 0; i < l.Count; i++)
+            {
 				string vital = l [i];
 				tmpDic [vital] = "yes";
 			}

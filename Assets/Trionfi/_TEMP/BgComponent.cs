@@ -53,7 +53,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 		public Bg_newComponent() : base() {
 
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"storage" 
 			};
 
@@ -61,13 +61,13 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 //			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
-			if (paramDic ["name"] == "")
-				paramDic["name"] = "background";
+			if (expressionedParams ["name"] == "")
+				expressionedParams["name"] = "background";
 
-//			paramDic ["layer"] ="background";
-			//paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
+//			expressionedParams ["layer"] ="background";
+			//expressionedParams["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
 			base.Start();
             yield return null;
@@ -80,7 +80,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
     {
 		public Bg_posComponent() : base() { }
 
-		public override IEnumerator Start() {
+		protected override IEnumerator Start() {
 			base.Start();
             yield return null;
 
@@ -123,10 +123,10 @@ type=表示のされ方を指定できます。
 	public class Bg_showComponent : Image_showComponent {
 		public Bg_showComponent() : base() { }
 
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
-			if (paramDic ["name"] == "")
-				paramDic["name"] = "background";
+			if (expressionedParams ["name"] == "")
+				expressionedParams["name"] = "background";
 
 			base.Start();
             yield return null;
@@ -164,10 +164,10 @@ type=非表示のされ方を指定できます。デフォルトはlinear で�
 	public class Bg_hideComponent : Image_hideComponent {
 		public Bg_hideComponent() : base() {  }
 
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
-			if (paramDic ["name"] == "")
-				paramDic["name"] = "background";
+			if (expressionedParams ["name"] == "")
+				expressionedParams["name"] = "background";
 
 			base.Start();
             yield return null;
@@ -181,7 +181,7 @@ type=非表示のされ方を指定できます。デフォルトはlinear で�
 //			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
-		public override IEnumerator Start() {
+		protected override IEnumerator Start() {
 			base.Start();
             yield return null;
 
@@ -221,14 +221,14 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 	public class Bg_modComponent : Image_modComponent {
 		public Bg_modComponent() : base() {
 			//必須項目
-			arrayVitalParam = new List<string> { };
+			essentialParams = new List<string> { };
 		}
 
-		public override IEnumerator Start() {
-			//paramDic["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
+		protected override IEnumerator Start() {
+			//expressionedParams["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
-			if(paramDic ["name"] == "")
-				paramDic["name"] = "background";
+			if(expressionedParams ["name"] == "")
+				expressionedParams["name"] = "background";
 
 			base.Start();
             yield return null;
@@ -266,9 +266,9 @@ name=削除する背景を指定します。
 	public class Bg_removeComponent : Image_removeComponent {
 		public Bg_removeComponent() : base() { 	}
 
-		public override IEnumerator Start() {
-			if (paramDic ["name"] == "")
-				paramDic["name"] = "background";
+		protected override IEnumerator Start() {
+			if (expressionedParams ["name"] == "")
+				expressionedParams["name"] = "background";
 			base.Start();
             yield return null;
 

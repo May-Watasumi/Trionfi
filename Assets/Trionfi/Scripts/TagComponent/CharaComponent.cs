@@ -46,18 +46,18 @@ jcolor=jnameの表示色を指定することができます。
 //			base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE;
 		}
 
-		public override IEnumerator Start() {
-			paramDic["className"] = "Chara";
+		protected override IEnumerator Start() {
+			expressionedParams["className"] = "Chara";
 
-			paramDic ["layer"] ="character";
-			//paramDic["imagePath"] = StorageManager.Instance.PATH_CHARA_IMAGE;
+			expressionedParams ["layer"] ="character";
+			//expressionedParams["imagePath"] = StorageManager.Instance.PATH_CHARA_IMAGE;
 
 			//jname jcolor  名前表示のときに色と名前を指定できます
-			if (paramDic.ContainsKey ("jname"))
-				ScriptDecoder.Instance.variable.Set("_chara_jname." + paramDic["name"], paramDic["jname"]);
+			if (expressionedParams.ContainsKey ("jname"))
+				ScriptDecoder.Instance.variable.Set("_chara_jname." + expressionedParams["name"], expressionedParams["jname"]);
 
-			if (paramDic.ContainsKey ("jcolor"))
-				ScriptDecoder.Instance.variable.Set("_chara_jcolor." + paramDic["name"], paramDic["jcolor"]);
+			if (expressionedParams.ContainsKey ("jcolor"))
+				ScriptDecoder.Instance.variable.Set("_chara_jcolor." + expressionedParams["name"], expressionedParams["jcolor"]);
 
 			base.Start();
             yield return null;
@@ -94,7 +94,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 	public class Chara_posComponent : Image_posComponent
     {
 		public Chara_posComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -140,7 +140,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 	public class Chara_showComponent:Image_showComponent
     {
 		public Chara_showComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -187,7 +187,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 	public class Chara_hideComponent : Image_hideComponent
     {
 		public Chara_hideComponent():base() {  }
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -238,7 +238,7 @@ storage=画像ファイル名を指定します。ファイルはcharacterフォ
 	public class Chara_faceComponent : Image_faceComponent
     {
 //		public Chara_faceComponent():base() { base.imagePath = StorageManager.Instance.PATH_CHARA_IMAGE; }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -293,7 +293,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 	public class Chara_modComponent:Image_modComponent
     {
 		public Chara_modComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -329,7 +329,7 @@ name=削除するキャラクターをchara_new の時に設定したnameを指�
 	public class Chara_removeComponent : Image_removeComponent
     {
 		public Chara_removeComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;

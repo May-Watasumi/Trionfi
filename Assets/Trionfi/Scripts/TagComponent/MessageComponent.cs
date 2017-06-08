@@ -10,18 +10,18 @@ namespace NovelEx
         public StoryComponent()
         {
             //必須項目
-            arrayVitalParam = new List<string> {
+            essentialParams = new List<string> {
                 "val"
             };
 
-            originalParamDic = new ParamDictionary() {
-                { "val","" }
-            };
+//            originalParamDic = new ParamDictionary() {
+//                { "val","" }
+//            };
         }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
-            string message = paramDic["val"];
+            string message = expressionedParams["val"];
             TRUIManager.Instance.currentMessageWindow.ShowMessage(message, TRSystemConfig.Instance.messageShowWait);
             yield return null;
         }
@@ -33,19 +33,19 @@ namespace NovelEx
         public NameComponent()
         {
             //必須項目
-            arrayVitalParam = new List<string> {
+            essentialParams = new List<string> {
                 "val"
             };
 
-            originalParamDic = new ParamDictionary() {
-                { "val","" },
-                { "face","" }
-            };
+//            originalParamDic = new ParamDictionary() {
+//                { "val","" },
+//                { "face","" }
+//            };
         }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
-            string name = paramDic["val"];
+            string name = expressionedParams["val"];
             TRUIManager.Instance.currentMessageWindow.ShowName(name);
             yield return null;
         }
@@ -60,7 +60,7 @@ namespace NovelEx
                 originalParamDic = new ParamDictionary() { };
             }
 
-            public override IEnumerator Start()
+            protected override IEnumerator Start()
             {
                 TRUIManager.Instance.currentMessageWindow.currentMessage.text += "\n";
                 yield return null;
@@ -70,9 +70,9 @@ namespace NovelEx
     //クリック待ち
     public class LComponent : AbstractComponent
     {
-        public LComponent() { originalParamDic = new ParamDictionary() { }; }
+ //       public LComponent() { }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
             yield return TRUIManager.Instance.currentMessageWindow.Wait();
         }
@@ -81,9 +81,9 @@ namespace NovelEx
     //クリックを待ち＋メッセージクリア
     public class PComponent : AbstractComponent
     {
-        public PComponent() { originalParamDic = new ParamDictionary() { }; }
+//        public PComponent() { }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
             yield return TRUIManager.Instance.currentMessageWindow.Wait();
             TRUIManager.Instance.currentMessageWindow.ClearMessage();
@@ -93,9 +93,9 @@ namespace NovelEx
 
     public class CmComponent : AbstractComponent
     {
-        public CmComponent() { originalParamDic = new ParamDictionary() { }; }
+//        public CmComponent() { originalParamDic = new ParamDictionary() { }; }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
             TRUIManager.Instance.currentMessageWindow.ClearMessage();
             yield return null;
@@ -107,17 +107,17 @@ namespace NovelEx
 	public class FontComponent : AbstractComponent {
 		public FontComponent() {
 			//必須項目
-			arrayVitalParam = new List<string> { };
+			essentialParams = new List<string> { };
 
-			originalParamDic = new ParamDictionary() {
-				{"size",""},
-				{"color",""},
-			};
+//			originalParamDic = new ParamDictionary() {
+//				{"size",""},
+//				{"color",""},
+//			};
 		}
 
-		public override IEnumerator Start() {
-            int size = paramDic.Int("size");
-            Color color = TRUtility.HexToRGB(paramDic.String("color"));
+		protected override IEnumerator Start() {
+            int size = expressionedParams.Int("size");
+            Color color = TRUtility.HexToRGB(expressionedParams.String("color"));
 
             TRUIManager.Instance.currentMessageWindow.currentMessage.fontSize = size;
             TRUIManager.Instance.currentMessageWindow.currentMessage.color = color;
@@ -129,7 +129,7 @@ namespace NovelEx
 	{
 		public FontresetComponent() { }
 
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
 		{
 //            TRUIManager.Instance.currentMessageWindow.Reset();
             TRUIManager.Instance.currentMessageWindow.currentMessage.fontSize = TRSystemConfig.Instance.fontSize;

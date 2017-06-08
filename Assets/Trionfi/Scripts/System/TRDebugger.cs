@@ -24,7 +24,7 @@ public class TRDebugger : EditorWindow
             AbstractComponent abs = TRScriptParser.Instance.makeTag(scriptText);
             if (abs != null)
             {
-                IEnumerator t = abs.Start();
+                IEnumerator t = abs.Exec();
                 while(t.MoveNext()) ;
             }
             else

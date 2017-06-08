@@ -12,7 +12,7 @@ namespace NovelEx
         public SoundComponent()
         {
             //必須項目
-            arrayVitalParam = new List<string> {
+            essentialParams = new List<string> {
                 "storage",
                 "type"
             };
@@ -27,21 +27,21 @@ namespace NovelEx
 */
         }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
-            string storage = paramDic["storage"];
-            string name = paramDic.String("name", null);
-            float playDelay = paramDic.Float("delay");
-            TRDataType _type = paramDic.Type();
+            string storage = expressionedParams["storage"];
+            string name = expressionedParams.String("name", null);
+            float playDelay = expressionedParams.Float("delay");
+            TRDataType _type = expressionedParams.Type();
 
             bool loop = false;
 
-            if(!paramDic.IsValid(ref loop, "loop"))
+            if(!expressionedParams.IsValid(ref loop, "loop"))
             {
                 loop = _type == TRDataType.BGM ? true : false;
             }
 
-            TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Create(paramDic["name"], _type).GetComponent<TRSoundObjectBehaviour>();
+            TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Create(expressionedParams["name"], _type).GetComponent<TRSoundObjectBehaviour>();
 
             if (audioObject != null)
             {
@@ -64,7 +64,7 @@ namespace NovelEx
         public SoundstopComponent()
         {
             //必須項目
-            arrayVitalParam = new List<string> {
+            essentialParams = new List<string> {
                 "name",
                 "type",
 //                "delay",
@@ -80,11 +80,11 @@ namespace NovelEx
             */
         }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
-            string name = paramDic.String("name", null);
-            float delay = paramDic.Float("delay");
-            TRDataType _type = paramDic.Type();
+            string name = expressionedParams.String("name", null);
+            float delay = expressionedParams.Float("delay");
+            TRDataType _type = expressionedParams.Type();
 
             TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Find(name, _type);
             if (audioObject != null)
@@ -101,7 +101,7 @@ namespace NovelEx
         public SounddeleteComponent()
         {
             //必須項目
-            arrayVitalParam = new List<string> {
+            essentialParams = new List<string> {
                 "name",
                 "type",
             };
@@ -116,10 +116,10 @@ namespace NovelEx
             */
         }
 
-        public override IEnumerator Start()
+        protected override IEnumerator Start()
         {
-            string name = paramDic.String("name", null);
-            TRDataType _type = paramDic.Type();
+            string name = expressionedParams.String("name", null);
+            TRDataType _type = expressionedParams.Type();
 
             TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Find(name, _type);
             if (audioObject != null)

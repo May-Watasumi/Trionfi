@@ -169,10 +169,10 @@ namespace NovelEx
 			dicScenario [scenario_name] = new Scenario(scenario_name,list);
 			int index = 0;
 
-			foreach(AbstractComponent cmp in list)
+			foreach(AbstractComponent _component in list)
             {
-				if (cmp.tagName == "label")
-					dicScenario[scenario_name].addLabel(cmp.originalParamDic["name"],index);
+				if (_component.tagName() == "label")
+					dicScenario[scenario_name].addLabel(_component.expressionedParams["name"], index);
 
 				index++;
 			}	
@@ -338,9 +338,9 @@ namespace NovelEx
 		{
 			if(currentComponentIndex < arrayComponents.Count)
 			{
-				AbstractComponent cmp = arrayComponents[currentComponentIndex];
+				AbstractComponent _tagComponent = arrayComponents[currentComponentIndex];
 
-				cmp.Before();
+                _tagComponent.Before();
 
 				//タグ
 //				if (StatusManager.Instance.currentState == JokerState.SkipOrder)
@@ -349,25 +349,25 @@ namespace NovelEx
 				}
 //				else
 				{
-					cmp.CalcVariable();
-					cmp.Validate();
+//                    _tagComponent.CalcVariable();
+//                    _tagComponent.Validate();
 
 					string p = "";
-					foreach (KeyValuePair<string, string> kvp in cmp.paramDic)
+					foreach (KeyValuePair<string, string> kvp in _tagComponent.expressionedParams)
 					{
 						p += kvp.Key + "=" + kvp.Value + " ";
 					}
 
 					if(TRSystemConfig.Instance.showTag)
 					{
-						Debug.Log("[" + cmp.tagName + " " + p + " ]");
+						Debug.Log("[" + _tagComponent.tagName() + " " + p + " ]");
 					}
 
-					yield return cmp.Start();
+					yield return _tagComponent.Exec();
 				}
 
-				//EX変更：Afterも必ず実行される
-				cmp.After();
+                //EX変更：Afterも必ず実行される
+                _tagComponent.After();
 
 				//ToDo:flag
 				currentComponentIndex++;
@@ -382,7 +382,7 @@ namespace NovelEx
 			if(CountStack() > 0)
 			{
                 ReturnComponent _ret = new ReturnComponent();
-                _ret.Start();
+                _ret.Exec();
 //                TRScriptParser.Instance.StartTag("[return]");
 			}
 			else

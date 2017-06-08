@@ -168,7 +168,7 @@ public class DocManager{
 		this.obj.dicParamDefault = cmp.originalParam;
 
 		ParamDictionary<string,string> tmpDic = new ParamDictionary<string,string> ();
-		List<string> l = cmp.arrayVitalParam;
+		List<string> l = cmp.essentialParams;
 		for (var i = 0; i < l.Count; i++) {
 			string vital = l [i];
 			tmpDic [vital] = "yes";

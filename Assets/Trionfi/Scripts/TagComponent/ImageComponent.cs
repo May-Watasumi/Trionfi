@@ -43,12 +43,12 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 
 		public Image_newComponent() {
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 //				"name",
 				"storage",
                 "type"
 			};
-
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "storage",""},
@@ -66,23 +66,24 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 				{ "strech", "false"},
 //				{ "path","false"}, //trueにすると、pathを補完しない
 			};
+*/
 		}
 
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             /*
-			if (paramDic ["scale"] != "")
+			if (expressionedParams ["scale"] != "")
             {
-				paramDic ["scale_x"] = paramDic ["scale"];
-				paramDic ["scale_y"] = paramDic ["scale"];
-				paramDic ["scale_z"] = paramDic ["scale"];
+				expressionedParams ["scale_x"] = expressionedParams ["scale"];
+				expressionedParams ["scale_y"] = expressionedParams ["scale"];
+				expressionedParams ["scale_z"] = expressionedParams ["scale"];
 		
 			}
 			else
-				paramDic ["scale"] = "1";
+				expressionedParams ["scale"] = "1";
            */
-			TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
-            g.Load(paramDic);
+			TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(expressionedParams["name"], TRDataType.BG);
+            g.Load(expressionedParams);
             yield return null;
         }
     }
@@ -118,10 +119,10 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 		public Image_posComponent() {
 
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name" 
 			};
-
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "x",""},
@@ -132,31 +133,32 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 				{ "scale_z",""},
 				{ "scale",""},
 			};
+*/
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic["name"];
-            TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(paramDic["name"]);
-            image.param = paramDic;
+		protected override IEnumerator Start() {
+			string name = expressionedParams["name"];
+            TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(expressionedParams["name"]);
+            image.param = expressionedParams;
             /*
-                        TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(paramDic["name"]);
+                        TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(expressionedParams["name"]);
 
-                        float x = (paramDic["x"]!="") ? float.Parse(paramDic["x"]) : float.Parse(image.GetParam("x"));
-                        float y = (paramDic ["y"] != "") ? float.Parse (paramDic ["y"]) : float.Parse(image.GetParam ("y"));
-                        float z = (paramDic["z"]!="") ? float.Parse(paramDic["z"]) : float.Parse(image.GetParam ("z"));
+                        float x = (expressionedParams["x"]!="") ? float.Parse(expressionedParams["x"]) : float.Parse(image.GetParam("x"));
+                        float y = (expressionedParams ["y"] != "") ? float.Parse (expressionedParams ["y"]) : float.Parse(image.GetParam ("y"));
+                        float z = (expressionedParams["z"]!="") ? float.Parse(expressionedParams["z"]) : float.Parse(image.GetParam ("z"));
 
                         image.SetPosition (x, y, z);
 
                         //scaleが指定されている場合はそっちを優先
-                        if (paramDic ["scale"] != "") {
-                            paramDic ["scale_x"] = paramDic ["scale"]; 
-                            paramDic ["scale_y"] = paramDic ["scale"];
-                            paramDic ["scale_z"] = paramDic ["scale"];
+                        if (expressionedParams ["scale"] != "") {
+                            expressionedParams ["scale_x"] = expressionedParams ["scale"]; 
+                            expressionedParams ["scale_y"] = expressionedParams ["scale"];
+                            expressionedParams ["scale_z"] = expressionedParams ["scale"];
                         }
 
-                        float scale_x = (paramDic["scale_x"]!="") ? float.Parse(paramDic["scale_x"]) : float.Parse(image.GetParam ("scale_x"));
-                        float scale_y = (paramDic["scale_y"]!="") ? float.Parse(paramDic["scale_y"]) : float.Parse(image.GetParam ("scale_y"));
-                        float scale_z = (paramDic["scale_z"]!="") ? float.Parse(paramDic["scale_z"]) : float.Parse(image.GetParam ("scale_z"));
+                        float scale_x = (expressionedParams["scale_x"]!="") ? float.Parse(expressionedParams["scale_x"]) : float.Parse(image.GetParam ("scale_x"));
+                        float scale_y = (expressionedParams["scale_y"]!="") ? float.Parse(expressionedParams["scale_y"]) : float.Parse(image.GetParam ("scale_y"));
+                        float scale_z = (expressionedParams["scale_z"]!="") ? float.Parse(expressionedParams["scale_z"]) : float.Parse(image.GetParam ("scale_z"));
 
                         image.SetScale(scale_x,scale_y,scale_z);
             */
@@ -207,8 +209,8 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 
 		public Image_showComponent() {
 			//必須項目
-			arrayVitalParam = new List<string> { };		//	"name" 
-
+			essentialParams = new List<string> { };		//	"name" 
+/*
 		    originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
@@ -219,13 +221,14 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 				{ "wait","true"},
 				{ "type","linear"}
 			};
+*/
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic ["name"];
-			string tag = paramDic ["tag"];
-			string type = paramDic["type"];
-			float time = float.Parse(paramDic["time"]);
+		protected override IEnumerator Start() {
+			string name = expressionedParams ["name"];
+			string tag = expressionedParams ["tag"];
+			string type = expressionedParams["type"];
+			float time = float.Parse(expressionedParams["time"]);
 			bool flag_delegate = true;
 
 			List<TRLayerObjectBehaviour> images;
@@ -242,7 +245,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 				time = 0.0f;
 
 			//アニメーション中にクリックして次に進めるかどうか。
-			if(time > 0.0f && paramDic["wait"] != "false")
+			if(time > 0.0f && expressionedParams["wait"] != "false")
             {
 //				nextOrder = false;
 				StatusManager.Instance.Wait();
@@ -269,7 +272,7 @@ type=表示のされ方を指定できます。デフォルトはlinear です�
 /*
         public override void OnAnimationFinished()
         {
-//			if(paramDic ["wait"] == "true") {
+//			if(expressionedParams ["wait"] == "true") {
 			if(isWait) {
 				StatusManager.Instance.NextOrder();
 //				StatusManager.Instance.enableNextOrder = true;
@@ -314,8 +317,8 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 
 		public Image_hideComponent() {
 			//必須項目
-			arrayVitalParam = new List<string> { }; //	"name",
-
+			essentialParams = new List<string> { }; //	"name",
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
@@ -323,13 +326,14 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 				{ "type","linear"},
 				{ "wait","true"},
 			};
+*/
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic["name"];
-			string type = paramDic["type"];
-			string tag = paramDic ["tag"];
-			float time = float.Parse(paramDic["time"]);
+		protected override IEnumerator Start() {
+			string name = expressionedParams["name"];
+			string type = expressionedParams["type"];
+			string tag = expressionedParams ["tag"];
+			float time = float.Parse(expressionedParams["time"]);
 
 			bool flag_delegate = true;
 
@@ -347,7 +351,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 				time = 0.0f;
 
 			//アニメーション中にクリックして次に進めるかどうか。
-			if (time > 0.0f && paramDic["wait"] != "false")
+			if (time > 0.0f && expressionedParams["wait"] != "false")
 			{
 //				nextOrder = false;
 				StatusManager.Instance.Wait();
@@ -423,23 +427,24 @@ storage=画像ファイル名を直接していできます。フォルダはdat
 //			this.imagePath = StorageManager.Instance.PATH_IMAGE;
 
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name",
 				"face",
 				"storage"
 			};
-
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "face",""},
 				{ "storage",""},
 			};
+*/
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic ["name"];
-			string face = paramDic ["face"];
-			string storage = paramDic["storage"];
+		protected override IEnumerator Start() {
+			string name = expressionedParams ["name"];
+			string face = expressionedParams ["face"];
+			string storage = expressionedParams["storage"];
 
             TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(name);
 
@@ -450,16 +455,6 @@ storage=画像ファイル名を直接していできます。フォルダはdat
             yield return null;
 
         }
-
-        public override void Validate()
-		{
-//			ToDo:
-			Debug.Log("ToDo:Validate");
-			//string storage = this.imagePath + paramDic ["storage"];
-			//ToDo
-			//this.gameManager.addMessage(MessageType.Error,this.line_num,Validate.checkStorage(storage));
-		}
-
 	}
 
 	/*	
@@ -497,10 +492,10 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 		public Image_modComponent() {
 
 			//必須項目
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name"
 			};
-
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "face",""},
@@ -509,26 +504,27 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 				{ "wait","true"},
 				{ "type","linear"}
 			};
+*/
 		}
 
-		public override IEnumerator Start() {
+		protected override IEnumerator Start() {
 			StatusManager.Instance.Wait();
 //			StatusManager.Instance.enableNextOrder = false;
 
-			string name = paramDic ["name"];
-			string face = paramDic ["face"];
-			string storage = paramDic ["storage"];
+			string name = expressionedParams ["name"];
+			string face = expressionedParams ["face"];
+			string storage = expressionedParams ["storage"];
 
-			float time = float.Parse (paramDic["time"]);
-			string type = paramDic ["type"];
+			float time = float.Parse (expressionedParams["time"]);
+			string type = expressionedParams ["type"];
 
             TRLayerObjectBehaviour image = TRLayerObjectManager.Instance.Find(name);
 
             //storage指定が優先される
             if (storage != "")
-                image.param = paramDic;
+                image.param = expressionedParams;
             else
-                image.Load(paramDic);
+                image.Load(expressionedParams);
 
 			if (StatusManager.Instance.onSkip || time <= 0.02f)
 			{
@@ -539,7 +535,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 //			nextOrder = false;
 
 			//処理を待たないなら
-			if (paramDic ["wait"] == "false") {
+			if (expressionedParams ["wait"] == "false") {
 				StatusManager.Instance.NextOrder();
 //				StatusManager.Instance.enableNextOrder = true;
 //				this.gameManager.nextOrder();
@@ -554,7 +550,7 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
         {
 			//アニメーション完了後にここにくる
 
-			if (paramDic ["wait"] == "true") {
+			if (expressionedParams ["wait"] == "true") {
 				StatusManager.Instance.NextOrder();
 //				StatusManager.Instance.enableNextOrder = true;
 //				StatusManager.Instance.clickNextOrder();
@@ -594,17 +590,18 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 	public class Image_removeComponent : AbstractComponent {
 		public Image_removeComponent() {
 			//必須項目
-			arrayVitalParam = new List<string> { };	//"name"
-
+			essentialParams = new List<string> { };	//"name"
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 			};
+*/
 		}
 
-		public override IEnumerator Start() {
-			string tag = paramDic ["tag"];
-			string name = paramDic ["name"];
+		protected override IEnumerator Start() {
+			string tag = expressionedParams ["tag"];
+			string name = expressionedParams ["name"];
 
             List<TRLayerObjectBehaviour> images;
             if (tag != "")
@@ -662,7 +659,7 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 	public class ShowComponent : Image_showComponent
     {
 		public ShowComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -703,7 +700,7 @@ type=非表示のされ方をしていできます。デフォルトはlinear �
 
 	public class HideComponent : Image_hideComponent {
 		public HideComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -736,7 +733,7 @@ tag=削除するimageをimage_new の時に設定したtagを指定します。�
 
 	public class RemoveComponent : Image_removeComponent {
 		public RemoveComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;

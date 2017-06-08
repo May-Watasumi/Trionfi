@@ -57,38 +57,39 @@ rot_z=3DモデルのZ軸角度を指定します。0〜360の間で指定しま�
 
 			//必須項目
 
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name",
 				"storage"
 			};
+            /*
+                        originalParamDic = new ParamDictionary() {
+                            { "name",""},
+                            { "storage",""},
+                            { "tag",""},
+                            { "layer","Default"},
+                            { "sort","0"},
+                            //{ "a","0.3"},
+                            { "x","0"},
+                            { "y","0"},
+                            { "z","6.66"},
+                            { "scale","5"},
+                            { "scale_x","1"},
+                            { "scale_y","1"},
+                            { "scale_z","1"},
+                            { "rot_x","0"},
+                            { "rot_y","180"},
+                            { "rot_z","0"},
+                        };
+            */
+        }
 
-			originalParamDic = new ParamDictionary() {
-				{ "name",""},
-				{ "storage",""},
-				{ "tag",""},
-				{ "layer","Default"},
-				{ "sort","0"},
-				//{ "a","0.3"},
-				{ "x","0"},
-				{ "y","0"},
-				{ "z","6.66"},
-				{ "scale","5"},
-				{ "scale_x","1"},
-				{ "scale_y","1"},
-				{ "scale_z","1"},
-				{ "rot_x","0"},
-				{ "rot_y","180"},
-				{ "rot_z","0"},
-			};
-		}
-
-		public override IEnumerator Start() {
-			//string name = paramDic ["name"];
+		protected override IEnumerator Start() {
+			//string name = expressionedParams ["name"];
 			//string tag = paramDic ["tag"];
-			paramDic["className"] ="Sd";
+		//c["className"] ="Sd";
 
-            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(paramDic["name"], TRDataType.BG);
-            g.Load(paramDic);
+            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(tagParam["name"], TRDataType.BG);
+            g.Load(tagParam);
             //			this.gameManager.nextOrder();
             yield return null;
         }
@@ -129,7 +130,7 @@ z=中心からのz位置を指定します
 	public class Sd_showComponent:Image_showComponent
     {
 		public Sd_showComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -173,7 +174,7 @@ tag=識別するためのタグを指定します
 	public class Sd_removeComponent : Image_removeComponent
     {
 		public Sd_removeComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -221,7 +222,7 @@ tag=識別するためのタグを指定します
 	public class Sd_hideComponent:Image_hideComponent
     {
 		public Sd_hideComponent() : base() { }
-		public override IEnumerator Start()
+		protected override IEnumerator Start()
         {
             base.Start();
             yield return null;
@@ -269,21 +270,22 @@ condition=stateで指定するステートをtrue or falseで指定すること�
 	public class Sd_animComponent : AbstractComponent {
 		public Sd_animComponent() {
 
-			arrayVitalParam = new List<string> {
+			essentialParams = new List<string> {
 				"name","state"
 			};
-
+/*
 			originalParamDic = new ParamDictionary() {
 				{ "name",""},
 				{ "tag",""},
 				{ "stete",""},
 				{ "condition","true"},
 			};
+*/
 		}
 
-		public override IEnumerator Start() {
-			string name = paramDic ["name"];
-			string tag = paramDic ["tag"];
+		protected override IEnumerator Start() {
+			string name = tagParam["name"];
+			string tag = tagParam["tag"];
 			List<TRLayerObjectBehaviour> images;
 
             if (tag != "")

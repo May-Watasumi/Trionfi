@@ -11,15 +11,20 @@ using System.Globalization;
 
 namespace NovelEx
 {
-    public class TagParam: ParamDictionary
+    public class TagParam : ParamDictionary
     {
-        private string tagName = "";
-        private string statement = "";
-
+        public string tagName = "";
+        public  string statement = "";
+        //ForDebug
+        public int lineCount;
+        public string sourceFile = "";
+        
         //タグのValidはここの前で保証しよう
-        public TagParam(string str)
+        public TagParam(string str, int line, string source = null)
         {
             statement = str;
+            lineCount = line;
+            sourceFile = source;
 
             str = str.Replace("[", "").Replace("]", "");
 
@@ -143,6 +148,27 @@ namespace NovelEx
             }
         }
 
+        //実行前にパラメータを解析して変数を格納する
+        public ParamDictionary Expression()
+        {
+            ParamDictionary tempParam = new ParamDictionary();
+
+            //タグに入れる
+            foreach (KeyValuePair<string, string> pair in this)
+            {
+                tempParam[pair.Key] = ExpObject.replaceVariable(pair.Value);
+            }
+
+            //タグにデフォルト値を設定中かつ、tag が指定されていない場合
+            if (StatusManager.Instance.TagDefaultVal != "")
+            {
+                if (tempParam.ContainsKey("tag") && tempParam["tag"] == "")
+                    tempParam["tag"] = StatusManager.Instance.TagDefaultVal;
+            }
+
+            return tempParam;
+        }
+
         public void DebugOutputParams()
         {
             foreach(string t in this.Keys)
@@ -150,35 +176,5 @@ namespace NovelEx
                 ErrorLogger.Log(t +"="+ this[t]);
             }
         }
-
-        public string Statement
-        {
-            get { return statement; }
-        }
-
-        public string Name
-        {
-            get { return tagName; }
-        }
-
-        /*
-                public string getParam(string key)
-                {
-                    return this.dicParam.ContainsKey(key) ? this.dicParam[key] : null;
-                }
-
-        public ParamDictionary getParamByDictionary()
-        {
-            ParamDictionary dic = new ParamDictionary();
-
-            foreach (KeyValuePair<string, string> pair in this.dicParam)
-            {
-                dic[pair.Key] = pair.Value;
-            }
-
-            return dic;
-
-        }
-        */
     }
 }
