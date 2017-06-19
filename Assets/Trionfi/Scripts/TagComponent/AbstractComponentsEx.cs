@@ -37,12 +37,16 @@ namespace NovelEx
 
         public AbstractComponent(TagParam param)//, int line_num)
         {
+            Init(param);
+        }
+
+        public void Init(TagParam param)//, int line_num)
+        {
             ErrorLogger.Log("Tag:" + GetType().Name);
             this.tagParam = param;
             //DEBUG
             Validate();
         }
-
         public string tagName()
         {
             string _tag = this.GetType().Name.Replace("Component", "");

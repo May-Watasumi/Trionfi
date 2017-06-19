@@ -24,8 +24,11 @@ public class TRDebugger : EditorWindow
             AbstractComponent abs = TRScriptParser.Instance.makeTag(scriptText);
             if (abs != null)
             {
-                IEnumerator t = abs.Exec();
-                while(t.MoveNext()) ;
+                IEnumerator t = abs.Start();
+                while(t.MoveNext())
+                {
+                    Debug.Log("Current: " + t.Current);
+                }
             }
             else
                 Debug.Log("Invalid Tag!");

@@ -17,6 +17,7 @@ namespace NovelEx
         public bool onRegistMacro = false;
 
         private System.Globalization.TextInfo tf = new System.Globalization.CultureInfo ("ja-JP"/*"en-US"*/, false).TextInfo;
+        private const string nameSpace = "NovelEx";
 
         [SerializeField]
         public bool ignoreCR = true;
@@ -292,37 +293,39 @@ namespace NovelEx
 		public AbstractComponent makeTag(string statement, int lineNum) {
             TagParam tag = new TagParam(statement, lineNum);
 
-			//tagの種類によって、実装する命令が変わってくる
-			AbstractComponent cmp = null;
+			string className = nameSpace + "." + tf.ToTitleCase(tag.tagName) + "Component";
 
-			string className = "NovelEx." + tf.ToTitleCase(tag.tagName + "Component");
+            // リフレクションで動的型付け
+            Type masterType = Type.GetType(className);
+            AbstractComponent cmp = (AbstractComponent)Activator.CreateInstance(masterType);
+#if false
+            // 実行中のアセンブリを取得
+            Assembly assembly = Assembly.GetExecutingAssembly();
 
-			//リフレクションで動的型付け
-			Type masterType = Type.GetType(className);
+            // インスタンスを生成
+\            AbstractComponent cmp = (AbstractComponent)assembly.CreateInstance(
+　　              className,    // 名前空間を含めたクラス名
+                  false,        // 大文字小文字を無視するかどうか
+                  BindingFlags.CreateInstance,      // インスタンスを生成
+                  null,         // 通常はnullでOK
+                  new object[] { tag },    // コンストラクタの引数
+                  null,         // カルチャ設定（通常はnullでOK）
+                  null          // ローカル実行の場合はnullでOK
+                );
+#endif
 
-			try
-            {
-                cmp = (AbstractComponent)Activator.CreateInstance(masterType);
-			}
-			catch(Exception e)
+            if (cmp != null)
+                cmp.Init(tag);
+            else
             {
 #if UNITY_EDITOR
-                Debug.Log(e.ToString());
-                Debug.LogError("Invalid Tag:\"" + tag.tagName+ "\"");
+                Debug.LogError("Invalid Tag:\"" + tag.tagName + "\"");
 #else
-				//マクロとして登録
-                ErrorLogger.Log("MacroStart:"+tag.Name);
-				cmp = new _MacrostartComponent();
+        	//マクロとして登録
+            ErrorLogger.Log("MacroStart:"+tag.Name);
+		    cmp = new _MacrostartComponent();
 #endif
             }
-
-            if(cmp != null)
-            {
-				cmp.Init(tag, lineNum);
-				//エラーメッセージの蓄積
-				cmp.CheckParam();
-				cmp.MergeDefaultParam();
-			}
 
             return cmp;
 		}
