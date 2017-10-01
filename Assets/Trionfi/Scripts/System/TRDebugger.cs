@@ -8,6 +8,7 @@ using NovelEx;
 
 public class TRDebugger : EditorWindow
 {
+#if false
     [MenuItem("Trionfi/Debug/ScriptTest")]
     private static void Open()
     {
@@ -41,4 +42,5 @@ public class TRDebugger : EditorWindow
 */
         }
     }
+#endif
 }
