@@ -8,7 +8,26 @@ namespace NovelEx
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
 	{
-        public Camera targetCamera;
+        enum AudioChannel
+        {
+            BGM = 1,
+            VOICE = 2,
+            SE = 3,
+        }
+
+        [Serializable]
+        public class ReferencedObject
+        {
+            public Camera targetCamera;
+            public Canvas targetCanvas;
+
+            public AudioClip[] audioBGM = new AudioClip[2];
+            public AudioClip[] audioSE = new AudioClip[2];
+            public AudioClip[] audioVoice = new AudioClip[2];          
+        }
+
+        [SerializeField]
+        ReferencedObject referencedObjects = new ReferencedObject();
 
         ScriptDecoder scriptDecoder;
         Serializer serializer;
