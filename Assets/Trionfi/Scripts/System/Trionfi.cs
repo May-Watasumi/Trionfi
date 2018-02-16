@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -21,9 +22,12 @@ namespace NovelEx
             public Camera targetCamera;
             public Canvas targetCanvas;
 
+            public Text textWindow;
+
             public AudioClip[] audioBGM = new AudioClip[2];
             public AudioClip[] audioSE = new AudioClip[2];
-            public AudioClip[] audioVoice = new AudioClip[2];          
+            public AudioClip[] audioVoice = new AudioClip[2];
+            public Image[] staticLayer = new Image[5];
         }
 
         [SerializeField]
