@@ -11,9 +11,24 @@ namespace NovelEx
 	{
         enum AudioChannel
         {
-            BGM = 1,
-            VOICE = 2,
-            SE = 3,
+            BGM = 0,
+            VOICE = 1,
+            SE = 2,
+        }
+
+        enum LayerOrder
+        {
+            UI = -100,
+            EVENT = -1,
+            STAND = 0,
+            BG = 1,
+        }
+
+        enum StandOrder
+        {
+             CENTER = 0,
+             LEFT = 1,
+             RIGHT = 2
         }
 
         [Serializable]
@@ -22,12 +37,13 @@ namespace NovelEx
             public Camera targetCamera;
             public Canvas targetCanvas;
 
-            public Text textWindow;
-
             public AudioClip[] audioBGM = new AudioClip[2];
             public AudioClip[] audioSE = new AudioClip[2];
             public AudioClip[] audioVoice = new AudioClip[2];
-            public Image[] staticLayer = new Image[5];
+            public Image[] standLayer = new Image[5];
+            public Image eventLayer;
+            public Image bgLayer;
+            public Canvas uiCanvas;
         }
 
         [SerializeField]
@@ -41,16 +57,23 @@ namespace NovelEx
 		public IEnumerator StartTag(string tag)
         {
 			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag);
-			yield return StartCoroutine(cmp.Exec());
+            cmp.Execute();
+            yield return null;
+//			yield return StartCoroutine(cmp.Exec());
 		}
 
-        public void Init()
+        public void Init(bool changeLayerOrder = false)
         {
             scriptDecoder = new ScriptDecoder();
             serializer = new Serializer();
-            //            TRUIManager.Instance.Init();
-            //TRUIManager.Instance.currentMessageWindow.
+
             TRUIManager.Instance.currentSelectWindow.Init(10);
+
+            if (changeLayerOrder)
+            {
+                referencedObjects.bgLayer.gameObject.transform.SetAsFirstSibling();
+                referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                
+            }
         }
 
         public void Start()

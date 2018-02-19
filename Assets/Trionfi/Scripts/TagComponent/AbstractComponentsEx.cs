@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,14 +8,13 @@ namespace NovelEx
     public abstract class AbstractComponent
     {
         //デフォルトで定義しておくパラメータ初期値。継承先で定義する
-        //public TagParam tagParam = new TagParam();
-        //public ParamDictionary originalParamDic = new ParamDictionary();
         public TagParam tagParam;
         public ParamDictionary expressionedParams = new ParamDictionary();
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
         public List<string> essentialParams = new List<string>();
 
+        [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void Validate(bool stopOnError = false)
         {
             //タグから必須項目が漏れていないか、デフォルト値が入ってない場合はエラーとして警告を返す
@@ -29,12 +29,21 @@ namespace NovelEx
             }
         }
 #endif
+
+        //同期フラグ。タグの引数側で設定される。
+        public bool syncWait
+        {
+            get { return tagParam != null ? tagParam.syncWait : false; }
+        }
+        
+
+//コンストラクタ
         //引数なしの場合
         public AbstractComponent()
         {
             ErrorLogger.Log("Tag:" + GetType().Name);
         }
-
+        //引数あり
         public AbstractComponent(TagParam param)//, int line_num)
         {
             Init(param);
@@ -44,21 +53,32 @@ namespace NovelEx
         {
             ErrorLogger.Log("Tag:" + GetType().Name);
             this.tagParam = param;
-            //DEBUG
+
             Validate();
         }
+
+        //タグ名を取得（デバッグ用？）
         public string tagName()
         {
             string _tag = this.GetType().Name.Replace("Component", "");
             return _tag;
         }
 
-        abstract protected IEnumerator Start();
 
-        public IEnumerator Exec()
+        //タグ実行本体
+        abstract protected void TagFunction();
+
+        //非同期の時に待つための関数（各種フェードインアウト等）
+        public virtual IEnumerator TagAsyncWait()
+        {
+            yield return null;
+        }
+
+        //タグの実行
+        public void Execute()
         {
             expressionedParams = tagParam.Expression();
-            yield return Start(); 
+            TagFunction();
         }
 
         //Start()前にかならず実行されます。skip中でも実行されるのでチェックしたい項目があれば、継承先で実装してください
@@ -66,7 +86,6 @@ namespace NovelEx
 
         //Start()後ににかならず実行されます。skip中でも実行されるのでチェックしたい項目があれば、継承先で実装してください
         public virtual void After() { }
-
 
 #if false
         //パラメータとの差分を確認して、ファイルを作成

@@ -66,7 +66,7 @@ namespace NovelEx
 			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			string name = expressionedParams ["name"];
 			string tag = expressionedParams ["tag"];
 
@@ -130,7 +130,7 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			string name = expressionedParams ["name"];
 			string tag = expressionedParams ["tag"];
 
@@ -180,7 +180,7 @@ title=イベントの一時無効化
 			originalParamDic = new ParamDictionary() { };
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			//例外として許可する
 			ScriptDecoder.Instance.variable.remove("_evt_name_permission");
 
@@ -228,7 +228,7 @@ tag=指定タグに対してまとめてイベントを無効にすることが�
 			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			//例外として許可するイベントを登録
 			string name = expressionedParams ["name"];
 			string tag = expressionedParams ["tag"];

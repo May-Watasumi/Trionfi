@@ -363,18 +363,17 @@ namespace NovelEx
 						Debug.Log("[" + _tagComponent.tagName() + " " + p + " ]");
 					}
 
-					yield return _tagComponent.Exec();
+					_tagComponent.Execute();
 				}
 
                 //EX変更：Afterも必ず実行される
                 _tagComponent.After();
 
-				//ToDo:flag
-				currentComponentIndex++;
-//				Debug.Log("flag="+cmp.allowNextOrder());
-//				cmp.allowNextOrder();
+                //ToDo:Async();
 
-                yield return null;
+                //ToDo:flag
+                currentComponentIndex++;
+
 			}
 
 			//シナリオファイルの最後まで来た時。スタックが存在するならreturn する
@@ -382,7 +381,7 @@ namespace NovelEx
 			if(CountStack() > 0)
 			{
                 ReturnComponent _ret = new ReturnComponent();
-                _ret.Exec();
+                _ret.Execute();
 //                TRScriptParser.Instance.StartTag("[return]");
 			}
 			else

@@ -27,7 +27,7 @@ namespace NovelEx
 */
         }
 
-        protected override IEnumerator Start()
+        protected override void TagFunction()
         {
             string storage = expressionedParams["storage"];
             string name = expressionedParams.String("name", null);
@@ -47,14 +47,12 @@ namespace NovelEx
             {
                 audioObject.Load(storage, _type, name);
                 //ToDo:同期待ちするときある？
-                yield return audioObject.Play(playDelay);
+                //yield return audioObject.Play(playDelay);
             }
             else
             {
                 ErrorLogger.Log("Failed:SoundComponent");
             }
-
-            yield return null;
         }
     }
 
@@ -80,18 +78,18 @@ namespace NovelEx
             */
         }
 
-        protected override IEnumerator Start()
+        protected override void TagFunction()
         {
             string name = expressionedParams.String("name", null);
             float delay = expressionedParams.Float("delay");
             TRDataType _type = expressionedParams.Type();
 
             TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Find(name, _type);
-            if (audioObject != null)
-                yield return audioObject.Stop(delay);
-            else
-                ErrorLogger.Log("Failed:SoundstopComponent");
-            yield return null;
+
+//            if (audioObject != null)
+//                yield return audioObject.Stop(delay);
+//            else
+//                ErrorLogger.Log("Failed:SoundstopComponent");
         }
     }
 
@@ -116,7 +114,7 @@ namespace NovelEx
             */
         }
 
-        protected override IEnumerator Start()
+        protected override void TagFunction()
         {
             string name = expressionedParams.String("name", null);
             TRDataType _type = expressionedParams.Type();
@@ -124,14 +122,12 @@ namespace NovelEx
             TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Find(name, _type);
             if (audioObject != null)
             {
-                yield return audioObject.Stop();
+//                yield return audioObject.Stop();
                 GameObject.Destroy(audioObject.gameObject);
                 TRSoundObjectManager.Instance.dicObject.Remove(name);
             }
             else
                 ErrorLogger.Log("Failed:SounddeleteComponent");
-
-            yield return null;
         }
     }
 }

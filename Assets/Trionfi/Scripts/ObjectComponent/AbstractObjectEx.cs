@@ -26,28 +26,9 @@ namespace NovelEx
                 SetPosition(paramDic.Float("x"), paramDic.Float("y"), paramDic.Float("z"));
                 SetScale(paramDic.Float("scale_x"), paramDic.Float("scale_y"), paramDic.Float("scale_z"));
                 SetRotate(paramDic.Float("rot_x"), paramDic.Float("rot_y"), paramDic.Float("rot_z"));
-                /*
-                                if (param["isShow"] == "true")
-                                    Show(0, "linear");
-
-                                                paramDic["tag"] = param["tag"];
-                                                paramDic["storage"] = param["storage"];
-                                                paramDic["isShow"] = "false";
-                                                //paramDic["imagePath"] = "";
-                                                paramDic["className"] = "";
-                                                paramDic["event"] = "false";
-                                */
-                //            paramDic = param;
             }
         }
-/*
-        public virtual void UpdateParam(Dictionary<string, string> param)
-        {
-            gameObject.name = param["name"];
-            gameObject.tag = param["tag"];
-//            paramDic = param;
-        }
-*/
+
         public virtual void SetPosition(float x,float y,float z)
         {
 			gameObject.transform.position = new Vector3(x,y,z);

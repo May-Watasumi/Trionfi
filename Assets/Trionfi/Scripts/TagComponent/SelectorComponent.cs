@@ -18,10 +18,9 @@ namespace NovelEx
 //			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
             TRUIManager.Instance.currentSelectWindow.Add(expressionedParams["text"]);
             //ToDo:storage等飛び先を保存
-            yield return null;
         }
     }
 
@@ -29,9 +28,13 @@ namespace NovelEx
 	{
 		public SelectComponent() { }
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
 		{
             TRUIManager.Instance.currentSelectWindow.Begin();
+        }
+
+        public override IEnumerator TagAsyncWait()
+        {
             yield return new WaitWhile(() => TRUIManager.Instance.currentSelectWindow.state == SelectWindow.SelectState.Wait);
         }
     }

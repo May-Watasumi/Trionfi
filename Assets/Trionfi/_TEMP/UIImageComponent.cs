@@ -29,7 +29,7 @@ namespace NovelEx {
 			};
 */
 		}
-		protected override IEnumerator Start()
+		protected override void TagFunction()
 		{
 			expressionedParams["className"] = "UIImage";
 			expressionedParams["scale_x"] = expressionedParams["scale"];
@@ -37,7 +37,6 @@ namespace NovelEx {
 			expressionedParams["scale_z"] = expressionedParams["scale"];
             TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(expressionedParams["name"], TRDataType.BG);
             g.Load(expressionedParams);
-            yield return null;
         }
     }
 }

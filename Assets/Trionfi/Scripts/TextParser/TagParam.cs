@@ -18,6 +18,7 @@ namespace NovelEx
         //ForDebug
         public int lineCount;
         public string sourceFile = "";
+        public bool syncWait = false;
         
         //タグのValidはここの前で保証しよう
         public TagParam(string str, int line, string source = null)

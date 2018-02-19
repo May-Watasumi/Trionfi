@@ -13,19 +13,11 @@ namespace NovelEx {
         public DatasaveComponent()
         {
             essentialParams = new List<string> { "file" };
-/*
-            originalParamDic = new ParamDictionary()
-            {
-                { "file","SaveData.dat" },
-            };
-*/
         }
 
-        protected override IEnumerator Start()
+        protected override void TagFunction()
         {
             Serializer.Serialize(expressionedParams["file"], true);
-            //			this.gameManager.nextOrder();
-            yield return null;
         }
     }
 
@@ -37,17 +29,11 @@ namespace NovelEx {
 				"name"
 			};
 
-//			originalParamDic = new ParamDictionary() {
-//				{ "name","" }
-//			};
-
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
         {
-            //ToDo:
-            //			this.gameManager.nextOrder();
-            yield return null;
+            //ToDo
 		}
 	}
     
@@ -66,21 +52,14 @@ namespace NovelEx {
 			essentialParams = new List<string> {
 				"name"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{ "name","" },
-//			};
-
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction()
+        {
 			string name = expressionedParams ["name"];
 //ToDo:
 			ScriptDecoder.Instance.AddMacro(name, StatusManager.Instance.currentScenario, ScriptDecoder.Instance.currentComponentIndex);
-            yield return null;
-
         }
-
     }
 
 	//マクロを実行するためのタグ
@@ -91,30 +70,29 @@ namespace NovelEx {
 			essentialParams = new List<string> {
 				"name"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//			};
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
         {
 			expressionedParams["name"] = tagName();
 
 			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro(expressionedParams["name"]);
 
-			if(macro == null) {
-				ErrorLogger.stopError("マクロ「"+expressionedParams["name"]+"」は存在しません。");
-                //ToDo:
-                yield break;
-			}
+            if (macro != null)
+            {
 
-			expressionedParams["index"] = ""+macro.index ;
-			expressionedParams["file"]  = macro.file_name;
+                expressionedParams["index"] = "" + macro.index;
+                expressionedParams["file"] = macro.file_name;
 
-			ScriptDecoder.Instance.macroNum++;
-			//this.gameManager.scenarioManager.addMacroStack (macro.name, this.expressionedParams);
-			AbstractComponent cmp = TRScriptParser.Instance.makeTag ("call", expressionedParams);
-			yield return cmp.Exec();
+                ScriptDecoder.Instance.macroNum++;
+                //this.gameManager.scenarioManager.addMacroStack (macro.name, this.expressionedParams);
+                AbstractComponent cmp = TRScriptParser.Instance.makeTag("call", expressionedParams);
+                cmp.Execute();
+            }
+            else
+            {
+                ErrorLogger.stopError("マクロ「" + expressionedParams["name"] + "」は存在しません。");
+            }
         }
     }
 
@@ -123,19 +101,18 @@ namespace NovelEx {
 	{
 		public EndmacroComponent() { }
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
+            //ToDo:あんまりきれいじゃない
 			if(ScriptDecoder.Instance.macroNum > 0) {
 				ScriptDecoder.Instance.macroNum--;
-				//ココに来た場合はreturn を実行する 
-				AbstractComponent cmp = TRScriptParser.Instance.makeTag("[return]");
-				yield return cmp.Exec();
+
+                AbstractComponent cmp = TRScriptParser.Instance.makeTag("[return]");
+				cmp.Execute();
 			}
 			else
             {
 //ToDo:
-//				this.gameManager.nextOrder();
 			}
-            yield return null;
         }
     }
 
@@ -205,7 +182,7 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 */
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
 		{
 			string target = this.expressionedParams["target"].Replace ("*", "").Trim();
 			string file = this.expressionedParams["file"];
@@ -232,12 +209,8 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 			if(index == -1)
 				index = 0;
 
-			//mp変数の中身を書き換える jumpのpmの内容で
-			//NovelSingleton.GameManager.StatusManager.Instance.variable.replaceAll("mp",this.expressionedParams);;
 
-			//ゲームマネージャーの現在の位置をそこに書き換えてnextOrderでどうだ。
 //ToDo:
-//			ScriptDecoder.Instance.currentComponentIndex = index;
 			ScriptDecoder.Instance.StartScenario(file, index);
 
 			//シーンをクリアして作りなおす
@@ -261,17 +234,11 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
             //			else {
             //				this.gameManager.nextOrder();
             //			}
-            yield return null;
 
+            //メインループ側で配列Indexが++されるので
+            ScriptDecoder.Instance.currentComponentIndex--;
         }
-        public override void After() {
-			//SkipOrder中もafterが実行される（のが仕様としては正しいんだけども）
-//			if(StatusManager.Instance.currentState != JokerState.SkipOrder)
-				ScriptDecoder.Instance.currentComponentIndex--;
-		}
-
 	}
-
 
 	/*	
 --------------
@@ -322,7 +289,7 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 */
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
 		{
 			string target = this.expressionedParams ["target"].Replace("*", "").Trim();
 			string file = this.expressionedParams ["file"];
@@ -340,27 +307,17 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 			
 			//タグを実行
 			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
-			yield return cmp.Exec();
+			cmp.Execute();
 
-//nextOrder分
+            //メインループ側で配列Indexが++されるので
 			ScriptDecoder.Instance.currentComponentIndex--;
-
-            //			nextOrder = false;
-            //			StatusManager.Instance.currentState = JokerState.NextOrder;
-
-            //ゲームマネージャーの現在の位置をそこに書き換えてnextOrderでどうだ。
 
             //macro もひとつのcomponent_array みたいにしていいんじゃないかしら。ラベルじゃないけど
             //StackManager に　呼び出し状態を保持させる macro の中で別ファイルへのjumpは禁止したいね。
             //現在の位置をスタックとして保持させる
-            //this.gameManager.nextOrder();
-            yield return null;
         }
-        public override void After(){
-//			ScriptDecoder.Instance.currentComponentIndex--;
-//			 base.after();
-		}
 	}
+
 
 	/*	
 --------------
@@ -409,7 +366,7 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 */
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			ScriptDecoder.CallStack stack = ScriptDecoder.Instance.PopStack();
 
 			string tag_str = "";
@@ -424,15 +381,8 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 
 			//タグを実行
 			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
-			yield return cmp.Exec();
-            //			nextOrder = false;
-            //			StatusManager.Instance.currentState = JokerState.NextOrder;
-            //this.gameManager.nextOrder();
+			cmp.Execute();
         }
-        public override void After(){
-//			ScriptDecoder.Instance.currentComponentIndex--;
-//			 base.after();
-		}
 	}
 
 /*	
@@ -459,36 +409,31 @@ file=呼び出したいシーン名
 [_doc]
 --------------------
  */
-
-	//Call は Jumpと同様に　ストレージを移動する。ただし、呼び出しは スタックトレースに保存され、return で元の位置に戻ります
 	public class SceneComponent : AbstractComponent {
 		public SceneComponent() {
 			//必須項目
 			essentialParams = new List<string> {
-				//"target"
+				"file"
 			};
-/*
-			originalParamDic = new ParamDictionary() {
-				{ "file","" },
-				//{ "index",""},
-			};
-*/
 		}
 
-		protected override IEnumerator Start()
+        AsyncOperation syncState;
+
+        protected override void TagFunction()
         {
 			string file = expressionedParams ["file"];
 
-            SceneManager.LoadScene(file);
+            if (syncWait)
+                SceneManager.LoadScene(file);
+            else
+                syncState = SceneManager.LoadSceneAsync(file);
+        }
 
-            //処理終了
-            yield return null;
-
-            //this.gameManager.nextOrder();
+        public override IEnumerator TagAsyncWait()
+        {
+            yield return new WaitUntil(() => syncState.isDone);
         }
     }
-
-
 
 
 	/*	
@@ -532,13 +477,9 @@ exp=数式を指定します
 			essentialParams = new List<string> {
 				"exp"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"exp",""}
-//			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			string exp = this.expressionedParams ["exp"];
 
 			ExpObject eo = new ExpObject (exp);
@@ -546,11 +487,6 @@ exp=数式を指定します
 			string result = ExpObject.calc (eo.exp);
 
 			ScriptDecoder.Instance.variable.Set(eo.type + "." + eo.name, result);
-            yield return null;
-
-            //ToDo:
-            //			this.gameManager.nextOrder();
-
         }
     }
 
@@ -592,21 +528,13 @@ exp=文字式を指定します
 			essentialParams = new List<string> {
 				"exp"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"exp",""}
-//			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			string exp = expressionedParams ["exp"];
 
 			ExpObject eo = new ExpObject (exp);
 			ScriptDecoder.Instance.variable.Set(eo.type + "." + eo.name, eo.exp);
-            yield return null;
-
-            //ToDo:
-            //			this.gameManager.nextOrder();
         }
     }
 
@@ -646,17 +574,11 @@ exp=評価する変数を格納します。
 			essentialParams = new List<string> {
 				"exp"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"exp",""}
-//			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			string exp = expressionedParams["exp"];
 			string val = expressionedParams["exp"];
-
-//			nextOrder = false;
 
 			//変数なら素直に代入
 			if(val.IndexOf(".") != -1)
@@ -665,7 +587,7 @@ exp=評価する変数を格納します。
 			string tag_str ="[story val='"+val+"' ]";
 
 			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
-			yield return cmp.Exec();
+			cmp.Execute();
         }
     }
 
@@ -733,18 +655,14 @@ exp=評価する式を指定します。この式の結果が false ( または 
 			essentialParams = new List<string> {
 				"exp"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"exp",""}
-//			};
-		}
+        }
 
 		public override void Before() {
 			//スキップ中ならここは通過しない
 			ScriptDecoder.Instance.ifNum++;
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			ScriptDecoder.Instance.AddIfStack(true);
 
 			string exp = expressionedParams ["exp"];
@@ -762,8 +680,6 @@ exp=評価する式を指定します。この式の結果が false ( または 
 				//elsif か　endif まで処理を進める
 				StatusManager.Instance.setSkipOrder();
 			}
-            yield return null;
-
         }
     }
 
@@ -804,10 +720,6 @@ exp=評価する変数を格納します。
 			essentialParams = new List<string> {
 				"exp"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"exp",""}
-//			};
 		}
 
 		public override void Before() {
@@ -819,7 +731,7 @@ exp=評価する変数を格納します。
 			}
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			string exp = expressionedParams ["exp"];
 			string result = ExpObject.calc (exp);
 
@@ -827,19 +739,12 @@ exp=評価する変数を格納します。
 			if (result == "true") {
 				//ifスタックが完了している
 				ScriptDecoder.Instance.ChangeIfStack(false);
-//ToDo:
-//				this.gameManager.nextOrder();
 			}
 			else
 			{
 				//elsif か　endif まで処理を進める
 				StatusManager.Instance.setSkipOrder();
-//ToDo:
-//				this.gameManager.nextOrder();
 			}
-
-            yield return null;
-
         }
     }
 
@@ -870,9 +775,6 @@ if タグもしくは elsif タグ と endif タグの間で用いられます�
 			//必須項目
 			essentialParams = new List<string> {
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//			};
 		}
 
 		public override void Before() {
@@ -884,12 +786,8 @@ if タグもしくは elsif タグ と endif タグの間で用いられます�
 			}
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			ScriptDecoder.Instance.ChangeIfStack(false);
-            yield return null;
-
-            //ToDo:
-            //			this.gameManager.nextOrder();
         }
     }
 
@@ -920,9 +818,6 @@ if文を終了します。必ずif文の終わりに記述する必要があり�
 			//必須項目
 			essentialParams = new List<string> {
 			};
-
-//			originalParamDic = new ParamDictionary() {
-	//		};
 		}
 
 		public override void Before() {
@@ -935,12 +830,9 @@ if文を終了します。必ずif文の終わりに記述する必要があり�
 			ScriptDecoder.Instance.ifNum--;
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			//ifスタックが取り除かれる
 			ScriptDecoder.Instance.PopIfStack();
-            //ToDo:
-            //			this.gameManager.nextOrder();
-            yield return null;
         }
     }
 
@@ -977,12 +869,11 @@ title=ゲームを停止する
 	public class SComponent : AbstractComponent {
 		public SComponent() { }
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			StatusManager.Instance.InfiniteStop();
             //			StatusManager.Instance.enableNextOrder = false;
             //			StatusManager.Instance.enableClickOrder = false;
-            yield return null;
-
+            //ToDo:SyncWait
             //その他 enableNextOrder が来るまで進めない
         }
     }
@@ -1030,22 +921,12 @@ tag=付与するタグ名を指定します
 			essentialParams = new List<string> {
 				"tag"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"tag",""}
-//			};
-
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
 		{
 			//ifスタックが取り除かれる
 			StatusManager.Instance.TagDefaultVal = expressionedParams["tag"];
-            yield return null;
-
-            //ToDo:
-            //			this.gameManager.nextOrder();
-            //その他 enableNextOrder が来るまで進めない
         }
     }
 
@@ -1075,14 +956,10 @@ title=デフォルトタグ設定を解除する
 	{
 		public Reset_tag_defaultComponent() { }
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
 		{
 			//ifスタックが取り除かれる
 			StatusManager.Instance.TagDefaultVal = "";
-            //ToDo:
-            //			this.gameManager.nextOrder();
-            yield return null;
-
         }
     }
 
@@ -1094,413 +971,129 @@ title=デフォルトタグ設定を解除する
 			//必須項目
 			essentialParams = new List<string> {
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"time","0.5"}
-//			};
 		}
 
-		protected override IEnumerator Start() {
-            yield return null;
-
-            //			nextOrder = false;
-            //			StatusManager.Instance.currentState = JokerState.WaitClick;
-            //			StatusManager.Instance.enableClickOrder = false;
-            //			StatusManager.Instance.nextClickShowMessage = true;
-            //ToDo:
-            //            Trionfi.Instance.currentMessageWindow.hideFlags();
-            //float time = float.Parse (this.expressionedParams ["time"]);
-            //			NovelSingleton.GameView.hideMessage (time);
+		protected override void TagFunction() {
         }
     }
-
-	/*		
---------------
-
-[doc]
-tag=hidemessage
-group=システム関連
-title=メッセージ非表示
-
-[desc]
-
-メッセージウィンドウを非表示にします。
-[showmessage]を明示的に実行するまで表示されません。
-
-[sample]
-
-[hidemessage]
-
-[wait time=5 ]
-
-[showmessage]
-シナリオ再開
-
-[param]
-
-
-[_doc]
---------------------
- */
-
-	//メッセージを削除する showMessage を行わないと表示されない
+    
+    //メッセージウィンドウを非表示にします。
 	public class HidemessageComponent : AbstractComponent {
 		public HidemessageComponent() {
-
-			//必須項目
-			essentialParams = new List<string> {
-			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"time","0.5"}
-//			};
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
 		{
-            yield return null;
-
-            //ToDo:
-            //			nextOrder = false;
-            //			StatusManager.Instance.currentState = JokerState.MessageHide;
-            //float time = float.Parse (this.expressionedParams ["time"]);
         }
     }
-
-	/*		
---------------
-
-[doc]
-tag=showmessage
-group=システム関連
-title=メッセージ表示
-
-[desc]
-
-メッセージウィンドウを表示します。
-
-[sample]
-
-[hidemessage]
-
-[wait time=5 ]
-
-[showmessage]
-シナリオ再開
-
-[param]
-
-
-[_doc]
---------------------
- */
-
-	//メッセージを表示する
-	public class ShowmessageComponent : AbstractComponent {
+    
+    //メッセージウィンドウを表示します。
+    public class ShowmessageComponent : AbstractComponent {
 		public ShowmessageComponent() {
-//			originalParamDic = new ParamDictionary() {
-//				{"time","0.5"}
-//			};
 		}
 
-		protected override IEnumerator Start() {
-            yield return null;
-
-            //ToDo:
-            //			nextOrder = false;
-            //			StatusManager.Instance.currentState = JokerState.MessageShow;
-            //			float time = float.Parse(this.expressionedParams["time"]);
-            //TODO:Magic用拡張なので、汎用化が必要(string nextStorage = "")
-            //JOKEREX.Instance.MainMessage.Show();
+		protected override void TagFunction()
+        {
         }
     }
-
-	/*		
---------------
-
-[doc]
-tag=trace
-group=システム関連
-title=変数の内容確認
-
-[desc]
-
-変数の中身をデバックコンソールで確認することができます。
-
-[sample]
-
-
-[calc exp="tmp.val=2"]
-[flag exp="tmp.name=シケモク"]
-
-;tmpの中身を確認できる
-[trace exp="tmp"]
-
-;結果↓がデバッグコンソールに表示される
-;[trace]tmp
-;val=2
-;name=シケモク
-
-[param]
-exp=確認したい変数名を指定します。
-
-[_doc]
---------------------
- */
-
+    
+    //ToDo:外部コンソールウィンドウへ
+    //変数の中身をデバックコンソールで確認することができます。
 	public class TraceComponent : AbstractComponent {
 		public TraceComponent() {
-//			originalParamDic = new ParamDictionary() {
-//				{"exp",""}
-//			};
-		}
+            essentialParams = new List<string>
+            {
+                   "exp"
+            };
+        }
 
-		protected override IEnumerator Start() {
+        protected override void TagFunction() {
 			string exp = expressionedParams ["exp"];
 			ScriptDecoder.Instance.variable.Trace(exp);
-            yield return null;
-
-            //ToDo:
-            //			this.gameManager.nextOrder();
         }
     }
-
-	/*		
---------------
-
-[doc]
-tag=talk_name
-group=システム関連
-title=発言者欄の変更
-
-[desc]
-
-発言者欄の名前を変更します。
-chara_newでjnameを定義している場合はその値が採用されます。
-
-このタグは省略形が用意されています
-以下の２つは同じ意味になります。
-
-#yuko
-
-[talk_name val=yuko ]
-
-
-[sample]
-
-@talk_name val=優子
-
-以下のようにも書けます
-
-#優子
-優子がしゃべってます。
-
-@talk_name val=""
-消したい場合は空白を指定します
-
-[param]
-val=名前を表示します。キャラクター情報と絡めたい場合はchara_newした時のnameを指定してください。
-
-
-[_doc]
---------------------
- */
-
-	//メッセージを表示する
+    
+	//話者名変更
 	public class Talk_nameComponent : AbstractComponent
 	{
-		public Talk_nameComponent()
-		{
-//			originalParamDic = new ParamDictionary()
-//			{
-//				{"val",""}
-//			};
-		}
+        public Talk_nameComponent()
+        {
+            essentialParams = new List<string>
+            {
+                   "val"
+            };
+        }
 
-		protected override IEnumerator Start()
+        protected override void TagFunction()
 		{
 			string name = this.expressionedParams ["val"];
             TRUIManager.Instance.currentMessageWindow.currentName.text = name;
-            yield return null;
-
         }
     }
 
-	/*		
---------------
-
-[doc]
-tag=wait
-group=システム関連
-title=ウェイトを入れる
-
-[desc]
-
-ウェイトを入れます。time属性で指定した時間、操作できなくなります。
-
-[sample]
-
-;２.5秒間　処理を停止します
-[wait time=2.5]
-
-[param]
-time=停止する時間を秒で指定します
-
-
-[_doc]
---------------------
- */
-
-	//メッセージを表示する
+	//ディレイ
 	public class WaitComponent : AbstractComponent
 	{
+        float _time = 0.0f;
 		public WaitComponent()
 		{
 			//必須項目
 			essentialParams = new List<string> {
 				"time"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"time",""}
-//			};
 		}
 
         //時間を止める。
-        protected override IEnumerator Start()
+        protected override void TagFunction()
         {
-            float time = float.Parse(expressionedParams["time"]);
-            yield return new WaitForSeconds(time);
+            _time = float.Parse(expressionedParams["time"]);
 		}
-	}
 
- /*		
---------------
-
-[doc]
-tag=web
-group=その他
-title=Webページヘジャンプします。
-
-[desc]
-
-ゲーム中にブラウザを開いてサイトを開きます
-スマホアプリの場合、一時的にゲームを中断してブラウザが起動します
-
-[sample]
-
-;やほーを訪問します
-[web url="http://yahoo.co.jp"]
-
-[param]
-url=移動したいURLをhttpから指定します
-
-
-[_doc]
---------------------
- */
-
+        public override IEnumerator TagAsyncWait()
+        {
+            yield return new WaitForSeconds(_time);
+        }
+    }
+    
+    //title=Webページヘジャンプします。
 	public class WebComponent : AbstractComponent {
 		public WebComponent() {
 			//必須項目
 			essentialParams = new List<string> {
 				"url"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"url",""}
-//			};
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
         {
 			string url = expressionedParams ["url"];
 			Application.OpenURL(url);
             //ToDo:
-            yield return null;
+//            yield return null;
 		}
 	}
 
-	/*		
---------------
-
-[doc]
-tag=clearvar
-group=システム関連
-title=変数を削除。
-
-[desc]
-
-変数を削除します。
-
-
-[sample]
-
-[calc exp="tmp.val=2"]
-[flag exp="tmp.name=シケモク"]
-
-;tmpの中身を確認できる
-[trace exp="tmp"]
-
-;tmp変数をすべて初期化します
-[clearvar name="tmp"]
-
-[param]
-name=削除する変数名を指定してください。
-
-
-[_doc]
---------------------
- */
-	//変数クリア
+	//変数削除
 	public class ClearvarComponent : AbstractComponent {
 		public ClearvarComponent() {
 			//必須項目
 			essentialParams = new List<string> {
 				"name"
 			};
-
-//			originalParamDic = new ParamDictionary() {
-//				{"name",""}
-//			};
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			//削除
 			string name = expressionedParams["name"];
             ScriptDecoder.Instance.variable.Remove(name);
-            yield return null;
         }
     }
-
-	/*		
---------------
-
-[doc]
-tag=showlog
-group=システム関連
-title=バックログ表示
-
-[desc]
-
-バックログを表示します。
-
-[sample]
-
-[showlog]
-
-[param]
-
-
-[_doc]
---------------------
- */
-
-
+    
+    //バックログを表示します。
 	public class ShowlogComponent : AbstractComponent {
 		public ShowlogComponent() { }
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
             //			StatusManager.Instance.Wait();
 
             //イベントを停止する
@@ -1511,8 +1104,6 @@ title=バックログ表示
             //nextorder しない。
             TRUIManager.Instance.currentLogWindow.gameObject.SetActive(true);
 //ToDo:
-            yield return null;
-
         }
     }
 }

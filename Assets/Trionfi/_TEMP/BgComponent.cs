@@ -61,7 +61,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 //			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
         {
 			if (expressionedParams ["name"] == "")
 				expressionedParams["name"] = "background";
@@ -69,9 +69,7 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 //			expressionedParams ["layer"] ="background";
 			//expressionedParams["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
-			base.Start();
-            yield return null;
-
+			base.TagFunction();
         }
     }
 
@@ -80,10 +78,8 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
     {
 		public Bg_posComponent() : base() { }
 
-		protected override IEnumerator Start() {
-			base.Start();
-            yield return null;
-
+		protected override void TagFunction() {
+			base.TagFunction();
         }
     }
 
@@ -123,14 +119,12 @@ type=表示のされ方を指定できます。
 	public class Bg_showComponent : Image_showComponent {
 		public Bg_showComponent() : base() { }
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
         {
 			if (expressionedParams ["name"] == "")
 				expressionedParams["name"] = "background";
 
-			base.Start();
-            yield return null;
-
+			base.TagFunction();
         }
     }
 	/*	
@@ -164,14 +158,12 @@ type=非表示のされ方を指定できます。デフォルトはlinear で�
 	public class Bg_hideComponent : Image_hideComponent {
 		public Bg_hideComponent() : base() {  }
 
-		protected override IEnumerator Start()
+		protected override void TagFunction()
         {
 			if (expressionedParams ["name"] == "")
 				expressionedParams["name"] = "background";
 
-			base.Start();
-            yield return null;
-
+			base.TagFunction();
         }
     }
 
@@ -181,10 +173,8 @@ type=非表示のされ方を指定できます。デフォルトはlinear で�
 //			base.imagePath = StorageManager.Instance.PATH_BG_IMAGE;
 		}
 
-		protected override IEnumerator Start() {
-			base.Start();
-            yield return null;
-
+		protected override void TagFunction() {
+			base.TagFunction();
         }
     }
 
@@ -224,14 +214,13 @@ type=変更のされ方を指定できます。デフォルトはlinear です�
 			essentialParams = new List<string> { };
 		}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			//expressionedParams["imagePath"] = StorageManager.Instance.PATH_BG_IMAGE;
 
 			if(expressionedParams ["name"] == "")
 				expressionedParams["name"] = "background";
 
-			base.Start();
-            yield return null;
+			base.TagFunction();
 
         }
     }
@@ -266,12 +255,10 @@ name=削除する背景を指定します。
 	public class Bg_removeComponent : Image_removeComponent {
 		public Bg_removeComponent() : base() { 	}
 
-		protected override IEnumerator Start() {
+		protected override void TagFunction() {
 			if (expressionedParams ["name"] == "")
 				expressionedParams["name"] = "background";
-			base.Start();
-            yield return null;
-
+			base.TagFunction();
         }
     }
 }
