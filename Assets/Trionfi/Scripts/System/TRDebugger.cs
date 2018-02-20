@@ -1,5 +1,6 @@
 ﻿using UnityEditor;
 using UnityEngine;
+using EditorCoroutines;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,11 +9,13 @@ using NovelEx;
 
 public class TRDebugger : EditorWindow
 {
-#if false
-    [MenuItem("Trionfi/Debug/ScriptTest")]
+    string consoleLog;
+    Vector2 logScroll;
+
+    [MenuItem("Trionfi/Debug")]
     private static void Open()
     {
-        var window = GetWindow<TRDebugger>("スクリプト実行");
+        var window = GetWindow<TRDebugger>("TrinofiDebugger");
     }
 
     string scriptText;
@@ -25,22 +28,24 @@ public class TRDebugger : EditorWindow
             AbstractComponent abs = TRScriptParser.Instance.makeTag(scriptText);
             if (abs != null)
             {
-                IEnumerator t = abs.Start();
-                while(t.MoveNext())
-                {
-                    Debug.Log("Current: " + t.Current);
-                }
+                Debug.Log("Tag: " + abs.tagName);
+
+                abs.Execute();
+                this.StartCoroutine(abs.TagAsyncWait());
             }
             else
                 Debug.Log("Invalid Tag!");
-
-/*
-            while (t.MoveNext())
-            {
-                Debug.Log("Current: " + t.Current);
-            }
-*/
         }
+
+        GUILayout.TextField("ログ最大サイズ");
+
+        if (GUILayout.Button("ログ削除"))
+        {
+            consoleLog = "";
+        }
+
+        logScroll = EditorGUILayout.BeginScrollView(logScroll);
+        consoleLog = EditorGUILayout.TextArea(consoleLog, GUILayout.Height(position.height - 30));
+        EditorGUILayout.EndScrollView();
     }
-#endif
 }

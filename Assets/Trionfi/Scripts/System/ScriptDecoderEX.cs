@@ -171,7 +171,7 @@ namespace NovelEx
 
 			foreach(AbstractComponent _component in list)
             {
-				if (_component.tagName() == "label")
+				if (_component.tagName == "label")
 					dicScenario[scenario_name].addLabel(_component.expressionedParams["name"], index);
 
 				index++;
@@ -319,8 +319,6 @@ namespace NovelEx
 		
 		public void RunScenario(string nextStorage = "")
 		{            
-//			hasComponent = true;
-
 			//doComponentがtrueである限り1フレームで回る
 //			while(doComponent())
 			{
@@ -360,20 +358,18 @@ namespace NovelEx
 
 					if(TRSystemConfig.Instance.showTag)
 					{
-						Debug.Log("[" + _tagComponent.tagName() + " " + p + " ]");
+						Debug.Log("[" + _tagComponent.tagName + " " + p + " ]");
 					}
 
 					_tagComponent.Execute();
 				}
 
-                //EX変更：Afterも必ず実行される
                 _tagComponent.After();
 
-                //ToDo:Async();
+                yield return _tagComponent.TagAsyncWait();
 
                 //ToDo:flag
                 currentComponentIndex++;
-
 			}
 
 			//シナリオファイルの最後まで来た時。スタックが存在するならreturn する
@@ -388,63 +384,8 @@ namespace NovelEx
 			{
 				StatusManager.Instance.EndScenario();
 			}
+
             yield return null;			
 		}
-
-		//次の命令へ
-/*
-		public void nextOrder() {
-//			if (NovelSingletonEx.StatusManager.isMessageShowing == true)
-//			{
-//				return;
-//			}
-
-			//nextOrder を指定されたなら、クリックは有効になる
-//			NovelSingletonEx.StatusManager.enableClickOrder = true;
-
-			currentComponentIndex++;
-
-			//シナリオファイルの最後まで来た時。スタックが存在するならreturn する
-			if (currentComponentIndex >= arrayComponents.Count)
-			{
-				if (countStack() > 0)
-				{
-					//スタックがあるならreturn する
-					JOKEREX.Instance.startTag("[return]");
-				}
-				else
-				{			
-					JOKEREX.Instance.terminateScenario();
-				}
-				return;
-			}
-
-			AbstractComponent cmp = arrayComponents[currentComponentIndex];
-
-			cmp.before();
-
-			if (NovelSingletonEx.StatusManager.skipOrder == false)
-			{
-				cmp.calcVariable();
-				cmp.validate();
-
-				string p = "";
-				foreach (KeyValuePair<string, string> kvp in cmp.param)
-				{
-					p += kvp.Key + "=" + kvp.Value + " ";
-				}
-				//ToDo:
-				//this.showLog("[" + cmp.tagName + " " + p + " ]");
-
-				cmp.start();
-				cmp.after();
-
-			}
-			else
-			{
-				this.nextOrder();
-			}
-		}
-*/
 	}
 };

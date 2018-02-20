@@ -58,12 +58,14 @@ namespace NovelEx
         }
 
         //タグ名を取得（デバッグ用？）
-        public string tagName()
+        public string tagName
         {
-            string _tag = this.GetType().Name.Replace("Component", "");
-            return _tag;
+            get
+            {
+                string _tag = this.GetType().Name.Replace("Component", "");
+                return _tag;
+            }
         }
-
 
         //タグ実行本体
         abstract protected void TagFunction();

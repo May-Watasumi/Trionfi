@@ -74,7 +74,7 @@ namespace NovelEx {
 
 		protected override void TagFunction()
         {
-			expressionedParams["name"] = tagName();
+			expressionedParams["name"] = tagName;
 
 			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro(expressionedParams["name"]);
 

@@ -52,14 +52,12 @@ namespace NovelEx
         ScriptDecoder scriptDecoder;
         Serializer serializer;
 
-        //ToDo:UserConfigはprefsへ。命令系統を変える
-		//文字列から即時タグを実行することができます。
-		public IEnumerator StartTag(string tag)
+        //単体タグ実行。他のタグから呼び出すことは禁止
+        public void StartTag(string tag)
         {
 			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag);
             cmp.Execute();
-            yield return null;
-//			yield return StartCoroutine(cmp.Exec());
+            StartCoroutine(cmp.TagAsyncWait());
 		}
 
         public void Init(bool changeLayerOrder = false)
