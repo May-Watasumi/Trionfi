@@ -72,17 +72,20 @@ namespace NovelEx
                 referencedObjects.bgLayer.gameObject.transform.SetAsFirstSibling();
                 referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                
             }
+
+            if (referencedObjects.targetCamera == null)
+                referencedObjects.targetCamera = Camera.main;
+
+            if (TRSystemConfig.Instance.initialScriptFile != null)
+            {
+                scriptDecoder.LoadScenariofromString(TRSystemConfig.Instance.initialScriptFile.text, TRSystemConfig.Instance.initialScriptFile.name);
+                StartCoroutine(scriptDecoder.Run());
+            }
         }
 
         public void Start()
         {
             Init();
-
-            if(TRSystemConfig.Instance.initialScriptFile != null)
-            {
-                scriptDecoder.LoadScenariofromString(TRSystemConfig.Instance.initialScriptFile.text, TRSystemConfig.Instance.initialScriptFile.name);
-                StartCoroutine(scriptDecoder.Run());
-            }                
         }
 
         public delegate void OnClickEvent();

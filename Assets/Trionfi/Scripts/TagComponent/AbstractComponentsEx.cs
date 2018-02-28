@@ -83,10 +83,10 @@ namespace NovelEx
             TagFunction();
         }
 
-        //Start()前にかならず実行されます。skip中でも実行されるのでチェックしたい項目があれば、継承先で実装してください
+        //Before→Execute→TagAsyncWait()→Afterの順番。Afterはどうするかは疑問
+
         public virtual void Before() { }
 
-        //Start()後ににかならず実行されます。skip中でも実行されるのでチェックしたい項目があれば、継承先で実装してください
         public virtual void After() { }
 
 #if false

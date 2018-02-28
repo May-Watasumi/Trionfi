@@ -5,9 +5,9 @@ using System.Collections.Generic;
 namespace NovelEx
 {
     //[story val="メッセージ"]
-    public class StoryComponent : AbstractComponent
+    public class MessageComponent : AbstractComponent
     {
-        public StoryComponent()
+        public MessageComponent()
         {
             //必須項目
             essentialParams = new List<string> {
@@ -62,7 +62,6 @@ namespace NovelEx
     {
         protected override void TagFunction()
         {
-            return;
         }
 
         public override IEnumerator TagAsyncWait()
@@ -76,15 +75,17 @@ namespace NovelEx
     {
         protected override void TagFunction()
         {
-            return;
         }
 
         public override IEnumerator TagAsyncWait()
         {
             yield return TRUIManager.Instance.currentMessageWindow.Wait();
+            TRUIManager.Instance.currentMessageWindow.ClearMessage();
+            yield return null;
         }
     }
 
+    //メッセージクリア
     public class CmComponent : AbstractComponent
     {
         protected override void TagFunction()
@@ -113,16 +114,4 @@ namespace NovelEx
             TRUIManager.Instance.currentMessageWindow.currentMessage.color = color;
         }
 	}
-
-	public class FontresetComponent : AbstractComponent
-	{
-		public FontresetComponent() { }
-
-		protected override void TagFunction()
-		{
-//            TRUIManager.Instance.currentMessageWindow.Reset();
-            TRUIManager.Instance.currentMessageWindow.currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
-            TRUIManager.Instance.currentMessageWindow.currentMessage.color = TRSystemConfig.Instance.fontColor;
-        }
-    }
 }

@@ -1,51 +1,109 @@
 ﻿using UnityEditor;
 using UnityEngine;
 using EditorCoroutines;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
-using NovelEx;
 
-public class TRDebugger : EditorWindow
+namespace NovelEx
 {
-    string consoleLog;
-    Vector2 logScroll;
+    public enum MessageType { Error, Warning, Info };
 
-    [MenuItem("Trionfi/Debug")]
-    private static void Open()
+    public class ErrorLogger
     {
-        var window = GetWindow<TRDebugger>("TrinofiDebugger");
-    }
+        private static List<string> errorMessage = new List<string>();
+        private static List<string> warningMessage = new List<string>();
 
-    string scriptText;
-
-    private void OnGUI()
-    {
-        scriptText = EditorGUILayout.TextField("スクリプト", scriptText);
-        if (GUILayout.Button("実行"))
+        public static void Clear()
         {
-            AbstractComponent abs = TRScriptParser.Instance.makeTag(scriptText);
-            if (abs != null)
-            {
-                Debug.Log("Tag: " + abs.tagName);
+            errorMessage.Clear();
+            warningMessage.Clear();
+        }
 
-                abs.Execute();
-                this.StartCoroutine(abs.TagAsyncWait());
+        public static void addLog(string message, string file, int line, bool stop)
+        {
+            if (stop)
+            {
+                string str = "<color=green>Novel</color>[" + file + "]:<color=red>Error:" + line + "行目 " + message + "</color>";
+                errorMessage.Add(str);
             }
             else
-                Debug.Log("Invalid Tag!");
+            {
+                string str = "<color=green>Novel</color>[" + file + "]:<color=yellow>Warning:" + line + "行目 " + message + "</color>";
+                warningMessage.Add(str);
+            }
         }
 
-        GUILayout.TextField("ログ最大サイズ");
-
-        if (GUILayout.Button("ログ削除"))
+        public static bool showAll()
         {
-            consoleLog = "";
+            foreach (string message in errorMessage)
+            {
+                UnityEngine.Debug.LogError(message);
+            }
+            foreach (string message in warningMessage)
+            {
+                UnityEngine.Debug.LogWarning(message);
+            }
+            return errorMessage.Count > 0 ? true : false;
         }
 
-        logScroll = EditorGUILayout.BeginScrollView(logScroll);
-        consoleLog = EditorGUILayout.TextArea(consoleLog, GUILayout.Height(position.height - 30));
-        EditorGUILayout.EndScrollView();
+        public static void stopError(string message)
+        {
+            UnityEngine.Debug.LogError(message);
+            throw new UnityException(message);
+        }
+
+        [Conditional("TR_DEBUG")]
+        public static void Log(string message)
+        {
+            UnityEngine.Debug.Log(message);
+        }
+    };
+
+    public class TRDebugger : EditorWindow
+    {
+        string consoleLog;
+        Vector2 logScroll;
+
+        [MenuItem("Trionfi/Debug")]
+        private static void Open()
+        {
+            var window = GetWindow<TRDebugger>("TrinofiDebugger");
+        }
+
+        string scriptText;
+
+        private void OnGUI()
+        {
+            scriptText = EditorGUILayout.TextField("スクリプト", scriptText);
+            if (GUILayout.Button("実行"))
+            {
+                AbstractComponent abs = TRScriptParser.Instance.makeTag(scriptText);
+                if (abs != null)
+                {
+                    consoleLog += ("Tag: " + abs.tagName);
+
+                    abs.Execute();
+                    this.StartCoroutine(abs.TagAsyncWait());
+                }
+                else
+                    consoleLog += ("Invalid Tag!");
+            }
+
+            GUILayout.Label("ログ最大サイズ");
+
+            //        GUILayout.TextField("ログ最大サイズ");
+
+            if (GUILayout.Button("ログ削除"))
+            {
+                consoleLog = "";
+            }
+
+            logScroll = EditorGUILayout.BeginScrollView(logScroll);
+            consoleLog = EditorGUILayout.TextArea(consoleLog, GUILayout.Height(position.height - 30));
+            EditorGUILayout.EndScrollView();
+        }
     }
 }
