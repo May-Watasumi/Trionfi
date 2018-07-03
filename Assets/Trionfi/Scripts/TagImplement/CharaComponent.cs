@@ -4,6 +4,8 @@ using System.Collections.Generic;
 
 namespace NovelEx {
     //[chara_new name="yuko" tag="scene1" jname="優子" ]
+    //オブジェクト生成はシステム管理から外れる
+#if false
     public class Chara_newComponent : Image_newComponent
     {
 		public Chara_newComponent() : base() {
@@ -27,7 +29,7 @@ namespace NovelEx {
 			base.TagFunction();
         }
     }
-
+#endif
 	public class Chara_posComponent : Image_posComponent
     {
 		public Chara_posComponent() : base() { }

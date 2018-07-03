@@ -4,12 +4,12 @@ using System.Collections.Generic;
 
 namespace NovelEx
 {
-    //    [sound type=bgm storage=ggg name=ggg delay=0]
-    public class SoundComponent : AbstractComponent
+    //    [audio type=bgm storage=ggg name=ggg delay=0]
+    public class AudioplayComponent : AbstractComponent
     {
         bool isWait;
 
-        public SoundComponent()
+        public AudioplayComponent()
         {
             //必須項目
             essentialParams = new List<string> {
@@ -57,9 +57,9 @@ namespace NovelEx
     }
 
     //    [soundstop type=bgm name="" delay=0 delete=true]
-    public class SoundstopComponent : AbstractComponent
+    public class AudiostopComponent : AbstractComponent
     {
-        public SoundstopComponent()
+        public AudiostopComponent()
         {
             //必須項目
             essentialParams = new List<string> {
@@ -93,6 +93,8 @@ namespace NovelEx
         }
     }
 
+    //削除はTrionfi側からはしないので、使わない
+#if false
     //    [sounddelete type=bgm name=""]
     public class SounddeleteComponent : AbstractComponent
     {
@@ -130,4 +132,6 @@ namespace NovelEx
                 ErrorLogger.Log("Failed:SounddeleteComponent");
         }
     }
+#endif
 }
+

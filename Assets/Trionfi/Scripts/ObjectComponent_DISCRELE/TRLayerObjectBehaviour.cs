@@ -7,7 +7,13 @@ using System.Text;
 using System.IO;
 
 namespace NovelEx {
-	public class TRLayerObjectBehaviour : AbstractObject {
+    public class LayerProperty
+    {
+        Transform transform;
+        string storageName;
+    }
+
+    public class TRLayerObjectBehaviour : AbstractObject {
 
         public override ParamDictionary param
         {

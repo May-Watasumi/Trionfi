@@ -5,6 +5,20 @@ using NovelEx;
 
 namespace NovelEx
 {
+    public class TRSoundProperty
+    {
+        public float volume1 = 1.0f;   //本来の音量
+        public float volume2 = 1.0f;   //フェーダー用。普段は1.0
+
+        public float volume
+        {
+            get { return volume1 * volume2; }
+            set { volume1 = value; }
+        }
+
+        string storageName;
+    }
+
     public class TRSoundObjectBehaviour : MonoBehaviour
 	{
         public float volume1 = 1.0f;   //本来の音量

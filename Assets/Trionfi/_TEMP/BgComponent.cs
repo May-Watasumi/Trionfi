@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace NovelEx {
 
 
-	/*	
+    /*	
 --------------
 
 [doc]
@@ -48,6 +48,9 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 --------------------
  */
 
+//オブジェクト生成はシステム管理から外れる
+#if false
+
 	public class Bg_newComponent : Image_newComponent
     {
 		public Bg_newComponent() : base() {
@@ -72,8 +75,9 @@ scale=イメージの拡大率を指定します。つまり2と指定すると�
 			base.TagFunction();
         }
     }
+#endif
 
-	//背景のポジションを変更する
+        //背景のポジションを変更する
 	public class Bg_posComponent : Image_posComponent
     {
 		public Bg_posComponent() : base() { }

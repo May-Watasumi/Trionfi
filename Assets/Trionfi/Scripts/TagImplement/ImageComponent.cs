@@ -4,7 +4,9 @@ using System.Collections.Generic;
 
 namespace NovelEx
 {
-	public class Image_newComponent : AbstractComponent {
+    //オブジェクト生成廃棄はシステム管轄から外れる（可搬性）
+#if false
+    public class Image_newComponent : AbstractComponent {
 		protected string imagePath = "";
 
 		public Image_newComponent() {
@@ -41,8 +43,9 @@ namespace NovelEx
             g.Load(expressionedParams);
         }
     }
+#endif
 
-	public class Image_posComponent : AbstractComponent {
+    public class Image_posComponent : AbstractComponent {
 		public Image_posComponent() {
 
 			//必須項目
@@ -250,7 +253,8 @@ namespace NovelEx
         }
 	}
 
-	//IComponentTextはテキストを流すための機能を保持するためのインターフェース
+    //removeは使わない可能性高い
+
 	public class Image_removeComponent : AbstractComponent {
 		public Image_removeComponent() {
 			//必須項目
