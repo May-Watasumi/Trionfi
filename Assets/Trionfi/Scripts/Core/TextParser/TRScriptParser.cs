@@ -322,7 +322,7 @@ namespace NovelEx
                 Debug.LogError("Invalid Tag:\"" + tag.tagName + "\"");
 #else
         	//マクロとして登録
-            ErrorLogger.Log("MacroStart:"+tag.Name);
+            ErrorLogger.Log("MacroStart:"+tag.tagName);
 		    cmp = new _MacrostartComponent();
 #endif
             }

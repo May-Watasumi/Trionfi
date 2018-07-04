@@ -1,6 +1,10 @@
-﻿using UnityEditor;
-using UnityEngine;
+﻿
+#if UNITY_EDITOR
+using UnityEditor;
 using EditorCoroutines;
+#endif
+
+using UnityEngine;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
@@ -62,6 +66,7 @@ namespace NovelEx
         }
     };
 
+#if UNITY_EDITOR
     public class TRDebugger : EditorWindow
     {
         string consoleLog;
@@ -106,4 +111,5 @@ namespace NovelEx
             EditorGUILayout.EndScrollView();
         }
     }
+#endif
 }

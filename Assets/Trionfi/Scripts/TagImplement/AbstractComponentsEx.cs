@@ -11,7 +11,7 @@ namespace NovelEx
         public TagParam tagParam;
         public ParamDictionary expressionedParams = new ParamDictionary();
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
+//#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
         public List<string> essentialParams = new List<string>();
 
         [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
@@ -28,7 +28,7 @@ namespace NovelEx
                 }
             }
         }
-#endif
+//#endif
 
         //同期フラグ。タグの引数側で設定される。
         public bool syncWait

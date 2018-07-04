@@ -64,8 +64,8 @@ namespace NovelEx
         {
             scriptDecoder = new ScriptDecoder();
             serializer = new Serializer();
-
-            TRUIManager.Instance.currentSelectWindow.Init(10);
+            //ToDo
+//            TRUIManager.Instance.currentSelectWindow.Init(10);
 
             if (changeLayerOrder)
             {
