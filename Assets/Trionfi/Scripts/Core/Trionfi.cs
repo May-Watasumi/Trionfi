@@ -47,6 +47,9 @@ namespace NovelEx
         }
 
         [SerializeField]
+        TextAsset bootScript;
+
+        [SerializeField]
         ReferencedObject referencedObjects = new ReferencedObject();
 
         ScriptDecoder scriptDecoder;
