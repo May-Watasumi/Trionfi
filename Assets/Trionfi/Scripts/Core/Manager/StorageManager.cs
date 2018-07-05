@@ -63,14 +63,13 @@ namespace NovelEx
             { "", TRDataType.Terminate },              
         };
 
-        [SerializeField]
-        public GameObject imageBasePrefab;
+        private const string savesnapfile = "_TEMPSAVE_";
 
         [SerializeField]
-        public string userdataPath = "savedata/";
+        public string savedataPath = "savedata/";
 
         [SerializeField]
-		public string basepath = "TRdata/";
+		public string localReourcesPath = "TRdata/";
 
         [SerializeField]
         public Dictionary<TRDataType, string> dataPath = new Dictionary<TRDataType, string>();
@@ -78,7 +77,6 @@ namespace NovelEx
         [SerializeField]
         public Dictionary<TRStorageType, string> storagePath = new Dictionary<TRStorageType, string>();
 
-        private const string savesnapfile = "_TEMPSAVE_";
 
 		public string IsExistLocal(string storage)
         {
