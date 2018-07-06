@@ -37,10 +37,9 @@ namespace NovelEx
             public Camera targetCamera;
             public Canvas targetCanvas;
 
-            public AudioSource[] audioBGM = new AudioSource[2];
+           public AudioSource[] audioBGM = new AudioSource[2];
             public AudioSource[] audioSE = new AudioSource[2];
-            public AudioSource[] audioVoice = new AudioSource[2];
-            public Image[] standLayer = new Image[5];
+            public AudioSource[] audioVoice = new AudioSource[2];            public Image[] standLayer = new Image[5];
             public Image eventLayer;
             public Image bgLayer;
             public Canvas uiCanvas;
@@ -79,9 +78,9 @@ namespace NovelEx
             if (referencedObjects.targetCamera == null)
                 referencedObjects.targetCamera = Camera.main;
 
-            if (TRSystemConfig.Instance.initialScriptFile != null)
+            if (bootScript != null)
             {
-                scriptDecoder.LoadScenariofromString(TRSystemConfig.Instance.initialScriptFile.text, TRSystemConfig.Instance.initialScriptFile.name);
+                scriptDecoder.LoadScenariofromString(bootScript.text, bootScript.name);
                 StartCoroutine(scriptDecoder.Run());
             }
         }
