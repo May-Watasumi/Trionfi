@@ -64,9 +64,6 @@ namespace NovelEx
         };
 
         [SerializeField]
-        public GameObject imageBasePrefab;
-
-        [SerializeField]
         public string userdataPath = "savedata/";
 
         [SerializeField]

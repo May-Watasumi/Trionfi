@@ -2,9 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 
+//ToDo:フェード、再生しているストレージ情保存
+//クリック待ち、同期
+
 namespace NovelEx
 {
-    //    [audio type=bgm storage=ggg name=ggg delay=0]
+    //[audioplay type=bgm storage=ggg name=ggg delay=0]
     public class AudioplayComponent : AbstractComponent
     {
         bool isWait;
@@ -16,23 +19,15 @@ namespace NovelEx
                 "storage",
                 "type"
             };
-/*
-            originalParamDic = new ParamDictionary() {
-                { "storage",""},
-                { "time","0"},
-                { "vol","1"}, //ボリューム 0〜1
-				{ "wait","true"},
-                { "next","true"},
-            };
-*/
         }
 
         protected override void TagFunction()
         {
-            string storage = expressionedParams["storage"];
-            string name = expressionedParams.String("name", null);
-            float playDelay = expressionedParams.Float("delay");
             TRDataType _type = expressionedParams.Type();
+
+            string storage = expressionedParams["storage"];
+            float playDelay = expressionedParams.Float("delay");
+            float fadeTime = expressionedParams.Float("time");
 
             bool loop = false;
 
@@ -41,97 +36,80 @@ namespace NovelEx
                 loop = _type == TRDataType.BGM ? true : false;
             }
 
-            TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Create(expressionedParams["name"], _type).GetComponent<TRSoundObjectBehaviour>();
+            AudioSource _source = Trionfi.Instance.GetAudio(_type);
+            AudioClip _clip = StorageManager.Instance.LoadObject(storage, _type) as AudioClip;
+            _source.clip = _clip;
 
-            if (audioObject != null)
-            {
-                audioObject.Load(storage, _type, name);
-                //ToDo:同期待ちするときある？
-                //yield return audioObject.Play(playDelay);
-            }
+            if (playDelay > 0.1f)
+                _source.PlayDelayed(playDelay);
             else
-            {
-                ErrorLogger.Log("Failed:SoundComponent");
-            }
+                _source.Play();
         }
     }
 
-    //    [soundstop type=bgm name="" delay=0 delete=true]
+    //[audiostop type=bgm delay=0]
     public class AudiostopComponent : AbstractComponent
     {
         public AudiostopComponent()
         {
             //必須項目
             essentialParams = new List<string> {
-                "name",
                 "type",
-//                "delay",
             };
-            /*
-                        originalParamDic = new ParamDictionary() {
-                            { "storage",""},
-                            { "time","0"},
-                            { "vol","1"}, //ボリューム 0〜1
-                            { "wait","true"},
-                            { "next","true"},
-                        };
-            */
         }
 
         protected override void TagFunction()
         {
-            string name = expressionedParams.String("name", null);
             float delay = expressionedParams.Float("delay");
             TRDataType _type = expressionedParams.Type();
+            float fadeTime = expressionedParams.Float("time");
 
-            TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Find(name, _type);
-
-//            if (audioObject != null)
-//                yield return audioObject.Stop(delay);
-//            else
-//                ErrorLogger.Log("Failed:SoundstopComponent");
+            AudioSource _source = Trionfi.Instance.GetAudio(_type);
+            _source.Stop();
         }
     }
 
-    //削除はTrionfi側からはしないので、使わない
-#if false
-    //    [sounddelete type=bgm name=""]
-    public class SounddeleteComponent : AbstractComponent
+    //[audiostop type=bgm delay=0]
+    public class AudiopauseComponent : AbstractComponent
     {
-        public SounddeleteComponent()
+        public AudiopauseComponent()
         {
             //必須項目
             essentialParams = new List<string> {
-                "name",
                 "type",
             };
-            /*
-                        originalParamDic = new ParamDictionary() {
-                            { "storage",""},
-                            { "time","0"},
-                            { "vol","1"}, //ボリューム 0〜1
-                            { "wait","true"},
-                            { "next","true"},
-                        };
-            */
         }
 
         protected override void TagFunction()
         {
-            string name = expressionedParams.String("name", null);
+            float delay = expressionedParams.Float("delay");
             TRDataType _type = expressionedParams.Type();
+            float fadeTime = expressionedParams.Float("time");
 
-            TRSoundObjectBehaviour audioObject = TRSoundObjectManager.Instance.Find(name, _type);
-            if (audioObject != null)
-            {
-//                yield return audioObject.Stop();
-                GameObject.Destroy(audioObject.gameObject);
-                TRSoundObjectManager.Instance.dicObject.Remove(name);
-            }
-            else
-                ErrorLogger.Log("Failed:SounddeleteComponent");
+            AudioSource _source = Trionfi.Instance.GetAudio(_type);
+            _source.Pause();
         }
     }
-#endif
-}
 
+    //[audiostop type=bgm delay=0]
+    public class AudioresumeComponent : AbstractComponent
+    {
+        public AudioresumeComponent()
+        {
+            //必須項目
+            essentialParams = new List<string> {
+                "type",
+            };
+        }
+
+        protected override void TagFunction()
+        {
+            float delay = expressionedParams.Float("delay");
+            TRDataType _type = expressionedParams.Type();
+            float fadeTime = expressionedParams.Float("time");
+
+            AudioSource _source = Trionfi.Instance.GetAudio(_type);
+            _source.UnPause();
+        }
+    }
+}

@@ -29,43 +29,6 @@ namespace NovelEx {
         }
     }
 
-    //キャラのポジションを変更する
-	public class Live2d_posComponent : Image_posComponent
-    {
-		public Live2d_posComponent() : base() { }
-		protected override void TagFunction()
-        {
-            base.TagFunction();
-        }
-    }
-
-	public class Live2d_showComponent : Image_showComponent
-    { 
-		public Live2d_showComponent() : base() { }
-		protected override void TagFunction()
-        {
-            base.TagFunction();
-        }
-    }
-
-	public class Live2d_hideComponent : Image_hideComponent
-    {
-		public Live2d_hideComponent() : base() { }
-		protected override void TagFunction()
-        {
-            base.TagFunction();
-        }
-    }
-
-	public class Live2d_removeComponent : Image_removeComponent
-    {
-		public Live2d_removeComponent() : base() { }
-		protected override void TagFunction()
-        {
-            base.TagFunction();
-        }
-    }
-
 	public class Live2d_motionComponent : AbstractComponent {
 		public Live2d_motionComponent() {
 			//必須項目

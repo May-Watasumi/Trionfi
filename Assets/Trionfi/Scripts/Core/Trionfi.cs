@@ -37,9 +37,9 @@ namespace NovelEx
             public Camera targetCamera;
             public Canvas targetCanvas;
 
-            public AudioClip[] audioBGM = new AudioClip[2];
-            public AudioClip[] audioSE = new AudioClip[2];
-            public AudioClip[] audioVoice = new AudioClip[2];
+            public AudioSource[] audioBGM = new AudioSource[2];
+            public AudioSource[] audioSE = new AudioSource[2];
+            public AudioSource[] audioVoice = new AudioSource[2];
             public Image[] standLayer = new Image[5];
             public Image eventLayer;
             public Image bgLayer;
@@ -98,7 +98,36 @@ namespace NovelEx
         {
         }
 
-        //ToDo
+        public AudioSource GetAudio(TRDataType type, int ch = 0)
+        {
+            switch (type)
+            {
+                case TRDataType.BGM:
+                    return referencedObjects.audioBGM[ch];
+                case TRDataType.SE:
+                    return referencedObjects.audioBGM[ch];
+                case TRDataType.Voice:
+                    return referencedObjects.audioVoice[ch];
+            }
+
+            return null;
+        }
+
+        public Image GetLayer(TRDataType type, int ch = 0)
+        {
+            switch (type)
+            {
+                case TRDataType.BG:
+                    return referencedObjects.bgLayer;
+                case TRDataType.Character:
+                    return referencedObjects.standLayer[ch];
+                case TRDataType.Event:
+                    return referencedObjects.eventLayer;
+            }
+
+            return null;
+        }
+            //ToDo
 #if false
 
         /// <summary>
@@ -237,5 +266,5 @@ namespace NovelEx
 			LAppLive2DManager.Instance.ClearScene();
 		}
 #endif
-    }
-};
+        }
+    };
