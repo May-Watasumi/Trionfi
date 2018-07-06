@@ -30,11 +30,11 @@ namespace NovelEx
 			else
 #endif
             {
-				string path = StorageManager.Instance.userdataPath + storage;
+				string path = StorageManager.Instance.savedataPath + storage;
 
 				//ディレクトリ存在チェック
-				if (!Directory.Exists(StorageManager.Instance.userdataPath))
-					Directory.CreateDirectory(StorageManager.Instance.userdataPath);
+				if (!Directory.Exists(StorageManager.Instance.savedataPath))
+					Directory.CreateDirectory(StorageManager.Instance.savedataPath);
 
 				FileStream fs = new FileStream(path, FileMode.Create, FileAccess.Write);
 				StreamWriter sw = new StreamWriter(fs);
@@ -60,7 +60,7 @@ namespace NovelEx
 			else
 #endif
             {
-                string path = StorageManager.Instance.userdataPath + storage;
+                string path = StorageManager.Instance.savedataPath + storage;
 
 				//ファイル作成
 				if(!File.Exists(path))
@@ -103,10 +103,10 @@ namespace NovelEx
 			else
 #endif
 			{
-				if (!Directory.Exists(StorageManager.Instance.userdataPath))
-					Directory.CreateDirectory(StorageManager.Instance.userdataPath);
+				if (!Directory.Exists(StorageManager.Instance.savedataPath))
+					Directory.CreateDirectory(StorageManager.Instance.savedataPath);
 
-				FileStream fs = new FileStream(StorageManager.Instance.userdataPath + storage, FileMode.Create, FileAccess.Write);
+				FileStream fs = new FileStream(StorageManager.Instance.savedataPath + storage, FileMode.Create, FileAccess.Write);
 
 				StreamWriter sw = new StreamWriter(fs);
 				sw.Write(json);
@@ -178,7 +178,7 @@ namespace NovelEx
 		public void SavefromSnap(string storage)
         {
 			//一時領域からデータ取得
-			string fullpath = StorageManager.Instance.userdataPath + storage;
+			string fullpath = StorageManager.Instance.savedataPath + storage;
 			object obj = LoadFromBinaryFile(fullpath);
 
 			if (obj == null)
@@ -234,7 +234,7 @@ namespace NovelEx
 				sobj.currentIndex++;
 
 			//sobjをシリアライズ化して保存 
-			string path = StorageManager.Instance.userdataPath + storage/*+".sav"*/;
+			string path = StorageManager.Instance.savedataPath + storage/*+".sav"*/;
 			SaveToBinaryFile(sobj, path);
 		}
 

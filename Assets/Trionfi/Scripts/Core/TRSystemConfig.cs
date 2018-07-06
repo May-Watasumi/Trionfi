@@ -8,9 +8,6 @@ namespace NovelEx
 	public class TRSystemConfig : SingletonMonoBehaviour<TRSystemConfig>
     {
         [SerializeField]
-        public TextAsset initialScriptFile;
-
-        [SerializeField]
         public bool debugMode = false;
 
         [SerializeField]

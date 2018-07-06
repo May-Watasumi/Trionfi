@@ -34,8 +34,7 @@ namespace NovelEx
         public bool syncWait
         {
             get { return tagParam != null ? tagParam.syncWait : false; }
-        }
-        
+        }       
 
 //コンストラクタ
         //引数なしの場合
