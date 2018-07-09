@@ -13,7 +13,7 @@ namespace NovelEx
         [SerializeField]
         private GameObject defaultSelectWindowPrefab;
 
-        public MessageWindow currentMessageWindow;
+        public TRMessageWindow currentMessageWindow;
         public BackLogWindow currentLogWindow;
         public SelectWindow currentSelectWindow;
 
@@ -40,7 +40,7 @@ namespace NovelEx
             GameObject _log = GameObject.Instantiate(defaultLogWindowPrefab);
             GameObject _select = GameObject.Instantiate(defaultSelectWindowPrefab);
 */
-            currentMessageWindow = defaultMessageWindowPrefab.GetComponent<MessageWindow>();
+            currentMessageWindow = defaultMessageWindowPrefab.GetComponent<TRMessageWindow>();
             currentLogWindow = defaultLogWindowPrefab.GetComponent<BackLogWindow>();
             currentSelectWindow = defaultSelectWindowPrefab.GetComponent<SelectWindow>();
 /**

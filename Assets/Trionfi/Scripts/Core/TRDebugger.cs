@@ -30,12 +30,12 @@ namespace NovelEx
         {
             if (stop)
             {
-                string str = "<color=green>Novel</color>[" + file + "]:<color=red>Error:" + line + "行目 " + message + "</color>";
+                string str = "<color=green>Novel</color>[" + file + "]:<color=red>Error:" + line + "行目 " + message + "</color>\n";
                 errorMessage.Add(str);
             }
             else
             {
-                string str = "<color=green>Novel</color>[" + file + "]:<color=yellow>Warning:" + line + "行目 " + message + "</color>";
+                string str = "<color=green>Novel</color>[" + file + "]:<color=yellow>Warning:" + line + "行目 " + message + "</color>\n";
                 warningMessage.Add(str);
             }
         }
@@ -88,7 +88,7 @@ namespace NovelEx
                 AbstractComponent abs = TRScriptParser.Instance.makeTag(scriptText);
                 if (abs != null)
                 {
-                    consoleLog += ("Tag: " + abs.tagName);
+                    consoleLog += ("Tag: " + abs.tagName + "\n");
 
                     abs.Execute();
                     this.StartCoroutine(abs.TagAsyncWait());

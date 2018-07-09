@@ -1,14 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 using NovelEx;
+using DG.Tweening;
 using UnityEngine.UI;
 
-public class MessageWindow : MonoBehaviour
+public class TRMessageWindow : MonoBehaviour
 {
     public bool onSkip = false;
     public bool onAuto = false;
 
-    enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait }
+    public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait }
+    public enum WaitIcon { None, Alpha, Rotate }
+
     MessageState state = MessageState.None;
 
     [SerializeField]
@@ -81,8 +84,12 @@ public class MessageWindow : MonoBehaviour
         yield return Wait();
     }
 
-    public IEnumerator Wait(float autoWait = 1.0f)
+    public IEnumerator Wait(WaitIcon icon = WaitIcon.Alpha, float autoWait = 1.0f)
     {
+        waitCursor.gameObject.SetActive(true);
+
+        yield return WaitCusor(icon);
+
         if (onAuto)
             yield return new WaitForSeconds(autoWait);
         else if (onSkip)
@@ -91,6 +98,37 @@ public class MessageWindow : MonoBehaviour
         {
             yield return new WaitWhile(() => state == MessageState.OnWait);
         }
+
+        waitCursor.gameObject.SetActive(false);
+
+        yield return null;
+    }
+
+    public IEnumerator WaitCusor(WaitIcon icon)
+    {
+        switch (icon)
+        {
+            case WaitIcon.Alpha:
+                waitCursor.color = new Color(waitCursor.color.r, waitCursor.color.g, waitCursor.color.b, 0.0f);
+                DOTween.ToAlpha(
+                () => waitCursor.color,
+                color => waitCursor.color = color,
+                1.0f,                                // 最終的なalpha値
+                1.5f
+                )
+                .SetLoops(-1, LoopType.Yoyo);
+                break;
+            case WaitIcon.Rotate:
+//                waitCursor.GetComponent<RectTransform>().rotation = Vector3.zero;
+                waitCursor.GetComponent<RectTransform>().DORotate(new Vector3(0, 0, 359), 1.0f).SetRelative(true).SetLoops(-1);
+                break;
+        }
+
+        while (true)
+        {
+            yield return null;
+        }
+
 
         yield return null;
     }
