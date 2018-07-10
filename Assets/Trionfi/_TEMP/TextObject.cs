@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System;
 using UnityEngine.UI;
 
-namespace NovelEx
+namespace Trionfi
 {
     public class TextObject : AbstractObject
     {

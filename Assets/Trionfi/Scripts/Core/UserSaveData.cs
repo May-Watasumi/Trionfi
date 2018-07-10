@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace NovelEx {
+namespace Trionfi {
 	[Serializable]
 	public class UserSaveData {
 		public string currentFile ="";

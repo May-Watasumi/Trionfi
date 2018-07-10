@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
-namespace NovelEx {
+namespace Trionfi {
     //データセーブ
     public class DatasaveComponent : AbstractComponent
     {

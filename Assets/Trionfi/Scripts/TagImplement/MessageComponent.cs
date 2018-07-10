@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx
+namespace Trionfi
 {
     //[story val="メッセージ"]
     public class MessageComponent : AbstractComponent

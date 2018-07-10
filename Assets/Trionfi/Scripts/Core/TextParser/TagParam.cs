@@ -9,7 +9,7 @@ using System.IO.Compression;
 using System.Text;
 using System.Globalization;
 
-namespace NovelEx
+namespace Trionfi
 {
     public class TagParam : ParamDictionary
     {

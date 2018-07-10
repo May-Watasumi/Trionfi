@@ -4,7 +4,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx
+namespace Trionfi
 {
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>

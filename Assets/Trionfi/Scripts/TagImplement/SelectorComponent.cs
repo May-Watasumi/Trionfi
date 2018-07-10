@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx
+namespace Trionfi
 {
 	public class SeladdComponent : AbstractComponent {
 		public SeladdComponent() {
@@ -35,7 +35,7 @@ namespace NovelEx
 
         public override IEnumerator TagAsyncWait()
         {
-            yield return new WaitWhile(() => TRUIManager.Instance.currentSelectWindow.state == SelectWindow.SelectState.Wait);
+            yield return new WaitWhile(() => TRUIManager.Instance.currentSelectWindow.state == TRSelectWindow.SelectState.Wait);
         }
     }
 }

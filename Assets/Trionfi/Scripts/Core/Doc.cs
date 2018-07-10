@@ -5,11 +5,11 @@ using System.Collections;
 //using UnityEditor;
 
 using System.Collections.Generic;
-using NovelEx;
+using Trionfi;
 using System.IO;
 using System;
 
-namespace NovelEx
+namespace Trionfi
 {
 	public class DocObject
     {

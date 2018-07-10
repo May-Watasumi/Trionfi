@@ -7,7 +7,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 
 //Audio活動を管理する
-namespace NovelEx
+namespace Trionfi
 {
     [Serializable]
     public class TRSoundObjectManager : FlipObject<TRSoundObjectBehaviour, TRSoundObjectBehaviour>

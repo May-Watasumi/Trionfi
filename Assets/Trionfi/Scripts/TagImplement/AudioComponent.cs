@@ -5,7 +5,7 @@ using System.Collections.Generic;
 //ToDo:フェード、再生しているストレージ情保存
 //クリック待ち、同期
 
-namespace NovelEx
+namespace Trionfi
 {
     //[audioplay type=bgm storage=ggg name=ggg delay=0]
     public class AudioplayComponent : AbstractComponent

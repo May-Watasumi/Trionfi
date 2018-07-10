@@ -2,20 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace NovelEx
+namespace Trionfi
 {
     public class TRUIManager : SingletonMonoBehaviour<TRUIManager>
     {
         [SerializeField]
         private GameObject defaultMessageWindowPrefab;
         [SerializeField]
-        private GameObject defaultLogWindowPrefab;
+        private GameObject defaultMessageLogWindowPrefab;
         [SerializeField]
         private GameObject defaultSelectWindowPrefab;
 
         public TRMessageWindow currentMessageWindow;
-        public BackLogWindow currentLogWindow;
-        public SelectWindow currentSelectWindow;
+        public TRMessageLogWindow currentLogWindow;
+        public TRSelectWindow currentSelectWindow;
 
         public delegate void ClickEvent();
 
@@ -41,8 +41,8 @@ namespace NovelEx
             GameObject _select = GameObject.Instantiate(defaultSelectWindowPrefab);
 */
             currentMessageWindow = defaultMessageWindowPrefab.GetComponent<TRMessageWindow>();
-            currentLogWindow = defaultLogWindowPrefab.GetComponent<BackLogWindow>();
-            currentSelectWindow = defaultSelectWindowPrefab.GetComponent<SelectWindow>();
+            currentLogWindow = defaultMessageLogWindowPrefab.GetComponent<TRMessageLogWindow>();
+            currentSelectWindow = defaultSelectWindowPrefab.GetComponent<TRSelectWindow>();
 /**
             _message.gameObject.transform.SetParent(this.gameObject.transform);
             _log.gameObject.transform.SetParent(this.gameObject.transform);
@@ -52,20 +52,42 @@ namespace NovelEx
             _log.transform.position = Vector3.zero;
             _select.transform.position = Vector3.zero;
 */
-            defaultLogWindowPrefab.SetActive(false);
+            defaultMessageLogWindowPrefab.SetActive(false);
             defaultSelectWindowPrefab.SetActive(false);
         }
-/*
-        private void OnDestroy()
-        {
-            currentMessageWindow.gameObject.transform.SetParent(null);
-            currentLogWindow.gameObject.transform.SetParent(null);
-            currentSelectWindow.gameObject.transform.SetParent(null);
+        /*
+                private void OnDestroy()
+                {
+                    currentMessageWindow.gameObject.transform.SetParent(null);
+                    currentLogWindow.gameObject.transform.SetParent(null);
+                    currentSelectWindow.gameObject.transform.SetParent(null);
 
-            GameObject.Destroy(currentMessageWindow.gameObject);
-            GameObject.Destroy(currentLogWindow.gameObject);
-            GameObject.Destroy(currentSelectWindow.gameObject);
+                    GameObject.Destroy(currentMessageWindow.gameObject);
+                    GameObject.Destroy(currentLogWindow.gameObject);
+                    GameObject.Destroy(currentSelectWindow.gameObject);
+                }
+                */
+
+        public void OnAutoButton()
+        {
+            currentMessageWindow.onAuto = true;
         }
-        */
+
+        public void OnSkipButton()
+        {
+            currentMessageWindow.onSkip = true;
+        }
+
+        public void OnMessageLogButton()
+        {
+            currentMessageWindow.gameObject.SetActive(false);
+        }
+
+        public void OnWindowCloseButton()
+        {
+            currentMessageWindow.gameObject.SetActive(false);
+            currentSelectWindow.gameObject.SetActive(false);
+            currentLogWindow.gameObject.SetActive(false);
+        }
     }
 }

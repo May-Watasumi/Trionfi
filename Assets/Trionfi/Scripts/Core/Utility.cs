@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-namespace NovelEx
+namespace Trionfi
 {
     public class TRUtility
     {

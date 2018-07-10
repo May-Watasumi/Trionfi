@@ -3,7 +3,7 @@ using UnityEngine.UI;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx
+namespace Trionfi
 {
     //オブジェクト生成廃棄はシステム管轄から外れる（可搬性）
 

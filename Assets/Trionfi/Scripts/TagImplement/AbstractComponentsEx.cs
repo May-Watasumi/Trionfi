@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx
+namespace Trionfi
 {
     public abstract class AbstractComponent
     {

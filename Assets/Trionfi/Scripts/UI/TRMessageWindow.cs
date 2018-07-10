@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
-using NovelEx;
+using Trionfi;
 using DG.Tweening;
 using UnityEngine.UI;
 

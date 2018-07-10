@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Text.RegularExpressions;
 
-namespace NovelEx {
+namespace Trionfi {
 	public enum TRState
     {
 		InfiniteStop,
@@ -135,7 +135,7 @@ namespace NovelEx {
                 onEndScenario();
             }
 
-            Debug.Log("[NovelEx.StatusManagerEx]EndScenario");
+            Debug.Log("[Trionfi.StatusManagerEx]EndScenario");
         }
 
         public void NextOrder()

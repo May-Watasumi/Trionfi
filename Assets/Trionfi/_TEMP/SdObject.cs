@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace NovelEx
+namespace Trionfi
 {
 	//3Dモデルデータを取り扱います
 	public class SdObject : AbstractObject

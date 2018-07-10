@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NovelEx {
+namespace Trionfi {
 	public class Uiimage_newComponent : AbstractComponent {
 		public Uiimage_newComponent() : base() {
 			//必須項目

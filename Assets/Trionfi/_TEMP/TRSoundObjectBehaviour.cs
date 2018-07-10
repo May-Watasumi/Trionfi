@@ -1,9 +1,9 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
-using NovelEx;
+using Trionfi;
 
-namespace NovelEx
+namespace Trionfi
 {
     public class TRSoundProperty
     {

@@ -11,7 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 
-namespace NovelEx
+namespace Trionfi
 {
     public enum MessageType { Error, Warning, Info };
 

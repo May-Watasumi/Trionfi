@@ -4,9 +4,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-using NovelEx;
+using Trionfi;
 
-namespace NovelEx
+namespace Trionfi
 {
     //スクリプトファイルを読み込んで、適切な形にパースして返します
 
@@ -17,7 +17,7 @@ namespace NovelEx
         public bool onRegistMacro = false;
 
         private System.Globalization.TextInfo tf = new System.Globalization.CultureInfo ("ja-JP"/*"en-US"*/, false).TextInfo;
-        private const string nameSpace = "NovelEx";
+        private const string nameSpace = "Trionfi";
 
         [SerializeField]
         public bool ignoreCR = true;

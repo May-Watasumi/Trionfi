@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx {
+namespace Trionfi {
 	public class Live2d_motionComponent : AbstractComponent {
 		public Live2d_motionComponent() {
 			//必須項目

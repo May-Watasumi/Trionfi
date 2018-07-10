@@ -2,9 +2,9 @@
 using System.Collections;
 using System.Collections.Generic;
 
-namespace NovelEx
+namespace Trionfi
 {
-    public class SelectWindow : MonoBehaviour
+    public class TRSelectWindow : MonoBehaviour
     {
         public enum SelectState { None, Wait };
         public SelectState state = SelectState.None;

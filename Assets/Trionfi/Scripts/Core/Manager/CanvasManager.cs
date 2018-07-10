@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 
-namespace NovelEx
+namespace Trionfi
 {
     public enum TRlayerOrder { BG, Stand, Event, UI };
 

@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace NovelEx
+namespace Trionfi
 {
     public class Selector : MonoBehaviour {
-        public static SelectWindow currentWindow;
+        public static TRSelectWindow currentWindow;
         public static int result = -1;
 
         public int answer;
@@ -14,7 +14,7 @@ namespace NovelEx
         public void OnSelected()
         {
             result = answer;
-            currentWindow.state = SelectWindow.SelectState.None;
+            currentWindow.state = TRSelectWindow.SelectState.None;
         }
 
         public Text ContentText;

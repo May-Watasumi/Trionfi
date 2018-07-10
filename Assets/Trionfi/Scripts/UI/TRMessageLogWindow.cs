@@ -3,9 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using System;
 
-namespace NovelEx {
+namespace Trionfi {
 //	[Serializable]
-	public class BackLogWindow : MonoBehaviour
+	public class TRMessageLogWindow : MonoBehaviour
 	{
         public struct LogData
         {

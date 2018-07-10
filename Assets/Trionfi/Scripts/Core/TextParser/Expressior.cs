@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System;
 using System.Text.RegularExpressions;
 
-namespace NovelEx
+namespace Trionfi
 {
 	[Serializable]
 	public class ExpObject

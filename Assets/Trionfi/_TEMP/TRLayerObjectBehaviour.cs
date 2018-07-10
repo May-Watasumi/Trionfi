@@ -6,7 +6,7 @@ using System;
 using System.Text;
 using System.IO;
 
-namespace NovelEx {
+namespace Trionfi {
     public class LayerProperty
     {
         Transform transform;

@@ -2,7 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 
-namespace NovelEx
+namespace Trionfi
 {
     [ExecuteInEditMode]
 	public class TRSystemConfig : SingletonMonoBehaviour<TRSystemConfig>

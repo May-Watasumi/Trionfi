@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //Audio活動を管理する
-namespace NovelEx
+namespace Trionfi
 {
     public class FlipObject<T,Y> : SingletonMonoBehaviour<FlipObject<T,Y>>
     {
