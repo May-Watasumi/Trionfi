@@ -78,6 +78,13 @@ namespace Trionfi
             var window = GetWindow<TRDebugger>("TrinofiDebugger");
         }
 
+        [MenuItem("Trionfi/Reset PlayerPrefs")]
+        public static void ResetPlayerPrefs()
+        {
+            PlayerPrefs.DeleteAll();
+            PlayerPrefs.Save();
+        }
+
         string scriptText;
 
         private void OnGUI()
