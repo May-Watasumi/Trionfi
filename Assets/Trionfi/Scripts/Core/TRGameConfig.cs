@@ -18,7 +18,11 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
     Slider textspeedSlider;
     [SerializeField]
     Slider autotextwaitSlider;
-
+    [SerializeField]
+    Toggle effectSkipToggle;
+    [SerializeField]
+    Toggle readTextSkipToggle;
+    
     class GameConfigData
     {
         public float mastervolume;
@@ -27,6 +31,8 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
         public float voicevolume;
         public float textspeed;
         public float autotextWait;
+        public bool effectSkip;
+        public bool readtextSkip;
     }
 
     GameConfigData configData = new GameConfigData();
@@ -49,6 +55,11 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
     public float autotextWait
     { get { return configData.autotextWait; } }
 
+    public bool iseffectSkip
+    { get { return configData.effectSkip; } }
+
+    public bool isreadtextSkip
+    { get { return configData.readtextSkip; } }
 
     public void OnChangeSlider(int type)
     {
@@ -75,6 +86,16 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
         }
     }
 
+    public void OnChangeEffectSkip()
+    {
+        configData.effectSkip = effectSkipToggle.isOn;
+    }
+
+    public void OnChangeReadTextSkip()
+    {
+        configData.readtextSkip = readTextSkipToggle.isOn;
+    }
+
     void Save()
     {
         string jsonString = JsonUtility.ToJson(configData);
@@ -97,6 +118,13 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
         configData.voicevolume = 1.0f;
         configData.textspeed = 0.1f;
         configData.autotextWait = 5.0f;
+        configData.effectSkip = false;
+        configData.readtextSkip = false;
+    }
+
+    public void Close(GameObject window)
+    {
+        window.SetActive(false);
     }
 
     // Use this for initialization

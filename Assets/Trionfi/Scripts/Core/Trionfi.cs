@@ -37,12 +37,13 @@ namespace Trionfi
             public Camera targetCamera;
             public Canvas targetCanvas;
 
-           public AudioSource[] audioBGM = new AudioSource[2];
+            public AudioSource[] audioBGM = new AudioSource[2];
             public AudioSource[] audioSE = new AudioSource[2];
             public AudioSource[] audioVoice = new AudioSource[2];            public Image[] standLayer = new Image[5];
             public Image eventLayer;
             public Image bgLayer;
             public Canvas uiCanvas;
+            public UnityEngine.Video.VideoPlayer videoPlayer;
         }
 
         [SerializeField]
@@ -104,7 +105,7 @@ namespace Trionfi
                 case TRDataType.BGM:
                     return referencedObjects.audioBGM[ch];
                 case TRDataType.SE:
-                    return referencedObjects.audioBGM[ch];
+                    return referencedObjects.audioSE[ch];
                 case TRDataType.Voice:
                     return referencedObjects.audioVoice[ch];
             }
