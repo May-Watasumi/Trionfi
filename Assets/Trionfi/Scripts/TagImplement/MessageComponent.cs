@@ -18,7 +18,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string message = expressionedParams["val"];
-            TRUIManager.Instance.currentMessageWindow.ShowMessage(message, TRSystemConfig.Instance.messageShowWait);
+            TRUIManager.Instance.currentMessageWindow.ShowMessage(message, TRGameConfig.Instance.textSpeed);
         }
     }
 

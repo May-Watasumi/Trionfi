@@ -95,7 +95,7 @@ namespace Trionfi
 
 		public static void SaveToBinaryFile(UserSaveData obj, string storage)
 		{
-			string json = LitJson.JsonMapper.ToJson(obj);
+            string json = JsonUtility.ToJson(obj);//  LitJson.JsonMapper.ToJson(obj);
 #if false
             //WebPlayer の場合保存方法に変化を入れる
             if (Application.platform == RuntimePlatform.WindowsWebPlayer || Application.platform == RuntimePlatform.OSXWebPlayer)
@@ -140,7 +140,7 @@ namespace Trionfi
 				if (json == "")
 					return null;
 
-                UserSaveData obj = LitJson.JsonMapper.ToObject<UserSaveData>(json);
+                UserSaveData obj = JsonUtility.FromJson<UserSaveData>(json);// LitJson.JsonMapper.ToObject<UserSaveData>(json);
 
 				sr.Close();
 				fs.Close();
