@@ -73,7 +73,7 @@ namespace Trionfi
 			if(!dicFace.ContainsKey(face))
             {
 //ToDo:
-//				JOKEREX.Instance.GameManager.showError ("表情「" + face + "」は存在しません。");
+//				Trionfi.Instance.GameManager.showError ("表情「" + face + "」は存在しません。");
 			}
 
 			string storage = dicFace [face];

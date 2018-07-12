@@ -126,8 +126,8 @@ namespace Trionfi {
 
         public void EndScenario()
         {
-            //			JOKEREX.Instance.uiInstance.Release();
-            //			JOKEREX.Instance.uiInstance = null;
+            //			Trionfi.Instance.uiInstance.Release();
+            //			Trionfi.Instance.uiInstance = null;
             this.currentState = TRState.EmptyOrder;
 
             if (onEndScenario != null)

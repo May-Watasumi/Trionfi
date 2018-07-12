@@ -78,6 +78,19 @@ namespace Trionfi
             var window = GetWindow<TRDebugger>("TrinofiDebugger");
         }
 
+        [MenuItem("Trionfi/OpenScriptFile")]
+        private static void ExecuteScriptFile()
+        {
+            
+            string path = EditorUtility.OpenFilePanel("シナリオファイル", Application.dataPath, "txt");
+            if (path.Length != 0)
+            {
+                string fileContent = File.ReadAllText(path);
+                Trionfi.Instance.scriptDecoder.LoadScenariofromString(fileContent, Path.GetFileNameWithoutExtension(path));
+            }
+        }
+
+
         [MenuItem("Trionfi/Reset PlayerPrefs")]
         public static void ResetPlayerPrefs()
         {

@@ -52,8 +52,8 @@ namespace Trionfi
         [SerializeField]
         ReferencedObject referencedObjects = new ReferencedObject();
 
-        ScriptDecoder scriptDecoder;
-        Serializer serializer;
+        public ScriptDecoder scriptDecoder;
+        public Serializer serializer;
 
         //単体タグ実行。他のタグから呼び出すことは禁止
         public void StartTag(string tag)
@@ -154,7 +154,7 @@ namespace Trionfi
 
 			//ToDo_Future:バックログもスクリプト管理
 			/*
-			GameObject g = JOKEREX.StorageManager.loadPrefab("CanvasLog");
+			GameObject g = Trionfi.StorageManager.loadPrefab("CanvasLog");
 			GameObject canvaslog = GameObject.Instantiate(g) as GameObject;
 			canvaslog.name = "CanvasLog";
 			*/
@@ -162,7 +162,7 @@ namespace Trionfi
 
 		public void Init()
 		{
-			Debug.Log("-Starting JOKEREX-");
+			Debug.Log("-Starting Trionfi-");
 
 //			LAppLive2DManager.Instance.ClearScene();
 
@@ -173,7 +173,7 @@ namespace Trionfi
 			{
 //                doScript(initialScriptFile.text);
 			}
-			//			JOKEREX.StatusManager.currentState = JokerState.EmptyOrder;
+			//			Trionfi.StatusManager.currentState = JokerState.EmptyOrder;
 		}
         /*
                 void Awake()
@@ -192,7 +192,7 @@ namespace Trionfi
 					LogManager.ApplyLog();
 					StatusManager.NextOrder();
 				}
-				else if (!JOKEREX.Instance.uiInstance.onMessage
+				else if (!Trionfi.Instance.uiInstance.onMessage
 					&& ( StatusManager.currentState == JokerState.MessageShowAll
 						|| StatusManager.currentState == JokerState.MessageShow))
 				{

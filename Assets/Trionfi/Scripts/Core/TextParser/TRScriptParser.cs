@@ -237,9 +237,9 @@ namespace Trionfi
 					continue;
 				}
 	
-				//テキストファイルの場合
+				//テキストの場合
 				if (firstChar != "[" && firstChar != "@") {			
-					line = "[story val=\"" + line + "\"]"; 
+					line = "[message val=\"" + line + "\"]"; 
 					firstChar = "[";
 					isText = true;
 				}

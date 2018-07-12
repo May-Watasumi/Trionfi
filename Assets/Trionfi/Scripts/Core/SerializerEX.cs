@@ -1,5 +1,4 @@
-﻿using MiniJSON;
-using System;
+﻿using System;
 using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
@@ -77,7 +76,7 @@ namespace Trionfi
 				sr.Close();
 				fs.Close();
 
-//				JOKEREX.Instance.UserDataManager.globalSetting = obj;
+//				Trionfi.Instance.UserDataManager.globalSetting = obj;
 			}
 
             //ToDo:
@@ -197,7 +196,7 @@ namespace Trionfi
 		//EX:たぶんplusとかいらなくなる
 		public static void Serialize(string storage, bool plus = false)
         {
-			Debug.Log("JOKEREX:SaveData\"" + storage + "\"");
+			Debug.Log("Trionfi:SaveData\"" + storage + "\"");
 
             //ToDo_Future:この辺は大幅にOriginalから変わってる
             UserSaveData sobj = new UserSaveData();
@@ -216,7 +215,7 @@ namespace Trionfi
 			sobj.currentFile = StatusManager.Instance.currentScenario;
 			sobj.currentIndex = StatusManager.Instance.currentScenarioPosition;
 //ToDo:
-//			sobj.logManager = JOKEREX.Instance.LogManager;
+//			sobj.logManager = Trionfi.Instance.LogManager;
 //ToDo:
 			//ステータス
 //			sobj.visibleMessageFrame = StatusManager.visibleMessageFrame;
@@ -241,7 +240,7 @@ namespace Trionfi
 		//ゲームをロードします
 		public static void Deserialize(string storage)
         {
-			Debug.Log("JOKEREX:LoadData\"" + storage + "\"");
+			Debug.Log("Trionfi:LoadData\"" + storage + "\"");
 
             UserSaveData sobj = GetSaveObject(storage);
 
@@ -265,7 +264,7 @@ namespace Trionfi
 
 			//グローバルで置き換える
 //ToDo:
-//			JOKEREX.Instance.Serializer.LoadGlobalObject();
+//			Trionfi.Instance.Serializer.LoadGlobalObject();
 			//StatusManager.variable.replaceAll("global", NovelSingleton.GameManager.globalSetting.globalVar);
 
 			ScriptDecoder.Instance.LoadScenario(StatusManager.Instance.currentScenario);
@@ -273,7 +272,7 @@ namespace Trionfi
 			//StatusManager.Instance.currentScenario = sobj.currentFile;
 			ScriptDecoder.Instance.currentComponentIndex = sobj.currentIndex - 1;
 			//テキストを復元する
-			//JOKEREX.Instance.MainMessage.CurrentMessage = sobj.currentMessage;
+			//Trionfi.Instance.MainMessage.CurrentMessage = sobj.currentMessage;
 			StatusManager.Instance.messageForSaveTitle = sobj.currentMessage;
 
 			//ステータス復元
@@ -286,7 +285,7 @@ namespace Trionfi
 			//Debug.Log ("wwww:" + sobj.isEventStop);
 
 			//ToDo:
-			/*		JOKEREX.Instance.LogManager = sobj.logManager;
+			/*		Trionfi.Instance.LogManager = sobj.logManager;
 
 					//メッセージウィドウが表示状態なら、ここで表示する
 

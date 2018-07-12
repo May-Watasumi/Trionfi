@@ -26,6 +26,7 @@ namespace Trionfi
     //	[System.Serializable]
     public enum TRStorageType
 	{
+        LocalResources,
 		LocalFile,
 		URL,
 		AssetBundle,
@@ -42,7 +43,7 @@ namespace Trionfi
 //	[System.Serializable]
 	public class StorageManager : SingletonMonoBehaviour<StorageManager>
 	{
-        bool onDataLoading;
+        bool onDataLoading = false;
 
         static public Dictionary<string, TRDataType> dataTypes =  new Dictionary<string, TRDataType>()
         {
@@ -108,11 +109,13 @@ namespace Trionfi
 
             //            if(IsExistLocal(storage) != )
             switch(storageType) {
-            case TRStorageType.LocalFile:
-            default:
+                case TRStorageType.LocalResources:
+                default:
                     resultObject = Resources.Load(fullPath) as GameObject;
                     onDataLoading = false;
                     break;
+//                case TRStorageType.LocalFile:
+//                    break;
             }
 
             if (resultObject == null)

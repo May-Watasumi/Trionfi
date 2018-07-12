@@ -99,8 +99,6 @@ namespace Trionfi
 
 		private Scenario GetInstance(string file_name)
         {
-//			JOKEREX.Instance.showLog("JOKEREX:LoadScenario \"" + file_name + "\"" + " exist=\"" + dicScenario.ContainsKey (file_name) + "\"");
-
 			//シナリオからロードしてきた時はnull になってるからね
 			if(dicScenario == null)
 				dicScenario = new Dictionary<string,Scenario>();
@@ -114,7 +112,7 @@ namespace Trionfi
 		const string dummyScenarioKey = "DUMMY_SCENARIO_KEY";	
 
 		public Scenario LoadScenariofromString(string text, string dicKey) {
-			Debug.Log("JOKEREX:LoadScenario \"" + dicKey + "\"");	
+			Debug.Log("Trionfi:LoadScenario \"" + dicKey + "\"");	
 
 			Scenario sce = String.IsNullOrEmpty(dicKey) ? null : GetInstance(dicKey);
 
@@ -146,7 +144,7 @@ namespace Trionfi
 
 		public Scenario LoadScenario(string storage)
 		{
-//			Debug.Log("JOKEREX:LoadScenario \"" + storage + "\"");
+//			Debug.Log("Trionfi:LoadScenario \"" + storage + "\"");
 			Scenario sce = GetInstance(storage);
 
 			if(sce == null) 

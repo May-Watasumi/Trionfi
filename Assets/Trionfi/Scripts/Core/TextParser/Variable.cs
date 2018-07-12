@@ -226,13 +226,13 @@ namespace Trionfi
 			{
 //ToDo
 /*
-                if (JOKEREX.Instance.Serializer.globalSetting.globalVar == null)
-					JOKEREX.Instance.Serializer.globalSetting.globalVar = new Dictionary<string, string>();
+                if (Trionfi.Instance.Serializer.globalSetting.globalVar == null)
+					Trionfi.Instance.Serializer.globalSetting.globalVar = new Dictionary<string, string>();
 
-				JOKEREX.Instance.Serializer.globalSetting.globalVar[variable_name] = val;
+				Trionfi.Instance.Serializer.globalSetting.globalVar[variable_name] = val;
                 */
     //ToDo:
-				//				JOKEREX.Instance.Serializer.SaveGlobalObject(JOKEREX.Instance..globalSetting);
+				//				Trionfi.Instance.Serializer.SaveGlobalObject(Trionfi.Instance..globalSetting);
 
 			}        
 		}
