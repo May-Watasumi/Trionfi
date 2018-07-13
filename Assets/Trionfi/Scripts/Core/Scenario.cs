@@ -6,31 +6,31 @@ using System;
 namespace Trionfi
 {
 	[Serializable]
-	public class Scenario
+	public class TagInstance
     {
 		public string name;
 		public List<AbstractComponent> arrayComponent;
 		public Dictionary<string,int> dicLabel = new Dictionary<string,int>();
 
-		public Scenario() { }
+		public TagInstance() { }
 
-		public Scenario (string scenario_name, List<AbstractComponent> list) {
+		public TagInstance(string scenario_name, List<AbstractComponent> list) {
 			name = scenario_name;
 			arrayComponent = list;
 		}
-
-        public Scenario( string scriptText )
+        /*
+        public TagInstance( string scriptText )
         {
             name = "__EXTERNAL__";
             arrayComponent = TRScriptParser.Instance.parseScript(scriptText);
         }
-
-		public void addLabel(string label_name,int index)
+        */
+		public void AddLabel(string label_name,int index)
         {
 			this.dicLabel [label_name] = index;
 		}
 
-		public int getIndex(string label_name)
+		public int GetLabelPosition(string label_name)
         {
 			if(label_name == "")
 				return -1;
