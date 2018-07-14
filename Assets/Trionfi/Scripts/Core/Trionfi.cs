@@ -53,14 +53,9 @@ namespace Trionfi
         [SerializeField]
         ReferencedObject referencedObjects = new ReferencedObject();
 
-        //変数インスタンスは１つ
-        [NonSerialized]
-        public Variable variable = new Variable();
-
         public TRTagInstance currentTagInstance = null;
 
         public Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
-        public Serializer serializer;
 
         //単体タグ実行。他のタグから呼び出すことは禁止
         [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
@@ -73,10 +68,6 @@ namespace Trionfi
 
         public void Init(bool changeLayerOrder = false)
         {
-            serializer = new Serializer();
-            //ToDo
-//            TRUIManager.Instance.currentSelectWindow.Init(10);
-
             if (changeLayerOrder)
             {
                 referencedObjects.bgLayer.gameObject.transform.SetAsFirstSibling();

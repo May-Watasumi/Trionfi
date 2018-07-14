@@ -24,14 +24,14 @@ namespace Trionfi
                 {
                     //エラーを追加
                     string message = "必須パラメータ「" + param + "」が不足しています";
-                    ErrorLogger.addLog(message, "", tagParam.lineCount, false);
+                    ErrorLogger.AddLog(message, "", tagParam.lineCount, false);
                 }
             }
         }
 //#endif
 
         //同期フラグ。タグの引数側で設定される。
-        public bool syncWait
+        public bool SyncWait
         {
             get { return tagParam != null ? tagParam.syncWait : false; }
         }       

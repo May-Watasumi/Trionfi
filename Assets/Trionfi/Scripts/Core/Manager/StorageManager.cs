@@ -119,7 +119,7 @@ namespace Trionfi
             }
 
             if (resultObject == null)
-                            ErrorLogger.stopError("Trionfi:\"" + storage + "\"("+resultObject.GetType().Name+"\")が見つかりませんでした。");
+                            ErrorLogger.StopError("Trionfi:\"" + storage + "\"("+resultObject.GetType().Name+"\")が見つかりませんでした。");
 
             return resultObject;
 		}

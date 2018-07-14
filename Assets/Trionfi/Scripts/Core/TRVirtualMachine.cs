@@ -28,6 +28,105 @@ namespace Trionfi
         //ToDo:レイヤ、音等の状態保存
     }
 
+    public enum TRSTACKTYPES
+    {
+        MACRO,
+        FUNCTION,
+        IF
+    }
+
+    //マクロ＆関数オブジェクト。
+    [Serializable]
+    public class InvocationObject
+    {
+//        public string name;
+        public string file_name;
+        public int index;
+
+
+        public TRSTACKTYPES type;
+
+        public InvocationObject(/*string _name,*/ string _file_name, int _index, TRSTACKTYPES _type)
+        {
+//            name = _name;
+            file_name = _file_name;
+            index = _index;
+            type = _type;
+        }
+    }
+
+    //コールスタック。関数とマクロ共用。（返値を保存する以外の実装に違いはない）。
+    [Serializable]
+    public class CallStackObject
+    {
+        public ParamDictionary tempParam = new ParamDictionary();//仮引数
+        public string scenarioNname;
+        public int index;
+
+        public CallStackObject(string scenario_name, int _index, ParamDictionary _param)
+        {
+            scenarioNname = scenario_name;
+            index = _index;
+            tempParam = _param;
+        }
+    }
+
+    public class TRCallStack : Stack<CallStackObject>
+    {
+        public new void Push(CallStackObject _object)
+        {
+            //variable["mp"] = dicVar;
+            base.Push(_object);
+        }
+
+        public new CallStackObject Pop()
+        {
+            //variable["mp"] = c.dicVar;
+            return base.Pop();
+        }
+    }
+
+    //if文の入れ子などを管理するスタック
+    [Serializable]
+    public class IfStack
+    {
+        public bool isIfProcess = false;
+
+        public IfStack() { }
+
+        public IfStack(bool val)
+        {
+            isIfProcess = val;
+        }
+    }
+
+    public class TRVitualMachine
+    {
+        //変数インスタンスは１つ
+        public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
+        public static Variable variableInstance = new Variable();
+
+        public static string currentScriptName;
+        public static int currenScriptPosition = -1;
+
+        public static TRCallStack callStack = new TRCallStack();
+        public static Stack<bool> ifStack = new Stack<bool>();
+
+        public static Dictionary<string, InvocationObject> invovationInstance = new Dictionary<string, InvocationObject>();
+
+        //スタックをすべて削除します
+        public static void RemoveAllStacks()
+        {
+            callStack.Clear();
+            ifStack.Clear();
+        }
+
+        //ToDo:
+        public static bool Serialize(string name) { return true; }
+        public static bool Deserialize(string name) { return false; }
+    }
+
+ #if false
     public class Serializer
     {
         public Serializer() { }
@@ -401,5 +500,5 @@ namespace Trionfi
 		*/
 
 	}
-
+#endif
 }

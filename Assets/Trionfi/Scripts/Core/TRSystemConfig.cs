@@ -62,7 +62,7 @@ namespace Trionfi
 			}
 		}
 
-		public float getFrameRate()
+		public float GetFrameRate()
         {
 			return frameRate;
 		}

@@ -159,14 +159,15 @@ namespace Trionfi
             {
                 tempParam[pair.Key] = ExpObject.replaceVariable(pair.Value);
             }
-
+//ToDo?
+/*
             //タグにデフォルト値を設定中かつ、tag が指定されていない場合
             if (StatusManager.Instance.TagDefaultVal != "")
             {
                 if (tempParam.ContainsKey("tag") && tempParam["tag"] == "")
                     tempParam["tag"] = StatusManager.Instance.TagDefaultVal;
             }
-
+*/
             return tempParam;
         }
 

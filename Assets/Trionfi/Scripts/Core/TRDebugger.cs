@@ -26,7 +26,7 @@ namespace Trionfi
             warningMessage.Clear();
         }
 
-        public static void addLog(string message, string file, int line, bool stop)
+        public static void AddLog(string message, string file, int line, bool stop)
         {
             if (stop)
             {
@@ -40,7 +40,7 @@ namespace Trionfi
             }
         }
 
-        public static bool showAll()
+        public static bool ShowAll()
         {
             foreach (string message in errorMessage)
             {
@@ -53,7 +53,7 @@ namespace Trionfi
             return errorMessage.Count > 0 ? true : false;
         }
 
-        public static void stopError(string message)
+        public static void StopError(string message)
         {
             UnityEngine.Debug.LogError(message);
             throw new UnityException(message);
