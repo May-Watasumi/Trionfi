@@ -6,10 +6,10 @@ using System;
 namespace Trionfi
 {
     [Serializable]
-	public class ScriptDecoder
+	public class TRTagInstance
     {
-        [NonSerialized]
-        public static ScriptDecoder Instance = null;
+        public List<AbstractComponent> tagComponents;
+        public Dictionary<string, int> labelInfo = new Dictionary<string, int>();
 
         //マクロ情報はシステム共通
         [Serializable]
@@ -21,11 +21,11 @@ namespace Trionfi
 
 			public Macro() { }
 
-			public Macro(string name, string file_name, int index)
+			public Macro(string _name, string _file_name, int _index)
 			{
-				this.name = name;
-				this.file_name = file_name;
-				this.index = index;
+				name = _name;
+				file_name = _file_name;
+				index = _index;
 			}
 		}
 
@@ -39,11 +39,11 @@ namespace Trionfi
 
 			public CallStack() { }
 
-			public CallStack(string scenario_name, int index, ParamDictionary dicVar)
+			public CallStack(string scenario_name, int _index, ParamDictionary _dicVar)
 			{
-				this.scenarioNname = scenario_name;
-				this.index = index;
-				this.dicVar = dicVar;
+				scenarioNname = scenario_name;
+				index = _index;
+				dicVar = _dicVar;
 			}
 		}
 
@@ -57,135 +57,69 @@ namespace Trionfi
 
 			public IfStack(bool val)
 			{
-				this.isIfProcess = val;
+				isIfProcess = val;
 			}
 		}
 
-		[NonSerialized]
-		private Dictionary<string, Scenario> dicScenario = new Dictionary<string,Scenario>();
+        public List<AbstractComponent> arrayComponents = new List<AbstractComponent>();
+        public int currentComponentIndex = -1;      //-1は未初期化、0からスタート
 
-		public Dictionary<string, Macro> dicMacro = new Dictionary<string,Macro>();
+        //stackを配列に置き換える
+                                                    //public Stack<CallStack> qStack = new Stack<CallStack>();
+                                                    //public Stack<IfStack> ifStack = new Stack<IfStack>();
 
-        //変数インスタンスは１つ
-        [NonSerialized]
-		public Variable variable = new Variable();
-
-		//stackを配列に置き換える
-		//public Stack<CallStack> qStack = new Stack<CallStack>();
-		//public Stack<IfStack> ifStack = new Stack<IfStack>();
-
-		public List<CallStack> qStack = new List<CallStack>();
+        public List<CallStack> qStack = new List<CallStack>();
 		public List<IfStack> ifStack = new List<IfStack>();
 
-		public int ifNum = 0;
+        public int ifNum = 0;
 		public int macroNum = 0;
 
-		public List<AbstractComponent> arrayComponents = new List<AbstractComponent>();
-		public int currentComponentIndex = -1;		//-1は未初期化		//EX変更点：0からスタート
+        public Dictionary<string, Macro> dicMacro = new Dictionary<string, Macro>();
 
-		public ScriptDecoder() { Instance = this; }
+		public bool CompileScriptString(string text) {
+            ErrorLogger.Clear();
 
-		public void StartScenario(string currentScenario, int index, List<AbstractComponent> arrayComponents = null)
-		{
-			if (arrayComponents != null)
-			{
-				this.arrayComponents = arrayComponents;
+            //パーサーを動作させる
+            tagComponents = TRScriptParser.Instance.Parse(text);
+
+            int _index = 0;
+
+            foreach (AbstractComponent _component in arrayComponents)
+            {
+                if (_component.tagName == "label")
+                    AddLabel(_component.expressionedParams["name"], _index);
+
+                _index++;
             }
 
-            this.currentComponentIndex = index;
-			StatusManager.Instance.currentScenario = currentScenario;
-			StatusManager.Instance.MessageShow();
-		}
+            return ErrorLogger.showAll();
+        }
 
-		private Scenario GetInstance(string file_name)
-        {
-			//シナリオからロードしてきた時はnull になってるからね
-			if(dicScenario == null)
-				dicScenario = new Dictionary<string,Scenario>();
-
-			if(dicScenario.ContainsKey(file_name))
-				return dicScenario[file_name];
-			else
-				return null;
-		}
-
-		const string dummyScenarioKey = "DUMMY_SCENARIO_KEY";	
-
-		public Scenario LoadScenariofromString(string text, string dicKey) {
-			Debug.Log("Trionfi:LoadScenario \"" + dicKey + "\"");	
-
-			Scenario sce = String.IsNullOrEmpty(dicKey) ? null : GetInstance(dicKey);
-
-			if(String.IsNullOrEmpty(dicKey))
-				dicKey = dummyScenarioKey;	
-
-			if(sce == null)
-			{
-				sce = new Scenario();
-
-				ErrorLogger.Clear();
-
-				//パーサーを動作させる
-				sce.arrayComponent = TRScriptParser.Instance.parseScript(text);
-
-				if(ErrorLogger.showAll())
-				{
-					ErrorLogger.stopError("<color=red>致命的なエラーがあります。ゲームを開始できません</color>");
-				}
-				AddScenario(dicKey, sce.arrayComponent);
-			}
-
-			arrayComponents = sce.arrayComponent;
-
-			StartScenario(dicKey, 0, sce.arrayComponent);
-
-			return sce;
-		}
-
-		public Scenario LoadScenario(string storage)
+		public bool CompileScriptFile(string storage)
 		{
-//			Debug.Log("Trionfi:LoadScenario \"" + storage + "\"");
-			Scenario sce = GetInstance(storage);
-
-			if(sce == null) 
-			{
 //				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
 				TextAsset script_text = StorageManager.Instance.LoadObject(storage, TRDataType.TextAsset) as TextAsset;
 
-				sce = LoadScenariofromString(script_text.text, storage);
-			}
-			else
-			{
-				StartScenario(storage, 0, sce.arrayComponent);
-			}
-
-			return sce;
+				return CompileScriptString(script_text.text);
 		}
 
-		//シナリオの追加 ラベルの位置計算もここでやる
-		public void AddScenario(string scenario_name, List<AbstractComponent> list) {
-			dicScenario [scenario_name] = new Scenario(scenario_name,list);
-			int index = 0;
-
-			foreach(AbstractComponent _component in list)
-            {
-				if (_component.tagName == "label")
-					dicScenario[scenario_name].addLabel(_component.expressionedParams["name"], index);
-
-				index++;
-			}	
-		}
-
-		public int GetIndex(string scenario_name, string label_name)
+        public void AddLabel(string label_name, int index)
         {
-			//シナリオがまだ読み込まれていない場合は読み込みを行う
-			if (!dicScenario.ContainsKey (scenario_name))
-				return -1;
+            labelInfo[label_name] = index;
+        }
 
-			return dicScenario[scenario_name].getIndex (label_name);
-		}
+        public int GetLabelPosition(string label_name)
+        {
+            if (string.IsNullOrEmpty(label_name) || !labelInfo.ContainsKey(label_name))
+            {
+                ErrorLogger.stopError("にラベル「" + label_name + "」が見つかりません。");
+                return -1;
+            }
 
-		public void AddStack(string scenario_name, int index, ParamDictionary dicVar) {
+            return labelInfo[label_name];
+        }
+
+        public void AddStack(string scenario_name, int index, ParamDictionary dicVar) {
 			//stack追加時にdicVarに呼び出し元情報を入れる
 			//呼び出し元の情報はcaller_indexに入る。
 			dicVar ["caller_index"] = "" + index;
@@ -221,7 +155,9 @@ namespace Trionfi
 					Debug.Log(kvp.Value);
 				}
 				*/
-				variable["mp"] = c.dicVar;
+
+                //ToDo:コールスタック復帰
+				//variable["mp"] = c.dicVar;
 
 				qStack.RemoveAt(qStack.Count-1);
 
@@ -329,10 +265,14 @@ namespace Trionfi
 //			hasComponent = false;
 		}
 
-//0=デフォルト1=componentのフラグが立ってない-1シナリオ最後に
-		public IEnumerator Run()
+        //0=デフォルト1=componentのフラグが立ってない-1シナリオ最後に
+        public IEnumerator Run(int index = 0)
 		{
-			if(currentComponentIndex < arrayComponents.Count)
+                currentComponentIndex = index;
+                //			StatusManager.Instance.currentScenario = this;
+                //			StatusManager.Instance.MessageShow();
+
+            if (currentComponentIndex < arrayComponents.Count)
 			{
 				AbstractComponent _tagComponent = arrayComponents[currentComponentIndex];
 

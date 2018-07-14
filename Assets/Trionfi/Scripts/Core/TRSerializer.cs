@@ -10,9 +10,27 @@ using System.Text;
 
 namespace Trionfi
 {
-	public class Serializer
+    [Serializable]
+    public class UserSaveDataInfo
     {
-		public Serializer() { }
+        public string currentFile = "";
+        public int currentIndex = -1;
+
+        public string name = "";
+        public string title = "";
+        public string description = "";
+        public string date = "";
+        public string currentMessage = "";
+
+        //画面のキャプチャ情報
+        public string cap_img_file = "";
+
+        //ToDo:レイヤ、音等の状態保存
+    }
+
+    public class Serializer
+    {
+        public Serializer() { }
 
 		//グローバルを保存します
 		public static void SaveGlobalObject(string storage)
@@ -85,14 +103,14 @@ namespace Trionfi
 			//ScriptDecoder.Instance.variable.trace("global");
 		}
 
-		public static UserSaveData GetSaveObject(string storage)
+		public static UserSaveDataInfo GetSaveObject(string storage)
         {
 			string fullpath = /*StorageManager.Instance.PATH_SAVEDATA +*/ storage;
-            UserSaveData obj = (UserSaveData)LoadFromBinaryFile(fullpath);
+            UserSaveDataInfo obj = (UserSaveDataInfo)LoadFromBinaryFile(fullpath);
 			return obj;
 		}
 
-		public static void SaveToBinaryFile(UserSaveData obj, string storage)
+		public static void SaveToBinaryFile(UserSaveDataInfo obj, string storage)
 		{
             string json = JsonUtility.ToJson(obj);//  LitJson.JsonMapper.ToJson(obj);
 #if false
@@ -139,7 +157,7 @@ namespace Trionfi
 				if (json == "")
 					return null;
 
-                UserSaveData obj = JsonUtility.FromJson<UserSaveData>(json);// LitJson.JsonMapper.ToObject<UserSaveData>(json);
+                UserSaveDataInfo obj = JsonUtility.FromJson<UserSaveDataInfo>(json);// LitJson.JsonMapper.ToObject<UserSaveData>(json);
 
 				sr.Close();
 				fs.Close();
@@ -151,7 +169,7 @@ namespace Trionfi
 		public static void applySaveVariable(string storage, Variable variable, string var_name = "save")
 		{
             //最初のセーブデータを取得するか。
-            UserSaveData sobj = GetSaveObject(storage);
+            UserSaveDataInfo sobj = GetSaveObject(storage);
 			//this.gameManager.saveManager.getSaveData ("save_"+current_index);
 			variable.Set(var_name + ".name", storage);
 			//ToDo:
@@ -186,7 +204,7 @@ namespace Trionfi
 			}
 			else
             {
-                UserSaveData sobj = (UserSaveData)LoadFromBinaryFile(fullpath);
+                UserSaveDataInfo sobj = (UserSaveDataInfo)LoadFromBinaryFile(fullpath);
 				string w_path = fullpath;
 				SaveToBinaryFile(sobj, w_path);
 			}
@@ -199,7 +217,7 @@ namespace Trionfi
 			Debug.Log("Trionfi:SaveData\"" + storage + "\"");
 
             //ToDo_Future:この辺は大幅にOriginalから変わってる
-            UserSaveData sobj = new UserSaveData();
+            UserSaveDataInfo sobj = new UserSaveDataInfo();
 			sobj.name = storage;
 
 			//タイトルとか、基本情報を格納
@@ -207,11 +225,11 @@ namespace Trionfi
 			sobj.date = DateTime.Now.ToString ("yyyy/MM/dd HH:mm:ss");
 			sobj.currentMessage = StatusManager.Instance.messageForSaveTitle;
 
-            sobj.dicImage = TRLayerObjectManager.Instance.dicObject;
+//            sobj.dicImage = TRLayerObjectManager.Instance.dicObject;
 //			sobj.dicTag = TRLayerObjectManager.dicTag;
 //			sobj.dicEvent = EventManager.dicEvent;
-			sobj.scriptManager = ScriptDecoder.Instance;
-			sobj.variable = ScriptDecoder.Instance.variable;
+//			sobj.scriptManager = ScriptDecoder.Instance;
+//			sobj.variable = ScriptDecoder.Instance.variable;
 			sobj.currentFile = StatusManager.Instance.currentScenario;
 			sobj.currentIndex = StatusManager.Instance.currentScenarioPosition;
 //ToDo:
@@ -223,8 +241,6 @@ namespace Trionfi
 //			sobj.enableEventClick = StatusManager.enableEventClick;
 //			sobj.enableClickOrder = StatusManager.enableClickOrder;
 //ToDo:
-			sobj.currentPlayBgm = StatusManager.Instance.currentPlayBgm;
-			sobj.isEventStop = StatusManager.Instance.isEventStop;
 
 			//画面のキャプチャを作成して保存する
 			//保存先のパス
@@ -242,7 +258,7 @@ namespace Trionfi
         {
 			Debug.Log("Trionfi:LoadData\"" + storage + "\"");
 
-            UserSaveData sobj = GetSaveObject(storage);
+            UserSaveDataInfo sobj = GetSaveObject(storage);
 
 			Dictionary<string, TRLayerObjectBehaviour> dic = sobj.dicImage;
 
@@ -252,14 +268,14 @@ namespace Trionfi
                 //画面を復元していきます
                 //				ImageObject image = new Image(dic[kvp.Key].dicSave);
                 //				image.dicFace = dic[kvp.Key].dicFace;
-                TRLayerObjectManager.Instance.Create(kvp.Key, TRDataType.BG);
+                //TRLayerObjectManager.Instance.Create(kvp.Key, TRDataType.BG);
 			}
 
 			//タグも復元
 //			EventManager.dicEvent = sobj.dicEvent;
 //ToDo:Save
 //			ScenarioManager = sobj.scenarioManager;
-			ScriptDecoder.Instance.variable = sobj.variable;
+//			ScriptDecoder.Instance.variable = sobj.variable;
 			//ToDo:Logmanagerクリア
 
 			//グローバルで置き換える
@@ -267,10 +283,10 @@ namespace Trionfi
 //			Trionfi.Instance.Serializer.LoadGlobalObject();
 			//StatusManager.variable.replaceAll("global", NovelSingleton.GameManager.globalSetting.globalVar);
 
-			ScriptDecoder.Instance.LoadScenario(StatusManager.Instance.currentScenario);
+//			ScriptDecoder.Instance.LoadScenario(StatusManager.Instance.currentScenario);
 			//開始位置の確認
 			//StatusManager.Instance.currentScenario = sobj.currentFile;
-			ScriptDecoder.Instance.currentComponentIndex = sobj.currentIndex - 1;
+//			ScriptDecoder.Instance.currentComponentIndex = sobj.currentIndex - 1;
 			//テキストを復元する
 			//Trionfi.Instance.MainMessage.CurrentMessage = sobj.currentMessage;
 			StatusManager.Instance.messageForSaveTitle = sobj.currentMessage;

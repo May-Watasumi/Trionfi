@@ -58,7 +58,7 @@ namespace Trionfi {
         {
 			string name = expressionedParams ["name"];
 //ToDo:
-			ScriptDecoder.Instance.AddMacro(name, StatusManager.Instance.currentScenario, ScriptDecoder.Instance.currentComponentIndex);
+			Trionfi.Instance.currentTagInstance.AddMacro(name, StatusManager.Instance.currentScenario, Trionfi.Instance.currentTagInstance.currentComponentIndex);
         }
     }
 
@@ -76,7 +76,7 @@ namespace Trionfi {
         {
 			expressionedParams["name"] = tagName;
 
-			ScriptDecoder.Macro macro = ScriptDecoder.Instance.GetMacro(expressionedParams["name"]);
+			TRTagInstance.Macro macro = Trionfi.Instance.currentTagInstance.GetMacro(expressionedParams["name"]);
 
             if (macro != null)
             {
@@ -84,9 +84,9 @@ namespace Trionfi {
                 expressionedParams["index"] = "" + macro.index;
                 expressionedParams["file"] = macro.file_name;
 
-                ScriptDecoder.Instance.macroNum++;
+                Trionfi.Instance.currentTagInstance.macroNum++;
                 //this.gameManager.scenarioManager.addMacroStack (macro.name, this.expressionedParams);
-                AbstractComponent cmp = TRScriptParser.Instance.makeTag("call", expressionedParams);
+                AbstractComponent cmp = TRScriptParser.Instance.MakeTag("call", expressionedParams);
                 cmp.Execute();
             }
             else
@@ -103,10 +103,10 @@ namespace Trionfi {
 
 		protected override void TagFunction() {
             //ToDo:あんまりきれいじゃない
-			if(ScriptDecoder.Instance.macroNum > 0) {
-				ScriptDecoder.Instance.macroNum--;
+			if(Trionfi.Instance.currentTagInstance.macroNum > 0) {
+				Trionfi.Instance.currentTagInstance.macroNum--;
 
-                AbstractComponent cmp = TRScriptParser.Instance.makeTag("[return]");
+                AbstractComponent cmp = TRScriptParser.Instance.MakeTag("[return]");
 				cmp.Execute();
 			}
 			else
@@ -197,26 +197,26 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 			if (StatusManager.Instance.currentScenario != file)
 			{
 				//ToDo:
-				ScriptDecoder.Instance.LoadScenario(file);
+				Trionfi.Instance.currentTagInstance.CompileScriptFile(file);
 			}
 
 			//index直指定の場合はそれに従う
 			if (this.expressionedParams["index"] != "")
 				index = int.Parse(this.expressionedParams["index"]);
 			else
-				index = ScriptDecoder.Instance.GetIndex(file, target);
+				index = Trionfi.Instance.tagInstance[file].GetLabelPosition(target);
 
 			if(index == -1)
 				index = 0;
 
 
 //ToDo:
-			ScriptDecoder.Instance.StartScenario(file, index);
+			Trionfi.Instance.currentTagInstance.Run(index);
 
 			//シーンをクリアして作りなおす
 			if (this.expressionedParams ["scene"] == "new") {
 				//new の場合はスタックをすべて削除する
-				ScriptDecoder.Instance.RemoveAllStacks();
+				Trionfi.Instance.currentTagInstance.RemoveAllStacks();
 				StatusManager.Instance.nextFileName = file;
 				StatusManager.Instance.nextTargetName = target;
 
@@ -224,7 +224,7 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
 				SceneManager.LoadScene("NovelPlayer");
 			}
 
-			Debug.Log("JUMP:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + ScriptDecoder.Instance.currentComponentIndex + "\"");
+			Debug.Log("JUMP:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + Trionfi.Instance.currentTagInstance.currentComponentIndex + "\"");
             // + " param=\"" + this.expressionedParams.ToStringFull());
 
             //			if (this.expressionedParams ["next"] != "false") {
@@ -236,7 +236,7 @@ scene=new を指定すると、新しくシーンを作成した上でジャン�
             //			}
 
             //メインループ側で配列Indexが++されるので
-            ScriptDecoder.Instance.currentComponentIndex--;
+            Trionfi.Instance.currentTagInstance.currentComponentIndex--;
         }
 	}
 
@@ -301,16 +301,16 @@ target=呼び出すサブルーチンのラベルを指定します。省略す�
 
 			string tag_str ="[jump file='"+file+"' target='"+target+"' index="+ index +" ]";
 //ToDo:
-			Debug.Log("PUSH:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + (ScriptDecoder.Instance.currentComponentIndex).ToString()+ "\"");
+			Debug.Log("PUSH:scn=\"" + StatusManager.Instance.currentScenario + "\" " + "index=\"" + (Trionfi.Instance.currentTagInstance.currentComponentIndex).ToString()+ "\"");
 
-			ScriptDecoder.Instance.AddStack(StatusManager.Instance.currentScenario, ScriptDecoder.Instance.currentComponentIndex, this.expressionedParams);
+			Trionfi.Instance.currentTagInstance.AddStack(StatusManager.Instance.currentScenario, Trionfi.Instance.currentTagInstance.currentComponentIndex, this.expressionedParams);
 			
 			//タグを実行
-			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
 			cmp.Execute();
 
             //メインループ側で配列Indexが++されるので
-			ScriptDecoder.Instance.currentComponentIndex--;
+			Trionfi.Instance.currentTagInstance.currentComponentIndex--;
 
             //macro もひとつのcomponent_array みたいにしていいんじゃないかしら。ラベルじゃないけど
             //StackManager に　呼び出し状態を保持させる macro の中で別ファイルへのjumpは禁止したいね。
@@ -367,7 +367,7 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 		}
 
 		protected override void TagFunction() {
-			ScriptDecoder.CallStack stack = ScriptDecoder.Instance.PopStack();
+			TRTagInstance.CallStack stack = Trionfi.Instance.currentTagInstance.PopStack();
 
 			string tag_str = "";
 
@@ -380,7 +380,7 @@ target=サブルーチンの呼び出し元に戻らずに、指定したラベ�
 			Debug.Log("RETURN scn=\"" + stack.scenarioNname + "\" " + "index=\"" + stack.index.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
 
 			//タグを実行
-			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
 			cmp.Execute();
         }
 	}
@@ -485,8 +485,8 @@ exp=数式を指定します
 			ExpObject eo = new ExpObject (exp);
 
 			string result = ExpObject.calc (eo.exp);
-
-			ScriptDecoder.Instance.variable.Set(eo.type + "." + eo.name, result);
+            //ToDo
+//			Trionfi.Instance.currentTagInstance.variable.Set(eo.type + "." + eo.name, result);
         }
     }
 
@@ -534,7 +534,8 @@ exp=文字式を指定します
 			string exp = expressionedParams ["exp"];
 
 			ExpObject eo = new ExpObject (exp);
-			ScriptDecoder.Instance.variable.Set(eo.type + "." + eo.name, eo.exp);
+            //ToDo:
+//			Trionfi.Instance.currentTagInstance.variable.Set(eo.type + "." + eo.name, eo.exp);
         }
     }
 
@@ -579,14 +580,14 @@ exp=評価する変数を格納します。
 		protected override void TagFunction() {
 			string exp = expressionedParams["exp"];
 			string val = expressionedParams["exp"];
-
+            //ToDo:
 			//変数なら素直に代入
-			if(val.IndexOf(".") != -1)
-				ScriptDecoder.Instance.variable.Set(exp, val);
+//			if(val.IndexOf(".") != -1)
+//				Trionfi.Instance.currentTagInstance.variable.Set(exp, val);
 
 			string tag_str ="[story val='"+val+"' ]";
 
-			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag_str);
+			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
 			cmp.Execute();
         }
     }
@@ -659,11 +660,11 @@ exp=評価する式を指定します。この式の結果が false ( または 
 
 		public override void Before() {
 			//スキップ中ならここは通過しない
-			ScriptDecoder.Instance.ifNum++;
+			Trionfi.Instance.currentTagInstance.ifNum++;
 		}
 
 		protected override void TagFunction() {
-			ScriptDecoder.Instance.AddIfStack(true);
+			Trionfi.Instance.currentTagInstance.AddIfStack(true);
 
 			string exp = expressionedParams ["exp"];
 			if (this.expressionedParams.ContainsKey ("mobile")) {
@@ -674,7 +675,7 @@ exp=評価する式を指定します。この式の結果が false ( または 
 			//条件に合致した場合はそのままifの中へ
 			if (result == "true") {
 				//ifスタックが完了している
-				ScriptDecoder.Instance.ChangeIfStack(false);
+				Trionfi.Instance.currentTagInstance.ChangeIfStack(false);
 			}
 			else {
 				//elsif か　endif まで処理を進める
@@ -725,8 +726,8 @@ exp=評価する変数を格納します。
 		public override void Before() {
 			StatusManager.Instance.setSkipOrder();
 
-			if (ScriptDecoder.Instance.CountIfStack() == ScriptDecoder.Instance.ifNum) {
-				if (ScriptDecoder.Instance.CurrentIfStack() == true)
+			if (Trionfi.Instance.currentTagInstance.CountIfStack() == Trionfi.Instance.currentTagInstance.ifNum) {
+				if (Trionfi.Instance.currentTagInstance.CurrentIfStack() == true)
 					StatusManager.Instance.releaseSkipOrder();
 			}
 		}
@@ -738,7 +739,7 @@ exp=評価する変数を格納します。
 			//条件に合致した場合はそのままifの中へ
 			if (result == "true") {
 				//ifスタックが完了している
-				ScriptDecoder.Instance.ChangeIfStack(false);
+				Trionfi.Instance.currentTagInstance.ChangeIfStack(false);
 			}
 			else
 			{
@@ -780,14 +781,14 @@ if タグもしくは elsif タグ と endif タグの間で用いられます�
 		public override void Before() {
 			StatusManager.Instance.setSkipOrder();
 
-			if (ScriptDecoder.Instance.CountIfStack() == ScriptDecoder.Instance.ifNum) {
-				if (ScriptDecoder.Instance.CurrentIfStack() == true)
+			if (Trionfi.Instance.currentTagInstance.CountIfStack() == Trionfi.Instance.currentTagInstance.ifNum) {
+				if (Trionfi.Instance.currentTagInstance.CurrentIfStack() == true)
 					StatusManager.Instance.releaseSkipOrder();
 			}
 		}
 
 		protected override void TagFunction() {
-			ScriptDecoder.Instance.ChangeIfStack(false);
+			Trionfi.Instance.currentTagInstance.ChangeIfStack(false);
         }
     }
 
@@ -824,15 +825,15 @@ if文を終了します。必ずif文の終わりに記述する必要があり�
 			//if文とスタックの数が同一の場合はスキップをやめて、endif を実行
 			StatusManager.Instance.setSkipOrder();
 
-			if (ScriptDecoder.Instance.CountIfStack() == ScriptDecoder.Instance.ifNum)
+			if (Trionfi.Instance.currentTagInstance.CountIfStack() == Trionfi.Instance.currentTagInstance.ifNum)
 				StatusManager.Instance.releaseSkipOrder();		
 
-			ScriptDecoder.Instance.ifNum--;
+			Trionfi.Instance.currentTagInstance.ifNum--;
 		}
 
 		protected override void TagFunction() {
 			//ifスタックが取り除かれる
-			ScriptDecoder.Instance.PopIfStack();
+			Trionfi.Instance.currentTagInstance.PopIfStack();
         }
     }
 
@@ -1008,8 +1009,9 @@ title=デフォルトタグ設定を解除する
         }
 
         protected override void TagFunction() {
-			string exp = expressionedParams ["exp"];
-			ScriptDecoder.Instance.variable.Trace(exp);
+            //ToDo:
+//            string exp = expressionedParams ["exp"];
+//			Trionfi.Instance.currentTagInstance.variable.Trace(exp);
         }
     }
     
@@ -1084,8 +1086,9 @@ title=デフォルトタグ設定を解除する
 
 		protected override void TagFunction() {
 			//削除
-			string name = expressionedParams["name"];
-            ScriptDecoder.Instance.variable.Remove(name);
+            //ToDo
+//			string name = expressionedParams["name"];
+//            Trionfi.Instance.currentTagInstance.variable.Remove(name);
         }
     }
     

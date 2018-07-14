@@ -86,7 +86,7 @@ namespace Trionfi
             if (path.Length != 0)
             {
                 string fileContent = File.ReadAllText(path);
-                Trionfi.Instance.scriptDecoder.LoadScenariofromString(fileContent, Path.GetFileNameWithoutExtension(path));
+                Trionfi.Instance.currentTagInstance.CompileScriptString(fileContent);
             }
         }
 
@@ -105,7 +105,7 @@ namespace Trionfi
             scriptText = EditorGUILayout.TextField("スクリプト", scriptText);
             if (GUILayout.Button("実行"))
             {
-                AbstractComponent abs = TRScriptParser.Instance.makeTag(scriptText);
+                AbstractComponent abs = TRScriptParser.Instance.MakeTag(scriptText);
                 if (abs != null)
                 {
                     consoleLog += ("Tag: " + abs.tagName + "\n");

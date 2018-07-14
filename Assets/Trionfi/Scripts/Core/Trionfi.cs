@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -52,20 +53,26 @@ namespace Trionfi
         [SerializeField]
         ReferencedObject referencedObjects = new ReferencedObject();
 
-        public ScriptDecoder scriptDecoder;
+        //変数インスタンスは１つ
+        [NonSerialized]
+        public Variable variable = new Variable();
+
+        public TRTagInstance currentTagInstance = null;
+
+        public Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
         public Serializer serializer;
 
         //単体タグ実行。他のタグから呼び出すことは禁止
+        [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void StartTag(string tag)
         {
-			AbstractComponent cmp = TRScriptParser.Instance.makeTag(tag);
+			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag);
             cmp.Execute();
             StartCoroutine(cmp.TagAsyncWait());
 		}
 
         public void Init(bool changeLayerOrder = false)
         {
-            scriptDecoder = new ScriptDecoder();
             serializer = new Serializer();
             //ToDo
 //            TRUIManager.Instance.currentSelectWindow.Init(10);
@@ -81,8 +88,9 @@ namespace Trionfi
 
             if (bootScript != null)
             {
-                scriptDecoder.LoadScenariofromString(bootScript.text, bootScript.name);
-                StartCoroutine(scriptDecoder.Run());
+                currentTagInstance = new TRTagInstance();
+                if(currentTagInstance.CompileScriptFile(bootScript.name));
+                StartCoroutine(currentTagInstance.Run());
             }
         }
 

@@ -35,8 +35,8 @@ namespace Trionfi {
 			expressionedParams["scale_x"] = expressionedParams["scale"];
 			expressionedParams["scale_y"] = expressionedParams["scale"];
 			expressionedParams["scale_z"] = expressionedParams["scale"];
-            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(expressionedParams["name"], TRDataType.BG);
-            g.Load(expressionedParams);
+//            TRLayerObjectBehaviour g = TRLayerObjectManager.Instance.Create(expressionedParams["name"], TRDataType.BG);
+//            g.Load(expressionedParams);
         }
     }
 }
