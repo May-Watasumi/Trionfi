@@ -1,17 +1,10 @@
-﻿using System;
-using UnityEngine;
-using System.Collections;
+﻿using UnityEngine;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO.Compression;
-using System.Text;
 using System.Globalization;
 
 namespace Trionfi
 {
-    public class ParamDictionary : Dictionary<string, string>
+    public class TRVariable : Dictionary<string, string>
     {
         public bool IsValid(ref bool res, string key)
         {
@@ -199,96 +192,16 @@ namespace Trionfi
             }
         }
         */
+
+        /*
+        public static string evaluateString(string exp)
+        {
+            //変数かどうかを判定する。今のところの定義は「最初の文字がアルファベット＆'.'がある」
+            if (Regex.IsMatch(exp[0].ToString(), "^[a-zA-Z_]+$") && exp.IndexOf(".") != -1)
+                return _var.Get(exp);
+
+            return exp;
+        }
+        */
     }
-
-    //変数などバリアブルを保持する
-    public class Variable : Dictionary<string, ParamDictionary>
-    {
-        public void Set(string exp, string val)
-		{
-			exp = exp.Replace("{", "").Replace("}", "");
-
-			string[] tmp = exp.Split('.');
-
-			string type = tmp[0].Trim();
-			string variable_name = tmp[1].Trim();
-
-			if(!ContainsKey(type))
-			{
-                //this.dicVar = new Dictionary<string,ParamDictionary>();
-                this[type] = new ParamDictionary();
-			}
-
-			this[type][variable_name] = val;
-
-			//グローバルなら即効反映
-			if (type == "global")
-			{
-//ToDo
-/*
-                if (Trionfi.Instance.Serializer.globalSetting.globalVar == null)
-					Trionfi.Instance.Serializer.globalSetting.globalVar = new Dictionary<string, string>();
-
-				Trionfi.Instance.Serializer.globalSetting.globalVar[variable_name] = val;
-                */
-    //ToDo:
-				//				Trionfi.Instance.Serializer.SaveGlobalObject(Trionfi.Instance..globalSetting);
-
-			}        
-		}
-
-		public string Get(string exp)
-		{
-			exp = exp.Replace("{", "").Replace("}", "");
-
-			string default_val = "null"; //default_val は nullという文字列を入れる
-			if (exp.IndexOf("|") != -1)
-			{
-				string[] tmp_default = exp.Split('|');
-				exp = tmp_default[0];
-				default_val = tmp_default[1];
-
-			}
-
-			string[] tmp = exp.Split('.');
-
-			string type = tmp[0].Trim();
-			string variable_name = tmp[1].Trim();
-
-			if(ContainsKey(type) && this[type].ContainsKey(variable_name))
-				return this[type][variable_name];
-			else
-				return default_val;
-		}
-
-		public bool HasKey(string key)
-		{
-			string val = this.Get(key);
-
-			return val == "null" ? false : true;
-		}
-
-		public ParamDictionary GetDictionary(string type)
-		{
-			if (!ContainsKey(type))
-			{
-                //this.dicVar = new Dictionary<string,ParamDictionary>();
-                return new ParamDictionary();
-			}
-			else
-				return this[type];
-		}       
-        
-		public void Trace(string type)
-		{
-			string str = "[trace]" + type + "\n";
-
-			foreach (KeyValuePair<string, string> kvp in this[type])
-				str += kvp.Key + "=" + this[type][kvp.Key] + "\n";
-
-			str += "-----------------";
-
-			Debug.Log("<color=green>" + str + "</color>");
-		}
-	}
 }

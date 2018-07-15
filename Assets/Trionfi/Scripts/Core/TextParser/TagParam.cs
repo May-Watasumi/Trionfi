@@ -11,7 +11,7 @@ using System.Globalization;
 
 namespace Trionfi
 {
-    public class TagParam : ParamDictionary
+    public class TagParam : TRVariable
     {
         public string tagName = "";
         public  string statement = "";
@@ -148,9 +148,9 @@ namespace Trionfi
                 }
             }
         }
-
+#if false
         //実行前にパラメータを解析して変数を格納する
-        public ParamDictionary Expression()
+        public TRVariable Expression()
         {
             ParamDictionary tempParam = new ParamDictionary();
 
@@ -170,7 +170,7 @@ namespace Trionfi
 */
             return tempParam;
         }
-
+#endif
         public void DebugOutputParams()
         {
             foreach(string t in this.Keys)

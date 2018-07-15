@@ -17,7 +17,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string message = expressionedParams["val"];
+            string message = tagParam["val"];
             TRUIManager.Instance.currentMessageWindow.ShowMessage(message, TRGameConfig.Instance.textSpeed);
         }
     }
@@ -35,7 +35,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string name = expressionedParams["val"];
+            string name = tagParam["val"];
             TRUIManager.Instance.currentMessageWindow.ShowName(name);
         }
     }
@@ -107,8 +107,8 @@ namespace Trionfi
 		}
 
 		protected override void TagFunction() {
-            int size = expressionedParams.Int("size");
-            Color color = TRUtility.HexToRGB(expressionedParams.String("color"));
+            int size = tagParam.Int("size");
+            Color color = TRUtility.HexToRGB(tagParam.String("color"));
 
             TRUIManager.Instance.currentMessageWindow.currentMessage.fontSize = size;
             TRUIManager.Instance.currentMessageWindow.currentMessage.color = color;

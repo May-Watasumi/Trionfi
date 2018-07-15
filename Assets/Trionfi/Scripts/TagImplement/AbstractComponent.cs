@@ -9,7 +9,6 @@ namespace Trionfi
     {
         //デフォルトで定義しておくパラメータ初期値。継承先で定義する
         public TagParam tagParam;
-        public ParamDictionary expressionedParams = new ParamDictionary();
 
 //#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
         public List<string> essentialParams = new List<string>();
@@ -78,7 +77,8 @@ namespace Trionfi
         //タグの実行
         public void Execute()
         {
-            expressionedParams = tagParam.Expression();
+        //expressionedParams = tagParam.Expression();
+        //式評価は各タグに移譲
             TagFunction();
         }
 

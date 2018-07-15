@@ -19,7 +19,7 @@ namespace Trionfi
 		}
 
 		protected override void TagFunction() {
-            TRUIManager.Instance.currentSelectWindow.Add(expressionedParams["text"]);
+            TRUIManager.Instance.currentSelectWindow.Add(tagParam["text"]);
             //ToDo:storage等飛び先を保存
         }
     }

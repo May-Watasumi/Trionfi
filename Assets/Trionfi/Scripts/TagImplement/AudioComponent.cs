@@ -23,15 +23,15 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRDataType _type = expressionedParams.Type();
+            TRDataType _type = tagParam.Type();
 
-            string storage = expressionedParams["storage"];
-            float playDelay = expressionedParams.Float("delay");
-            float fadeTime = expressionedParams.Float("time");
+            string storage = tagParam["storage"];
+            float playDelay = tagParam.Float("delay");
+            float fadeTime = tagParam.Float("time");
 
             bool loop = false;
 
-            if(!expressionedParams.IsValid(ref loop, "loop"))
+            if(!tagParam.IsValid(ref loop, "loop"))
             {
                 loop = _type == TRDataType.BGM ? true : false;
             }
@@ -60,9 +60,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            float delay = expressionedParams.Float("delay");
-            TRDataType _type = expressionedParams.Type();
-            float fadeTime = expressionedParams.Float("time");
+            float delay = tagParam.Float("delay");
+            TRDataType _type = tagParam.Type();
+            float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);
             _source.Stop();
@@ -82,9 +82,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            float delay = expressionedParams.Float("delay");
-            TRDataType _type = expressionedParams.Type();
-            float fadeTime = expressionedParams.Float("time");
+            float delay = tagParam.Float("delay");
+            TRDataType _type = tagParam.Type();
+            float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);
             _source.Pause();
@@ -104,9 +104,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            float delay = expressionedParams.Float("delay");
-            TRDataType _type = expressionedParams.Type();
-            float fadeTime = expressionedParams.Float("time");
+            float delay = tagParam.Float("delay");
+            TRDataType _type = tagParam.Type();
+            float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);
             _source.UnPause();

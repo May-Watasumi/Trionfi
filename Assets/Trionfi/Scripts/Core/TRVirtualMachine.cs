@@ -1,5 +1,6 @@
 ﻿using System;
 using UnityEngine;
+using System.Globalization;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -7,6 +8,7 @@ using System.Runtime.Serialization;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO.Compression;
 using System.Text;
+using Jace.Execution;
 
 namespace Trionfi
 {
@@ -43,7 +45,6 @@ namespace Trionfi
         public string file_name;
         public int index;
 
-
         public TRSTACKTYPES type;
 
         public InvocationObject(/*string _name,*/ string _file_name, int _index, TRSTACKTYPES _type)
@@ -59,11 +60,11 @@ namespace Trionfi
     [Serializable]
     public class CallStackObject
     {
-        public ParamDictionary tempParam = new ParamDictionary();//仮引数
+        public TRVariable tempParam = new TRVariable();//仮引数
         public string scenarioNname;
         public int index;
 
-        public CallStackObject(string scenario_name, int _index, ParamDictionary _param)
+        public CallStackObject(string scenario_name, int _index, TRVariable _param)
         {
             scenarioNname = scenario_name;
             index = _index;
@@ -104,7 +105,7 @@ namespace Trionfi
     {
         //変数インスタンスは１つ
         public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
-        public static Variable variableInstance = new Variable();
+        public static TRVariable variableInstance = new TRVariable();
 
         public static string currentScriptName;
         public static int currenScriptPosition = -1;
@@ -120,6 +121,27 @@ namespace Trionfi
             callStack.Clear();
             ifStack.Clear();
         }
+
+        public static double Calc(TRVariable _variable,  string calcString)
+        {
+            Dictionary<string, double> calcValue = new Dictionary<string, double>();
+            Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            foreach (KeyValuePair<string, string> _pair in _variable)
+            {
+                float _value = 0.0f;
+
+                if(_variable.IsValid(ref _value, _pair.Key))
+                    calcValue[_pair.Key] = _variable.Float(_pair.Value);
+                else
+                    calcValue[_pair.Key] = float.PositiveInfinity;
+            }
+
+            double result = engine.Calculate(calcString, calcValue);
+            return result;
+        }
+
+        //ToDo:boolの評価。Jaceの拡張
 
         //ToDo:
         public static bool Serialize(string name) { return true; }

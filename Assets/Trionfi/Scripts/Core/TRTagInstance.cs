@@ -25,7 +25,7 @@ namespace Trionfi
             foreach (AbstractComponent _component in arrayComponents)
             {
                 if (_component.tagName == "label")
-                    AddLabel(_component.expressionedParams["name"], _index);
+                    AddLabel(_component.tagParam["name"], _index);
 
                 _index++;
             }
@@ -81,7 +81,7 @@ namespace Trionfi
 //                    _tagComponent.Validate();
 
 					string p = "";
-					foreach (KeyValuePair<string, string> kvp in _tagComponent.expressionedParams)
+					foreach (KeyValuePair<string, string> kvp in _tagComponent.tagParam)
 					{
 						p += kvp.Key + "=" + kvp.Value + " ";
 					}

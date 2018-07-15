@@ -15,14 +15,14 @@ namespace Trionfi {
 		}
 
 		protected override void TagFunction() {
-			string name = expressionedParams["name"];
-			string group = expressionedParams["group"];
-			string face = expressionedParams["face"];	
-			int motion = int.Parse(expressionedParams["motion"]);
-			int priority = int.Parse(expressionedParams["priority"]);
-//			string tag = this.expressionedParams["tag"];
-//			string storage = this.expressionedParams["storage"];
-//			string idle = this.expressionedParams["idel"];
+			string name = tagParam["name"];
+			string group = tagParam["group"];
+			string face = tagParam["face"];	
+			int motion = int.Parse(tagParam["motion"]);
+			int priority = int.Parse(tagParam["priority"]);
+//			string tag = this.tagParam["tag"];
+//			string storage = this.tagParam["storage"];
+//			string idle = this.tagParam["idel"];
 
 			List<string> images = new List<string>();
      		images.Add(name);

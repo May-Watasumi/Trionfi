@@ -242,7 +242,7 @@ namespace Trionfi
         }
 
         //タグ名と引数の辞書からタグを生成
-        public AbstractComponent MakeTag(string tag_name, ParamDictionary param)
+        public AbstractComponent MakeTag(string tag_name, TRVariable param)
         {
             string line = "[" + tag_name + " ";
             string param_str = "";

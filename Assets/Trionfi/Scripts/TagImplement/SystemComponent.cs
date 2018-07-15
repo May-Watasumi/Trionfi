@@ -18,7 +18,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            TRVitualMachine.Serialize(expressionedParams["file"]);
+            TRVitualMachine.Serialize(tagParam["file"]);
         }
     }
 
@@ -49,7 +49,7 @@ namespace Trionfi {
 
 		protected override void TagFunction()
         {
-			string name = expressionedParams ["name"];
+			string name = tagParam["name"];
             //ToDo:
             TRVitualMachine.invovationInstance[name] = new InvocationObject(TRVitualMachine.currentScriptName, Trionfi.Instance.currentTagInstance.currentComponentIndex, TRSTACKTYPES.MACRO);
         }
@@ -113,8 +113,8 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
-			string target = expressionedParams.String("target").Replace ("*", "").Trim();
-            string file = expressionedParams.String("file", TRVitualMachine.currentScriptName);
+			string target = tagParam.String("target").Replace ("*", "").Trim();
+            string file = tagParam.String("file", TRVitualMachine.currentScriptName);
 
 			//ファイルが異なるものになる場合、シナリオをロードする
 			if(TRVitualMachine.currentScriptName != file)
@@ -156,8 +156,8 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
-            string target = expressionedParams.String("target").Replace("*", "").Trim();
-            string file = expressionedParams.String("file", TRVitualMachine.currentScriptName);
+            string target = tagParam.String("target").Replace("*", "").Trim();
+            string file = tagParam.String("file", TRVitualMachine.currentScriptName);
 
             int index = string.IsNullOrEmpty(file) ? -1 : Trionfi.Instance.tagInstance[file].GetLabelPosition(target);
 
@@ -165,7 +165,7 @@ namespace Trionfi {
 //ToDo:
 			ErrorLogger.Log("Call : file=\"" + TRVitualMachine.currentScriptName + "\" " + "index=\"" + (Trionfi.Instance.currentTagInstance.currentComponentIndex).ToString()+ "\"");
 
-            TRVitualMachine.callStack.Push(new CallStackObject(TRVitualMachine.currentScriptName, Trionfi.Instance.currentTagInstance.currentComponentIndex, expressionedParams));
+            TRVitualMachine.callStack.Push(new CallStackObject(TRVitualMachine.currentScriptName, Trionfi.Instance.currentTagInstance.currentComponentIndex, tagParam));
 
             //ToDo:ジャンプ
 			
@@ -193,8 +193,8 @@ namespace Trionfi {
 			string tag_str = "";
 
 			//return 時の戻り場所を指定できます
-			if (this.expressionedParams ["file"] != "" || this.expressionedParams ["target"] != "")
-				tag_str = "[jump file='" + this.expressionedParams["file"] + "' target='" + this.expressionedParams["target"] + "' ]";
+			if(tagParam["file"] != "" || tagParam ["target"] != "")
+				tag_str = "[jump file='" + tagParam["file"] + "' target='" + tagParam["target"] + "' ]";
 			else
 				tag_str = "[jump file='" + stack.scenarioNname + "' index='" + stack.index + "' ]";
 
@@ -219,7 +219,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-			string file = expressionedParams["file"];
+			string file = tagParam["file"];
 
             if(SyncWait)
                 SceneManager.LoadScene(file, LoadSceneMode.Additive);
@@ -233,43 +233,8 @@ namespace Trionfi {
         }
     }
 
-
-	/*	
---------------
-
-[doc]
-tag=calc
-group=システム関連
-title=数式の評価
-
-[desc]
-expで示された式を評価します。変数への値の代入などに使用されます。
-文字列はこのタグでは扱うことはできません。文字列は[flag]タグを使用します
-
-[sample]
-
-
-[calc exp="f.test=500"]
-;↑変数 test に数値を代入している
-
-[calc exp="sf.test2=400"]
-;↑システム変数 test に数値を代入している
-
-[calc exp="f.test2={f.test}*3"]
-;↑ゲーム変数 test2 に ゲーム変数 test の 3 倍の数値を代入している
-
-{f.test2}[p]
-
-
-[param]
-exp=数式を指定します
-
-
-[_doc]
---------------------
- */
-
-	public class CalcComponent : AbstractComponent {
+    //Jaceによってcalcとflagは差別化がなくなったので不要になる
+    public class CalcComponent : AbstractComponent {
 		public CalcComponent() {
 			//必須項目
 			essentialParams = new List<string> {
@@ -278,48 +243,9 @@ exp=数式を指定します
 		}
 
 		protected override void TagFunction() {
-			string exp = this.expressionedParams ["exp"];
-
-			ExpObject eo = new ExpObject(exp);
-
-			string result = ExpObject.calc (eo.exp);
-            //ToDo
-//			Trionfi.Instance.currentTagInstance.variable.Set(eo.type + "." + eo.name, result);
+            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam["exp"]);
         }
     }
-
-	/*	
---------------
-
-[doc]
-tag=flag
-group=システム関連
-title=文字列の評価
-
-[desc]
-文字列を扱うことができます。
-
-[sample]
-
-[flag exp="f.test=ゆうこ"]
-;↑変数 test に文字列を代入している
-
-はじめまして{f.test}さん。[p]
-;はじめましてゆうこさん。と表示される
-
-;文字の連結
-[flag exp="f.str = はじめまして{f.test}さん" ]
-{f.str} 
-;はじめましてゆうこさん。と表示される
-
-[param]
-exp=文字式を指定します
-
-
-[_doc]
---------------------
- */
-
 	public class FlagComponent : AbstractComponent {
 		public FlagComponent() {
 			//必須項目
@@ -329,67 +255,10 @@ exp=文字式を指定します
 		}
 
 		protected override void TagFunction() {
-			string exp = expressionedParams ["exp"];
-
-			ExpObject eo = new ExpObject (exp);
-            //ToDo:
-//			Trionfi.Instance.currentTagInstance.variable.Set(eo.type + "." + eo.name, eo.exp);
+            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam["exp"]);
         }
     }
 
-
-	/*	
---------------
-
-[doc]
-tag=emb
-group=メッセージ関連
-title=変数の展開
-
-[desc]
-
-メッセージ中に変数の中身を展開して表示することができます。
-省略形として{ } で括る方法もあります。
-
-[sample]
-
-
-[flag exp="f.value1='変数の値だよ～ん'"]
-とどこかで書いておいて、
-[emb exp="f.value1"]
-と書くと、この emb タグが 変数の値だよ～ん という内容に置き換わります。
-
-[param]
-exp=評価する変数を格納します。
-
-
-[_doc]
---------------------
- */
-
-	public class EmbComponent : AbstractComponent {
-		public EmbComponent() {
-			//必須項目
-			essentialParams = new List<string> {
-				"exp"
-			};
-		}
-
-		protected override void TagFunction() {
-			string exp = expressionedParams["exp"];
-			string val = expressionedParams["exp"];
-            //ToDo:
-			//変数なら素直に代入
-//			if(val.IndexOf(".") != -1)
-//				Trionfi.Instance.currentTagInstance.variable.Set(exp, val);
-
-			string tag_str ="[story val='"+val+"' ]";
-
-			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
-			cmp.Execute();
-        }
-    }
-    
     //if
 	public class IfComponent : AbstractComponent {
 		public IfComponent() {
@@ -401,26 +270,22 @@ exp=評価する変数を格納します。
 
 		protected override void TagFunction() {
 
-			string exp = expressionedParams ["exp"];
-			if(expressionedParams.ContainsKey ("mobile"))
-            {
-			
-			}
-
-            string result = ExpObject.calc(exp);
-
+            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam["exp"]);
+//            ToDo:
+            /*
 			//条件に合致した場合はそのままifの中へ
 			if(result == "false" || result == "0")
                 TRVitualMachine.ifStack.Push(false);
             else
                 TRVitualMachine.ifStack.Push(true);
-
+            */
         }
     }
     
     //elseif
 	public class ElseifComponent : AbstractComponent {
-		public ElseifComponent() {
+		public ElseifComponent()
+        {
 			//必須項目
 			essentialParams = new List<string> {
 				"exp"
@@ -436,7 +301,10 @@ exp=評価する変数を格納します。
                 TRVitualMachine.ifStack.Push(false);
             else
             {
-                string exp = expressionedParams["exp"];
+                string exp = tagParam["exp"];
+                double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, exp);
+                //ToDo:
+/*
                 string result = ExpObject.calc(exp);
 
                 //条件に合致した場合はそのままifの中へ
@@ -444,6 +312,7 @@ exp=評価する変数を格納します。
                     TRVitualMachine.ifStack.Push(false);
                 else
                     TRVitualMachine.ifStack.Push(true);
+*/
             }
         }
     }
@@ -524,7 +393,7 @@ exp=評価する変数を格納します。
         //時間を止める。
         protected override void TagFunction()
         {
-            _time = float.Parse(expressionedParams["time"]);
+            _time = tagParam.Float("time");
 		}
 
         public override IEnumerator TagAsyncWait()
@@ -544,7 +413,7 @@ exp=評価する変数を格納します。
 
 		protected override void TagFunction()
         {
-			string url = expressionedParams ["url"];
+			string url = tagParam["url"];
 			Application.OpenURL(url);
             //ToDo:
 //            yield return null;
