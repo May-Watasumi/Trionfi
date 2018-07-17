@@ -73,15 +73,30 @@ namespace Trionfi
 
         public int lineCount = 0;
 
-        public void SkipSpace(ref int pos, ref char[] array)
+        int currentPos = 0;
+        int startPos = 0;
+        int endPos = 0;
+
+        public void SkipSpace(ref char[] array)
         {
-            while(array[pos] == '\r' || array[pos] == '\n' || array[pos] == ' ' || array[pos] == '\t')
+            while(array[currentPos] == '\r' || array[currentPos] == '\n' || array[currentPos] == ' ' || array[currentPos] == '\t')
             {
-                if (array[pos] == '\r' || array[pos] == '\n')
+                if (array[currentPos] == '\r' || array[currentPos] == '\n')
                     lineCount++;
 
-                    pos++;
+                currentPos++;
             }
+        }
+
+        public void ReadLine(ref char[] array)
+        {
+            startPos = currentPos;
+
+            while (array[currentPos] != '\r' && array[currentPos] != '\n')
+                currentPos++;
+
+            endPos = currentPos;
+
         }
 
         public List<AbstractComponent> _Parse(string script_text)
@@ -92,10 +107,6 @@ namespace Trionfi
             ParseState _state = ParseState.Begin;
 
             lineCount = 0;
-
-            int currentPos = 0;
-            int startPos = 0;
-            int EndPos = 0;
 
             SkipSpace(ref currentPos, ref characters);
 
