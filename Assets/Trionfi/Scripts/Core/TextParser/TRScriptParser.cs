@@ -64,6 +64,65 @@ namespace Trionfi
             return true;
         }
 
+        enum ParseState
+        {
+            Begin,
+
+
+        }
+
+        public int lineCount = 0;
+
+        public void SkipSpace(ref int pos, ref char[] array)
+        {
+            while(array[pos] == '\r' || array[pos] == '\n' || array[pos] == ' ' || array[pos] == '\t')
+            {
+                if (array[pos] == '\r' || array[pos] == '\n')
+                    lineCount++;
+
+                    pos++;
+            }
+        }
+
+        public List<AbstractComponent> _Parse(string script_text)
+        {
+
+            char[] characters = script_text.ToCharArray();
+
+            ParseState _state = ParseState.Begin;
+
+            lineCount = 0;
+
+            int currentPos = 0;
+            int startPos = 0;
+            int EndPos = 0;
+
+            SkipSpace(ref currentPos, ref characters);
+
+            if (characters[currentPos] == '#')
+            {
+
+            }
+            else if (characters[currentPos] == '@')
+            {
+
+            }
+            else if ( (characters[currentPos] == '/' && characters[currentPos + 1] == '/') || characters[currentPos] == ';')
+            {
+            }
+            else if (characters[currentPos] == '/' && characters[currentPos + 1] == '*')
+            {
+            }
+            else if (characters[currentPos] == '*')
+            {
+            }
+
+            else if (characters[currentPos] == '[')
+            {
+
+            }
+        }
+
         //パースしたタグクラスのListを返す
         public List<AbstractComponent> Parse(string script_text)
         {
