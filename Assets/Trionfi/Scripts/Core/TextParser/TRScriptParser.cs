@@ -79,7 +79,7 @@ namespace Trionfi
 
         public void SkipSpace(ref char[] array)
         {
-            while(array[currentPos] == '\r' || array[currentPos] == '\n' || array[currentPos] == ' ' || array[currentPos] == '\t')
+            while (array[currentPos] == '\r' || array[currentPos] == '\n' || array[currentPos] == ' ' || array[currentPos] == '\t')
             {
                 if (array[currentPos] == '\r' || array[currentPos] == '\n')
                     lineCount++;
@@ -88,15 +88,69 @@ namespace Trionfi
             }
         }
 
-        public void ReadLine(ref char[] array)
+        public string SkipCharacter(ref char[] array, char terminator)
         {
+            string buffer = "";
+
+            while (array[currentPos] !=  terminator)
+            {
+                if (array[currentPos] == '\r' || array[currentPos] == '\n')
+                    lineCount++;
+                
+                buffer += array[currentPos++];
+            }
+        }
+
+        public string ReadLine(ref char[] array)
+        {
+            string buffer = "";
+
             startPos = currentPos;
 
             while (array[currentPos] != '\r' && array[currentPos] != '\n')
-                currentPos++;
+                buffer += array[currentPos++];
 
             endPos = currentPos;
 
+            return buffer;
+        }
+
+        private bool IsSpace(char character)
+        {
+            return character == '\r' || character == '\n' || character == ' ' || character == '\t';
+        }
+
+        private bool IsPartOfNumeric(char character)
+        {
+            return character >= '0' && character <= '9';
+        }
+
+        private bool IsAlphabet(char character)
+        {
+            return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z');
+        }
+
+        private bool IsPartOfVariable(char character)
+        {
+            return IsAlphabet(character) || IsPartOfNumeric(character) || character == '_';
+        }
+
+        private string GetFirstToken(ref char[] array)
+        {
+            string buffer = "";
+
+            if (IsAlphabet(array[currentPos]))
+                return null;
+
+            while(IsPartOfVariable(array[currentPos]))
+                buffer += array[currentPos++];
+
+            if (IsSpace(array[currentPos]))
+                endPos = currentPos;
+            else
+                return null;
+
+            return buffer;
         }
 
         public List<AbstractComponent> _Parse(string script_text)
@@ -106,31 +160,39 @@ namespace Trionfi
 
             ParseState _state = ParseState.Begin;
 
-            lineCount = 0;
-
-            SkipSpace(ref currentPos, ref characters);
+            SkipSpace(ref chara);
 
             if (characters[currentPos] == '#')
             {
-
+                ReadLine(ref characters);
             }
             else if (characters[currentPos] == '@')
             {
-
+                ReadLine(ref characters);
             }
-            else if ( (characters[currentPos] == '/' && characters[currentPos + 1] == '/') || characters[currentPos] == ';')
+            else if ((characters[currentPos] == '/' && characters[currentPos + 1] == '/') || characters[currentPos] == ';')
             {
+                ReadLine(ref characters);
             }
             else if (characters[currentPos] == '/' && characters[currentPos + 1] == '*')
             {
             }
             else if (characters[currentPos] == '*')
             {
+                ReadLine(ref characters);
             }
 
             else if (characters[currentPos] == '[')
             {
-
+                string _tag = GetFirstToken(ref characters);
+                if(_tag != null)
+                    return;
+                else
+                    SkipCharacter(ref characters, ']');
+            }
+            else
+            {
+                ReadLine(ref characters);
             }
         }
 
