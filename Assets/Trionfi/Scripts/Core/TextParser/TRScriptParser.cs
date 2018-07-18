@@ -64,13 +64,6 @@ namespace Trionfi
             return true;
         }
 
-        enum ParseState
-        {
-            Begin,
-
-
-        }
-
         public int lineCount = 0;
 
         int currentPos = 0;
@@ -99,6 +92,8 @@ namespace Trionfi
                 
                 buffer += array[currentPos++];
             }
+
+            return buffer;
         }
 
         public string ReadLine(ref char[] array)
@@ -185,10 +180,12 @@ namespace Trionfi
             else if (characters[currentPos] == '[')
             {
                 string _tag = GetFirstToken(ref characters);
+                string _tagParam:
+
                 if(_tag != null)
                     return;
                 else
-                    SkipCharacter(ref characters, ']');
+                    _tagParam = SkipCharacter(ref characters, ']');
             }
             else
             {
