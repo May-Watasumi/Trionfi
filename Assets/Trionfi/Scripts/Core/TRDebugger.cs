@@ -60,9 +60,9 @@ namespace Trionfi
         }
 
         [Conditional("TR_DEBUG")]
-        public static void Log(string message)
+        public static void Log(string message, bool autoReturn = true)
         {
-            UnityEngine.Debug.Log(message);
+            UnityEngine.Debug.Log(message + (autoReturn ? "\n" : ""));
         }
     };
 
@@ -105,13 +105,14 @@ namespace Trionfi
             scriptText = EditorGUILayout.TextField("スクリプト", scriptText);
             if (GUILayout.Button("実行"))
             {
-                AbstractComponent abs = TRScriptParser.Instance.MakeTag(scriptText);
-                if (abs != null)
+                TRTagParser tagParser = new TRTagParser(scriptText);
+                AbstractComponent tagComponent = tagParser.Parse();
+                if(tagComponent != null)
                 {
-                    consoleLog += ("Tag: " + abs.tagName + "\n");
+                    consoleLog += ("Tag: " + tagComponent.tagName + "\n");
 
-                    abs.Execute();
-                    this.StartCoroutine(abs.TagAsyncWait());
+                    tagComponent.Execute();
+                    this.StartCoroutine(tagComponent.TagAsyncWait());
                 }
                 else
                     consoleLog += ("Invalid Tag!");

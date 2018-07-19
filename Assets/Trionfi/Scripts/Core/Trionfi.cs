@@ -56,7 +56,7 @@ namespace Trionfi
         public TRTagInstance currentTagInstance = null;
 
         public Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
-
+        /*
         //単体タグ実行。他のタグから呼び出すことは禁止
         [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void StartTag(string tag)
@@ -65,6 +65,7 @@ namespace Trionfi
             cmp.Execute();
             StartCoroutine(cmp.TagAsyncWait());
 		}
+        */
 
         public void Init(bool changeLayerOrder = false)
         {
@@ -97,30 +98,30 @@ namespace Trionfi
         {
         }
 
-        public AudioSource GetAudio(TRDataType type, int ch = 0)
+        public AudioSource GetAudio(TRAssetType type, int ch = 0)
         {
             switch (type)
             {
-                case TRDataType.BGM:
+                case TRAssetType.BGM:
                     return referencedObjects.audioBGM[ch];
-                case TRDataType.SE:
+                case TRAssetType.SE:
                     return referencedObjects.audioSE[ch];
-                case TRDataType.Voice:
+                case TRAssetType.Voice:
                     return referencedObjects.audioVoice[ch];
             }
 
             return null;
         }
 
-        public Image GetLayer(TRDataType type, int ch = 0)
+        public Image GetLayer(TRAssetType type, int ch = 0)
         {
             switch (type)
             {
-                case TRDataType.BG:
+                case TRAssetType.BG:
                     return referencedObjects.bgLayer;
-                case TRDataType.Character:
+                case TRAssetType.Character:
                     return referencedObjects.standLayer[ch];
-                case TRDataType.Event:
+                case TRAssetType.Event:
                     return referencedObjects.eventLayer;
             }
 

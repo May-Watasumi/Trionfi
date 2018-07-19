@@ -4,14 +4,40 @@ using System.Globalization;
 
 namespace Trionfi
 {
-    public class TRVariable : Dictionary<string, string>
+    public enum TRDataType
     {
+        Null,
+        Bool,
+        Int,
+        Float,
+        Hex,
+        Literal,
+        Identifier,
+        Label
+    }
+    
+    public class TRVariable : Dictionary<string, KeyValuePair<string, TRDataType>>
+    {
+        public static Color ToRGB(uint val)
+        {
+            var inv = 1f / 255f;
+            var c = Color.black;
+            c.r = inv * ((val >> 16) & 0xFF);
+            c.g = inv * ((val >> 8) & 0xFF);
+            c.b = inv * (val & 0xFF);
+            c.a = 1f;
+            return c;
+        }
+
         public bool IsValid(ref bool res, string key)
         {
             res = false;
             if (ContainsKey(key))
             {
-                string v = this[key];
+                if (this[key].Value != TRDataType.Bool)
+                    return false;
+
+                string v = this[key].Key;
 
                 if (v == "true")
                     res = true;
@@ -31,7 +57,10 @@ namespace Trionfi
             res = 0.0f;
             if (ContainsKey(key))
             {
-                string v = this[key];
+                if (this[key].Value != TRDataType.Float )
+                    return false;
+
+                string v = this[key].Key;
 
                 if (!float.TryParse(v, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out res))
                 {
@@ -52,12 +81,24 @@ namespace Trionfi
             res = 0;
             if (ContainsKey(key))
             {
-                string v = this[key];
+                if (this[key].Value != TRDataType.Int)
+                    return false;
 
-                if (!System.Int32.TryParse(v, out res))
+                string v = this[key].Key;
+
+                if (this[key].Value == TRDataType.Int)
                 {
+                    if (System.Int32.TryParse(v, out res))
+                        return true;
+
                     ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
                     return false;
+                }
+                else
+                {
+                    string _temp = this[key].Key;
+                    _temp.Remove(0, 2);                 
+                    return int.TryParse(_temp, System.Globalization.NumberStyles.AllowHexSpecifier, null, out res);
                 }
             }
             else
@@ -65,7 +106,40 @@ namespace Trionfi
                 ErrorLogger.Log("NoParam: key=" + key);
                 return false;
             }
-            return true;
+
+        }
+
+        public bool IsValid(ref uint res, string key)
+        {
+            res = 0;
+            if (ContainsKey(key))
+            {
+                if (this[key].Value != TRDataType.Int || this[key].Value != TRDataType.Hex)
+                    return false;
+
+                string v = this[key].Key;
+
+                if (this[key].Value == TRDataType.Int)
+                {
+                    if(System.UInt32.TryParse(v, out res))
+                        return true;
+
+                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
+                    return false;
+                }
+                else
+                {
+                    string _temp = this[key].Key;
+                    _temp.Remove(0, 2);
+                    return uint.TryParse(_temp, System.Globalization.NumberStyles.AllowHexSpecifier, null, out res);
+                }
+            }
+            else
+            {
+                ErrorLogger.Log("NoParam: key=" + key);
+                return false;
+            }
+
         }
 
         public bool IsValid(ref string res, string key)
@@ -73,7 +147,10 @@ namespace Trionfi
             res = "";
             if (ContainsKey(key))
             {
-                res = this[key];
+                if (this[key].Value != TRDataType.Literal )
+                    return false;
+
+                string v = this[key].Key;
                 return true;
             }
             else
@@ -85,114 +162,52 @@ namespace Trionfi
 
         public float Float(string key, float defaultValue = 0.0f)
         {
-            float res = defaultValue;
-            if (ContainsKey(key))
-            {
-                string v = this[key];
-
-                if (float.TryParse(v, NumberStyles.Float | NumberStyles.AllowThousands, CultureInfo.InvariantCulture, out res))
-                {
-                    return res;
-                }
-                else
-                {
-                    int _resInt = 0;
-                    if (System.Int32.TryParse(v, out _resInt))
-                        return (float)_resInt;
-                    else
-                    {
-                        ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
-                        return defaultValue;
-                    }
-                }
-            }
-            else
-            {
-                ErrorLogger.Log("NoParam: key=" + key);
-            }
-            return defaultValue;
+            float _value = defaultValue;
+            return IsValid(ref _value, key) ? _value : defaultValue;
         }
 
         public int Int(string key, int defaultValue = 0)
         {
-            int res = defaultValue;
-            if (ContainsKey(key))
-            {
-                string v = this[key];
-
-                if (!System.Int32.TryParse(v, out res))
-                {
-                    ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
-                    return defaultValue;
-                }
-            }
-            else
-            {
-                ErrorLogger.Log("NoParam: key=" + key);
-                return defaultValue;
-            }
-            return res;
+            int _value = defaultValue;
+            return IsValid(ref _value, key) ? _value : defaultValue;
         }
 
-        public string String(string key, string defaultValue = "")
+        public uint Uint(string key, uint defaultValue = 0)
         {
-            string res = defaultValue;
-            if (ContainsKey(key))
-            {
-                res = this[key];
-            }
-            else
-            {
-                ErrorLogger.Log("NoParam: key=" + key);
-            }
-            return res;
+            uint _value = defaultValue;
+            return IsValid(ref _value, key) ? _value : defaultValue;
+        }
+
+        public string Literal(string key, string defaultValue = "")
+        {
+            string _value = defaultValue;
+            return IsValid(ref _value, key) ? _value : defaultValue;
         }
 
         public bool Bool(string key, bool defaultValue = false)
         {
-            bool res = defaultValue;
-            if(ContainsKey(key) && this[key] == "true" || this[key] == "TRUE")
-            {
-                res = true;
-            }
-            else
-            {
-                res = false;
-
-                if(!ContainsKey(key) || (this[key] != "false" && this[key] != "FALSE"))
-                    ErrorLogger.Log("InvalidParam: key=" + key);
-            }
-            return res;
+            bool _value = defaultValue;
+            return IsValid(ref _value, key) ? _value : defaultValue;
         }
 
-        public TRDataType Type(string key = "type", TRDataType defaultValue = TRDataType.None)
+        public string Identifier(string key, string defaultValue = "")
         {
-            if(ContainsKey(key))
-            {
-                string _type = this[key];
-                return StorageManager.dataTypes.ContainsKey(_type) ? defaultValue : StorageManager.dataTypes[_type];
-            }
-            return defaultValue;
+            if (!this.ContainsKey(key))
+                return null;
+            if (this[key].Value != TRDataType.Identifier)
+                ErrorLogger.Log("Invalid Identifier");
+            return this[key].Key;
         }
 
-        /*
-        public T ValidParam<T>(string key)
+        public string Label(string key)
         {
-            if (typeof(T) == typeof(int))
-            {
-                return (T)(object)ValidInt(key);
-            }
-            else if (typeof(T) == typeof(float))
-            {
-                return (T)(object)ValidFloat(key);
-            }
-            else
-            {
-                return (T)(object)ValidString(key);
-            }
+            if (!this.ContainsKey(key))
+                return null;
+            if (this[key].Value != TRDataType.Label)
+                ErrorLogger.Log("Invalid Label");
+            return this[key].Key;
         }
-        */
-
+ 
         /*
         public static string evaluateString(string exp)
         {

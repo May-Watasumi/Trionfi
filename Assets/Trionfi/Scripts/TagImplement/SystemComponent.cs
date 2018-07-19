@@ -18,7 +18,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            TRVitualMachine.Serialize(tagParam["file"]);
+            TRVitualMachine.Serialize(tagParam.Identifier("file"));
         }
     }
 
@@ -49,7 +49,7 @@ namespace Trionfi {
 
 		protected override void TagFunction()
         {
-			string name = tagParam["name"];
+			string name = tagParam.Literal("name");
             //ToDo:
             TRVitualMachine.invovationInstance[name] = new InvocationObject(TRVitualMachine.currentScriptName, Trionfi.Instance.currentTagInstance.currentComponentIndex, TRSTACKTYPES.MACRO);
         }
@@ -113,8 +113,8 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
-			string target = tagParam.String("target").Replace ("*", "").Trim();
-            string file = tagParam.String("file", TRVitualMachine.currentScriptName);
+			string target = tagParam.Label("target");
+            string file = tagParam.Identifier("file", TRVitualMachine.currentScriptName);
 
 			//ファイルが異なるものになる場合、シナリオをロードする
 			if(TRVitualMachine.currentScriptName != file)
@@ -156,8 +156,8 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
-            string target = tagParam.String("target").Replace("*", "").Trim();
-            string file = tagParam.String("file", TRVitualMachine.currentScriptName);
+            string target = tagParam.Label("target");
+            string file = tagParam.Identifier("file", TRVitualMachine.currentScriptName);
 
             int index = string.IsNullOrEmpty(file) ? -1 : Trionfi.Instance.tagInstance[file].GetLabelPosition(target);
 
@@ -193,16 +193,18 @@ namespace Trionfi {
 			string tag_str = "";
 
 			//return 時の戻り場所を指定できます
-			if(tagParam["file"] != "" || tagParam ["target"] != "")
+			if( string.IsNullOrEmpty(tagParam.Identifier("file")) && string.IsNullOrEmpty(tagParam.Label("target")) )
 				tag_str = "[jump file='" + tagParam["file"] + "' target='" + tagParam["target"] + "' ]";
 			else
 				tag_str = "[jump file='" + stack.scenarioNname + "' index='" + stack.index + "' ]";
 
 			Debug.Log("RETURN scn=\"" + stack.scenarioNname + "\" " + "index=\"" + stack.index.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
 
+
+//ToDo:
 			//タグを実行
-			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
-			cmp.Execute();
+//			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
+//			cmp.Execute();
         }
 	}
 
@@ -219,7 +221,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-			string file = tagParam["file"];
+			string file = tagParam.Identifier("file");
 
             if(SyncWait)
                 SceneManager.LoadScene(file, LoadSceneMode.Additive);
@@ -243,7 +245,7 @@ namespace Trionfi {
 		}
 
 		protected override void TagFunction() {
-            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam["exp"]);
+            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam.Literal("exp"));
         }
     }
 	public class FlagComponent : AbstractComponent {
@@ -255,7 +257,7 @@ namespace Trionfi {
 		}
 
 		protected override void TagFunction() {
-            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam["exp"]);
+            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam.Literal("exp"));
         }
     }
 
@@ -270,7 +272,7 @@ namespace Trionfi {
 
 		protected override void TagFunction() {
 
-            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam["exp"]);
+            double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, tagParam.Literal("exp"));
 //            ToDo:
             /*
 			//条件に合致した場合はそのままifの中へ
@@ -301,7 +303,7 @@ namespace Trionfi {
                 TRVitualMachine.ifStack.Push(false);
             else
             {
-                string exp = tagParam["exp"];
+                string exp = tagParam.Literal("exp");
                 double result = TRVitualMachine.Calc(TRVitualMachine.variableInstance, exp);
                 //ToDo:
 /*
@@ -413,7 +415,7 @@ namespace Trionfi {
 
 		protected override void TagFunction()
         {
-			string url = tagParam["url"];
+			string url = tagParam.Identifier("url");
 			Application.OpenURL(url);
             //ToDo:
 //            yield return null;

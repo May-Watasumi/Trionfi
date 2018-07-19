@@ -31,18 +31,18 @@ namespace Trionfi
 		}
 
 		protected override void TagFunction() {
-			string storage = tagParam["storage"];
-            TRDataType _type = tagParam.Type();
+			string storage = tagParam.Identifier("storage");
 
             Image _dest;
 
             int ch = -1;
-            if(int.TryParse(tagParam["id"], out ch))
-                _dest = Trionfi.Instance.GetLayer(TRDataType.Character, ch);
-            else
-                _dest = Trionfi.Instance.GetLayer(_type);
 
-            _dest.sprite = StorageManager.Instance.LoadObject(storage, _type) as Sprite;
+            if (tagParam.IsValid(ref ch, "id"))
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
+            else
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
+
+            _dest.sprite = StorageManager.Instance.LoadObject(storage, TRAssetType.Character) as Sprite;
         }
     }
     
@@ -56,15 +56,13 @@ namespace Trionfi
 		}
 
 		protected override void TagFunction() {
-            TRDataType _type = tagParam.Type();
-
             Image _dest;
 
             int ch = -1;
-            if (int.TryParse(tagParam["layer"], out ch))
-                _dest = Trionfi.Instance.GetLayer(TRDataType.Character, ch);
+            if (tagParam.IsValid(ref ch, "id"))
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
             else
-                _dest = Trionfi.Instance.GetLayer(_type);
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
 
             _dest.sprite = null;
         }
@@ -83,15 +81,13 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRDataType _type = tagParam.Type();
-
             Image _dest;
 
             int ch = -1;
-            if (int.TryParse(tagParam["id"], out ch))
-                _dest = Trionfi.Instance.GetLayer(TRDataType.Character, ch);
+            if (tagParam.IsValid(ref ch, "id"))
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
             else
-                _dest = Trionfi.Instance.GetLayer(_type);
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
 
             //ToDo:
         }
@@ -110,15 +106,13 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRDataType _type = tagParam.Type();
-
             Image _dest;
 
             int ch = -1;
-            if (int.TryParse(tagParam["id"], out ch))
-                _dest = Trionfi.Instance.GetLayer(TRDataType.Character, ch);
+            if (tagParam.IsValid(ref ch, "id"))
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
             else
-                _dest = Trionfi.Instance.GetLayer(_type);
+                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
 
             float time = tagParam.Float("time", 1.0f);
             Vector3 pos = new Vector3(tagParam.Float("pos_x"), tagParam.Float("pos_y"), tagParam.Float("pos_z"));

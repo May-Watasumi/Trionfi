@@ -7,10 +7,15 @@ namespace Trionfi
 {
     public abstract class AbstractComponent
     {
-        //デフォルトで定義しておくパラメータ初期値。継承先で定義する
-        public TagParam tagParam;
+        protected const string syncwait = "syncWait";
 
-//#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
+        //デフォルトで定義しておくパラメータ初期値。継承先で定義する
+        public TRVariable tagParam;
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
+        string sourceName ="";
+        int lineCount = 0;
+
         public List<string> essentialParams = new List<string>();
 
         [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
@@ -23,35 +28,26 @@ namespace Trionfi
                 {
                     //エラーを追加
                     string message = "必須パラメータ「" + param + "」が不足しています";
-                    ErrorLogger.AddLog(message, "", tagParam.lineCount, false);
+                    ErrorLogger.AddLog(message, sourceName, lineCount, false);
                 }
             }
         }
-//#endif
+#endif
 
         //同期フラグ。タグの引数側で設定される。
         public bool SyncWait
         {
-            get { return tagParam != null ? tagParam.syncWait : false; }
+            get { return tagParam != null ? tagParam.Bool(syncwait) : false; }
         }       
 
-//コンストラクタ
-        //引数なしの場合
         public AbstractComponent()
         {
-            ErrorLogger.Log("Tag:" + GetType().Name);
         }
+
         //引数あり
-        public AbstractComponent(TagParam param)//, int line_num)
+        public AbstractComponent(TRVariable _tagParam)//, int line_num)
         {
-            Init(param);
-        }
-
-        public void Init(TagParam param)//, int line_num)
-        {
-            ErrorLogger.Log("Tag:" + GetType().Name);
-            this.tagParam = param;
-
+            this.tagParam = _tagParam;
             Validate();
         }
 

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    public enum TRDataType
+    public enum TRAssetType
     {
         None,
         TextAsset,
@@ -45,23 +45,23 @@ namespace Trionfi
 	{
         bool onDataLoading = false;
 
-        static public Dictionary<string, TRDataType> dataTypes =  new Dictionary<string, TRDataType>()
+        static public Dictionary<string, TRAssetType> dataTypes =  new Dictionary<string, TRAssetType>()
         {
- //            { "BG", TRDataType.None },
-            { "TEXT", TRDataType.TextAsset },
-            { "JSON", TRDataType.JsonText },
-            { "BIN", TRDataType.BinaryData },
-            { "CHARA", TRDataType.Character },
-            { "BG", TRDataType.BG },
-            { "EVENT", TRDataType. Event },
-            { "UI", TRDataType. UI },
-            { "LIVE2D", TRDataType.Live2D },
-            { "FBX", TRDataType.FBX },
-            { "EMOTE", TRDataType. Emote },
-            { "BGM", TRDataType.BGM },
-            { "SE", TRDataType.SE },
-            { "VOICE", TRDataType. Voice },
-            { "", TRDataType.Terminate },              
+ //            { "BG", TRAssetType.None },
+            { "TEXT", TRAssetType.TextAsset },
+            { "JSON", TRAssetType.JsonText },
+            { "BIN", TRAssetType.BinaryData },
+            { "CHARA", TRAssetType.Character },
+            { "BG", TRAssetType.BG },
+            { "EVENT", TRAssetType. Event },
+            { "UI", TRAssetType. UI },
+            { "LIVE2D", TRAssetType.Live2D },
+            { "FBX", TRAssetType.FBX },
+            { "EMOTE", TRAssetType. Emote },
+            { "BGM", TRAssetType.BGM },
+            { "SE", TRAssetType.SE },
+            { "VOICE", TRAssetType. Voice },
+            { "", TRAssetType.Terminate },              
         };
 
         [SerializeField]
@@ -71,7 +71,7 @@ namespace Trionfi
 		public string localReourcesPath = "TRdata/";
 
         [SerializeField]
-        public Dictionary<TRDataType, string> dataPath = new Dictionary<TRDataType, string>();
+        public Dictionary<TRAssetType, string> dataPath = new Dictionary<TRAssetType, string>();
 
         [SerializeField]
         public Dictionary<TRStorageType, string> storagePath = new Dictionary<TRStorageType, string>();
@@ -89,7 +89,7 @@ namespace Trionfi
 			return "";
 		}
 
-        public string MakeStoragePath(string file, TRDataType dataType)
+        public string MakeStoragePath(string file, TRAssetType dataType)
         {
             string _basePath = dataPath[dataType];
 
@@ -100,7 +100,7 @@ namespace Trionfi
             return _basePath + file;
         }
 
-        public Object LoadObject(string storage, TRDataType dataType, TRStorageType storageType = TRStorageType.LocalFile)
+        public Object LoadObject(string storage, TRAssetType dataType, TRStorageType storageType = TRStorageType.LocalFile)
         {
             Object resultObject;
 

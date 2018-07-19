@@ -127,12 +127,12 @@ namespace Trionfi
             Dictionary<string, double> calcValue = new Dictionary<string, double>();
             Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
 
-            foreach (KeyValuePair<string, string> _pair in _variable)
+            foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
             {
                 float _value = 0.0f;
 
-                if(_variable.IsValid(ref _value, _pair.Key))
-                    calcValue[_pair.Key] = _variable.Float(_pair.Value);
+                if (_variable.IsValid(ref _value, _pair.Key))
+                    calcValue[_pair.Key] = _value;
                 else
                     calcValue[_pair.Key] = float.PositiveInfinity;
             }

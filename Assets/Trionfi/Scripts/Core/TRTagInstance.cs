@@ -8,20 +8,23 @@ namespace Trionfi
     [Serializable]
 	public class TRTagInstance
     {
-        public List<AbstractComponent> tagComponents;
         public Dictionary<string, int> labelInfo = new Dictionary<string, int>();
 
         public List<AbstractComponent> arrayComponents = new List<AbstractComponent>();
+
         public int currentComponentIndex = -1;      //-1は未初期化、0からスタート
 
-		public bool CompileScriptString(string text) {
+		public bool CompileScriptString(string text)
+        {
             ErrorLogger.Clear();
 
-            //パーサーを動作させる
-            tagComponents = TRScriptParser.Instance.Parse(text);
+            TRScriptParser tagParser = new TRScriptParser(text);
 
+            arrayComponents = tagParser.BeginParse();
+
+            //ToDo:
+            /*
             int _index = 0;
-
             foreach (AbstractComponent _component in arrayComponents)
             {
                 if (_component.tagName == "label")
@@ -29,17 +32,18 @@ namespace Trionfi
 
                 _index++;
             }
+            */
 
             return ErrorLogger.ShowAll();
         }
 
-		public bool CompileScriptFile(string storage)
-		{
-//				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
-				TextAsset script_text = StorageManager.Instance.LoadObject(storage, TRDataType.TextAsset) as TextAsset;
+        public bool CompileScriptFile(string storage)
+        {
+            //				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
+            TextAsset script_text = StorageManager.Instance.LoadObject(storage, TRAssetType.TextAsset) as TextAsset;
 
-				return CompileScriptString(script_text.text);
-		}
+            return CompileScriptString(script_text.text);
+        }
 
         public void AddLabel(string label_name, int index)
         {
@@ -59,63 +63,36 @@ namespace Trionfi
 
         //0=デフォルト1=componentのフラグが立ってない-1シナリオ最後に
         public IEnumerator Run(int index = 0)
-		{
-                currentComponentIndex = index;
-                //			StatusManager.Instance.currentScenario = this;
-                //			StatusManager.Instance.MessageShow();
+        {
+            currentComponentIndex = index;
 
             if (currentComponentIndex < arrayComponents.Count)
-			{
-				AbstractComponent _tagComponent = arrayComponents[currentComponentIndex];
+            {
+                AbstractComponent _tagComponent = arrayComponents[currentComponentIndex];
 
                 _tagComponent.Before();
 
-				//タグ
-//				if (StatusManager.Instance.currentState == JokerState.SkipOrder)
-				{
-					Debug.Log("SkipOrderされました");
-				}
-//				else
-				{
-//                    _tagComponent.CalcVariable();
-//                    _tagComponent.Validate();
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
+                if (TRSystemConfig.Instance.showTag)
+                {
+                    string _params = "";
 
-					string p = "";
-					foreach (KeyValuePair<string, string> kvp in _tagComponent.tagParam)
-					{
-						p += kvp.Key + "=" + kvp.Value + " ";
-					}
-
-					if(TRSystemConfig.Instance.showTag)
-					{
-						Debug.Log("[" + _tagComponent.tagName + " " + p + " ]");
-					}
-
-					_tagComponent.Execute();
-				}
+                    foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> key in _tagComponent.tagParam)
+                    {
+                        _params += " " + key.Key + "= " + key.Value.Key;
+                    }
+                    ErrorLogger.Log("[" + _tagComponent.tagName + _params +" ]");
+                }
+#endif
+                _tagComponent.Execute();
 
                 _tagComponent.After();
-
                 yield return _tagComponent.TagAsyncWait();
 
                 //ToDo:flag
                 currentComponentIndex++;
-			}
-            /*
-			//シナリオファイルの最後まで来た時。スタックが存在するならreturn する
-			//スタックがあるならreturn する
-			if(CountStack() > 0)
-			{
-                ReturnComponent _ret = new ReturnComponent();
-                _ret.Execute();
-//                TRScriptParser.Instance.StartTag("[return]");
-			}
-			else
-			{
-				StatusManager.Instance.EndScenario();
-			}
-            */
+            }
             yield return null;			
 		}
 	}
-};
+}

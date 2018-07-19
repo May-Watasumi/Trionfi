@@ -23,9 +23,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRDataType _type = tagParam.Type();
+            TRAssetType _type = TRAssetType.BGM;
 
-            string storage = tagParam["storage"];
+            string storage = tagParam.Identifier("storage");
             float playDelay = tagParam.Float("delay");
             float fadeTime = tagParam.Float("time");
 
@@ -33,7 +33,7 @@ namespace Trionfi
 
             if(!tagParam.IsValid(ref loop, "loop"))
             {
-                loop = _type == TRDataType.BGM ? true : false;
+                loop = _type == TRAssetType.BGM ? true : false;
             }
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);
@@ -60,8 +60,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+            TRAssetType _type = TRAssetType.BGM;
+
             float delay = tagParam.Float("delay");
-            TRDataType _type = tagParam.Type();
             float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);
@@ -82,8 +83,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+            TRAssetType _type = TRAssetType.BGM;
+
             float delay = tagParam.Float("delay");
-            TRDataType _type = tagParam.Type();
             float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);
@@ -104,8 +106,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+            TRAssetType _type = TRAssetType.BGM;
+
             float delay = tagParam.Float("delay");
-            TRDataType _type = tagParam.Type();
             float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);

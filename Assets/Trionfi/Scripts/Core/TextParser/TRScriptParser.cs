@@ -9,16 +9,292 @@ using Trionfi;
 
 namespace Trionfi
 {
-    //スクリプトファイルを読み込んで、適切な形にパースして返します
-
-    public class TRScriptParser : SingletonMonoBehaviour<TRScriptParser>
+    public class TRParserBase
     {
+        protected const string nameSpace = "Trionfi";
+        public static System.Globalization.TextInfo tf = new System.Globalization.CultureInfo("ja-JP"/*"en-US"*/, false).TextInfo;
+
+        //使用側がリセットする
+        public static int lineCount = 0;
+
+        protected int currentPos = 0;
+        protected int startPos = 0;
+        protected int endPos = 0;
+
+        protected char[] charArray;
+
+        public TRParserBase(string statement)
+        {
+            charArray = statement.ToCharArray();
+        }
+
+        protected void SkipSpace()
+        {
+            while (charArray[currentPos] == '\r' || charArray[currentPos] == '\n' || charArray[currentPos] == ' ' || charArray[currentPos] == '\t')
+            {
+                if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
+                    lineCount++;
+
+                currentPos++;
+            }
+        }
+
+        protected string GetString(char terminator)
+        {
+            string buffer = "";
+
+            while (charArray[currentPos] != terminator)
+            {
+                if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
+                    lineCount++;
+
+                buffer += charArray[currentPos++];
+            }
+
+            return buffer;
+        }
+
+        protected string ReadLine()
+        {
+            string buffer = "";
+
+            startPos = currentPos;
+
+            while (charArray[currentPos] != '\r' && charArray[currentPos] != '\n')
+                buffer += charArray[currentPos++];
+
+            endPos = currentPos;
+
+            return buffer;
+        }
+
+        protected static bool IsSpace(char character)
+        {
+            return character == '\r' || character == '\n' || character == ' ' || character == '\t';
+        }
+
+        protected static bool IsNumber(char character)
+        {
+            return character >= '0' && character <= '9';
+        }
+
+        protected static bool IsAlphabet(char character)
+        {
+            return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z');
+        }
+
+        protected static bool IsPartOfVariable(char character)
+        {
+            return IsAlphabet(character) || IsNumber(character) || character == '_';
+        }
+    }
+
+    public class TRTagParser : TRParserBase
+    {
+        public TRTagParser(string statement) : base(statement) { }
+
+        protected string tagName;
+        protected Dictionary<string, KeyValuePair<string, TRDataType>> paramList = new Dictionary<string, KeyValuePair<string, TRDataType>>();
+
+        //#you must check statement is not empty. 
+        public bool GetFirstToken()
+        {
+            paramList.Clear();
+
+            tagName = "";
+
+            if(!IsAlphabet(charArray[currentPos]))
+                return false;
+
+            while(IsPartOfVariable(charArray[currentPos]))
+                tagName += charArray[currentPos++];
+
+            if (IsSpace(charArray[currentPos]))
+                endPos = currentPos;
+            else
+                return false;
+
+            return true;
+        }
+
+        protected bool GetParamToken()
+        {
+            string leftParam = "";
+            string rightParam = "";
+
+            SkipSpace();
+
+            if(!IsAlphabet(charArray[currentPos]) || currentPos >= charArray.Length)
+                return false;
+
+            while(IsPartOfVariable(charArray[currentPos]))
+                leftParam += charArray[currentPos++];
+
+            if (currentPos >= charArray.Length || ++currentPos >= charArray.Length || charArray[currentPos] != '=')
+                return false;
+
+            SkipSpace();
+
+            if (currentPos >= charArray.Length)
+                return false;
+
+            if (charArray[currentPos] == '\"')
+            {
+                do
+                {
+                    if (++currentPos >= charArray.Length)
+                        return false;
+
+                    rightParam += charArray[currentPos];
+                } while (charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\');
+
+                paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Literal);
+            }
+            else
+            {
+                while (!IsSpace(charArray[++currentPos]))
+                {
+                    rightParam += charArray[currentPos];
+                }
+
+                int _isInt;
+                double _isFloat;
+
+                if (rightParam[0] == '0' && (rightParam[1] == 'x' || rightParam[1] == 'X') && int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt))
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Hex);
+                else if (int.TryParse(rightParam, out _isInt))
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Int);
+                else if (double.TryParse(rightParam, out _isFloat))
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Float);
+                else
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Identifier);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        protected void GetParam()
+        {
+        }
+
+
+        public AbstractComponent Parse()
+        {
+            if(!GetFirstToken())
+                return null;
+            else
+            {
+                while (currentPos < charArray.Length)
+                    GetParamToken();
+
+                string className = nameSpace + "." + tf.ToTitleCase(tagName) + "Component";
+
+                // リフレクションで動的型付け
+                Type masterType = Type.GetType(className);
+                AbstractComponent _component = (AbstractComponent)Activator.CreateInstance(masterType);
+
+                if(_component != null)
+                {
+
+                }
+
+                if (!TRVitualMachine.invovationInstance.ContainsKey(tagName))
+                    ErrorLogger.Log("Invalid Tag:\"" + tagName + "\"");
+                //                          else
+                //                       		    cmp = new _MacrostartComponent();
+
+                return _component;
+            }
+        }
+    }
+
+    public class TRScriptParser : TRParserBase
+    {
+        public TRScriptParser(string statement) : base(statement) { }
+
+        public List<AbstractComponent> BeginParse()
+        {
+            List<AbstractComponent> result = new List<AbstractComponent>();
+
+            AbstractComponent _tagComponent = null;
+
+            while (currentPos < charArray.Length)
+            {
+                SkipSpace();
+
+                //preprocessor
+                if (charArray[currentPos] == '#')
+                {
+                    ReadLine();
+                }
+                //lineobject
+                else if (charArray[currentPos] == '@')
+                {
+                    string statement = ReadLine();
+
+                    TRTagParser tagParser = new TRTagParser(statement);
+                    _tagComponent = tagParser.Parse();
+
+                    if (_tagComponent != null)
+                        result.Add(_tagComponent);
+                }
+                //comment
+                else if ((charArray[currentPos] == '/' && charArray[currentPos + 1] == '/') || charArray[currentPos] == ';')
+                {
+                    ReadLine();
+                }
+                //comments
+                else if (charArray[currentPos] == '/' && charArray[currentPos + 1] == '*')
+                {
+                }
+                //label
+                else if (charArray[currentPos] == '*')
+                {
+                    ReadLine();
+
+                }
+                //tag
+                else if (charArray[currentPos] == '[')
+                {
+                    string _tagParam = GetString(']');
+
+                    TRTagParser tagParser = new TRTagParser(_tagParam);
+                    _tagComponent = tagParser.Parse();
+
+                    if (_tagComponent != null)
+                        result.Add(_tagComponent);
+                }
+                //text
+                else
+                {
+                    ReadLine();
+                }
+
+                currentPos++;
+            }
+
+            return result;
+        }
+    }
+}
+
+#if false
+        [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
+        void Dump(List<LineObject> list, string path)
+        {
+            System.IO.StreamWriter stream = new System.IO.StreamWriter(path, false, Encoding.GetEncoding("utf-8"));
+            foreach (LineObject line in list)
+            {
+                stream.WriteLine(line.line_num.ToString() + ":" + line.line);
+            }
+            stream.Close();
+        }
+
         private string errorMessage = "";
         private string warningMessage = "";
         public bool onRegistMacro = false;
-
-        private System.Globalization.TextInfo tf = new System.Globalization.CultureInfo("ja-JP"/*"en-US"*/, false).TextInfo;
-        private const string nameSpace = "Trionfi";
 
         [SerializeField]
         public bool ignoreCR = true;
@@ -62,135 +338,6 @@ namespace Trionfi
                     return false;
             }
             return true;
-        }
-
-        public int lineCount = 0;
-
-        int currentPos = 0;
-        int startPos = 0;
-        int endPos = 0;
-
-        public void SkipSpace(ref char[] array)
-        {
-            while (array[currentPos] == '\r' || array[currentPos] == '\n' || array[currentPos] == ' ' || array[currentPos] == '\t')
-            {
-                if (array[currentPos] == '\r' || array[currentPos] == '\n')
-                    lineCount++;
-
-                currentPos++;
-            }
-        }
-
-        public string SkipCharacter(ref char[] array, char terminator)
-        {
-            string buffer = "";
-
-            while (array[currentPos] !=  terminator)
-            {
-                if (array[currentPos] == '\r' || array[currentPos] == '\n')
-                    lineCount++;
-                
-                buffer += array[currentPos++];
-            }
-
-            return buffer;
-        }
-
-        public string ReadLine(ref char[] array)
-        {
-            string buffer = "";
-
-            startPos = currentPos;
-
-            while (array[currentPos] != '\r' && array[currentPos] != '\n')
-                buffer += array[currentPos++];
-
-            endPos = currentPos;
-
-            return buffer;
-        }
-
-        private bool IsSpace(char character)
-        {
-            return character == '\r' || character == '\n' || character == ' ' || character == '\t';
-        }
-
-        private bool IsPartOfNumeric(char character)
-        {
-            return character >= '0' && character <= '9';
-        }
-
-        private bool IsAlphabet(char character)
-        {
-            return (character >= 'a' && character <= 'z') || (character >= 'A' && character <= 'Z');
-        }
-
-        private bool IsPartOfVariable(char character)
-        {
-            return IsAlphabet(character) || IsPartOfNumeric(character) || character == '_';
-        }
-
-        private string GetFirstToken(ref char[] array)
-        {
-            string buffer = "";
-
-            if (IsAlphabet(array[currentPos]))
-                return null;
-
-            while(IsPartOfVariable(array[currentPos]))
-                buffer += array[currentPos++];
-
-            if (IsSpace(array[currentPos]))
-                endPos = currentPos;
-            else
-                return null;
-
-            return buffer;
-        }
-
-        public List<AbstractComponent> _Parse(string script_text)
-        {
-
-            char[] characters = script_text.ToCharArray();
-
-            ParseState _state = ParseState.Begin;
-
-            SkipSpace(ref chara);
-
-            if (characters[currentPos] == '#')
-            {
-                ReadLine(ref characters);
-            }
-            else if (characters[currentPos] == '@')
-            {
-                ReadLine(ref characters);
-            }
-            else if ((characters[currentPos] == '/' && characters[currentPos + 1] == '/') || characters[currentPos] == ';')
-            {
-                ReadLine(ref characters);
-            }
-            else if (characters[currentPos] == '/' && characters[currentPos + 1] == '*')
-            {
-            }
-            else if (characters[currentPos] == '*')
-            {
-                ReadLine(ref characters);
-            }
-
-            else if (characters[currentPos] == '[')
-            {
-                string _tag = GetFirstToken(ref characters);
-                string _tagParam:
-
-                if(_tag != null)
-                    return;
-                else
-                    _tagParam = SkipCharacter(ref characters, ']');
-            }
-            else
-            {
-                ReadLine(ref characters);
-            }
         }
 
         //パースしたタグクラスのListを返す
@@ -357,52 +504,16 @@ namespace Trionfi
                 //					components.Add(new RComponent());
 
             }
-
-            Dump(line_objects, Application.dataPath + "log.txt");
-
             return components;
         }
+    }
+}
 
-        //１行のstringからタグを作成
-        public AbstractComponent MakeTag(string line)
-        {
-            AbstractComponent _component = MakeTag(line, 0);
-            return _component;
-        }
-
-        //タグ名と引数の辞書からタグを生成
-        public AbstractComponent MakeTag(string tag_name, TRVariable param)
-        {
-            string line = "[" + tag_name + " ";
-            string param_str = "";
-            foreach (KeyValuePair<string, string> pair in param)
-            {
-                param_str += pair.Key + "=" + pair.Value + " ";
-            }
-
-            line = line + param_str + "]";
-
-//            Debug.Log(line);
-
-            AbstractComponent cmp = MakeTag(line, 0);
-
-            return cmp;
-        }
-
-        public AbstractComponent MakeTag(string statement, int lineNum) {
-            TagParam tag = new TagParam(statement, lineNum);
-
-            string className = nameSpace + "." + tf.ToTitleCase(tag.tagName) + "Component";
-
-            // リフレクションで動的型付け
-            Type masterType = Type.GetType(className);
-            AbstractComponent cmp = (AbstractComponent)Activator.CreateInstance(masterType);
-#if false
             // 実行中のアセンブリを取得
             Assembly assembly = Assembly.GetExecutingAssembly();
 
             // インスタンスを生成
-\            AbstractComponent cmp = (AbstractComponent)assembly.CreateInstance(
+            AbstractComponent cmp = (AbstractComponent)assembly.CreateInstance(
 　　              className,    // 名前空間を含めたクラス名
                   false,        // 大文字小文字を無視するかどうか
                   BindingFlags.CreateInstance,      // インスタンスを生成
@@ -412,33 +523,3 @@ namespace Trionfi
                   null          // ローカル実行の場合はnullでOK
                 );
 #endif
-
-            if (cmp != null)
-                cmp.Init(tag);
-            else
-            {
-#if UNITY_EDITOR
-                ErrorLogger.Log("Invalid Tag:\"" + tag.tagName + "\"");
-#else
-        	//マクロとして登録
-            ErrorLogger.Log("MacroStart:"+tag.tagName);
-		    cmp = new _MacrostartComponent();
-#endif
-            }
-
-            return cmp;
-        }
-
-
-        [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
-        void Dump(List<LineObject> list, string path) 
-        {
-            System.IO.StreamWriter stream = new System.IO.StreamWriter(path, false,Encoding.GetEncoding("utf-8"));
-            foreach (LineObject line in list)
-            {
-                stream.WriteLine(line.line_num.ToString()+":"+line.line);
-            }
-            stream.Close();
-        } 
-    }
-}
