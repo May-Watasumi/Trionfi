@@ -9,9 +9,23 @@ using Trionfi;
 
 namespace Trionfi
 {
+    enum TRParserError
+    {
+        EOF,
+        UnmatchType
+    }
+
+    class TRParserExecption : System.Exception
+    {
+        public TRParserError error;
+        public TRParserExecption(TRParserError _error) { _error = error; }
+    }
+
     public class TRParserBase
     {
         protected const string nameSpace = "Trionfi";
+        protected const string operatorString = "!\"#$%&'()=-^~\\|@`{}*:;+<,>.?/";
+
         public static System.Globalization.TextInfo tf = new System.Globalization.CultureInfo("ja-JP"/*"en-US"*/, false).TextInfo;
 
         //使用側がリセットする
@@ -123,55 +137,63 @@ namespace Trionfi
             string rightParam = "";
 
             SkipSpace();
-
-            if(!IsAlphabet(charArray[currentPos]) || currentPos >= charArray.Length)
-                return false;
-
-            while(IsPartOfVariable(charArray[currentPos]))
-                leftParam += charArray[currentPos++];
-
-            if (currentPos >= charArray.Length || ++currentPos >= charArray.Length || charArray[currentPos] != '=')
-                return false;
-
-            SkipSpace();
-
-            if (currentPos >= charArray.Length)
-                return false;
-
-            if (charArray[currentPos] == '\"')
+            try
             {
-                do
-                {
-                    if (++currentPos >= charArray.Length)
-                        return false;
+                if (currentPos >= charArray.Length || !IsAlphabet(charArray[currentPos]))
+                    throw new TRParserExecption(TRParserError.UnmatchType);
 
-                    rightParam += charArray[currentPos];
-                } while (charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\');
+                while (IsPartOfVariable(charArray[currentPos]))
+                    leftParam += charArray[currentPos++];
 
-                paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Literal);
-            }
-            else
-            {
-                while (!IsSpace(charArray[++currentPos]))
+                if(currentPos >= charArray.Length || charArray[currentPos] != '=')
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+
+                SkipSpace();
+
+                if (currentPos >= charArray.Length)
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+
+                //リテラル
+                if (charArray[currentPos] == '\"')
                 {
-                    rightParam += charArray[currentPos];
+                    do
+                    {
+                        if(++currentPos >= charArray.Length)
+                            throw new TRParserExecption(TRParserError.UnmatchType);
+
+                        rightParam += charArray[currentPos];
+
+                    } while (charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\');
+
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Literal);
+                    return true;
                 }
-
-                int _isInt;
-                double _isFloat;
-
-                if (rightParam[0] == '0' && (rightParam[1] == 'x' || rightParam[1] == 'X') && int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt))
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Hex);
-                else if (int.TryParse(rightParam, out _isInt))
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Int);
-                else if (double.TryParse(rightParam, out _isFloat))
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Float);
                 else
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Identifier);
+                {
+                    //日本語も引数になりうるので、除外条件は算術記号？
+                    while(!IsSpace(charArray[++currentPos]))
+                    {
+                        rightParam += charArray[currentPos];
+                    }
 
-                return true;
+                    int _isInt;
+                    double _isFloat;
+
+                    if (rightParam[0] == '0' && (rightParam[1] == 'x' || rightParam[1] == 'X') && int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt))
+                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Hex);
+                    else if (int.TryParse(rightParam, out _isInt))
+                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Int);
+                    else if (double.TryParse(rightParam, out _isFloat))
+                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Float);
+                    else
+                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Identifier);
+
+                    return true;
+                }
             }
-
+            catch(TRParserExecption error)
+            {
+            }
             return false;
         }
 
