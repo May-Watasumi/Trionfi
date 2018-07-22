@@ -42,15 +42,18 @@ namespace Trionfi
             charArray = statement.ToCharArray();
         }
 
-        protected void SkipSpace()
+        protected bool SkipSpace()
         {
-            while (charArray[currentPos] == '\r' || charArray[currentPos] == '\n' || charArray[currentPos] == ' ' || charArray[currentPos] == '\t')
-            {
+            do {
+                if (currentPos >= charArray.Length)
+                    return true;
+
                 if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
                     lineCount++;
 
-                currentPos++;
-            }
+            } while (IsSpace(charArray[++currentPos]));
+
+            return false;
         }
 
         protected string GetString(char terminator)
@@ -108,7 +111,7 @@ namespace Trionfi
         public TRTagParser(string statement) : base(statement) { }
 
         protected string tagName;
-        protected Dictionary<string, KeyValuePair<string, TRDataType>> paramList = new Dictionary<string, KeyValuePair<string, TRDataType>>();
+        protected TRVariable paramList = new TRVariable();
 
         //#you must check statement is not empty. 
         public bool GetFirstToken()
@@ -118,117 +121,127 @@ namespace Trionfi
             tagName = "";
 
             if(!IsAlphabet(charArray[currentPos]))
-                return false;
+                throw new TRParserExecption(TRParserError.UnmatchType);
 
-            while(IsPartOfVariable(charArray[currentPos]))
+            while (IsPartOfVariable(charArray[currentPos]))
                 tagName += charArray[currentPos++];
 
             if (IsSpace(charArray[currentPos]))
                 endPos = currentPos;
             else
-                return false;
-
+                throw new TRParserExecption(TRParserError.UnmatchType);
             return true;
         }
 
         protected bool GetParamToken()
         {
+            //SkiSpaceは直前で実行している前提
             string leftParam = "";
             string rightParam = "";
 
-            SkipSpace();
-            try
+            if (currentPos >= charArray.Length)
+                return false;
+
+            else if( !IsAlphabet(charArray[currentPos]))
+                throw new TRParserExecption(TRParserError.UnmatchType);
+
+            while (IsPartOfVariable(charArray[currentPos]))
+                leftParam += charArray[currentPos++];
+
+            if(currentPos >= charArray.Length || charArray[currentPos] != '=')
+                throw new TRParserExecption(TRParserError.UnmatchType);
+
+            if(SkipSpace())
+                throw new TRParserExecption(TRParserError.UnmatchType);
+
+            //リテラル
+            if (charArray[currentPos] == '\"')
             {
-                if (currentPos >= charArray.Length || !IsAlphabet(charArray[currentPos]))
-                    throw new TRParserExecption(TRParserError.UnmatchType);
-
-                while (IsPartOfVariable(charArray[currentPos]))
-                    leftParam += charArray[currentPos++];
-
-                if(currentPos >= charArray.Length || charArray[currentPos] != '=')
-                    throw new TRParserExecption(TRParserError.UnmatchType);
-
-                SkipSpace();
-
-                if (currentPos >= charArray.Length)
-                    throw new TRParserExecption(TRParserError.UnmatchType);
-
-                //リテラル
-                if (charArray[currentPos] == '\"')
+                do
                 {
-                    do
-                    {
-                        if(++currentPos >= charArray.Length)
-                            throw new TRParserExecption(TRParserError.UnmatchType);
+                    if(++currentPos >= charArray.Length)
+                        throw new TRParserExecption(TRParserError.UnmatchType);
 
-                        rightParam += charArray[currentPos];
+                    rightParam += charArray[currentPos];
 
-                    } while (charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\');
+                } while (charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\');
 
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Literal);
-                    return true;
+                paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Literal);
+
+                return true;
+            }
+            else
+            {
+                while (++currentPos < charArray.Length && !IsSpace(charArray[currentPos]))
+                {
+                    rightParam += charArray[currentPos];
                 }
+
+                if(string.IsNullOrEmpty(rightParam))
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+
+                int _isInt;
+                double _isFloat;
+
+                if (rightParam[0] == '0' && (rightParam[1] == 'x' || rightParam[1] == 'X') && int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt))
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Hex);
+                else if (int.TryParse(rightParam, out _isInt))
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Int);
+                else if (double.TryParse(rightParam, out _isFloat))
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Float);
                 else
-                {
-                    //日本語も引数になりうるので、除外条件は算術記号？
-                    while(!IsSpace(charArray[++currentPos]))
-                    {
-                        rightParam += charArray[currentPos];
-                    }
+                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Identifier);
 
-                    int _isInt;
-                    double _isFloat;
-
-                    if (rightParam[0] == '0' && (rightParam[1] == 'x' || rightParam[1] == 'X') && int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt))
-                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Hex);
-                    else if (int.TryParse(rightParam, out _isInt))
-                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Int);
-                    else if (double.TryParse(rightParam, out _isFloat))
-                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Float);
-                    else
-                        paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Identifier);
-
-                    return true;
-                }
+                return true;
             }
-            catch(TRParserExecption error)
-            {
-            }
-            return false;
         }
-
-        protected void GetParam()
-        {
-        }
-
 
         public AbstractComponent Parse()
         {
-            if(!GetFirstToken())
-                return null;
-            else
+            try
             {
-                while (currentPos < charArray.Length)
-                    GetParamToken();
-
-                string className = nameSpace + "." + tf.ToTitleCase(tagName) + "Component";
-
-                // リフレクションで動的型付け
-                Type masterType = Type.GetType(className);
-                AbstractComponent _component = (AbstractComponent)Activator.CreateInstance(masterType);
-
-                if(_component != null)
+                if (GetFirstToken())
                 {
+                    do
+                    {
+                        if (SkipSpace())
+                            break;                  
+                    } while (GetParamToken());
 
+                    string className = nameSpace + "." + tf.ToTitleCase(tagName) + "Component";
+
+                    // リフレクションで動的型付け
+                    Type masterType = Type.GetType(className);
+                    AbstractComponent _component = (AbstractComponent)Activator.CreateInstance(masterType);
+
+                    //                          else
+                    //                       		    cmp = new _MacrostartComponent();
+                    if (_component != null)
+                    {
+                        _component.tagParam = paramList;
+                        _component.Validate();
+                    }
+                    else if(TRVitualMachine.invovationInstance.ContainsKey(tagName))
+                    {
+                        ErrorLogger.Log("Invalid Tag:\"" + tagName + "\"");
+                    }
+                    return _component;
+                }
+                else
+                {
+                    throw new TRParserExecption(TRParserError.UnmatchType);
                 }
 
-                if (!TRVitualMachine.invovationInstance.ContainsKey(tagName))
-                    ErrorLogger.Log("Invalid Tag:\"" + tagName + "\"");
-                //                          else
-                //                       		    cmp = new _MacrostartComponent();
-
-                return _component;
             }
+            catch (TRParserExecption error)
+            {
+                if (currentPos >= charArray.Length)
+                    ErrorLogger.Log("Statement is aborted");
+                else
+                    ErrorLogger.Log("Unmatched word");
+            }
+
+            return null;
         }
     }
 
@@ -241,9 +254,10 @@ namespace Trionfi
             List<AbstractComponent> result = new List<AbstractComponent>();
 
             AbstractComponent _tagComponent = null;
-
-            while (currentPos < charArray.Length)
+            
+            while(currentPos < charArray.Length)
             {
+                string textBuffer = "";
                 SkipSpace();
 
                 //preprocessor
@@ -275,7 +289,6 @@ namespace Trionfi
                 else if (charArray[currentPos] == '*')
                 {
                     ReadLine();
-
                 }
                 //tag
                 else if (charArray[currentPos] == '[')
@@ -291,7 +304,7 @@ namespace Trionfi
                 //text
                 else
                 {
-                    ReadLine();
+                    textBuffer += ReadLine();
                 }
 
                 currentPos++;

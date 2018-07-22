@@ -40,23 +40,12 @@ namespace Trionfi
             get { return tagParam != null ? tagParam.Bool(syncwait) : false; }
         }       
 
-        public AbstractComponent()
-        {
-        }
-
-        //引数あり
-        public AbstractComponent(TRVariable _tagParam)//, int line_num)
-        {
-            this.tagParam = _tagParam;
-            Validate();
-        }
-
         //タグ名を取得（デバッグ用？）
         public string tagName
         {
             get
             {
-                string _tag = this.GetType().Name.Replace("Component", "");
+                string _tag = GetType().Name.Replace("Component", "");
                 return _tag;
             }
         }
