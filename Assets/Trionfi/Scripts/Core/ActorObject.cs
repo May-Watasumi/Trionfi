@@ -1,17 +1,66 @@
-﻿
-/*#if UNITY_EDITOR
-	#define CHARACTER_RESOURCE_ILLUSTRATIONS
-#else
-	#define CHARACTER_ASSET_BUNDLES
-#endif*/
-
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEditor;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
-//using SimpleJSON;
+class TRStage : ScriptableObject
+{
+    public const string assetPath = "Assets/Trionfi/Trionfi.asset";
+
+    [MenuItem("Trionfi/Object/Initialize")]
+    static void CreateEnviroment()
+    {
+        TRStage _parent = CreateInstance<TRStage>();
+        TREnvironmentObject enviroment = CreateInstance<TREnvironmentObject>();
+        enviroment.name = "enviroment";
+        //        _parent.enviroment.hideFlags = HideFlags.HideInHierarchy;
+
+        AssetDatabase.CreateAsset(_parent, assetPath);
+        AssetDatabase.AddObjectToAsset(enviroment, _parent);
+        AssetDatabase.ImportAsset(assetPath);
+    }
+
+    [MenuItem("Trionfi/Object/NewActor")]
+    static void CreateActor()
+    {
+        TRActor _actor = CreateInstance<TRActor>();
+        AssetDatabase.AddObjectToAsset(_actor, assetPath);
+    }
+}
+
+class TREnvironmentObject : ScriptableObject
+{
+    [SerializeField]
+    public TREnviroment light = new TREnviroment()
+    {
+        { "朝" , new Color(1.0f, 1.0f, 1.0f) },
+        { "昼" , new Color(1.0f, 1.0f, 1.0f) },
+        { "夜" , new Color(1.0f, 1.0f, 1.0f) },
+    };
+}
+
+[System.Serializable]
+public class TREnviroment : SerializableDictionary<string, Color> { }
+
+[System.Serializable]
+public class TREmotion : SerializableDictionary<string, Sprite> { }
+
+[Serializable]
+public class TRActor : ScriptableObject
+{
+    [SerializeField]
+    public TREmotion emotion = new TREmotion()
+    {
+        { "通常", null },
+        { "喜", null },
+        { "怒", null },
+        { "楽", null },
+        { "照", null },
+        { "恥", null },
+    };
+}
 
 public class ActorDataBase : ScriptableObject
 {
@@ -54,24 +103,6 @@ public class ActorDataBase : ScriptableObject
                 "その他６",
     };
     */
-
-    [Serializable]
-    public struct Emotion
-    {
-        int actionID;
-        string action;
-        Sprite image;
-    };
-
-    [Serializable]
-    public class Actor
-    {
-        public int actorID;
-        public string actorName;
-        public Dictionary<string, Emotion> Reaction = new Dictionary<string, Emotion>();
-    }
-
-    public Dictionary<string, Actor> actorList = new Dictionary<string, Actor>();
 }
 
 #if false
