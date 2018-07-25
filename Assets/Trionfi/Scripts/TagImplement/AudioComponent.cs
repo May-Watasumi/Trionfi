@@ -37,7 +37,7 @@ namespace Trionfi
             }
 
             AudioSource _source = Trionfi.Instance.GetAudio(_type);
-            AudioClip _clip = StorageManager.Instance.LoadObject(storage, _type) as AudioClip;
+            AudioClip _clip = TRResourceLoader.Instance.LoadObject(storage, _type) as AudioClip;
             _source.clip = _clip;
 
             if (playDelay > 0.1f)

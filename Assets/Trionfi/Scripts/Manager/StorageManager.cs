@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -41,7 +42,7 @@ namespace Trionfi
 	}
 
 //	[System.Serializable]
-	public class StorageManager : SingletonMonoBehaviour<StorageManager>
+	public class TRResourceLoader : SingletonMonoBehaviour<TRResourceLoader>
 	{
         bool onDataLoading = false;
 
@@ -75,7 +76,6 @@ namespace Trionfi
 
         [SerializeField]
         public Dictionary<TRStorageType, string> storagePath = new Dictionary<TRStorageType, string>();
-
 
 		public string IsExistLocal(string storage)
         {
@@ -118,10 +118,34 @@ namespace Trionfi
 //                    break;
             }
 
-            if (resultObject == null)
-                            ErrorLogger.StopError("Trionfi:\"" + storage + "\"("+resultObject.GetType().Name+"\")が見つかりませんでした。");
+            if(resultObject == null)
+                ErrorLogger.StopError("Trionfi:\"" + storage + "\"("+resultObject.GetType().Name+"\")が見つかりませんでした。");
 
             return resultObject;
 		}
-	}
+
+        int errorCode = 0;
+        bool onLoading = false;
+        AbstractComponent calledComponent;
+
+        private IEnumerator Load(string url)
+        {
+            UnityWebRequest request = UnityWebRequest.Get(url);
+
+            yield return request.SendWebRequest();
+
+            //3.isNetworkErrorとisHttpErrorでエラー判定
+            if(request.isHttpError || request.isNetworkError)
+            {
+                //4.エラー確認
+                Debug.Log(request.error);
+            }
+            else
+            {
+                //4.結果確認
+                Debug.Log(request.downloadHandler.text);
+            }
+
+        }
+    }
 }

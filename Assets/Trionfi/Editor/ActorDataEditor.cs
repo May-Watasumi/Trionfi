@@ -6,14 +6,30 @@ using System.Collections.Generic;
 //using SimpleJSON;
 using System.Linq;
 
-//using Rotorz.ReorderableList;
+namespace Trionfi
+{
+    public class TREditorMenu : Editor
+    {
+        [MenuItem("Trionfi/Object/Initialize")]
+        static void Initialize()
+        {
+            TRStageObject stage = CreateInstance<TRStageObject>();
+            TRActorManagerObject actor = CreateInstance<TRActorManagerObject>();
 
+            AssetDatabase.CreateAsset(stage, Trionfi.assetPath + TRStageObject.assetName);
+            AssetDatabase.CreateAsset(actor, Trionfi.assetPath + TRActorManagerObject.assetName);
+            AssetDatabase.ImportAsset(Trionfi.assetPath + TRStageObject.assetName);
+            AssetDatabase.ImportAsset(Trionfi.assetPath + TRActorManagerObject.assetName);
+        }
+    }
+}
+#if false
 [CustomEditor(typeof(ActorDataBase))]
 public class ActorDataEditor : Editor
 {
     public ActorDataEditor current { get { return target as ActorDataEditor; } }
 
-    #region LABELS
+#region LABELS
 
     const string DELETE = "Delete";
     const string CANCEL = "Cancel";
@@ -44,7 +60,7 @@ public class ActorDataEditor : Editor
     public const string BASE_REVIVE_TIME = "BaseReviveTime";
     public const string REVIVE_TIME_PER_LEVEL = "ReviveTimePerLevel";
 
-    #endregion
+#endregion
 
     string selectedToolbarTab = "Character";
 
@@ -220,7 +236,7 @@ public class ActorDataEditor : Editor
         }
 
         NGUIEditorTools.BeginContents();
-#endif   
+#endif
         GUI.backgroundColor = Color.green;
         if (GUILayout.Button("キャラクター追加"))
         {
@@ -840,5 +856,6 @@ public class RankSerializedPropertyAdaptor : Rotorz.ReorderableList.SerializedPr
 
 }
 
+#endif
 
 #endif

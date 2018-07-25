@@ -40,7 +40,7 @@ namespace Trionfi
         public bool CompileScriptFile(string storage)
         {
             //				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
-            TextAsset script_text = StorageManager.Instance.LoadObject(storage, TRAssetType.TextAsset) as TextAsset;
+            TextAsset script_text = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.TextAsset) as TextAsset;
 
             return CompileScriptString(script_text.text);
         }

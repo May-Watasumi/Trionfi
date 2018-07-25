@@ -10,6 +10,8 @@ namespace Trionfi
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
 	{
+        public static readonly string assetPath = "Assets/Trionfi/";
+
         enum AudioChannel
         {
             BGM = 0,

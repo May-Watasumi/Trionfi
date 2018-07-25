@@ -42,7 +42,7 @@ namespace Trionfi
             else
                 _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
 
-            _dest.sprite = StorageManager.Instance.LoadObject(storage, TRAssetType.Character) as Sprite;
+            _dest.sprite = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.Character) as Sprite;
         }
     }
     
