@@ -125,20 +125,22 @@ namespace Trionfi
         public static double Calc(TRVariable _variable,  string calcString)
         {
             Dictionary<string, double> calcValue = new Dictionary<string, double>();
-            Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+           Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+/*
+                        foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
+                        {
+                            float _value = 0.0f;
 
-            foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
-            {
-                float _value = 0.0f;
+                            if (_variable.IsValid(ref _value, _pair.Key))
+                                calcValue[_pair.Key] = _value;
+                            else
+                                calcValue[_pair.Key] = float.PositiveInfinity;
+                        }
 
-                if (_variable.IsValid(ref _value, _pair.Key))
-                    calcValue[_pair.Key] = _value;
-                else
-                    calcValue[_pair.Key] = float.PositiveInfinity;
-            }
-
-            double result = engine.Calculate(calcString, calcValue);
-            return result;
+                        double result = engine.Calculate(calcString, calcValue);
+                        return result;
+            */
+            return 0.0f;
         }
 
         //ToDo:boolの評価。Jaceの拡張

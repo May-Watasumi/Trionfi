@@ -1,6 +1,6 @@
 fileFormatVersion: 2
-guid: 90f30913ae0fd6d4180dfbe5868e4da9
-timeCreated: 1532017031
+guid: e5613ea9949e0014cae922932a0e1c72
+timeCreated: 1532601452
 licenseType: Free
 PluginImporter:
   externalObjects: {}
@@ -26,12 +26,6 @@ PluginImporter:
         Exclude Win64: 0
         Exclude iOS: 1
   - first:
-      Android: Android
-    second:
-      enabled: 0
-      settings:
-        CPU: ARMv7
-  - first:
       Any: 
     second:
       enabled: 0
@@ -41,70 +35,43 @@ PluginImporter:
     second:
       enabled: 1
       settings:
-        CPU: AnyCPU
         DefaultValueInitialized: true
-        OS: AnyOS
-  - first:
-      Facebook: Win
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
-  - first:
-      Facebook: Win64
-    second:
-      enabled: 0
-      settings:
-        CPU: AnyCPU
   - first:
       Standalone: Linux
     second:
       enabled: 1
-      settings:
-        CPU: x86
+      settings: {}
   - first:
       Standalone: Linux64
     second:
       enabled: 1
-      settings:
-        CPU: x86_64
+      settings: {}
   - first:
       Standalone: LinuxUniversal
     second:
       enabled: 1
-      settings:
-        CPU: AnyCPU
+      settings: {}
   - first:
       Standalone: OSXUniversal
     second:
       enabled: 1
-      settings:
-        CPU: AnyCPU
+      settings: {}
   - first:
       Standalone: Win
     second:
       enabled: 1
-      settings:
-        CPU: AnyCPU
+      settings: {}
   - first:
       Standalone: Win64
     second:
       enabled: 1
-      settings:
-        CPU: AnyCPU
+      settings: {}
   - first:
       Windows Store Apps: WindowsStoreApps
     second:
       enabled: 0
       settings:
         CPU: AnyCPU
-  - first:
-      iPhone: iOS
-    second:
-      enabled: 0
-      settings:
-        CompileFlags: 
-        FrameworkDependencies: 
   userData: 
   assetBundleName: 
   assetBundleVariant: 
