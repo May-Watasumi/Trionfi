@@ -23,16 +23,6 @@ namespace Trionfi
         Voice,
         Terminate,
     }
-
-    //	[System.Serializable]
-    public enum TRStorageType
-	{
-        LocalResources,
-		LocalFile,
-		URL,
-		AssetBundle,
-        Terminate
-	};
 	
 //	[System.Serializable]
 	public class StorageInfo

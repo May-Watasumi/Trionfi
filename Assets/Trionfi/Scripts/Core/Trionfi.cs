@@ -7,12 +7,56 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
+    //	[System.Serializable]
+    public enum TRStorageType
+    {
+        LocalResources,
+        LocalFile,
+        URL,
+        AssetBundle,
+        Terminate
+    };
+
+    public class TRMediaInstance<T>
+    {
+        [SerializeField]
+        public TRStorageType type;
+        public T instance;
+    }
+
+    [System.Serializable]
+    public class TRAudio : TRMediaInstance<AudioSource> { }
+    [System.Serializable]
+    public class TRLLayer : TRMediaInstance<Image> { }
+
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
-	{
+    {
         public static readonly string assetPath = "Assets/Trionfi/";
 
-        enum AudioChannel
+        [SerializeField]
+        TextAsset bootScript;
+        [SerializeField]
+        public Camera targetCamera;
+        [SerializeField]
+        public Canvas targetCanvas;
+        [SerializeField]
+        public Canvas uiCanvas;
+
+        [SerializeField]
+        public UnityEngine.Video.VideoPlayer videoPlayer;
+
+        [SerializeField]
+        List<TRAudio> bgmInstance = new List<TRAudio>();
+        [SerializeField]
+        List<TRAudio> seInstance = new List<TRAudio>();
+        [SerializeField]
+        List<TRAudio> voiceInstance = new List<TRAudio>();
+
+        [SerializeField]
+        List<TRLLayer> layerInstance = new List<TRLLayer>();
+
+        enum TRAudioType
         {
             BGM = 0,
             VOICE = 1,
@@ -21,10 +65,11 @@ namespace Trionfi
 
         enum LayerOrder
         {
-            UI = -100,
-            EVENT = -1,
-            STAND = 0,
-            BG = 1,
+            UI = 100,
+            EVENT = 99,
+            VIDEO = 99,
+            STAND = 1,
+            BG = 0,
         }
 
         enum StandOrder
@@ -33,27 +78,6 @@ namespace Trionfi
              LEFT = 1,
              RIGHT = 2
         }
-
-        [Serializable]
-        public class ReferencedObject
-        {
-            public Camera targetCamera;
-            public Canvas targetCanvas;
-
-            public AudioSource[] audioBGM = new AudioSource[2];
-            public AudioSource[] audioSE = new AudioSource[2];
-            public AudioSource[] audioVoice = new AudioSource[2];            public Image[] standLayer = new Image[5];
-            public Image eventLayer;
-            public Image bgLayer;
-            public Canvas uiCanvas;
-            public UnityEngine.Video.VideoPlayer videoPlayer;
-        }
-
-        [SerializeField]
-        TextAsset bootScript;
-
-        [SerializeField]
-        ReferencedObject referencedObjects = new ReferencedObject();
 
         public TRTagInstance currentTagInstance = null;
 
@@ -71,14 +95,14 @@ namespace Trionfi
 
         public void Init(bool changeLayerOrder = false)
         {
-            if (changeLayerOrder)
+            if(changeLayerOrder)
             {
-                referencedObjects.bgLayer.gameObject.transform.SetAsFirstSibling();
-                referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                
+                layerInstance[0].instance.gameObject.transform.SetAsFirstSibling();
+//                referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                
             }
 
-            if (referencedObjects.targetCamera == null)
-                referencedObjects.targetCamera = Camera.main;
+            if(targetCamera == null)
+                targetCamera = Camera.main;
 
             if (bootScript != null)
             {
@@ -96,20 +120,18 @@ namespace Trionfi
         public delegate void OnClickEvent();
         public OnClickEvent ClickEvent;
 
-        public void OnGlobalTapEvent()
-        {
-        }
+        public void OnGlobalTapEvent() { }
 
         public AudioSource GetAudio(TRAssetType type, int ch = 0)
         {
             switch (type)
             {
                 case TRAssetType.BGM:
-                    return referencedObjects.audioBGM[ch];
+                    return bgmInstance[ch].instance;
                 case TRAssetType.SE:
-                    return referencedObjects.audioSE[ch];
+                    return seInstance[ch].instance;
                 case TRAssetType.Voice:
-                    return referencedObjects.audioVoice[ch];
+                    return  voiceInstance[ch].instance;
             }
 
             return null;
@@ -120,11 +142,11 @@ namespace Trionfi
             switch (type)
             {
                 case TRAssetType.BG:
-                    return referencedObjects.bgLayer;
+                    return layerInstance[0].instance; 
                 case TRAssetType.Character:
-                    return referencedObjects.standLayer[ch];
+                    return layerInstance[ch+1].instance;
                 case TRAssetType.Event:
-                    return referencedObjects.eventLayer;
+                    return layerInstance[layerInstance.Count - 1].instance;
             }
 
             return null;

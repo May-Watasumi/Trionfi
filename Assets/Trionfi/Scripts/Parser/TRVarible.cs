@@ -16,12 +16,25 @@ namespace Trionfi
         Label
     }
     
-    public class TRVariable : Dictionary<string, KeyValuePair<string, TRDataType>>
+    public class TRVariable : SerializableDictionary<string, KeyValuePair<string, TRDataType>>
     {
+        public static Color ToARGB(uint val)
+        {
+            var inv = 1f / 255f;
+            var c = Color.black;
+            c.a = inv * ((val >> 24) & 0xFF);
+            c.r = inv * ((val >> 16) & 0xFF);
+            c.g = inv * ((val >> 8) & 0xFF);
+            c.b = inv * (val & 0xFF);
+            c.a = 1f;
+            return c;
+        }
+
         public static Color ToRGB(uint val)
         {
             var inv = 1f / 255f;
             var c = Color.black;
+            c.a = 1.0f;
             c.r = inv * ((val >> 16) & 0xFF);
             c.g = inv * ((val >> 8) & 0xFF);
             c.b = inv * (val & 0xFF);

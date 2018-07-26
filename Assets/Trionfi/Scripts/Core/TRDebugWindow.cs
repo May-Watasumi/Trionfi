@@ -80,7 +80,7 @@ namespace Trionfi
         [MenuItem("Trionfi/DebugWindow")]
         private static void Open()
         {
-            var window = GetWindow<TRDebugger>("TrinofiDebugger");
+            var window = GetWindow<TRDebugger>("Trinofi DebugWindow");
         }
 
         [MenuItem("Trionfi/OpenScriptFile")]
