@@ -4,76 +4,51 @@ using System.Collections.Generic;
 using System;
 
 namespace Trionfi {
-//	[Serializable]
-	public class TRMessageLogWindow : MonoBehaviour
-	{
-        public struct LogData
-        {
-            public string name;
-            public string message;
-        }
 
+    public struct TRMessageLog
+    {
+        public string name;
+        public string message;
+        public string voice;
+    }
+
+    //	[Serializable]
+    public class TRMessageLogWindow : SingletonMonoBehaviour<TRMessageLogWindow>
+    {
         [SerializeField]
-        public GameObject LogContentPrefab;
+        public GameObject logContentPrefab;
 
         public event Action OnApplyLog;
 
-		public List<LogData> LogDataList = new List<LogData>();
-		public List<GameObject> LogObjectList = new List<GameObject>();
+		public List<TRMessageLog> logDataList = new List<TRMessageLog>();
+		public List<GameObject> logObjectList = new List<GameObject>();
 
         [SerializeField]
-		public int dataSize = 30;
+		public int logLimit = 30;
 
-		public bool isAdd = true;
+        TRMessageLog tempLogData = new TRMessageLog();
 
-        LogData _tempLogData = new LogData();
-
-		/// <summary>
-		/// ログを一時的に貯める機構
-		/// </summary>
-		/// <param name="name">Name.</param>
-		/// <param name="name_color">Name color.</param>
-		/// <param name="text">Text.</param>
-		public void SetLogData(string name, string name_color, string text)
+		public void AddLogData(TRMessageLog logData)
 		{
-			if(!isAdd)
-			{
-				return;
-			}
-			//キャラクター名が変化した！ログも残ってる
-			if(_tempLogData.name != name && string.IsNullOrEmpty(_tempLogData.message))
-			{
-				SaveLogData();
-			}
+            //ToDo:
+            //str += "<color=#"+name_color+">"+name+"</color>\n"+text + "";
+            logDataList.Add(logData);
 
-			string str = "";
-//ToDo:名前を別のTextに入れるので、クラス化する
-			//str += "<color=#"+name_color+">"+name+"</color>\n"+text + "";
-			str += text + "";
+            //上限を超えていたら指定分の配列を削除する
+            if ((logLimit + 1) < logDataList.Count)
+                logDataList.RemoveRange(0, 1);
+        }
 
-			str = text;
-			str = str.Replace("\r", "").Replace("\n", "");
+        public void AddLogData(string name, string message, string voice = "")
+        {
+            tempLogData.name = name;
+            tempLogData.message = message;
+            tempLogData.voice = voice;
+            logDataList.Add(tempLogData);
+        }
 
-            _tempLogData.message += str;
-            _tempLogData.name = name;
-		}
-
-		/// <summary>
-		/// ためたログを保存する
-		/// </summary>
-		public void SaveLogData()
+        public void SaveLogData()
 		{
-			if(!isAdd || string.IsNullOrEmpty(_tempLogData.message))
-				return;
-
-            LogDataList.Add(_tempLogData);
-
-			//上限を超えていたら指定分の配列を削除する
-			if( (dataSize + 1) < LogDataList.Count)
-                LogDataList.RemoveRange(0, 1);
-
-            _tempLogData.message = "";
-
             if (OnApplyLog != null)
 			{
 				OnApplyLog();
@@ -82,63 +57,47 @@ namespace Trionfi {
 
 		public void ClearLog()
 		{
-            LogDataList.Clear();
+            logDataList.Clear();
         }
-
-		//ログ配列データ取得
-		public List<LogData> GetLogList()
-		{
-			return LogDataList;
-		}
 
 		public string GetLogText()
 		{
 			string logtext = "";
 
-			LogDataList.Reverse();
+			logDataList.Reverse();
 
-			foreach (var item in LogDataList) {
+			foreach (var item in logDataList) {
 				logtext += item.message + "\n\n";
 			}
 
-            LogDataList.Reverse();
+            logDataList.Reverse();
 
 			return logtext;
 		}
 
-		public void Open()
+		public void Show()
 		{
-			isAdd = false;
-			gameObject.GetComponent<Canvas>().enabled = true;
-
-//			GameObject _prefab = StorageManager.Instance.loadPrefab("LogContent") as GameObject;
-
 			//ToDo:
 			GameObject content = gameObject.GetComponentInChildren<UnityEngine.UI.VerticalLayoutGroup>().gameObject;
-			foreach (var item in LogDataList)
+			foreach (var item in logDataList)
             {
-				GameObject logcontent = GameObject.Instantiate(LogContentPrefab) as GameObject;
+				GameObject logcontent = GameObject.Instantiate(logContentPrefab) as GameObject;
 				logcontent.GetComponentInChildren<UnityEngine.UI.Text>().text = item.message;
 				logcontent.transform.SetParent(content.transform);
 //何故か引き延ばされる
 				logcontent.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-				LogObjectList.Add(logcontent);
+				logObjectList.Add(logcontent);
 			}
 		}
 
 		public void Close()
         {
-			gameObject.GetComponent<Canvas>().enabled = false;
-
-			for (int num = 0; num < LogObjectList.Count; num++)
+			for (int num=0; num < logObjectList.Count; num++)
             {
-				GameObject.Destroy(LogObjectList[num]);
+                GameObject.Destroy(logObjectList[num]);
 			}
 
-            LogObjectList.Clear();
-
-//			StatusManager.Instance.NextOrder();
-			isAdd = true;
+            logObjectList.Clear();
 		}
 	}
 }

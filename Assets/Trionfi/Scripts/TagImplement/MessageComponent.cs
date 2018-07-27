@@ -18,7 +18,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string message = tagParam.Identifier("val");
-            TRUIManager.Instance.currentMessageWindow.ShowMessage(message, TRGameConfig.Instance.textSpeed);
+            TRUIInstance.Instance.messageWindow.ShowMessage(message, TRGameConfig.Instance.configData.textspeed);
         }
     }
 
@@ -36,7 +36,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string name = tagParam.Identifier("val");
-            TRUIManager.Instance.currentMessageWindow.ShowName(name);
+            TRUIInstance.Instance.messageWindow.ShowName(name);
         }
     }
 
@@ -55,9 +55,7 @@ namespace Trionfi
                 yield return null;
             }
         }
-    */
 
-    //クリック待ち
     public class LComponent : AbstractComponent
     {
         protected override void TagFunction()
@@ -66,11 +64,13 @@ namespace Trionfi
 
         public override IEnumerator TagAsyncWait()
         {
-            yield return TRUIManager.Instance.currentMessageWindow.Wait();
+            yield return TRUIInstance.Instance.messageWindow.Wait();
         }
     }
+    */
 
-    //クリックを待ち＋メッセージクリア
+
+    //クリック待ち。novelmodeの時はメッセージクリアをしない（のでcmタグを手動で入れなければならない）
     public class PComponent : AbstractComponent
     {
         protected override void TagFunction()
@@ -79,9 +79,7 @@ namespace Trionfi
 
         public override IEnumerator TagAsyncWait()
         {
-            yield return TRUIManager.Instance.currentMessageWindow.Wait();
-            TRUIManager.Instance.currentMessageWindow.ClearMessage();
-            yield return null;
+            yield return TRUIInstance.Instance.messageWindow.Wait();
         }
     }
 
@@ -90,7 +88,7 @@ namespace Trionfi
     {
         protected override void TagFunction()
         {
-            TRUIManager.Instance.currentMessageWindow.ClearMessage();
+            TRUIInstance.Instance.messageWindow.ClearMessage();
         }
     }
 
@@ -111,8 +109,8 @@ namespace Trionfi
             uint colorValue = tagParam.Uint("color", 0xFFFFFFFF);
 
             Color color = TRVariable.ToRGB(colorValue);
-            TRUIManager.Instance.currentMessageWindow.currentMessage.fontSize = size;
-            TRUIManager.Instance.currentMessageWindow.currentMessage.color = color;
+            TRUIInstance.Instance.messageWindow.currentMessage.fontSize = size;
+            TRUIInstance.Instance.messageWindow.currentMessage.color = color;
         }
 	}
 }

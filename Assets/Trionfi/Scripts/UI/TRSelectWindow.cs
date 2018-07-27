@@ -19,7 +19,7 @@ namespace Trionfi
         [SerializeField]
         float AreaHeight = 560.0f;
 
-        List<Selector> selectorList = new List<Selector>();
+        List<TRSelectorPrefab> selectorList = new List<TRSelectorPrefab>();
         int activeSelector = 0;
 
         public string resultString
@@ -42,16 +42,16 @@ namespace Trionfi
 
         public void Init(int selectorCount)
         {
-            Selector.currentWindow = this;
+            TRSelectorPrefab.currentWindow = this;
 
             for (int a = 0; a < selectorCount; a++)
             {
                 GameObject _sel = GameObject.Instantiate(selectorPrefab);
-                _sel.GetComponent<Selector>().answer = a;
+                _sel.GetComponent<TRSelectorPrefab>().answer = a;
                 _sel.transform.SetParent(gameObject.transform);
                 _sel.transform.localPosition = Vector3.zero;
                 _sel.SetActive(false);
-                selectorList.Add(_sel.GetComponent<Selector>());
+                selectorList.Add(_sel.GetComponent<TRSelectorPrefab>());
             }
         }
 

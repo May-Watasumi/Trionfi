@@ -4,8 +4,10 @@ using Trionfi;
 using DG.Tweening;
 using UnityEngine.UI;
 
-public class TRMessageWindow : MonoBehaviour
+public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
 {
+    public bool enableLogWindow = true;
+
     public bool onSkip = false;
     public bool onAuto = false;
 
@@ -27,7 +29,7 @@ public class TRMessageWindow : MonoBehaviour
     {
         //        currentMessage = GetComponentInChildren<Text>();
         //        MessageFrameImage = GetComponent<Image>();
-        TRUIManager.Instance.OnClick += this.OnClick;
+        //TRUIInstance.Instance.OnClick += this.OnClick;
     }
 
     public void Reset()
@@ -56,21 +58,17 @@ public class TRMessageWindow : MonoBehaviour
 
     private IEnumerator ShowMessageSub(string message, float mesCurrentWait)
     {
-        // this.messageForSaveTitle = message;
         float mesWait = mesCurrentWait;
 
         string tempMessage = "";
 
-//        if(mesWait > 0.0f)//&& !StatusManager.Instance.onSkip)
         if(!onSkip)
         {
             state = MessageState.OnShow;
             currentMessage.text = "";
 
-            //スキップモードの場合は速度アップ
             for(int i = 0; i < message.Length; i++)
             {
-                //スキップモードの場合は一度に複数の文字列を表示する
                 if(state == MessageState.OnShow)
                     break;
                 else
@@ -79,16 +77,19 @@ public class TRMessageWindow : MonoBehaviour
                 yield return new WaitForSeconds(mesWait);
             }
         }
-        
+
         currentMessage.text = message;
+
         yield return Wait();
     }
 
     public IEnumerator Wait(WaitIcon icon = WaitIcon.Alpha, float autoWait = 1.0f)
     {
+        state = MessageState.OnWait;
+
         waitCursor.gameObject.SetActive(true);
 
-        yield return WaitCusor(icon);
+        WaitCursor(icon);
 
         if (onAuto)
             yield return new WaitForSeconds(autoWait);
@@ -101,10 +102,23 @@ public class TRMessageWindow : MonoBehaviour
 
         waitCursor.gameObject.SetActive(false);
 
+        if(TRMessageLogWindow.Instance != null && enableLogWindow)
+        {
+            TRMessageLogWindow.Instance.AddLogData(currentName.text, currentMessage.text);
+        }
+
+        if(!Trionfi.TRSystemConfig.Instance.isNovelMode)
+            ClearMessage();
+
         yield return null;
     }
 
-    public IEnumerator WaitCusor(WaitIcon icon)
+    public void WaitCursor(WaitIcon icon)
+    {
+        StartCoroutine(WaitCusorSub(icon));
+    }
+
+    public IEnumerator WaitCusorSub(WaitIcon icon)
     {
         switch (icon)
         {
@@ -124,13 +138,7 @@ public class TRMessageWindow : MonoBehaviour
                 break;
         }
 
-        while (true)
-        {
-            yield return null;
-        }
-
-
-        yield return null;
+        yield return new WaitWhile(() => state == MessageState.OnWait);
     }
 
     public void ShowName(string name, Sprite face = null)

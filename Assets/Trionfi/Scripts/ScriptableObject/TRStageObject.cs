@@ -11,12 +11,22 @@ namespace Trionfi
         public static readonly string assetName = "Stage.asset";
 
         [SerializeField]
-        TREnviroment enviroment = new TREnviroment()
+        TREnviroment bgEnviroment = new TREnviroment()
         {
-            { "朝" , new Color(1.0f, 1.0f, 1.0f) },
             { "昼" , new Color(1.0f, 1.0f, 1.0f) },
-            { "夜" , new Color(1.0f, 1.0f, 1.0f) },
+            { "夕" , new Color(1.0f, 0.375f, 0.0625f, 0.75f) },
+            { "夜" , new Color(0.0f, 0.0f, 0.25f, 0.75f) },
         };
+
+        [SerializeField]
+        TREnviroment charaEnviroment = new TREnviroment()
+        {
+            { "昼" , new Color(1.0f, 1.0f, 1.0f) },
+            { "夕" , new Color(1.0f, 0.0f, 0.0f, 1.0f) },
+            { "夜" , new Color(0.25f, 0.0f, 0.5f, 1.0f) },
+        };
+
+
     }
 }
 

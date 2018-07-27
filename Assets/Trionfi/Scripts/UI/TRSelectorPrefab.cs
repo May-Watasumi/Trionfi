@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Trionfi
 {
-    public class Selector : MonoBehaviour {
+    public class TRSelectorPrefab : MonoBehaviour {
         public static TRSelectWindow currentWindow;
         public static int result = -1;
 

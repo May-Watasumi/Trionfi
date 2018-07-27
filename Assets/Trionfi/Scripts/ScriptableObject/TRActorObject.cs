@@ -23,6 +23,8 @@ namespace Trionfi
         string actorName = "new_actor";
         [SerializeField]
         string voicePrefix = "";
+        [SerializeField]
+        bool hasVoice = false;
 
         [SerializeField]
         public TRSpriteAlias emotion = new TRSpriteAlias()
