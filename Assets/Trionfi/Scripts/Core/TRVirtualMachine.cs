@@ -37,25 +37,6 @@ namespace Trionfi
         IF
     }
 
-    //マクロ＆関数オブジェクト。
-    [Serializable]
-    public class InvocationObject
-    {
-//        public string name;
-        public string file_name;
-        public int index;
-
-        public TRSTACKTYPES type;
-
-        public InvocationObject(/*string _name,*/ string _file_name, int _index, TRSTACKTYPES _type)
-        {
-//            name = _name;
-            file_name = _file_name;
-            index = _index;
-            type = _type;
-        }
-    }
-
     //コールスタック。関数とマクロ共用。（返値を保存する以外の実装に違いはない）。
     [Serializable]
     public class CallStackObject
@@ -113,8 +94,6 @@ namespace Trionfi
         public static TRCallStack callStack = new TRCallStack();
         public static Stack<bool> ifStack = new Stack<bool>();
 
-        public static Dictionary<string, InvocationObject> invovationInstance = new Dictionary<string, InvocationObject>();
-
         //スタックをすべて削除します
         public static void RemoveAllStacks()
         {
@@ -125,7 +104,7 @@ namespace Trionfi
         public static double Calc(TRVariable _variable,  string calcString)
         {
             Dictionary<string, double> calcValue = new Dictionary<string, double>();
-           Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
 /*
                         foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
                         {

@@ -13,7 +13,7 @@ namespace Trionfi
         public TRVariable tagParam;
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
-        string sourceName ="";
+        string sourceName = "";
         int lineCount = 0;
 
         public List<string> essentialParams = new List<string>();
@@ -38,7 +38,7 @@ namespace Trionfi
         public bool SyncWait
         {
             get { return tagParam != null ? tagParam.Bool(syncwait) : false; }
-        }       
+        }
 
         //タグ名を取得（デバッグ用？）
         public string tagName
@@ -62,8 +62,8 @@ namespace Trionfi
         //タグの実行
         public void Execute()
         {
-        //expressionedParams = tagParam.Expression();
-        //式評価は各タグに移譲
+            //expressionedParams = tagParam.Expression();
+            //式評価は各タグに移譲
             TagFunction();
         }
 
@@ -96,5 +96,22 @@ namespace Trionfi
 			}
 		}
 #endif
-	}
+    }
+
+    public class UnknownComponent : AbstractComponent
+    {
+        public UnknownComponent()
+        {
+            //必須項目
+            essentialParams = new List<string> {
+                "name"
+            };
+        }
+
+        protected override void TagFunction()
+        {
+            //ToDo:関数呼び出し
+        }
+    }
 }
+

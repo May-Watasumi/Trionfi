@@ -50,8 +50,7 @@ namespace Trionfi {
 		protected override void TagFunction()
         {
 			string name = tagParam.Literal("name");
-            //ToDo:
-            TRVitualMachine.invovationInstance[name] = new InvocationObject(TRVitualMachine.currentScriptName, Trionfi.Instance.currentTagInstance.currentComponentIndex, TRSTACKTYPES.MACRO);
+            Trionfi.Instance.currentTagInstance.arrayComponents.functionPos[name] = Trionfi.Instance.currentTagInstance.currentComponentIndex;
         }
     }
 /*
@@ -123,23 +122,28 @@ namespace Trionfi {
 
                 //ToDo:スタックをすべて削除する
                 TRVitualMachine.RemoveAllStacks();
+
+                TRVitualMachine.currentScriptName = file;
             }
 
-            int index = string.IsNullOrEmpty(file) ? -1 : Trionfi.Instance.tagInstance[file].GetLabelPosition(target);
+            if (string.IsNullOrEmpty(file))
+                file = TRVitualMachine.currentScriptName;
 
-            //ToDo:ジャンプ処理
+            int index = Trionfi.Instance.tagInstance[file].arrayComponents.labelPos.ContainsKey(target) ? -1 : Trionfi.Instance.tagInstance[file].arrayComponents.labelPos[target];
 
-//            Trionfi.Instance.currentTagInstance.Run(index);
+            if (index < 0)
+                ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
+            else
+                ErrorLogger.Log("jump : file=\"" + TRVitualMachine.currentScriptName + "\" " + "index=\"" + Trionfi.Instance.currentTagInstance.currentComponentIndex + "\"");
 
-            ErrorLogger.Log("jump : file=\"" + TRVitualMachine.currentScriptName + "\" " + "index=\"" + Trionfi.Instance.currentTagInstance.currentComponentIndex + "\"");
-
-            //ToDo:メインループ側で配列Indexが++されるので
+            //ToDo:メインループ側で配列Indexが++されるのであまり美しくない。
+            Trionfi.Instance.currentTagInstance.currentComponentIndex = index;
             Trionfi.Instance.currentTagInstance.currentComponentIndex--;
         }
 	}
 
 	//コールスタックに保存されるジャンプ。いわゆるサブルーチン
-	public class CallComponent:AbstractComponent {
+	public class CallComponent : AbstractComponent {
 		public CallComponent() {
 			//必須項目
 			essentialParams = new List<string> {
@@ -157,22 +161,15 @@ namespace Trionfi {
 		protected override void TagFunction()
 		{
             string target = tagParam.Label("target");
+
             string file = tagParam.Identifier("file", TRVitualMachine.currentScriptName);
 
-            int index = string.IsNullOrEmpty(file) ? -1 : Trionfi.Instance.tagInstance[file].GetLabelPosition(target);
+            int index = string.IsNullOrEmpty(file) ? -1 : Trionfi.Instance.tagInstance[file].arrayComponents.labelPos[target];
 
-//			string tag_str ="[jump file='"+file+"' target='"+target+"' index="+ index +" ]";
-//ToDo:
-			ErrorLogger.Log("Call : file=\"" + TRVitualMachine.currentScriptName + "\" " + "index=\"" + (Trionfi.Instance.currentTagInstance.currentComponentIndex).ToString()+ "\"");
+			ErrorLogger.Log("Call : file=\"" + file + "\" " + "index = \"" + index.ToString()+ "\"");
 
             TRVitualMachine.callStack.Push(new CallStackObject(TRVitualMachine.currentScriptName, Trionfi.Instance.currentTagInstance.currentComponentIndex, tagParam));
-
             //ToDo:ジャンプ
-			
-			//タグを実行
-//			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
-//			cmp.Execute();
-
             //メインループ側で配列Indexが++されるので
 //			Trionfi.Instance.currentTagInstance.currentComponentIndex--;
         }

@@ -80,8 +80,8 @@ namespace Trionfi
         }
 
         public TRTagInstance currentTagInstance = null;
-
         public Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
+
         /*
         //単体タグ実行。他のタグから呼び出すことは禁止
         [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]

@@ -8,9 +8,9 @@ namespace Trionfi
     [Serializable]
 	public class TRTagInstance
     {
-        public Dictionary<string, int> labelInfo = new Dictionary<string, int>();
+        public string scriptID = "";
 
-        public List<AbstractComponent> arrayComponents = new List<AbstractComponent>();
+        public TRTagList arrayComponents = new TRTagList();
 
         public int currentComponentIndex = -1;      //-1は未初期化、0からスタート
 
@@ -22,18 +22,6 @@ namespace Trionfi
 
             arrayComponents = tagParser.BeginParse();
 
-            //ToDo:
-            /*
-            int _index = 0;
-            foreach (AbstractComponent _component in arrayComponents)
-            {
-                if (_component.tagName == "label")
-                    AddLabel(_component.tagParam["name"], _index);
-
-                _index++;
-            }
-            */
-
             return ErrorLogger.ShowAll();
         }
 
@@ -42,23 +30,9 @@ namespace Trionfi
             //				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
             TextAsset script_text = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.TextAsset) as TextAsset;
 
+            scriptID = storage;
+
             return CompileScriptString(script_text.text);
-        }
-
-        public void AddLabel(string label_name, int index)
-        {
-            labelInfo[label_name] = index;
-        }
-
-        public int GetLabelPosition(string label_name)
-        {
-            if (string.IsNullOrEmpty(label_name) || !labelInfo.ContainsKey(label_name))
-            {
-                ErrorLogger.StopError("にラベル「" + label_name + "」が見つかりません。");
-                return -1;
-            }
-
-            return labelInfo[label_name];
         }
 
         //0=デフォルト1=componentのフラグが立ってない-1シナリオ最後に

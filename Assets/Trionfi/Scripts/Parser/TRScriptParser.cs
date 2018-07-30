@@ -82,7 +82,7 @@ namespace Trionfi
 
             endPos = currentPos;
 
-            return buffer;
+            return buffer.TrimEnd();
         }
 
         protected static bool IsSpace(char character)
@@ -113,14 +113,14 @@ namespace Trionfi
         protected string tagName;
         protected TRVariable paramList = new TRVariable();
 
-        //#you must check statement is not empty. 
+        //you must check statement is not empty. 
         public bool GetFirstToken()
         {
             paramList.Clear();
 
             tagName = "";
 
-            if(!IsAlphabet(charArray[currentPos]))
+            if (!IsAlphabet(charArray[currentPos]))
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
             while (IsPartOfVariable(charArray[currentPos]))
@@ -130,6 +130,7 @@ namespace Trionfi
                 endPos = currentPos;
             else
                 throw new TRParserExecption(TRParserError.UnmatchType);
+
             return true;
         }
 
@@ -142,24 +143,24 @@ namespace Trionfi
             if (currentPos >= charArray.Length)
                 return false;
 
-            else if( !IsAlphabet(charArray[currentPos]))
+            else if (!IsAlphabet(charArray[currentPos]))
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
             while (IsPartOfVariable(charArray[currentPos]))
                 leftParam += charArray[currentPos++];
 
-            if(currentPos >= charArray.Length || charArray[currentPos] != '=')
+            if (currentPos >= charArray.Length || charArray[currentPos] != '=')
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
-            if(SkipSpace())
+            if (SkipSpace())
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
-            //リテラル
+            //literal
             if (charArray[currentPos] == '\"')
             {
                 do
                 {
-                    if(++currentPos >= charArray.Length)
+                    if (++currentPos >= charArray.Length)
                         throw new TRParserExecption(TRParserError.UnmatchType);
 
                     rightParam += charArray[currentPos];
@@ -177,7 +178,7 @@ namespace Trionfi
                     rightParam += charArray[currentPos];
                 }
 
-                if(string.IsNullOrEmpty(rightParam))
+                if (string.IsNullOrEmpty(rightParam))
                     throw new TRParserExecption(TRParserError.UnmatchType);
 
                 int _isInt;
@@ -205,7 +206,7 @@ namespace Trionfi
                     do
                     {
                         if (SkipSpace())
-                            break;                  
+                            break;
                     } while (GetParamToken());
 
                     string className = nameSpace + "." + tf.ToTitleCase(tagName) + "Component";
@@ -214,17 +215,15 @@ namespace Trionfi
                     Type masterType = Type.GetType(className);
                     AbstractComponent _component = (AbstractComponent)Activator.CreateInstance(masterType);
 
-                    //                          else
-                    //                       		    cmp = new _MacrostartComponent();
-                    if (_component != null)
+                    if (_component == null)
                     {
-                        _component.tagParam = paramList;
-                        _component.Validate();
+                        _component = new UnknownComponent();
+                        paramList["name"] = new KeyValuePair<string, TRDataType>(tagName, TRDataType.Literal);
                     }
-                    else if(TRVitualMachine.invovationInstance.ContainsKey(tagName))
-                    {
-                        ErrorLogger.Log("Invalid Tag:\"" + tagName + "\"");
-                    }
+
+                    _component.tagParam = paramList;
+                    _component.Validate();
+
                     return _component;
                 }
                 else
@@ -245,13 +244,22 @@ namespace Trionfi
         }
     }
 
+    public class TRTagList : List<AbstractComponent>
+    {
+        public Dictionary<string, int> labelPos = new Dictionary<string, int>();
+        public Dictionary<string, int> functionPos = new Dictionary<string, int>();
+    }
+
     public class TRScriptParser : TRParserBase
     {
+        //名前仕切り文字
+        const string nameSplitter = "【】";
+
         public TRScriptParser(string statement) : base(statement) { }
 
-        public List<AbstractComponent> BeginParse()
+        public TRTagList BeginParse()
         {
-            List<AbstractComponent> result = new List<AbstractComponent>();
+            TRTagList result = new TRTagList();
 
             AbstractComponent _tagComponent = null;
             
@@ -284,11 +292,14 @@ namespace Trionfi
                 //comments
                 else if (charArray[currentPos] == '/' && charArray[currentPos + 1] == '*')
                 {
+                    while(!(charArray[currentPos] == '*' && charArray[currentPos + 1] == '/'))
+                        currentPos++;
                 }
                 //label
                 else if (charArray[currentPos] == '*')
                 {
-                    ReadLine();
+                    textBuffer = ReadLine();
+                    result.labelPos[textBuffer] = result.Count;
                 }
                 //tag
                 else if (charArray[currentPos] == '[')
@@ -304,7 +315,13 @@ namespace Trionfi
                 //text
                 else
                 {
-                    textBuffer += ReadLine();
+                    string _temp = ReadLine();
+                    if(_temp[0] == nameSplitter[0] && _temp[_temp.Length - 1] == nameSplitter[1])
+                    {
+                        _tagComponent = new NameComponent();
+                        _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(_temp, TRDataType.Literal);
+                        result.Add(_tagComponent);
+                    }
                 }
 
                 currentPos++;
