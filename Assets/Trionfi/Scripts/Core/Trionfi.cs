@@ -52,7 +52,6 @@ namespace Trionfi
         List<TRAudio> seInstance = new List<TRAudio>();
         [SerializeField]
         List<TRAudio> voiceInstance = new List<TRAudio>();
-
         [SerializeField]
         List<TRLLayer> layerInstance = new List<TRLLayer>();
 
@@ -81,17 +80,6 @@ namespace Trionfi
 
         public TRTagInstance currentTagInstance = null;
         public Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
-
-        /*
-        //単体タグ実行。他のタグから呼び出すことは禁止
-        [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
-        public void StartTag(string tag)
-        {
-			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag);
-            cmp.Execute();
-            StartCoroutine(cmp.TagAsyncWait());
-		}
-        */
 
         public void Init(bool changeLayerOrder = false)
         {

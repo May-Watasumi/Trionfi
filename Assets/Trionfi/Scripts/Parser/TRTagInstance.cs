@@ -12,7 +12,7 @@ namespace Trionfi
 
         public TRTagList arrayComponents = new TRTagList();
 
-        public int currentComponentIndex = -1;      //-1は未初期化、0からスタート
+        public int currentComponentIndex = -1;
 
 		public bool CompileScriptString(string text)
         {
@@ -27,7 +27,6 @@ namespace Trionfi
 
         public bool CompileScriptFile(string storage)
         {
-            //				string fullpath = /*useStoragePath ? StorageManager.Instance.PATH_SD_SCENARIO :*/ "";
             TextAsset script_text = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.TextAsset) as TextAsset;
 
             scriptID = storage;
@@ -61,6 +60,7 @@ namespace Trionfi
                 _tagComponent.Execute();
 
                 _tagComponent.After();
+
                 yield return _tagComponent.TagAsyncWait();
 
                 //ToDo:flag
