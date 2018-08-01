@@ -17,13 +17,13 @@ namespace Trionfi
             //必須項目
             essentialParams = new List<string> {
                 "storage",
-                "type"
+                "id"
             };
         }
 
         protected override void TagFunction()
         {
-            TRAssetType _type = TRAssetType.BGM;
+            int id = tagParam.Int("id");
 
             string storage = tagParam.Identifier("storage");
             float playDelay = tagParam.Float("delay");
@@ -33,11 +33,11 @@ namespace Trionfi
 
             if(!tagParam.IsValid(ref loop, "loop"))
             {
-                loop = _type == TRAssetType.BGM ? true : false;
+                loop = id == 0 ? true : false;
             }
 
-            AudioSource _source = Trionfi.Instance.GetAudio(_type);
-            AudioClip _clip = TRResourceLoader.Instance.LoadObject(storage, _type) as AudioClip;
+            AudioSource _source = Trionfi.Instance.GetAudio(TRAssetType.BGM, id);
+            AudioClip _clip = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.BGM) as AudioClip;
             _source.clip = _clip;
 
             if (playDelay > 0.1f)

@@ -7,25 +7,39 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    //	[System.Serializable]
-    public enum TRStorageType
+    enum TRAudioType
     {
-        LocalResources,
-        LocalFile,
-        URL,
-        AssetBundle,
-        Terminate
-    };
+        BGM = 0,
+        VOICE = 1,
+        SE = 2,
+    }
+
+    enum LayerOrder
+    {
+        UI = 100,
+        EVENT = 99,
+        VIDEO = 99,
+        STAND = 1,
+        BG = 0,
+    }
+
+    enum StandOrder
+    {
+        CENTER = 0,
+        LEFT = 1,
+        RIGHT = 2
+    }
 
     public class TRMediaInstance<T>
     {
         [SerializeField]
-        public TRStorageType type;
+        public string path;
         public T instance;
     }
 
     [System.Serializable]
     public class TRAudio : TRMediaInstance<AudioSource> { }
+
     [System.Serializable]
     public class TRLLayer : TRMediaInstance<Image> { }
 
@@ -34,6 +48,10 @@ namespace Trionfi
     {
         public static readonly string assetPath = "Assets/Trionfi/";
 
+        [SerializeField]
+        public string localReourcesPath = "TRdata/";
+        [SerializeField]
+        public string savedataPath = "savedata/";
         [SerializeField]
         TextAsset bootScript;
         [SerializeField]
@@ -54,29 +72,6 @@ namespace Trionfi
         List<TRAudio> voiceInstance = new List<TRAudio>();
         [SerializeField]
         List<TRLLayer> layerInstance = new List<TRLLayer>();
-
-        enum TRAudioType
-        {
-            BGM = 0,
-            VOICE = 1,
-            SE = 2,
-        }
-
-        enum LayerOrder
-        {
-            UI = 100,
-            EVENT = 99,
-            VIDEO = 99,
-            STAND = 1,
-            BG = 0,
-        }
-
-        enum StandOrder
-        {
-             CENTER = 0,
-             LEFT = 1,
-             RIGHT = 2
-        }
 
         public TRTagInstance currentTagInstance = null;
         public Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
