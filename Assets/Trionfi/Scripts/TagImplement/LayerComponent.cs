@@ -45,12 +45,12 @@ namespace Trionfi
             {
                 Image _image;
 
-                int ch = -1;
+                int id = -1;
 
-                if (tagParam.IsValid(ref ch, "id"))
-                    _image = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
+                if (tagParam.IsValid(ref id, "id"))
+                    _image = Trionfi.Instance.layerInstance[id].instance;
                 else
-                    _image = Trionfi.Instance.GetLayer(TRAssetType.Character);
+                    _image = Trionfi.Instance.layerInstance[0].instance;
 
                 Texture2D _texture = DownloadHandlerTexture.GetContent(TRResourceLoader.Instance.request);
                 Sprite _sprite = Sprite.Create(_texture, new Rect(0,0, _texture.width, _texture.height), Vector2.zero);
@@ -70,15 +70,16 @@ namespace Trionfi
 		}
 
 		protected override void TagFunction() {
-            Image _dest;
+            Image _image;
 
-            int ch = -1;
-            if (tagParam.IsValid(ref ch, "id"))
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
+            int id = -1;
+
+            if (tagParam.IsValid(ref id, "id"))
+                _image = Trionfi.Instance.layerInstance[id].instance;
             else
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
+                _image = Trionfi.Instance.layerInstance[0].instance;
 
-            _dest.sprite = null;
+            _image.sprite = null;
         }
     }
 
@@ -95,13 +96,14 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            Image _dest;
+            Image _image;
 
-            int ch = -1;
-            if (tagParam.IsValid(ref ch, "id"))
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
+            int id = -1;
+
+            if (tagParam.IsValid(ref id, "id"))
+                _image = Trionfi.Instance.layerInstance[id].instance;
             else
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
+                _image = Trionfi.Instance.layerInstance[0].instance;
 
             //ToDo:
         }
@@ -120,13 +122,14 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            Image _dest;
+            Image _image;
 
-            int ch = -1;
-            if (tagParam.IsValid(ref ch, "id"))
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
+            int id = -1;
+
+            if (tagParam.IsValid(ref id, "id"))
+                _image = Trionfi.Instance.layerInstance[id].instance;
             else
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
+                _image = Trionfi.Instance.layerInstance[0].instance;
 
             float time = tagParam.Float("time", 1.0f);
             Vector3 pos = new Vector3(tagParam.Float("pos_x"), tagParam.Float("pos_y"), tagParam.Float("pos_z"));
@@ -134,11 +137,10 @@ namespace Trionfi
             Vector3 rotate = new Vector3(tagParam.Float("rot_x"), tagParam.Float("rot_y"), tagParam.Float("rot_z"));
 
             Sequence seq = DOTween.Sequence();
-            seq.Append(_dest.rectTransform.DOLocalMove(pos, time));
-            seq.Join (_dest.rectTransform.DOScale(scale, time));
-            seq.Join(_dest.rectTransform.DORotate(rotate, time));
+            seq.Append(_image.rectTransform.DOLocalMove(pos, time));
+            seq.Join (_image.rectTransform.DOScale(scale, time));
+            seq.Join(_image.rectTransform.DORotate(rotate, time));
             seq.Play();
         }
     }
-
 }

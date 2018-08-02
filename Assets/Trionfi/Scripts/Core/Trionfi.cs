@@ -7,33 +7,19 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    enum TRAudioType
-    {
-        BGM = 0,
-        VOICE = 1,
-        SE = 2,
-    }
-
-    enum LayerOrder
-    {
-        UI = 100,
-        EVENT = 99,
-        VIDEO = 99,
-        STAND = 1,
-        BG = 0,
-    }
-
-    enum StandOrder
+    enum TRStandPosition
     {
         CENTER = 0,
         LEFT = 1,
         RIGHT = 2
     }
 
+    [System.Serializable]
     public class TRMediaInstance<T>
     {
         [SerializeField]
         public string path;
+        [SerializeField]
         public T instance;
     }
 
@@ -64,14 +50,40 @@ namespace Trionfi
         [SerializeField]
         public UnityEngine.Video.VideoPlayer videoPlayer;
 
+        static readonly Dictionary<string, int> audioID = new Dictionary<string, int>()
+        {
+            { "bgm", 0 },
+            { "se", 10 },
+            { "voice", 20 },
+        };
+
+        //SortOrderと等価
+        static readonly Dictionary<string, int> layerID = new Dictionary<string, int>()
+        {
+            { "bg", 0 },
+            { "stand", 1 },
+            { "event", 99 },
+        };
+
         [SerializeField]
-        List<TRAudio> bgmInstance = new List<TRAudio>();
+        public SerializableDictionary<int, TRAudio> audioInstance = new SerializableDictionary<int, TRAudio>()
+        {
+
+            { audioID["bgm"] , null },
+            { audioID["se"] , null },
+            { audioID["voice"] , null },
+
+        };
+
         [SerializeField]
-        List<TRAudio> seInstance = new List<TRAudio>();
-        [SerializeField]
-        List<TRAudio> voiceInstance = new List<TRAudio>();
-        [SerializeField]
-        List<TRLLayer> layerInstance = new List<TRLLayer>();
+        public SerializableDictionary<int, TRLLayer> layerInstance = new SerializableDictionary<int, TRLLayer>()
+        {
+
+            { layerID["bg"], null },
+            { layerID["stand"], null },
+            { layerID["event"], null },
+
+        };
 
         public TRTagInstance currentTagInstance = null;
 
@@ -102,38 +114,9 @@ namespace Trionfi
         public delegate void OnClickEvent();
         public OnClickEvent ClickEvent;
 
-        public void OnGlobalTapEvent() { }
-
-        public AudioSource GetAudio(TRAssetType type, int ch = 0)
-        {
-            switch (type)
-            {
-                case TRAssetType.BGM:
-                    return bgmInstance[ch].instance;
-                case TRAssetType.SE:
-                    return seInstance[ch].instance;
-                case TRAssetType.Voice:
-                    return  voiceInstance[ch].instance;
-            }
-
-            return null;
-        }
-
-        public Image GetLayer(TRAssetType type, int ch = 0)
-        {
-            switch (type)
-            {
-                case TRAssetType.BG:
-                    return layerInstance[0].instance; 
-                case TRAssetType.Character:
-                    return layerInstance[ch+1].instance;
-                case TRAssetType.Event:
-                    return layerInstance[layerInstance.Count - 1].instance;
-            }
-
-            return null;
-        }
-            //ToDo
+        public void OnGlobalTapEvent() { } 
+ 
+        //ToDo
 #if false
 
         /// <summary>

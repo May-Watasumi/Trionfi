@@ -45,7 +45,7 @@ namespace Trionfi
 
             if (!TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError)
             {
-                AudioSource _source = Trionfi.Instance.GetAudio(TRAssetType.BGM, id);
+                AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
                 AudioClip _clip = DownloadHandlerAudioClip.GetContent(TRResourceLoader.Instance.request);
                 _source.clip = _clip;
 
@@ -70,12 +70,12 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAssetType _type = TRAssetType.BGM;
+            int id = tagParam.Int("id");
 
             float delay = tagParam.Float("delay");
             float fadeTime = tagParam.Float("time");
 
-            AudioSource _source = Trionfi.Instance.GetAudio(_type);
+            AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Stop();
         }
     }
@@ -93,12 +93,12 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAssetType _type = TRAssetType.BGM;
+            int id = tagParam.Int("id");
 
             float delay = tagParam.Float("delay");
             float fadeTime = tagParam.Float("time");
 
-            AudioSource _source = Trionfi.Instance.GetAudio(_type);
+            AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Pause();
         }
     }
@@ -116,12 +116,12 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAssetType _type = TRAssetType.BGM;
+            int id = tagParam.Int("id");
 
             float delay = tagParam.Float("delay");
             float fadeTime = tagParam.Float("time");
 
-            AudioSource _source = Trionfi.Instance.GetAudio(_type);
+            AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.UnPause();
         }
     }

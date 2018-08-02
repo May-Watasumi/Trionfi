@@ -5,25 +5,6 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    public enum TRAssetType
-    {
-        None,
-        TextAsset,
-        JsonText,
-        BinaryData,
-        Character,
-        BG,
-        Event,
-        UI,
-        Live2D,
-        FBX,
-        Emote,
-        BGM,
-        SE,
-        Voice,
-        Terminate,
-    }
-
     public enum TRDataProtocol
     {
         File,
