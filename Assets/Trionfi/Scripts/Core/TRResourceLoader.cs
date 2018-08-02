@@ -55,16 +55,15 @@ namespace Trionfi
                     return _basePath + file;
                 }       
         */
-        readonly Dictionary<string, AudioType> type = new Dictionary<string, AudioType>()
+        readonly Dictionary<string, AudioType> audioType = new Dictionary<string, AudioType>()
         {
             { "wav", AudioType.WAV },
             { "ogg", AudioType.OGGVORBIS },
         };
 
-
         bool isLoading = false;
 
-        UnityWebRequest request;
+        public UnityWebRequest request;
 
         public IEnumerator Load(string url, TRResourceType type, TRDataProtocol protocol = TRDataProtocol.File)
         {
@@ -81,8 +80,8 @@ namespace Trionfi
                     request = UnityWebRequest.GetAssetBundle(fullpath);
                     break;
                 case TRResourceType.Audio:
-                    //ToDo:
-                    request = UnityWebRequestMultimedia.GetAudioClip(fullpath, AudioType.OGGVORBIS);
+                    AudioType _type = audioType[(System.IO.Path.GetExtension(url)).ToLower()];
+                    request = UnityWebRequestMultimedia.GetAudioClip(fullpath, _type);
                     break;
                 case TRResourceType.Movie:
                     request = UnityWebRequestMultimedia.GetMovieTexture(fullpath);

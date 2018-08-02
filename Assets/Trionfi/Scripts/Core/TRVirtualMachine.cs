@@ -82,7 +82,7 @@ namespace Trionfi
         }
     }
 
-    public class TRVitualMachine
+    public class TRVitualMachine : SingletonMonoBehaviour<TRVitualMachine>
     {
         //変数インスタンスは１つ
         public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
@@ -93,6 +93,8 @@ namespace Trionfi
 
         public static TRCallStack callStack = new TRCallStack();
         public static Stack<bool> ifStack = new Stack<bool>();
+
+        public static Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
 
         //スタックをすべて削除します
         public static void RemoveAllStacks()
@@ -123,6 +125,24 @@ namespace Trionfi
         }
 
         //ToDo:boolの評価。Jaceの拡張
+
+        public void CompileScriptFile(string storage)
+        {
+            StartCoroutine(LoadScenarioAsset(storage));
+        }
+
+        public IEnumerator LoadScenarioAsset(string storage)
+        {
+            yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Text);
+
+            if (!TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError)
+            {
+                TRTagInstance _instance = new TRTagInstance();
+                _instance.CompileScriptString(TRResourceLoader.Instance.request.downloadHandler.text);
+                _instance.scriptID = storage;
+                tagInstance[storage] = _instance;
+            }
+        }
 
         //ToDo:
         public static bool Serialize(string name) { return true; }

@@ -74,7 +74,6 @@ namespace Trionfi
         List<TRLLayer> layerInstance = new List<TRLLayer>();
 
         public TRTagInstance currentTagInstance = null;
-        public Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
 
         public void Init(bool changeLayerOrder = false)
         {
@@ -90,7 +89,7 @@ namespace Trionfi
             if (bootScript != null)
             {
                 currentTagInstance = new TRTagInstance();
-                if(currentTagInstance.CompileScriptFile(bootScript.name));
+                currentTagInstance.CompileScriptString(bootScript.text);
                 StartCoroutine(currentTagInstance.Run());
             }
         }

@@ -110,15 +110,17 @@ namespace Trionfi {
 			};
 		}
 
-		protected override void TagFunction()
-		{
+        protected override void TagFunction() {  }
+
+        public override IEnumerator TagAsyncWait()
+        {
 			string target = tagParam.Label("target");
             string file = tagParam.Identifier("file", TRVitualMachine.currentScriptName);
 
 			//ファイルが異なるものになる場合、シナリオをロードする
 			if(TRVitualMachine.currentScriptName != file)
 			{
-				Trionfi.Instance.currentTagInstance.CompileScriptFile(file);
+                yield return TRVitualMachine.Instance.LoadScenarioAsset(file);
 
                 //ToDo:スタックをすべて削除する
                 TRVitualMachine.RemoveAllStacks();
@@ -129,7 +131,7 @@ namespace Trionfi {
             if (string.IsNullOrEmpty(file))
                 file = TRVitualMachine.currentScriptName;
 
-            int index = Trionfi.Instance.tagInstance[file].arrayComponents.labelPos.ContainsKey(target) ? -1 : Trionfi.Instance.tagInstance[file].arrayComponents.labelPos[target];
+            int index = TRVitualMachine.tagInstance[file].arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVitualMachine.tagInstance[file].arrayComponents.labelPos[target];
 
             if (index < 0)
                 ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
@@ -164,7 +166,7 @@ namespace Trionfi {
 
             string file = tagParam.Identifier("file", TRVitualMachine.currentScriptName);
 
-            int index = string.IsNullOrEmpty(file) ? -1 : Trionfi.Instance.tagInstance[file].arrayComponents.labelPos[target];
+            int index = string.IsNullOrEmpty(file) ? -1 : TRVitualMachine.tagInstance[file].arrayComponents.labelPos[target];
 
 			ErrorLogger.Log("Call : file=\"" + file + "\" " + "index = \"" + index.ToString()+ "\"");
 

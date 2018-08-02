@@ -25,16 +25,6 @@ namespace Trionfi
             return ErrorLogger.ShowAll();
         }
 
-        public bool CompileScriptFile(string storage)
-        {
-            TextAsset script_text = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.TextAsset) as TextAsset;
-
-            scriptID = storage;
-
-            return CompileScriptString(script_text.text);
-        }
-
-        //0=デフォルト1=componentのフラグが立ってない-1シナリオ最後に
         public IEnumerator Run(int index = 0)
         {
             currentComponentIndex = index;

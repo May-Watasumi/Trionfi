@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.Networking;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
@@ -30,19 +31,32 @@ namespace Trionfi
 */
 		}
 
-		protected override void TagFunction() {
-			string storage = tagParam.Identifier("storage");
+		protected override void TagFunction()
+        {
+        }
 
-            Image _dest;
+        public override IEnumerator TagAsyncWait()
+        {
+            string storage = tagParam.Identifier("storage");
 
-            int ch = -1;
+            yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
 
-            if (tagParam.IsValid(ref ch, "id"))
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
-            else
-                _dest = Trionfi.Instance.GetLayer(TRAssetType.Character);
+            if (!TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError)
+            {
+                Image _image;
 
-            _dest.sprite = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.Character) as Sprite;
+                int ch = -1;
+
+                if (tagParam.IsValid(ref ch, "id"))
+                    _image = Trionfi.Instance.GetLayer(TRAssetType.Character, ch);
+                else
+                    _image = Trionfi.Instance.GetLayer(TRAssetType.Character);
+
+                Texture2D _texture = DownloadHandlerTexture.GetContent(TRResourceLoader.Instance.request);
+                Sprite _sprite = Sprite.Create(_texture, new Rect(0,0, _texture.width, _texture.height), Vector2.zero);
+                _image.sprite = _sprite;
+                _image.SetNativeSize();
+            }
         }
     }
     

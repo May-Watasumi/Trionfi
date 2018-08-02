@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,6 +24,10 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+        }
+
+        public override IEnumerator TagAsyncWait()
+        {
             int id = tagParam.Int("id");
 
             string storage = tagParam.Identifier("storage");
@@ -31,19 +36,24 @@ namespace Trionfi
 
             bool loop = false;
 
-            if(!tagParam.IsValid(ref loop, "loop"))
+            if (!tagParam.IsValid(ref loop, "loop"))
             {
                 loop = id == 0 ? true : false;
             }
 
-            AudioSource _source = Trionfi.Instance.GetAudio(TRAssetType.BGM, id);
-            AudioClip _clip = TRResourceLoader.Instance.LoadObject(storage, TRAssetType.BGM) as AudioClip;
-            _source.clip = _clip;
+            yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
 
-            if (playDelay > 0.1f)
-                _source.PlayDelayed(playDelay);
-            else
-                _source.Play();
+            if (!TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError)
+            {
+                AudioSource _source = Trionfi.Instance.GetAudio(TRAssetType.BGM, id);
+                AudioClip _clip = DownloadHandlerAudioClip.GetContent(TRResourceLoader.Instance.request);
+                _source.clip = _clip;
+
+                if (playDelay > 0.1f)
+                    _source.PlayDelayed(playDelay);
+                else
+                    _source.Play();
+            }
         }
     }
 
