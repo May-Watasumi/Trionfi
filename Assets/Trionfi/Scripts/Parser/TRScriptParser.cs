@@ -44,16 +44,18 @@ namespace Trionfi
 
         protected bool SkipSpace()
         {
-            do {
-                if (currentPos >= charArray.Length)
-                    return true;
-
+            while(currentPos < charArray.Length)
+            {
                 if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
                     lineCount++;
 
-            } while (IsSpace(charArray[++currentPos]));
+                if (!IsSpace(charArray[currentPos]))
+                    return false;
 
-            return false;
+                ++currentPos;
+            }
+
+            return true;
         }
 
         protected string GetString(char terminator)
@@ -120,6 +122,9 @@ namespace Trionfi
 
             tagName = "";
 
+            if(SkipSpace())
+                throw new TRParserExecption(TRParserError.UnmatchType);
+
             if (!IsAlphabet(charArray[currentPos]))
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
@@ -140,17 +145,20 @@ namespace Trionfi
             string leftParam = "";
             string rightParam = "";
 
-            if (currentPos >= charArray.Length)
+            if (SkipSpace())
                 return false;
-
+            //left side is identifier ?
             else if (!IsAlphabet(charArray[currentPos]))
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
             while (IsPartOfVariable(charArray[currentPos]))
                 leftParam += charArray[currentPos++];
 
-            if (currentPos >= charArray.Length || charArray[currentPos] != '=')
+            //splitter is '=' ?
+            if (SkipSpace() || currentPos >= charArray.Length || charArray[currentPos] != '=')
                 throw new TRParserExecption(TRParserError.UnmatchType);
+
+            ++currentPos;
 
             if (SkipSpace())
                 throw new TRParserExecption(TRParserError.UnmatchType);
@@ -173,9 +181,9 @@ namespace Trionfi
             }
             else
             {
-                while (++currentPos < charArray.Length && !IsSpace(charArray[currentPos]))
+                while(currentPos < charArray.Length && !IsSpace(charArray[currentPos]))
                 {
-                    rightParam += charArray[currentPos];
+                    rightParam += charArray[currentPos++];
                 }
 
                 if (string.IsNullOrEmpty(rightParam))

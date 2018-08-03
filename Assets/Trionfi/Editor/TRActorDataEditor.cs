@@ -10,7 +10,7 @@ namespace Trionfi
 {
     public class TREditorMenu : Editor
     {
-        [MenuItem("Trionfi/Object/Initialize")]
+        [MenuItem("Trionfi/Initialize")]
         static void Initialize()
         {
             TRStageObject stage = CreateInstance<TRStageObject>();

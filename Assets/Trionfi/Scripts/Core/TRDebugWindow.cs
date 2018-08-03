@@ -91,7 +91,7 @@ namespace Trionfi
             if (path.Length != 0)
             {
                 string fileContent = File.ReadAllText(path);
-                Trionfi.Instance.currentTagInstance.CompileScriptString(fileContent);
+                TRVirtualMachine.currentTagInstance.CompileScriptString(fileContent);
             }
         }
 

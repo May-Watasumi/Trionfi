@@ -82,18 +82,16 @@ namespace Trionfi
         }
     }
 
-    public class TRVitualMachine : SingletonMonoBehaviour<TRVitualMachine>
+    public class TRVirtualMachine : SingletonMonoBehaviour<TRVirtualMachine>
     {
-        //変数インスタンスは１つ
         public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
+
         public static TRVariable variableInstance = new TRVariable();
-
-        public static string currentScriptName;
-        public static int currenScriptPosition = -1;
-
         public static TRCallStack callStack = new TRCallStack();
         public static Stack<bool> ifStack = new Stack<bool>();
 
+        public static string currentScriptName = "";
+        public static TRTagInstance currentTagInstance { get { return tagInstance[currentScriptName]; } }
         public static Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
 
         //スタックをすべて削除します
@@ -103,24 +101,24 @@ namespace Trionfi
             ifStack.Clear();
         }
 
-        public static double Calc(TRVariable _variable,  string calcString)
+        public static double Calc(TRVariable _variable, string calcString)
         {
             Dictionary<string, double> calcValue = new Dictionary<string, double>();
             Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
-/*
-                        foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
-                        {
-                            float _value = 0.0f;
+            /*
+                                    foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
+                                    {
+                                        float _value = 0.0f;
 
-                            if (_variable.IsValid(ref _value, _pair.Key))
-                                calcValue[_pair.Key] = _value;
-                            else
-                                calcValue[_pair.Key] = float.PositiveInfinity;
-                        }
+                                        if (_variable.IsValid(ref _value, _pair.Key))
+                                            calcValue[_pair.Key] = _value;
+                                        else
+                                            calcValue[_pair.Key] = float.PositiveInfinity;
+                                    }
 
-                        double result = engine.Calculate(calcString, calcValue);
-                        return result;
-            */
+                                    double result = engine.Calculate(calcString, calcValue);
+                                    return result;
+                        */
             return 0.0f;
         }
 
@@ -139,9 +137,45 @@ namespace Trionfi
             {
                 TRTagInstance _instance = new TRTagInstance();
                 _instance.CompileScriptString(TRResourceLoader.Instance.request.downloadHandler.text);
-                _instance.scriptID = storage;
                 tagInstance[storage] = _instance;
             }
+        }
+
+        public IEnumerator Run(string storage, int index = 0)
+        {
+            TRTagInstance tag = tagInstance[storage];
+            tag.currentComponentIndex = index;
+
+            currentScriptName = storage;
+
+            if (tag.currentComponentIndex < tag.arrayComponents.Count)
+            {
+                AbstractComponent _tagComponent = tag.arrayComponents[tag.currentComponentIndex];
+
+                _tagComponent.Before();
+
+#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
+                if (TRSystemConfig.Instance.showTag)
+                {
+                    string _params = "";
+
+                    foreach (KeyValuePair<string, KeyValuePair<string, TRDataType>> key in _tagComponent.tagParam)
+                    {
+                        _params += " " + key.Key + "= " + key.Value.Key;
+                    }
+                    ErrorLogger.Log("[" + _tagComponent.tagName + _params + " ]");
+                }
+#endif
+                _tagComponent.Execute();
+
+                _tagComponent.After();
+
+                yield return _tagComponent.TagAsyncWait();
+
+                //ToDo:flag
+                tag.currentComponentIndex++;
+            }
+            yield return null;
         }
 
         //ToDo:

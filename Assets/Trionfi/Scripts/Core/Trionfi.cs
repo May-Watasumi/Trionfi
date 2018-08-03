@@ -85,8 +85,6 @@ namespace Trionfi
 
         };
 
-        public TRTagInstance currentTagInstance = null;
-
         public void Init(bool changeLayerOrder = false)
         {
             if(changeLayerOrder)
@@ -100,9 +98,10 @@ namespace Trionfi
 
             if (bootScript != null)
             {
-                currentTagInstance = new TRTagInstance();
-                currentTagInstance.CompileScriptString(bootScript.text);
-                StartCoroutine(currentTagInstance.Run());
+                TRTagInstance _tagInstance = new TRTagInstance();
+                _tagInstance.CompileScriptString(bootScript.text);
+                TRVirtualMachine.tagInstance["boot"] = _tagInstance;
+                StartCoroutine(TRVirtualMachine.Instance.Run("boot"));
             }
         }
 

@@ -9,14 +9,14 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
     [System.Serializable]
     public class GameConfigData
     {
-        public float mastervolume;
-        public float bgmvolume;
-        public float sevolume;
-        public float voicevolume;
-        public float textspeed;
-        public float autotextWait;
-        public bool effectSkip;
-        public bool readtextSkip;
+        public float mastervolume = 1.0f;
+        public float bgmvolume = 0.65f;
+        public float sevolume = 0.8f;
+        public float voicevolume = 0.8f;
+        public float textspeed = 0.1f;
+        public float autotextWait = 3.0f;
+        public bool effectSkip = false;
+        public bool readtextSkip = false;
     }
 
     [SerializeField]

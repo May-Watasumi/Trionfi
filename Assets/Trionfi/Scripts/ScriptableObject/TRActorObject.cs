@@ -20,11 +20,11 @@ namespace Trionfi
     public class TRActorObject : ScriptableObject
     {
         [SerializeField]
-        string actorName = "new_actor";
+        public string actorName = "new_actor";
         [SerializeField]
-        string voicePrefix = "";
+        public string voicePrefix = "";
         [SerializeField]
-        bool hasVoice = false;
+        public bool hasVoice = false;
 
         [SerializeField]
         public TRSpriteAlias emotion = new TRSpriteAlias()

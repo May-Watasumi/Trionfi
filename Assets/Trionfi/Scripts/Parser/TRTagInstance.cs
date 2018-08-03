@@ -8,11 +8,9 @@ namespace Trionfi
     [Serializable]
 	public class TRTagInstance
     {
-        public string scriptID = "";
+        public int currentComponentIndex = -1;
 
         public TRTagList arrayComponents = new TRTagList();
-
-        public int currentComponentIndex = -1;
 
 		public bool CompileScriptString(string text)
         {
@@ -24,39 +22,5 @@ namespace Trionfi
 
             return ErrorLogger.ShowAll();
         }
-
-        public IEnumerator Run(int index = 0)
-        {
-            currentComponentIndex = index;
-
-            if (currentComponentIndex < arrayComponents.Count)
-            {
-                AbstractComponent _tagComponent = arrayComponents[currentComponentIndex];
-
-                _tagComponent.Before();
-
-#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
-                if(TRSystemConfig.Instance.showTag)
-                {
-                    string _params = "";
-
-                    foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> key in _tagComponent.tagParam)
-                    {
-                        _params += " " + key.Key + "= " + key.Value.Key;
-                    }
-                    ErrorLogger.Log("[" + _tagComponent.tagName + _params +" ]");
-                }
-#endif
-                _tagComponent.Execute();
-
-                _tagComponent.After();
-
-                yield return _tagComponent.TagAsyncWait();
-
-                //ToDo:flag
-                currentComponentIndex++;
-            }
-            yield return null;			
-		}
 	}
 }
