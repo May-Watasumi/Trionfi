@@ -35,7 +35,7 @@ namespace Trionfi
         {
         }
 
-        public override IEnumerator TagAsyncWait()
+        protected override IEnumerator TagSyncFunction()
         {
             string storage = tagParam.Identifier("storage");
 

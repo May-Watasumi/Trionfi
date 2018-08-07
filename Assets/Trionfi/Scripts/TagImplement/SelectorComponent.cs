@@ -33,7 +33,7 @@ namespace Trionfi
             TRUIInstance.Instance.selectWindow.Begin();
         }
 
-        public override IEnumerator TagAsyncWait()
+        protected override IEnumerator TagSyncFunction()
         {
             yield return new WaitWhile(() => TRUIInstance.Instance.selectWindow.state == TRSelectWindow.SelectState.Wait);
         }

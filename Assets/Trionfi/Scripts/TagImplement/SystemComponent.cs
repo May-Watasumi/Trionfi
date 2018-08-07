@@ -112,9 +112,9 @@ namespace Trionfi {
 
         protected override void TagFunction() {  }
 
-        public override IEnumerator TagAsyncWait()
+        protected override IEnumerator TagSyncFunction()
         {
-			string target = tagParam.Label("target");
+            string target = tagParam.Label("target");
             string file = tagParam.Identifier("file", TRVirtualMachine.currentScriptName);
 
 			//ファイルが異なるものになる場合、シナリオをロードする
@@ -220,16 +220,14 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-			string file = tagParam.Identifier("file");
-
-            if(SyncWait)
-                SceneManager.LoadScene(file, LoadSceneMode.Additive);
-            else
-                syncState = SceneManager.LoadSceneAsync(file, LoadSceneMode.Additive);
+//			string file = tagParam.Identifier("file");
+//            SceneManager.LoadScene(file, LoadSceneMode.Additive);
         }
 
-        public override IEnumerator TagAsyncWait()
+        protected override IEnumerator TagSyncFunction()
         {
+            string file = tagParam.Identifier("file");
+            syncState = SceneManager.LoadSceneAsync(file, LoadSceneMode.Additive);
             yield return new WaitUntil(() => syncState.isDone);
         }
     }
@@ -397,7 +395,7 @@ namespace Trionfi {
             _time = tagParam.Float("time");
 		}
 
-        public override IEnumerator TagAsyncWait()
+        protected override IEnumerator TagSyncFunction()
         {
             yield return new WaitForSeconds(_time);
         }

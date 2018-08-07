@@ -77,7 +77,7 @@ namespace Trionfi
         {
         }
 
-        public override IEnumerator TagAsyncWait()
+        protected override IEnumerator TagSyncFunction()
         {
             yield return TRUIInstance.Instance.messageWindow.Wait();
         }

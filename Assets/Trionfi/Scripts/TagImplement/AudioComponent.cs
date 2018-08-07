@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.Networking;
+using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,9 +8,7 @@ using System.Collections.Generic;
 //クリック待ち、同期
 
 namespace Trionfi
-{
-    //[audioplay type=bgm storage=ggg name=ggg delay=0]
-    public class AudioplayComponent : AbstractComponent
+{    public class AudioplayComponent : AbstractComponent
     {
         bool isWait;
 
@@ -24,9 +23,10 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+            hasSync = true;
         }
 
-        public override IEnumerator TagAsyncWait()
+        protected override IEnumerator TagSyncFunction()
         {
             int id = tagParam.Int("id");
 
@@ -53,7 +53,16 @@ namespace Trionfi
                     _source.PlayDelayed(playDelay);
                 else
                     _source.Play();
+
+                if (fadeTime > 0.1f)
+                {
+                    //ToDo:
+                    float _vol = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
+                    _source.DOFade(_vol, fadeTime);
+                }
             }
+
+            yield return null;
         }
     }
 

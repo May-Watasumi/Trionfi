@@ -5,12 +5,14 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
+    public delegate IEnumerator TRTagSyncFunction();
+
     public abstract class AbstractComponent
     {
-        protected const string syncwait = "syncWait";
-
-        //デフォルトで定義しておくパラメータ初期値。継承先で定義する
         public TRVariable tagParam;
+        protected bool hasSync = false;
+        
+//        protected const string syncwait = "syncWait";
 
 #if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
         string sourceName = "";
@@ -32,13 +34,6 @@ namespace Trionfi
                 }
             }
         }
-#endif
-
-        //同期フラグ。タグの引数側で設定される。
-        public bool SyncWait
-        {
-            get { return tagParam != null ? tagParam.Bool(syncwait) : false; }
-        }
 
         //タグ名を取得（デバッグ用？）
         public string tagName
@@ -49,55 +44,27 @@ namespace Trionfi
                 return _tag;
             }
         }
+#endif
 
         //タグ実行本体
         abstract protected void TagFunction();
-
-        //非同期の時に待つための関数（各種フェードインアウト等）
-        public virtual IEnumerator TagAsyncWait()
-        {
-            yield return null;
-        }
+        protected virtual IEnumerator TagSyncFunction() { yield return null; }
+        protected virtual void TagSyncFinished() { }
 
         //タグの実行
         public void Execute()
         {
-            //expressionedParams = tagParam.Expression();
-            //式評価は各タグに移譲
             TagFunction();
+
+            if (hasSync)
+                TRVirtualMachine.Instance.tagSyncFunction += TagSyncFunction;
         }
 
-        //Before→Execute→TagAsyncWait()→Afterの順番。Afterはどうするかは疑問
-
         public virtual void Before() { }
-
         public virtual void After() { }
-
-#if false
-        //パラメータとの差分を確認して、ファイルを作成
-        public void MergeDefaultParam()
-        {
-            ParamDictionary param = tag;
-
-			//タグに入れる
-			foreach(KeyValuePair<string, string> pair in param) {
-				originalParamDic[pair.Key] = pair.Value;
-
-				/*
-				if (paramDic.ContainsKey (pair.Key)) {
-					paramDic [pair.Key] = pair.Value;
-				} else {
-
-					string message = "パラメータ「" + pair.Key + "」は存在しません";
-					gameManager.addMessage(MessageType.Warning,this.line_num, message);
-
-				}
-				*/
-			}
-		}
-#endif
     }
 
+    //無名タグ。コンパイル時に生成される。
     public class UnknownComponent : AbstractComponent
     {
         public UnknownComponent()

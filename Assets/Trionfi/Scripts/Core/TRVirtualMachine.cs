@@ -84,6 +84,15 @@ namespace Trionfi
 
     public class TRVirtualMachine : SingletonMonoBehaviour<TRVirtualMachine>
     {
+        public TRTagSyncFunction tagSyncFunction;
+
+        //List<TRSyncFunction> syncWaitTag = new List<TRSyncFunction>();
+        /*
+        public void AddSyncTagFunction(IEnumerator function)
+        {
+            StartCoroutine(function);
+        }
+        */
         public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
 
         public static TRVariable variableInstance = new TRVariable();
@@ -170,7 +179,7 @@ namespace Trionfi
 
                 _tagComponent.After();
 
-                yield return _tagComponent.TagAsyncWait();
+                yield return tagSyncFunction();//     _tagComponent.TagSyncFunction();
 
                 //ToDo:flag
                 tag.currentComponentIndex++;
