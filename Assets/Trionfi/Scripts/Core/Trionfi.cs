@@ -41,15 +41,22 @@ namespace Trionfi
         [SerializeField]
         TextAsset bootScript;
         [SerializeField]
+        public UnityEngine.Video.VideoPlayer videoPlayer;
+        [SerializeField]
+        public RenderTexture captureBuffer;
+        [SerializeField]
         public Camera targetCamera;
         [SerializeField]
         public Canvas targetCanvas;
         [SerializeField]
         public Canvas uiCanvas;
-
         [SerializeField]
-        public UnityEngine.Video.VideoPlayer videoPlayer;
-
+        public TRMessageWindow messageWindow;
+        [SerializeField]
+        public TRMessageLogWindow messageLogwindow;
+        [SerializeField]
+        public TRSelectWindow selectWindow;
+        
         static readonly Dictionary<string, int> audioID = new Dictionary<string, int>()
         {
             { "bgm", 0 },

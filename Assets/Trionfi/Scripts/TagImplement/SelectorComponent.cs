@@ -19,7 +19,7 @@ namespace Trionfi
 		}
 
 		protected override void TagFunction() {
-            TRUIInstance.Instance.selectWindow.Add(tagParam.Identifier("text"));
+            Trionfi.Instance.selectWindow.Add(tagParam.Identifier("text"));
             //ToDo:storage等飛び先を保存
         }
     }
@@ -30,12 +30,12 @@ namespace Trionfi
 
 		protected override void TagFunction()
 		{
-            TRUIInstance.Instance.selectWindow.Begin();
+            Trionfi.Instance.selectWindow.Begin();
         }
 
         protected override IEnumerator TagSyncFunction()
         {
-            yield return new WaitWhile(() => TRUIInstance.Instance.selectWindow.state == TRSelectWindow.SelectState.Wait);
+            yield return new WaitWhile(() => Trionfi.Instance.selectWindow.state == TRSelectWindow.SelectState.Wait);
         }
     }
 }

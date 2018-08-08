@@ -18,7 +18,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string message = tagParam.Identifier("val");
-            TRUIInstance.Instance.messageWindow.ShowMessage(message, TRGameConfig.Instance.configData.textspeed);
+            Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.Instance.configData.textspeed);
         }
     }
 
@@ -36,7 +36,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string name = tagParam.Identifier("val");
-            TRUIInstance.Instance.messageWindow.ShowName(name);
+            Trionfi.Instance.messageWindow.ShowName(name);
         }
     }
 
@@ -79,7 +79,7 @@ namespace Trionfi
 
         protected override IEnumerator TagSyncFunction()
         {
-            yield return TRUIInstance.Instance.messageWindow.Wait();
+            yield return Trionfi.Instance.messageWindow.Wait();
         }
     }
 
@@ -88,7 +88,7 @@ namespace Trionfi
     {
         protected override void TagFunction()
         {
-            TRUIInstance.Instance.messageWindow.ClearMessage();
+            Trionfi.Instance.messageWindow.ClearMessage();
         }
     }
 
@@ -109,8 +109,8 @@ namespace Trionfi
             uint colorValue = tagParam.Uint("color", 0xFFFFFFFF);
 
             Color color = TRVariable.ToRGB(colorValue);
-            TRUIInstance.Instance.messageWindow.currentMessage.fontSize = size;
-            TRUIInstance.Instance.messageWindow.currentMessage.color = color;
+            Trionfi.Instance.messageWindow.currentMessage.fontSize = size;
+            Trionfi.Instance.messageWindow.currentMessage.color = color;
         }
 	}
 }

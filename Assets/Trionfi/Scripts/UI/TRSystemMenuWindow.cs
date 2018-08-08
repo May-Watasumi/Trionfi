@@ -21,25 +21,25 @@ namespace Trionfi
 
         public void OnAutoButton()
         {
-            TRUIInstance.Instance.messageWindow.onAuto = true;
+            Trionfi.Instance.messageWindow.onAuto = true;
         }
 
         public void OnSkipButton()
         {
-            TRUIInstance.Instance.messageWindow.onSkip = true;
+            Trionfi.Instance.messageWindow.onSkip = true;
         }
 
         public void OnMessageLogButton()
         {
-            TRUIInstance.Instance.messageWindow.gameObject.SetActive(false);
-            TRUIInstance.Instance.logWindow.gameObject.SetActive(true);
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.Instance.messageLogwindow.gameObject.SetActive(true);
             gameObject.SetActive(false);
         }
 
         public void OnWindowCloseButton()
         {
-            TRUIInstance.Instance.messageWindow.gameObject.SetActive(false);
-            TRUIInstance.Instance.logWindow.gameObject.SetActive(false);
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.Instance.messageLogwindow.gameObject.SetActive(false);
             gameObject.SetActive(false);
         }
     }
