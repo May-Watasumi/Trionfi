@@ -255,7 +255,6 @@ namespace Trionfi
     public class TRTagList : List<AbstractComponent>
     {
         public Dictionary<string, int> labelPos = new Dictionary<string, int>();
-        public Dictionary<string, int> functionPos = new Dictionary<string, int>();
     }
 
     public class TRScriptParser : TRParserBase

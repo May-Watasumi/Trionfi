@@ -93,6 +93,13 @@ namespace Trionfi
             StartCoroutine(function);
         }
         */
+
+        public class FunctionalObject
+        {
+            public string scriptName;
+            public int pos;
+        }
+
         public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
 
         public static TRVariable variableInstance = new TRVariable();
@@ -102,6 +109,7 @@ namespace Trionfi
         public static string currentScriptName = "";
         public static TRTagInstance currentTagInstance { get { return tagInstance[currentScriptName]; } }
         public static Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
+        public static Dictionary<string, FunctionalObject> functionalObject = new Dictionary<string, FunctionalObject>();
 
         //スタックをすべて削除します
         public static void RemoveAllStacks()

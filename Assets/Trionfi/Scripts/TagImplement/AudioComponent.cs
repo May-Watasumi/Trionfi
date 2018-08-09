@@ -17,7 +17,7 @@ namespace Trionfi
             //必須項目
             essentialParams = new List<string> {
                 "storage",
-                "id"
+                "buf"
             };
         }
 
@@ -28,7 +28,7 @@ namespace Trionfi
 
         protected override IEnumerator TagSyncFunction()
         {
-            int id = tagParam.Int("id");
+            int id = tagParam.Int("buf");
 
             string storage = tagParam.Identifier("storage");
             float playDelay = tagParam.Float("delay");
@@ -73,13 +73,13 @@ namespace Trionfi
         {
             //必須項目
             essentialParams = new List<string> {
-                "type",
+                "buf"
             };
         }
 
         protected override void TagFunction()
         {
-            int id = tagParam.Int("id");
+            int id = tagParam.Int("buf");
 
             float delay = tagParam.Float("delay");
             float fadeTime = tagParam.Float("time");
@@ -96,13 +96,13 @@ namespace Trionfi
         {
             //必須項目
             essentialParams = new List<string> {
-                "type",
+                "buf"
             };
         }
 
         protected override void TagFunction()
         {
-            int id = tagParam.Int("id");
+            int id = tagParam.Int("buf");
 
             float delay = tagParam.Float("delay");
             float fadeTime = tagParam.Float("time");
@@ -119,13 +119,13 @@ namespace Trionfi
         {
             //必須項目
             essentialParams = new List<string> {
-                "type",
+                "buf"
             };
         }
 
         protected override void TagFunction()
         {
-            int id = tagParam.Int("id");
+            int id = tagParam.Int("buf");
 
             float delay = tagParam.Float("delay");
             float fadeTime = tagParam.Float("time");

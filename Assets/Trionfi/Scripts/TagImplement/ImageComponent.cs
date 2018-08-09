@@ -9,31 +9,20 @@ namespace Trionfi
 {
     //オブジェクト生成廃棄はシステム管轄から外れる（可搬性）
 
-    public class LayerComponent : AbstractComponent {
-		public LayerComponent() {
+    //  color
+    //  visible
 
-			//必須項目
-			essentialParams = new List<string> {
-				"storage",
-                "id"
-			};
-/*
-			originalParamDic = new ParamDictionary() {
-				{ "name",""},
-				{ "x",""},
-				{ "y",""},
-				{ "z",""},
-				{ "scale_x",""},
-				{ "scale_y",""},
-				{ "scale_z",""},
-				{ "scale",""},
-			};
-*/
-		}
-
-		protected override void TagFunction()
+    public class ImageComponent : AbstractComponent {
+        public ImageComponent()
         {
+            //必須項目
+            essentialParams = new List<string> {
+                "storage",
+                "layer"
+            };
         }
+
+        protected override void TagFunction() { }
 
         protected override IEnumerator TagSyncFunction()
         {
@@ -47,7 +36,7 @@ namespace Trionfi
 
                 int id = -1;
 
-                if (tagParam.IsValid(ref id, "id"))
+                if (tagParam.IsValid(ref id, "layer"))
                     _image = Trionfi.Instance.layerInstance[id].instance;
                 else
                     _image = Trionfi.Instance.layerInstance[0].instance;
@@ -60,13 +49,13 @@ namespace Trionfi
         }
     }
     
-	public class LayerfreeComponent : AbstractComponent {
-		public LayerfreeComponent() {
-			//必須項目
-			essentialParams = new List<string>
+	public class ImagefreeComponent : AbstractComponent {
+		public ImagefreeComponent() {
+            //必須項目
+            essentialParams = new List<string>
             {
-                "id"
-            };	//"name"
+                "layer"
+            };
 		}
 
 		protected override void TagFunction() {
@@ -74,7 +63,7 @@ namespace Trionfi
 
             int id = -1;
 
-            if (tagParam.IsValid(ref id, "id"))
+            if (tagParam.IsValid(ref id, "layer"))
                 _image = Trionfi.Instance.layerInstance[id].instance;
             else
                 _image = Trionfi.Instance.layerInstance[0].instance;
@@ -90,33 +79,7 @@ namespace Trionfi
             //必須項目
             essentialParams = new List<string>
             {
-                "id"
-            };  //"name"
-        }
-
-        protected override void TagFunction()
-        {
-            Image _image;
-
-            int id = -1;
-
-            if (tagParam.IsValid(ref id, "id"))
-                _image = Trionfi.Instance.layerInstance[id].instance;
-            else
-                _image = Trionfi.Instance.layerInstance[0].instance;
-
-            //ToDo:
-        }
-    }
-
-    public class LaytransComponent : AbstractComponent
-    {
-        public LaytransComponent()
-        {
-            //必須項目
-            essentialParams = new List<string>
-            {
-                "id"
+                "layer"
             };
         }
 
@@ -126,7 +89,34 @@ namespace Trionfi
 
             int id = -1;
 
-            if (tagParam.IsValid(ref id, "id"))
+            if (tagParam.IsValid(ref id, "layer"))
+                _image = Trionfi.Instance.layerInstance[id].instance;
+            else
+                _image = Trionfi.Instance.layerInstance[0].instance;
+
+            //ToDo:
+        }
+    }
+
+    //
+    public class ImagetweenComponent : AbstractComponent
+    {
+        public ImagetweenComponent()
+        {
+            //必須項目
+            essentialParams = new List<string>
+            {
+                "layer"
+            };
+        }
+
+        protected override void TagFunction()
+        {
+            Image _image;
+
+            int id = -1;
+
+            if (tagParam.IsValid(ref id, "layer"))
                 _image = Trionfi.Instance.layerInstance[id].instance;
             else
                 _image = Trionfi.Instance.layerInstance[0].instance;
