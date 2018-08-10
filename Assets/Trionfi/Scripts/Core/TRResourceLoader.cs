@@ -47,6 +47,7 @@ namespace Trionfi
 
         protected class LoadedResource
         {
+            public bool result;
             public Texture2D texture;
             public AudioClip audio;
             public string text;
@@ -54,15 +55,38 @@ namespace Trionfi
             public AssetBundle assetBundole;
         }
 
-        protected const TRDataProtocol defaultDataType = TRDataProtocol.LocalResource;
+        [SerializeField]
+        public string localReourcesPath = "TRdata/";
+        [SerializeField]
+        public string localFilePath = "TRdata/";
+        [SerializeField]
+        public string saveDataPath = "savedata/";
+
+        const TRDataProtocol defaultDataType =
+#if TR_DEBUG
+            TRDataProtocol.LocalResource;
+#else
+            TRDataProtocol.File;
+#endif
 
         TRDataProtocol lastDataType = TRDataProtocol.Null;
 
         bool isLoading = false;
 
-        protected LoadedResource resourceInstance = new LoadedResource();
+        LoadedResource resourceInstance = new LoadedResource();
 
-        public UnityWebRequest request;
+        UnityWebRequest request;
+
+        public bool isSuceeded
+        {
+            get
+            {
+                if (lastDataType != TRDataProtocol.LocalResource)
+                    return !TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError;
+                else
+                    return resourceInstance.result;
+            }
+        }
 
         public Texture2D texture
         {
@@ -106,28 +130,29 @@ namespace Trionfi
         public IEnumerator Load(string url, TRResourceType type, TRDataProtocol protocol = defaultDataType)
         {
             isLoading = true;
+            lastDataType = protocol;
+            string fullpath = protocol == TRDataProtocol.Network ? url : "file:///" + Application.persistentDataPath + url;
 
-            string fullpath = protocol == TRDataProtocol.Network ? url : "file://" + Application.persistentDataPath + url;
             if (protocol == TRDataProtocol.LocalResource)
             {
                 switch (type)
                 {
                     case TRResourceType.Texture:
-                        resourceInstance.texture = Resources.Load<Texture2D>(url);
+                        resourceInstance.result = (resourceInstance.texture = Resources.Load<Texture2D>(url)) != null;
                         break;
                     case TRResourceType.AssetBundle:
                         //たぶんそんなものはない。
-                        resourceInstance.assetBundole = Resources.Load<AssetBundle>(url);
+                        resourceInstance.result = (resourceInstance.assetBundole = Resources.Load<AssetBundle>(url)) != null;
                         break;
                     case TRResourceType.Audio:
-                        resourceInstance.audio = Resources.Load<AudioClip>(url);
+                        resourceInstance.result = (resourceInstance.audio = Resources.Load<AudioClip>(url)) != null;
                         break;
                     case TRResourceType.Movie:
-                        //たぶんそんなものはない。
-                        resourceInstance.movie = Resources.Load<MovieTexture>(url);
+                        //たぶんそんなものはない
+                        resourceInstance.result = (resourceInstance.movie = Resources.Load<MovieTexture>(url)) != null;
                         break;
                     default:
-                        resourceInstance.text = Resources.Load<TextAsset>(url).text;
+                        resourceInstance.result = (resourceInstance.text = Resources.Load<TextAsset>(url).text) != null;
                         break;
                 }
             }
@@ -156,9 +181,12 @@ namespace Trionfi
 
             yield return request.SendWebRequest();
 
-            if (request.isHttpError || request.isNetworkError)
+            if(!isSuceeded)// request.isHttpError || request.isNetworkError)
             {
-                ErrorLogger.Log(request.error);
+                if (lastDataType != TRDataProtocol.LocalResource)
+                    ErrorLogger.Log(request.error);
+                else
+                    ErrorLogger.Log("Resources not Loaded : " + url);
             }
 
             isLoading = false;

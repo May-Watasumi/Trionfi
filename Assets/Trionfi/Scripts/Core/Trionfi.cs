@@ -27,17 +27,13 @@ namespace Trionfi
     public class TRAudio : TRMediaInstance<AudioSource> { }
 
     [System.Serializable]
-    public class TRLLayer : TRMediaInstance<Image> { }
+    public class TRLayer : TRMediaInstance<Image> { }
 
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
         public static readonly string assetPath = "Assets/Trionfi/";
 
-        [SerializeField]
-        public string localReourcesPath = "TRdata/";
-        [SerializeField]
-        public string savedataPath = "savedata/";
         [SerializeField]
         TextAsset bootScript;
         [SerializeField]
@@ -57,7 +53,7 @@ namespace Trionfi
         [SerializeField]
         public TRSelectWindow selectWindow;
         
-        static readonly Dictionary<string, int> audioID = new Dictionary<string, int>()
+        static readonly SerializableDictionary<string, int> audioID = new SerializableDictionary<string, int>()
         {
             { "bgm", 0 },
             { "se", 10 },
@@ -65,17 +61,21 @@ namespace Trionfi
         };
 
         //SortOrderと等価
-        static readonly Dictionary<string, int> layerID = new Dictionary<string, int>()
+        static readonly SerializableDictionary<string, int> layerID = new SerializableDictionary<string, int>()
         {
             { "bg", 0 },
             { "stand", 1 },
             { "event", 99 },
         };
 
-        [SerializeField]
-        public SerializableDictionary<int, TRAudio> audioInstance = new SerializableDictionary<int, TRAudio>()
-        {
+        [Serializable]
+        public class TRAudioInstance : SerializableDictionary<int, TRAudio> { }
+        [Serializable]
+        public class TRImageInstance : SerializableDictionary<int, TRLayer> { }
 
+        [SerializeField]
+        public TRAudioInstance audioInstance = new TRAudioInstance()
+        {
             { audioID["bgm"] , null },
             { audioID["se"] , null },
             { audioID["voice"] , null },
@@ -83,7 +83,7 @@ namespace Trionfi
         };
 
         [SerializeField]
-        public SerializableDictionary<int, TRLLayer> layerInstance = new SerializableDictionary<int, TRLLayer>()
+        public TRImageInstance layerInstance = new TRImageInstance()
         {
 
             { layerID["bg"], null },

@@ -30,18 +30,16 @@ namespace Trionfi
 
             yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
 
-            if (!TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError)
+            if (TRResourceLoader.Instance.isSuceeded)
             {
+                int id = tagParam.Int("layer");
+
                 Image _image;
+                _image = Trionfi.Instance.layerInstance[id].instance;
 
-                int id = -1;
+                Trionfi.Instance.layerInstance[id].path = storage;
 
-                if (tagParam.IsValid(ref id, "layer"))
-                    _image = Trionfi.Instance.layerInstance[id].instance;
-                else
-                    _image = Trionfi.Instance.layerInstance[0].instance;
-
-                Texture2D _texture = DownloadHandlerTexture.GetContent(TRResourceLoader.Instance.request);
+                Texture2D _texture = TRResourceLoader.Instance.texture;
                 Sprite _sprite = Sprite.Create(_texture, new Rect(0,0, _texture.width, _texture.height), Vector2.zero);
                 _image.sprite = _sprite;
                 _image.SetNativeSize();

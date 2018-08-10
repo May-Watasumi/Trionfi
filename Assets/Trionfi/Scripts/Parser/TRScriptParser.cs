@@ -58,11 +58,29 @@ namespace Trionfi
             return true;
         }
 
+        protected bool IsEOF()
+        {
+            return !(currentPos < charArray.Length);
+        }
+
+        protected bool SkipSpaceWithoutReturn()
+        {
+            while (currentPos < charArray.Length)
+            {
+                if(charArray[currentPos] != ' ' || charArray[currentPos] != '\t')
+                    return false;
+
+                ++currentPos;
+            }
+
+            return true;
+        }
+
         protected string GetString(char terminator)
         {
             string buffer = "";
 
-            while (charArray[currentPos] != terminator)
+            while (charArray[currentPos] != terminator && !IsEOF())
             {
                 if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
                     lineCount++;
@@ -79,7 +97,7 @@ namespace Trionfi
 
             startPos = currentPos;
 
-            while (charArray[currentPos] != '\r' && charArray[currentPos] != '\n')
+            while (!IsEOF() && charArray[currentPos] != '\r' && charArray[currentPos] != '\n')
                 buffer += charArray[currentPos++];
 
             endPos = currentPos;
@@ -269,14 +287,22 @@ namespace Trionfi
             TRTagList result = new TRTagList();
 
             AbstractComponent _tagComponent = null;
-            
-            while(currentPos < charArray.Length)
-            {
-                string textBuffer = "";
-                SkipSpace();
 
-                //preprocessor
-                if (charArray[currentPos] == '#')
+            string textBuffer = "";
+
+//            bool lastIsText = false;
+
+            while (currentPos < charArray.Length)
+            {
+                bool isText = false;
+
+                SkipSpaceWithoutReturn();
+
+                if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
+                {
+                    lineCount++;
+                }
+                else if (charArray[currentPos] == '#')
                 {
                     ReadLine();
                 }
@@ -311,6 +337,7 @@ namespace Trionfi
                 //tag
                 else if (charArray[currentPos] == '[')
                 {
+                    currentPos++;
                     string _tagParam = GetString(']');
 
                     TRTagParser tagParser = new TRTagParser(_tagParam);
@@ -323,15 +350,38 @@ namespace Trionfi
                 else
                 {
                     string _temp = ReadLine();
-                    if(_temp[0] == nameSplitter[0] && _temp[_temp.Length - 1] == nameSplitter[1])
+                    if (_temp[0] == nameSplitter[0] && _temp[_temp.Length - 1] == nameSplitter[1])
                     {
                         _tagComponent = new NameComponent();
+                        _tagComponent.tagParam = new TRVariable();
                         _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(_temp, TRDataType.Literal);
                         result.Add(_tagComponent);
                     }
+                    else
+                    {
+                        isText = true;
+                        textBuffer += _temp + "\n";
+                    }
+                }
+
+                if (!isText && !string.IsNullOrEmpty(textBuffer))
+                {
+                    _tagComponent = new MessageComponent();
+                    _tagComponent.tagParam = new TRVariable();
+                    _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(textBuffer, TRDataType.Literal);
+                    result.Add(_tagComponent);
+                    textBuffer = "";
                 }
 
                 currentPos++;
+            }
+
+            if(!string.IsNullOrEmpty(textBuffer))
+            {
+                _tagComponent = new MessageComponent();
+                _tagComponent.tagParam = new TRVariable();
+                _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(textBuffer, TRDataType.Literal);
+                result.Add(_tagComponent);
             }
 
             return result;

@@ -140,7 +140,6 @@ namespace Trionfi
         }
 
         //ToDo:boolの評価。Jaceの拡張
-
         public void CompileScriptFile(string storage)
         {
             StartCoroutine(LoadScenarioAsset(storage));
@@ -150,10 +149,10 @@ namespace Trionfi
         {
             yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Text);
 
-            if (!TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError)
+            if (TRResourceLoader.Instance.isSuceeded)
             {
                 TRTagInstance _instance = new TRTagInstance();
-                _instance.CompileScriptString(TRResourceLoader.Instance.request.downloadHandler.text);
+                _instance.CompileScriptString(TRResourceLoader.Instance.text);
                 tagInstance[storage] = _instance;
             }
         }

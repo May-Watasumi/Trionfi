@@ -43,10 +43,11 @@ namespace Trionfi
 
             yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
 
-            if (!TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError)
+            if(TRResourceLoader.Instance.isSuceeded)
             {
+                Trionfi.Instance.audioInstance[id].path = storage;
                 AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
-                AudioClip _clip = DownloadHandlerAudioClip.GetContent(TRResourceLoader.Instance.request);
+                AudioClip _clip = TRResourceLoader.Instance.audio;
                 _source.clip = _clip;
 
                 if (playDelay > 0.1f)

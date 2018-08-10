@@ -147,7 +147,8 @@ namespace Trionfi
             GUILayout.Label("内容");
             if (GUILayout.Button("実行"))
             {
-                consoleLog = "";
+                TRScriptParser parser = new TRScriptParser(scriptText);
+                parser.BeginParse();
             }
             GUILayout.EndHorizontal();
 
