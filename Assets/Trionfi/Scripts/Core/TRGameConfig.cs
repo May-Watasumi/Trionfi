@@ -38,10 +38,10 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
 
     public void SetDefault()
     {
-        configData.mastervolume = 0.7f;
-        configData.bgmvolume = 0.7f;
-        configData.sevolume = 1.0f;
-        configData.voicevolume = 1.0f;
+        configData.mastervolume = 1.0f;
+        configData.bgmvolume = 0.6f;
+        configData.sevolume = 0.75f;
+        configData.voicevolume = 0.75f;
         configData.textspeed = 0.1f;
         configData.autotextWait = 5.0f;
         configData.effectSkip = false;
@@ -50,7 +50,8 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
 
     void Start()
     {
-        Load();		
+        SetDefault();
+//        Load();		
 	}
 	
 	void Update ()

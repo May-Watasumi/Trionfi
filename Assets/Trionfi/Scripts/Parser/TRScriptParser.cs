@@ -146,10 +146,10 @@ namespace Trionfi
             if (!IsAlphabet(charArray[currentPos]))
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
-            while (IsPartOfVariable(charArray[currentPos]))
+            while(!IsEOF() && IsPartOfVariable(charArray[currentPos]))
                 tagName += charArray[currentPos++];
 
-            if (IsSpace(charArray[currentPos]))
+            if (IsEOF() || IsSpace(charArray[currentPos]))
                 endPos = currentPos;
             else
                 throw new TRParserExecption(TRParserError.UnmatchType);

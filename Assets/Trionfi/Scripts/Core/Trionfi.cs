@@ -41,6 +41,8 @@ namespace Trionfi
         [SerializeField]
         public RenderTexture captureBuffer;
         [SerializeField]
+        public RawImage rawImage;
+        [SerializeField]
         public Camera targetCamera;
         [SerializeField]
         public Canvas targetCanvas;
@@ -52,7 +54,7 @@ namespace Trionfi
         public TRMessageLogWindow messageLogwindow;
         [SerializeField]
         public TRSelectWindow selectWindow;
-        
+
         static readonly SerializableDictionary<string, int> audioID = new SerializableDictionary<string, int>()
         {
             { "bgm", 0 },
@@ -94,7 +96,10 @@ namespace Trionfi
 
         public void Init(bool changeLayerOrder = false)
         {
-            if(changeLayerOrder)
+            captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
+            rawImage.texture = captureBuffer;
+
+            if (changeLayerOrder)
             {
                 layerInstance[0].instance.gameObject.transform.SetAsFirstSibling();
 //                referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                

@@ -131,4 +131,57 @@ namespace Trionfi
             seq.Play();
         }
     }
+
+    public class LockComponent : AbstractComponent
+    {
+        public LockComponent()
+        {
+            //必須項目
+            essentialParams = new List<string>
+            {
+            };
+        }
+
+        protected override void TagFunction()
+        {
+            Trionfi.Instance.rawImage.color = Color.white;
+            Trionfi.Instance.rawImage.gameObject.SetActive(true);
+            Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
+            Trionfi.Instance.targetCamera.gameObject.SetActive(true);
+        }
+    }
+
+
+    public class TransComponent : AbstractComponent
+    {
+        public TransComponent()
+        {
+            //必須項目
+            essentialParams = new List<string>
+            {
+            };
+        }
+
+        protected override void TagFunction()
+        {
+            CanvasGroup _group = Trionfi.Instance.targetCanvas.gameObject.GetComponent<CanvasGroup>();
+
+            Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
+
+            Sequence seq = DOTween.Sequence();
+            seq.Append(_group.DOFade(0.0f, 1.0f));
+            seq.Join(DOTween.ToAlpha(
+                                        () => Trionfi.Instance.rawImage.color,
+                                        color => Trionfi.Instance.rawImage.color = color,
+                                        0.0f,
+                                        1.0f
+                                    ));
+
+            seq.Play();
+
+            // _group.alpha = 1.0f;
+            // Trionfi.Instance.rawImage.gameObject.SetActive(fale);
+            // Trionfi.Instance.targetCamera.targetTexture = null;
+        }
+    }
 }
