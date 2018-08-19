@@ -62,17 +62,19 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
 
         string tempMessage = "";
 
-        if(!onSkip)
+        if(!onSkip && mesCurrentWait > 0.0f)
         {
             state = MessageState.OnShow;
             currentMessage.text = "";
 
             for(int i = 0; i < message.Length; i++)
             {
-                if(state == MessageState.OnShow)
-                    break;
-                else
+                if (state == MessageState.OnShow)
                     tempMessage += message[i];
+                else
+                    break;
+
+                currentMessage.text = tempMessage;
 
                 yield return new WaitForSeconds(mesWait);
             }

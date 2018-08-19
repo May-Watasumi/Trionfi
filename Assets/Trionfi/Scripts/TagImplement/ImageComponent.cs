@@ -147,7 +147,8 @@ namespace Trionfi
             Trionfi.Instance.rawImage.color = Color.white;
             Trionfi.Instance.rawImage.gameObject.SetActive(true);
             Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
-            Trionfi.Instance.targetCamera.gameObject.SetActive(true);
+            Trionfi.Instance.targetCamera.Render();
+            Trionfi.Instance.targetCamera.targetTexture = null;
         }
     }
 
@@ -164,24 +165,14 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            CanvasGroup _group = Trionfi.Instance.targetCanvas.gameObject.GetComponent<CanvasGroup>();
+            float time = tagParam.Float("time", TRSystemConfig.Instance.defaultEffectTime);
 
-            Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
-
-            Sequence seq = DOTween.Sequence();
-            seq.Append(_group.DOFade(0.0f, 1.0f));
-            seq.Join(DOTween.ToAlpha(
-                                        () => Trionfi.Instance.rawImage.color,
-                                        color => Trionfi.Instance.rawImage.color = color,
-                                        0.0f,
-                                        1.0f
-                                    ));
-
-            seq.Play();
-
-            // _group.alpha = 1.0f;
-            // Trionfi.Instance.rawImage.gameObject.SetActive(fale);
-            // Trionfi.Instance.targetCamera.targetTexture = null;
+            DOTween.ToAlpha(
+                            () => Trionfi.Instance.rawImage.color,
+                            color => Trionfi.Instance.rawImage.color = color,
+                            0.0f,
+                            time
+                        ).OnComplete(() =>  Trionfi.Instance.rawImage.gameObject.SetActive(false));
         }
     }
 }

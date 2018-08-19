@@ -38,6 +38,9 @@ namespace Trionfi
         public int fontSize = 26;
 
         [SerializeField]
+        public float defaultEffectTime = 1.0f;
+
+        [SerializeField]
         public bool useCRI = false;
         public bool useLive2D = false;
         public bool useEmote = false;
