@@ -147,7 +147,10 @@ namespace Trionfi
 
         public IEnumerator LoadScenarioAsset(string storage)
         {
-            yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Text);
+            TRResourceLoader.Instance.Load(storage, TRResourceType.Text);
+
+            while (TRResourceLoader.Instance.isLoading)
+                yield return new WaitForSeconds(1.0f);
 
             if (TRResourceLoader.Instance.isSuceeded)
             {

@@ -41,7 +41,10 @@ namespace Trionfi
                 loop = id == 0 ? true : false;
             }
 
-            yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
+            TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
+
+            while (TRResourceLoader.Instance.isLoading)
+                yield return new WaitForSeconds(1.0f);
 
             if(TRResourceLoader.Instance.isSuceeded)
             {

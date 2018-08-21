@@ -71,7 +71,7 @@ namespace Trionfi
 
         TRDataProtocol lastDataType = TRDataProtocol.Null;
 
-        bool isLoading = false;
+        public bool isLoading = false;
 
         LoadedResource resourceInstance = new LoadedResource();
 
@@ -81,7 +81,9 @@ namespace Trionfi
         {
             get
             {
-                if (lastDataType != TRDataProtocol.LocalResource)
+                if (lastDataType == TRDataProtocol.Null)
+                    return false;
+                else if (lastDataType == TRDataProtocol.File || lastDataType == TRDataProtocol.Network)
                     return !TRResourceLoader.Instance.request.isHttpError && !TRResourceLoader.Instance.request.isNetworkError;
                 else
                     return resourceInstance.result;
@@ -127,37 +129,47 @@ namespace Trionfi
             }
         }
 
-        public IEnumerator Load(string url, TRResourceType type, TRDataProtocol protocol = defaultDataType)
+        public void Load(string url, TRResourceType type, TRDataProtocol protocol = defaultDataType)
         {
             isLoading = true;
+
+            StartCoroutine(LoadCoroutine(url, type, protocol));
+        }
+
+        private IEnumerator LoadCoroutine(string url, TRResourceType type, TRDataProtocol protocol)
+        {
             lastDataType = protocol;
-            string fullpath = protocol == TRDataProtocol.Network ? url : "file:///" + Application.persistentDataPath + url;
+
+            string fullpath;
 
             if (protocol == TRDataProtocol.LocalResource)
             {
+                fullpath = localReourcesPath + url;
                 switch (type)
                 {
                     case TRResourceType.Texture:
-                        resourceInstance.result = (resourceInstance.texture = Resources.Load<Texture2D>(url)) != null;
+                        resourceInstance.result = (resourceInstance.texture = Resources.Load<Texture2D>(fullpath)) != null;
                         break;
                     case TRResourceType.AssetBundle:
                         //たぶんそんなものはない。
-                        resourceInstance.result = (resourceInstance.assetBundole = Resources.Load<AssetBundle>(url)) != null;
+                        resourceInstance.result = (resourceInstance.assetBundole = Resources.Load<AssetBundle>(fullpath)) != null;
                         break;
                     case TRResourceType.Audio:
-                        resourceInstance.result = (resourceInstance.audio = Resources.Load<AudioClip>(url)) != null;
+                        resourceInstance.result = (resourceInstance.audio = Resources.Load<AudioClip>(fullpath)) != null;
                         break;
                     case TRResourceType.Movie:
                         //たぶんそんなものはない
-                        resourceInstance.result = (resourceInstance.movie = Resources.Load<MovieTexture>(url)) != null;
+                        resourceInstance.result = (resourceInstance.movie = Resources.Load<MovieTexture>(fullpath)) != null;
                         break;
                     default:
-                        resourceInstance.result = (resourceInstance.text = Resources.Load<TextAsset>(url).text) != null;
+                        resourceInstance.result = (resourceInstance.text = Resources.Load<TextAsset>(fullpath).text) != null;
                         break;
                 }
             }
             else
             {
+                fullpath = protocol == TRDataProtocol.Network ? url : "file:///" + Application.persistentDataPath + localFilePath + url;
+
                 switch (type)
                 {
                     case TRResourceType.Texture:
@@ -174,14 +186,15 @@ namespace Trionfi
                         request = UnityWebRequestMultimedia.GetMovieTexture(fullpath);
                         break;
                     default:
-                        request = UnityWebRequest.Get(url);
+                        request = UnityWebRequest.Get(fullpath);
                         break;
                 }
+
+                yield return request.SendWebRequest();
             }
 
-            yield return request.SendWebRequest();
 
-            if(!isSuceeded)// request.isHttpError || request.isNetworkError)
+            if (!isSuceeded)// request.isHttpError || request.isNetworkError)
             {
                 if (lastDataType != TRDataProtocol.LocalResource)
                     ErrorLogger.Log(request.error);

@@ -27,7 +27,7 @@ namespace Trionfi
     public class TRAudio : TRMediaInstance<AudioSource> { }
 
     [System.Serializable]
-    public class TRLayer : TRMediaInstance<Image> { }
+    public class TRLayer : TRMediaInstance<RawImage> { }
 
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>

@@ -28,20 +28,22 @@ namespace Trionfi
         {
             string storage = tagParam.Identifier("storage");
 
-            yield return TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+            TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+
+            while (TRResourceLoader.Instance.isLoading)
+                yield return new WaitForSeconds(1.0f);
 
             if (TRResourceLoader.Instance.isSuceeded)
             {
                 int id = tagParam.Int("layer");
 
-                Image _image;
+                RawImage _image;
                 _image = Trionfi.Instance.layerInstance[id].instance;
 
                 Trionfi.Instance.layerInstance[id].path = storage;
 
                 Texture2D _texture = TRResourceLoader.Instance.texture;
-                Sprite _sprite = Sprite.Create(_texture, new Rect(0,0, _texture.width, _texture.height), Vector2.zero);
-                _image.sprite = _sprite;
+                _image.texture = TRResourceLoader.Instance.texture;
                 _image.SetNativeSize();
             }
         }
@@ -57,7 +59,7 @@ namespace Trionfi
 		}
 
 		protected override void TagFunction() {
-            Image _image;
+            RawImage _image;
 
             int id = -1;
 
@@ -66,7 +68,7 @@ namespace Trionfi
             else
                 _image = Trionfi.Instance.layerInstance[0].instance;
 
-            _image.sprite = null;
+            _image.texture = null;
         }
     }
 
@@ -83,7 +85,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            Image _image;
+            RawImage _image;
 
             int id = -1;
 
@@ -110,7 +112,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            Image _image;
+            RawImage _image;
 
             int id = -1;
 
