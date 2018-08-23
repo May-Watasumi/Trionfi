@@ -77,13 +77,13 @@ namespace Trionfi
 
         string statementText;
 
-        [MenuItem("Trionfi/DebugWindow")]
+        [MenuItem("Tools/Trionfi/DebugWindow")]
         private static void Open()
         {
             var window = GetWindow<TRDebugger>("Trinofi DebugWindow");
         }
 
-        [MenuItem("Trionfi/OpenScriptFile")]
+        [MenuItem("Tools/Trionfi/OpenScriptFile")]
         private static void ExecuteScriptFile()
         {
             
@@ -95,7 +95,7 @@ namespace Trionfi
             }
         }
 
-        [MenuItem("Trionfi/Reset PlayerPrefs")]
+        [MenuItem("Tools/Trionfi/Reset PlayerPrefs")]
         public static void ResetPlayerPrefs()
         {
             PlayerPrefs.DeleteAll();

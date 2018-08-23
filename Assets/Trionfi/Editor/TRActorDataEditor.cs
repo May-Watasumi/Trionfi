@@ -10,7 +10,7 @@ namespace Trionfi
 {
     public class TREditorMenu : Editor
     {
-        [MenuItem("Trionfi/Initialize")]
+        [MenuItem("Tools/Trionfi/Initialize")]
         static void Initialize()
         {
             TRStageObject stage = CreateInstance<TRStageObject>();
@@ -354,7 +354,7 @@ public class ActorDataEditor : Editor
         ExpGUI();
     }
 
-    [MenuItem("Trionfi/Database/Character")]
+    [MenuItem("Tools/Trionfi/Database/Character")]
     public static void CreateNewActorDatabase()
     {
         //Get Path of current selection

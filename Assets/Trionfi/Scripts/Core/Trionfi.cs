@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 using System;
 using System.Diagnostics;
 using System.Collections;
@@ -125,8 +126,35 @@ namespace Trionfi
         public delegate void OnClickEvent();
         public OnClickEvent ClickEvent;
 
-        public void OnGlobalTapEvent() { } 
- 
+        public void OnGlobalTapEvent() { }
+
+        public static bool IsPointerOverGameObject()
+        {
+            if (EventSystem.current == null)
+                return false;
+
+            if (EventSystem.current.IsPointerOverGameObject())
+                return true;
+
+            if (Input.touchCount > 0 && Input.touches[0].phase == TouchPhase.Began)
+            {
+                if (EventSystem.current.IsPointerOverGameObject(Input.touches[0].fingerId))
+                    return true;
+            }
+
+            return false;
+        }
+
+        public void Update()
+        {
+            if (IsPointerOverGameObject())
+            {
+                if (messageWindow.state == TRMessageWindow.MessageState.OnWait)
+                    messageWindow.state = TRMessageWindow.MessageState.None;
+            }
+        }
+
+
         //ToDo
 #if false
 
@@ -266,5 +294,5 @@ namespace Trionfi
 			LAppLive2DManager.Instance.ClearScene();
 		}
 #endif
-        }
+    }
     };

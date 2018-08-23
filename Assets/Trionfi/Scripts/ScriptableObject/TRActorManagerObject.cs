@@ -13,7 +13,7 @@ namespace Trionfi
 
         Dictionary<string, TRActorObject> actors = new Dictionary<string, TRActorObject>();
 
-        [MenuItem("Trionfi/Actor/Newly")]
+        [MenuItem("Tools/Trionfi/Actor/Newly")]
         static void CreateEnviroment()
         {
             TRActorObject _instance = CreateInstance<TRActorObject>();
@@ -22,7 +22,7 @@ namespace Trionfi
             AssetDatabase.ImportAsset(Trionfi.assetPath + assetName);
         }
 
-        [MenuItem("Trionfi/Actor/List up from CSV")]
+        [MenuItem("Tools/Trionfi/Actor/List up from CSV")]
         private static void CreateActorList()
         {
             string path = EditorUtility.OpenFilePanel("CSVファイル", Application.dataPath, "csv");
@@ -46,7 +46,7 @@ namespace Trionfi
             }
         }
 
-        [MenuItem("Trionfi/Actor/Set Emotion from CSV")]
+        [MenuItem("Tools/Trionfi/Actor/Set Emotion from CSV")]
         private static void CreateActorFromCSV()
         {
             string path = EditorUtility.OpenFilePanel("CSVファイル", Application.dataPath, "csv");
