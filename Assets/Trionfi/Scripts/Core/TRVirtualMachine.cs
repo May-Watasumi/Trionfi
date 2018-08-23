@@ -192,7 +192,7 @@ namespace Trionfi
 
                 _tagComponent.After();
 
-                yield return tagSyncFunction();//     _tagComponent.TagSyncFunction();
+                yield return tagSyncFunction();
 
                 //ToDo:flag
                 tag.currentComponentIndex++;
