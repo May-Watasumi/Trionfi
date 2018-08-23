@@ -8,11 +8,11 @@ using System.Collections.Generic;
 //クリック待ち、同期
 
 namespace Trionfi
-{    public class AudioplayComponent : AbstractComponent
+{    public class AudioComponent : AbstractComponent
     {
         bool isWait;
 
-        public AudioplayComponent()
+        public AudioComponent()
         {
             //必須項目
             essentialParams = new List<string> {
@@ -36,7 +36,7 @@ namespace Trionfi
 
             bool loop = false;
 
-            if (!tagParam.IsValid(ref loop, "loop"))
+            if(!tagParam.IsValid(ref loop, "loop"))
             {
                 loop = id == 0 ? true : false;
             }

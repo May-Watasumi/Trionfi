@@ -7,8 +7,6 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    //オブジェクト生成廃棄はシステム管轄から外れる（可搬性）
-
     //  color
     //  visible
 
@@ -22,7 +20,10 @@ namespace Trionfi
             };
         }
 
-        protected override void TagFunction() { }
+        protected override void TagFunction()
+        {
+            hasSync = true;
+        }
 
         protected override IEnumerator TagSyncFunction()
         {
@@ -42,7 +43,6 @@ namespace Trionfi
 
                 Trionfi.Instance.layerInstance[id].path = storage;
 
-                Texture2D _texture = TRResourceLoader.Instance.texture;
                 _image.texture = TRResourceLoader.Instance.texture;
                 _image.SetNativeSize();
             }
