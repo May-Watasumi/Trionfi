@@ -163,7 +163,7 @@ namespace Trionfi
                 if (this[key].Value != TRDataType.Literal )
                     return false;
 
-                string v = this[key].Key;
+                res = this[key].Key;
                 return true;
             }
             else

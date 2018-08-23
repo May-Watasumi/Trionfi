@@ -184,17 +184,22 @@ namespace Trionfi
             //literal
             if (charArray[currentPos] == '\"')
             {
+                bool isEnd = false;
                 do
                 {
                     if (++currentPos >= charArray.Length)
                         throw new TRParserExecption(TRParserError.UnmatchType);
 
-                    rightParam += charArray[currentPos];
+                    isEnd = charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\';
 
-                } while (charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\');
+                    if(!isEnd)
+                        rightParam += charArray[currentPos];
+
+                } while (!isEnd);
 
                 paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Literal);
 
+                currentPos++;
                 return true;
             }
             else

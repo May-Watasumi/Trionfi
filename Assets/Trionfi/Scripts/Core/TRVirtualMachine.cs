@@ -122,6 +122,9 @@ namespace Trionfi
         {
             Dictionary<string, double> calcValue = new Dictionary<string, double>();
             Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+            double result = engine.Calculate(calcString, calcValue);
+
             /*
                                     foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
                                     {
@@ -136,7 +139,7 @@ namespace Trionfi
                                     double result = engine.Calculate(calcString, calcValue);
                                     return result;
                         */
-            return 0.0f;
+            return result;
         }
 
         //ToDo:boolの評価。Jaceの拡張

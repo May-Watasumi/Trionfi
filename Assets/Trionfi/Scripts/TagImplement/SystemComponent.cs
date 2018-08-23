@@ -171,8 +171,8 @@ namespace Trionfi {
     }
 
     //Jaceによってcalcとflagは差別化がなくなったので不要になる
-    public class CalcComponent : AbstractComponent {
-		public CalcComponent() {
+    public class EvalComponent : AbstractComponent {
+		public EvalComponent() {
 			//必須項目
 			essentialParams = new List<string> {
 				"exp"
@@ -180,7 +180,11 @@ namespace Trionfi {
 		}
 
 		protected override void TagFunction() {
-            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam.Literal("exp"));
+            string _exp = tagParam.Literal("exp");
+            string[] _exp2 = _exp.Split('=');
+            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, _exp2[1]);
+
+            TRVirtualMachine.variableInstance[_exp2[0]] = new KeyValuePair<string, TRDataType>(result.ToString(), TRDataType.Float);
         }
     }
 	public class FlagComponent : AbstractComponent {
@@ -291,8 +295,6 @@ namespace Trionfi {
 
 		protected override void TagFunction() {
 			//StatusManager.Instance.InfiniteStop();
-            //			StatusManager.Instance.enableNextOrder = false;
-            //			StatusManager.Instance.enableClickOrder = false;
             //ToDo:SyncWait
             //その他 enableNextOrder が来るまで進めない
         }

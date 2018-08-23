@@ -120,7 +120,7 @@ namespace Trionfi
                     this.StartCoroutine(TRVirtualMachine.Instance.tagSyncFunction());
                 }
                 else
-                    consoleLog += ("Invalid Tag!");
+                    consoleLog += ("Invalid Tag!\n");
             }
 
             GUILayout.Space(20);
