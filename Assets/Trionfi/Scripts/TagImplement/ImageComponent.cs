@@ -148,6 +148,7 @@ namespace Trionfi
         {
             Trionfi.Instance.rawImage.color = Color.white;
             Trionfi.Instance.rawImage.gameObject.SetActive(true);
+            Trionfi.Instance.rawImage.gameObject.GetComponent<MaskFader>().Range = 0.0f;
             Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
             Trionfi.Instance.targetCamera.Render();
             Trionfi.Instance.targetCamera.targetTexture = null;
@@ -169,12 +170,30 @@ namespace Trionfi
         {
             float time = tagParam.Float("time", TRSystemConfig.Instance.defaultEffectTime);
 
-            DOTween.ToAlpha(
-                            () => Trionfi.Instance.rawImage.color,
-                            color => Trionfi.Instance.rawImage.color = color,
-                            0.0f,
-                            time
-                        ).OnComplete(() =>  Trionfi.Instance.rawImage.gameObject.SetActive(false));
+            string ruleTexture = "";
+            if (!tagParam.IsValid(ref ruleTexture, "rule"))
+            {
+                DOTween.ToAlpha(
+                                () => Trionfi.Instance.rawImage.color,
+                                color => Trionfi.Instance.rawImage.color = color,
+                                0.0f,
+                                time
+                            ).OnComplete(() => Trionfi.Instance.rawImage.gameObject.SetActive(false));
+            }
+            else
+            {
+                Texture _rule = Resources.Load<Texture>(ruleTexture);
+
+                MaskFader maskFader = Trionfi.Instance.rawImage.gameObject.GetComponent<MaskFader>();
+                maskFader.maskTexture = _rule;
+
+                DOTween.To(
+                    () => maskFader.Range,          // 何を対象にするのか
+                    num => maskFader.Range = num,   // 値の更新
+                    1.0f,                  // 最終的な値
+                    time                  // アニメーション時間
+                );
+            }
         }
     }
 }

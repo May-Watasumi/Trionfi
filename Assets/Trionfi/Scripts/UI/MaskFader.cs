@@ -29,7 +29,7 @@ public class MaskFader : MonoBehaviour, IMaterialModifier, IMeshModifier
     Material _material;
 
     [SerializeField]
-    private Texture maskTexture = null;
+    public Texture maskTexture = null;
 
     [SerializeField, Range(0, 1)]
     private float cutoutRange;
