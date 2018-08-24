@@ -7,7 +7,7 @@ Trionfi　Version α1 　(C)　渡澄萌衣
 ■必要な外部アセット
 ・DoTween（FREE版）(https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)
 ・EditorCoroutines（デバッグ用）(https://assetstore.unity.com/packages/tools/utilities/editor-coroutines-27373)
- ・SerializableDictionary(https://assetstore.unity.com/packages/tools/integration/serializabledictionary-90477)
+・SerializableDictionary(https://assetstore.unity.com/packages/tools/integration/serializabledictionary-90477)
 
 
 ■基本的な使い方
@@ -39,7 +39,7 @@ http://cybernetic-cute.sakura.ne.jp/trionfi
 ■ToDo
 ・セーブロード機能（必須？）
 ・台本ツール（ボイスナンバリング、PDF吐き出し）（必須）
-・Live2D、E-mote対応（必須）
+・Live2D、E-mote、ADX対応（必須）
 ・宴エクスポーター（スクリプトコンバータ）もしくはダイレクトな命令置換実行（余裕があれば）
 
 
