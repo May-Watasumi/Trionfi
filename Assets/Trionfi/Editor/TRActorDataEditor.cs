@@ -3,7 +3,7 @@ using UnityEditor;
 using UnityEditorInternal;
 using System.Collections;
 using System.Collections.Generic;
-//using SimpleJSON;
+using DG.Tweening;
 using System.Linq;
 
 namespace Trionfi
@@ -23,6 +23,7 @@ namespace Trionfi
         }
     }
 }
+
 #if false
 [CustomEditor(typeof(ActorDataBase))]
 public class ActorDataEditor : Editor
