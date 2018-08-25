@@ -144,6 +144,12 @@ namespace LetterWriter.Unity.Markup
                     yield return TextEndOfSegment.Default;
                     break;
 
+                case "I":
+                    yield return new UnityTextModifier() { FontStyle = FontStyle.Italic };
+                    foreach (var x in base.VisitMarkupElement(element, tagNameUpper)) yield return x;
+                    yield return TextEndOfSegment.Default;
+                    break;
+
                 case "U":
                     yield return new UnityTextModifier() { TextDecoration = UnityTextDecoration.Underline };
                     foreach (var x in base.VisitMarkupElement(element, tagNameUpper)) yield return x;

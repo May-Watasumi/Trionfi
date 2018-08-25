@@ -66,7 +66,7 @@ namespace LetterWriter.Unity.Components
         [SerializeField]
         [Multiline]
         private string _text;
-        public string Text
+        public string text
         {
             get { return this._text; }
             set { this._text = value; this.RefreshTextSourceIfNeeded(); this.MarkAsReformatRequired(); }
@@ -74,7 +74,7 @@ namespace LetterWriter.Unity.Components
 
         [SerializeField]
         private int _fontSize = 24;
-        public int FontSize
+        public int fontSize
         {
             get { return this._fontSize; }
             set
@@ -230,7 +230,7 @@ namespace LetterWriter.Unity.Components
             {
                 this._markupParser = this._markupParser ?? this.CreateMarkupParser();
                 this._markupParser.TreatNewLineAsLineBreak = this.TreatNewLineAsLineBreak;
-                this._textSource = _markupParser.Parse(this.Text);
+                this._textSource = _markupParser.Parse(this.text);
                 this._prevText = this._text;
 
                 // フォーマット済みテキストも更新するお
@@ -338,10 +338,10 @@ namespace LetterWriter.Unity.Components
         {
             if (this.ExtensibilityProvider != null)
             {
-                return this.ExtensibilityProvider.CreateTextFormatter(this.Font, this.FontSize, this.color);
+                return this.ExtensibilityProvider.CreateTextFormatter(this.Font, this.fontSize, this.color);
             }
 
-            return new UnityTextFormatter(this.Font, this.FontSize, this.color);
+            return new UnityTextFormatter(this.Font, this.fontSize, this.color);
         }
 
         protected override void OnPopulateMesh(VertexHelper vertexHelper)
@@ -362,20 +362,20 @@ namespace LetterWriter.Unity.Components
 
             var leadingBase = ((this.Font.lineHeight - (float)this.Font.fontSize) / this.Font.fontSize) / 2;
 
-            y += (leadingBase * this.FontSize); // 一行目の分、少し上に上げておく
+            y += (leadingBase * this.fontSize); // 一行目の分、少し上に上げておく
 
             vertexHelper.Clear();
 
 
             // 打消し線の元ネタを用意する
             var lineGlyphs = new List<IGlyph>();
-            this._cachedTextFormatter.GlyphProvider.GetGlyphsFromString(new UnityTextModifierScope(null, new UnityTextModifier() { FontSize = this.FontSize }), "―", lineGlyphs);
+            this._cachedTextFormatter.GlyphProvider.GetGlyphsFromString(new UnityTextModifierScope(null, new UnityTextModifier() { FontSize = this.fontSize }), "―", lineGlyphs);
             var lineGlyph = (UnityGlyph)lineGlyphs[0];
             var lineVertices = new[] { UIVertex.simpleVert, UIVertex.simpleVert, UIVertex.simpleVert, UIVertex.simpleVert };
 
             foreach (var textLine in this._formattedTextLines)
             {
-                var lineHeight = (this.FontSize + (leadingBase * this.FontSize));
+                var lineHeight = (this.fontSize + (leadingBase * this.fontSize));
 
                 // 上にLineHeight-1の半分の空き
                 y -= (lineHeight * (this.LineHeight - 1)) / 2;
@@ -583,11 +583,11 @@ namespace LetterWriter.Unity.Components
             var height = 0f;
             var leadingBase = ((this.Font.lineHeight - (float)this.Font.fontSize) / this.Font.fontSize) / 2;
 
-            height -= (leadingBase * this.FontSize); // 一行目の分、少し上に上げておく
+            height -= (leadingBase * this.fontSize); // 一行目の分、少し上に上げておく
 
             foreach (var textLine in formattedLines)
             {
-                var lineHeight = (this.FontSize + (leadingBase * this.FontSize));
+                var lineHeight = (this.fontSize + (leadingBase * this.fontSize));
 
                 // 上に突き抜けてる分を計算してあげないと…
                 if (!this.IsLineHeightFixed && textLine.PlacedGlyphs.Any(p => p.Y < 0))
@@ -605,7 +605,7 @@ namespace LetterWriter.Unity.Components
                 }
             }
 
-            height += (leadingBase * this.FontSize);
+            height += (leadingBase * this.fontSize);
 
             return height;
         }

@@ -17,7 +17,7 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
     public MessageState state = MessageState.None;
 
     [SerializeField]
-    public Text currentMessage;
+    public LetterWriter.Unity.Components.LetterWriterText currentMessage;
     [SerializeField]
     public Text currentName;
     [SerializeField]
