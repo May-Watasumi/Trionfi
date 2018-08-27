@@ -8,6 +8,8 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
+    public enum MessageType { Error, Warning, Info };
+    
     enum TRStandPosition
     {
         CENTER = 0,
@@ -28,7 +30,10 @@ namespace Trionfi
     public class TRAudio : TRMediaInstance<AudioSource> { }
 
     [System.Serializable]
-    public class TRLayer : TRMediaInstance<RawImage> { }
+    public class TRLayer : TRMediaInstance<RawImage>
+    {
+        public string actor;
+    }
 
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
@@ -154,7 +159,10 @@ namespace Trionfi
             }
         }
 
+        public void Run(TRTagList tagList)
+        {
 
+        }
         //ToDo
 #if false
 

@@ -165,10 +165,20 @@ namespace Trionfi
 
         public IEnumerator Run(string storage, int index = 0)
         {
-            TRTagInstance tag = tagInstance[storage];
-            tag.currentComponentIndex = index;
+            if (tagInstance.ContainsKey(storage))
+            {
+                TRTagInstance tag = tagInstance[storage];
+                tag.currentComponentIndex = index;
+                currentScriptName = storage;
+                yield return Run(tag, index);
+            }
+            else
+                ErrorLogger.Log("not find script file:" + storage);
+        }
 
-            currentScriptName = storage;
+        public IEnumerator Run(TRTagInstance tag, int index = 0)
+        {
+            tag.currentComponentIndex = index;
 
             if (tag.currentComponentIndex < tag.arrayComponents.Count)
             {

@@ -20,7 +20,8 @@ namespace Trionfi
 
             arrayComponents = tagParser.BeginParse();
 
-            return ErrorLogger.ShowAll();
+            //エラーがあるときはtrue
+            return !ErrorLogger.ShowAll();
         }
 	}
 }
