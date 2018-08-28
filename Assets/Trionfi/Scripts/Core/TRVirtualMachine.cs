@@ -25,7 +25,7 @@ namespace Trionfi
         public string currentMessage = "";
 
         //画面のキャプチャ情報
-        public string cap_img_file = "";
+        public string screenCaptureFile = "";
 
         //ToDo:レイヤ、音等の状態保存
     }
@@ -86,14 +86,6 @@ namespace Trionfi
     {
         public TRTagSyncFunction tagSyncFunction;
 
-        //List<TRSyncFunction> syncWaitTag = new List<TRSyncFunction>();
-        /*
-        public void AddSyncTagFunction(IEnumerator function)
-        {
-            StartCoroutine(function);
-        }
-        */
-
         public class FunctionalObject
         {
             public string scriptName;
@@ -110,6 +102,8 @@ namespace Trionfi
         public static TRTagInstance currentTagInstance { get { return tagInstance[currentScriptName]; } }
         public static Dictionary<string, TRTagInstance> tagInstance = new Dictionary<string, TRTagInstance>();
         public static Dictionary<string, FunctionalObject> functionalObject = new Dictionary<string, FunctionalObject>();
+
+        public static Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
 
         //スタックをすべて削除します
         public static void RemoveAllStacks()

@@ -7,7 +7,54 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 namespace Trionfi {
- 
+    //エイリアスを定義する。実行はUnknownTag任せでパーサーでは変換しない（独立性）
+    public class AliasComponent : AbstractComponent
+    {
+        public AliasComponent()
+        {
+            essentialParams = new List<string> { "name", "tag" };
+        }
+
+        protected override void TagFunction()
+        {
+            string className = "Trionfi." + TRParserBase.tf.ToTitleCase(tagParam.Identifier("tag")) + "Component";
+
+            // リフレクションで動的型付け
+            Type masterType = Type.GetType(className);
+            AbstractComponent _component = (AbstractComponent)Activator.CreateInstance(masterType);
+
+            if (_component == null)
+            {
+                ErrorLogger.Log("Alias failed : Undefined Tag \"" + className + "\"");
+            }
+            else
+            {
+                _component.tagParam = tagParam;
+                TRVirtualMachine.aliasTagInstance[tagParam.Identifier("name")] = _component;
+            }
+        }
+    }
+
+    public class LabelComponent : AbstractComponent
+    {
+        public LabelComponent()
+        {
+
+            //必須項目
+            essentialParams = new List<string> {
+                "name"
+            };
+
+        }
+
+        protected override void TagFunction()
+        {
+            //ToDo
+        }
+    }
+
+
+
     //ユーザーデータセーブ。
     public class DatasaveComponent : AbstractComponent
     {
@@ -21,22 +68,6 @@ namespace Trionfi {
             TRVirtualMachine.Serialize(tagParam.Identifier("file"));
         }
     }
-
-    public class LabelComponent : AbstractComponent {
-		public LabelComponent() {
-
-			//必須項目
-			essentialParams = new List<string> {
-				"name"
-			};
-
-		}
-
-		protected override void TagFunction()
-        {
-            //ToDo
-		}
-	}   
 
     //ジャンプ＝コールスタックを変えない。いわゆるgoto
 	public class JumpComponent : AbstractComponent {

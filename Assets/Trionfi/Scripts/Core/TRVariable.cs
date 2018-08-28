@@ -220,7 +220,25 @@ namespace Trionfi
                 ErrorLogger.Log("Invalid Label");
             return this[key].Key;
         }
- 
+
+        public void Set(string key, int value)
+        {
+
+            this[key] = new KeyValuePair<string, TRDataType>(value.ToString(), TRDataType.Int);
+        }
+
+        public void Set(string key, bool value)
+        {
+
+            this[key] = new KeyValuePair<string, TRDataType>(value.ToString(), TRDataType.Bool);
+        }
+
+        public void Set(string key, float value)
+        {
+
+            this[key] = new KeyValuePair<string, TRDataType>(value.ToString(), TRDataType.Float);
+        }
+
         /*
         public static string evaluateString(string exp)
         {

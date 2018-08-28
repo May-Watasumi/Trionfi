@@ -21,6 +21,9 @@ namespace Trionfi
         public bool isNovelMode = false;
 
         [SerializeField]
+        public Vector2 screenSize = new Vector2(1280, 720);
+
+        [SerializeField]
         public int characterPosdescent = 30;
 
         [SerializeField]
@@ -32,6 +35,10 @@ namespace Trionfi
         public int saveSlotCount = 5;
 
         [SerializeField]
+        [Range(3, 10)]
+        public int standObjectCount = 3;
+
+        [SerializeField]
         public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
         [SerializeField]
@@ -41,6 +48,7 @@ namespace Trionfi
         public float defaultEffectTime = 1.0f;
 
         [SerializeField]
+        public bool KAGCompatibility = true;
         public bool useCRI = false;
         public bool useLive2D = false;
         public bool useEmote = false;

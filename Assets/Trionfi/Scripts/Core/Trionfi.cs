@@ -44,6 +44,7 @@ namespace Trionfi
         TextAsset bootScript;
         [SerializeField]
         public UnityEngine.Video.VideoPlayer videoPlayer;
+
         [SerializeField]
         public RenderTexture captureBuffer;
         [SerializeField]
@@ -64,8 +65,8 @@ namespace Trionfi
         static readonly SerializableDictionary<string, int> audioID = new SerializableDictionary<string, int>()
         {
             { "bgm", 0 },
-            { "se", 10 },
-            { "voice", 20 },
+            { "se", 1 },
+            { "voice", 10 },
         };
 
         //SortOrderと等価
@@ -73,7 +74,8 @@ namespace Trionfi
         {
             { "bg", 0 },
             { "stand", 1 },
-            { "event", 99 },
+            { "movie", 9 },
+            { "event", 10 },
         };
 
         [Serializable]
@@ -97,22 +99,28 @@ namespace Trionfi
             { layerID["bg"], null },
             { layerID["stand"], null },
             { layerID["event"], null },
-
         };
 
         public void Init(bool changeLayerOrder = false)
         {
+            //Create Screen Cahpure Buffer;
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
             rawImage.texture = captureBuffer;
 
+            //Init Screen Size
+            targetCanvas.gameObject.GetComponent<CanvasScaler>().referenceResolution = TRSystemConfig.Instance.screenSize;
+            
             if (changeLayerOrder)
             {
                 layerInstance[0].instance.gameObject.transform.SetAsFirstSibling();
 //                referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                
             }
-
-            if(targetCamera == null)
+            
+            if (targetCamera == null)
                 targetCamera = Camera.main;
+
+            if (TRSystemConfig.instance.KAGCompatibility)
+                InitKAGAlias();
 
             if (bootScript != null)
             {
@@ -163,6 +171,44 @@ namespace Trionfi
         {
 
         }
+
+        public void InitKAGAlias()
+        {
+            TRVariable _temp = new TRVariable();
+            _temp.Set("buf", audioID["bgm"]);
+            TRVirtualMachine.aliasTagInstance["playbgm"] = new AudioComponent();
+            TRVirtualMachine.aliasTagInstance["playbgm"].tagParam = _temp;
+            TRVirtualMachine.aliasTagInstance["pausebgm"] = new AudiopauseComponent();
+            TRVirtualMachine.aliasTagInstance["pausebgm"].tagParam = _temp;
+            TRVirtualMachine.aliasTagInstance["resumebgm"] = new AudioresumeComponent();
+            TRVirtualMachine.aliasTagInstance["resumebgm"].tagParam = _temp;
+            TRVirtualMachine.aliasTagInstance["stopbgm"] = new AudiostopComponent();
+            TRVirtualMachine.aliasTagInstance["stopbgm"].tagParam = _temp;
+
+            _temp.Set("buf", audioID["se"]);
+            TRVirtualMachine.aliasTagInstance["playse"] = new AudioComponent();
+            TRVirtualMachine.aliasTagInstance["playse"].tagParam = _temp;
+            TRVirtualMachine.aliasTagInstance["pausese"] = new AudiopauseComponent();
+            TRVirtualMachine.aliasTagInstance["pausese"].tagParam = _temp;
+            TRVirtualMachine.aliasTagInstance["stopse"] = new AudiostopComponent();
+            TRVirtualMachine.aliasTagInstance["stopse"].tagParam = _temp;
+
+            _temp.Set("buf", audioID["voice"]);
+            TRVirtualMachine.aliasTagInstance["playvoice"] = new AudioComponent();
+            TRVirtualMachine.aliasTagInstance["playvoice"].tagParam = _temp;
+            TRVirtualMachine.aliasTagInstance["pausevoice"] = new AudiopauseComponent();
+            TRVirtualMachine.aliasTagInstance["pausevoice"].tagParam = _temp;
+            TRVirtualMachine.aliasTagInstance["stopvoice"] = new AudiostopComponent();
+            TRVirtualMachine.aliasTagInstance["stopvoice"].tagParam = _temp;
+
+            TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
+
+            TRVirtualMachine.aliasTagInstance["playvideo"] = new VideoplayComponent();
+            TRVirtualMachine.aliasTagInstance["pausevideo"] = new VideopauseComponent();
+            TRVirtualMachine.aliasTagInstance["resumevideo"] = new VideoresumeComponent();
+            TRVirtualMachine.aliasTagInstance["stopvideo"] = new VideostopComponent();
+        }
+
         //ToDo
 #if false
 
