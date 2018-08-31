@@ -81,7 +81,7 @@ namespace Trionfi {
 
         protected override void TagFunction() {  }
 
-        protected override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             string target = tagParam.Label("target");
             string file = tagParam.Identifier("file", TRVirtualMachine.currentScriptName);
@@ -193,7 +193,7 @@ namespace Trionfi {
 //            SceneManager.LoadScene(file, LoadSceneMode.Additive);
         }
 
-        protected override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             string file = tagParam.Identifier("file");
             syncState = SceneManager.LoadSceneAsync(file, LoadSceneMode.Additive);
@@ -366,7 +366,7 @@ namespace Trionfi {
             _time = tagParam.Float("time");
 		}
 
-        protected override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             yield return new WaitForSeconds(_time);
         }

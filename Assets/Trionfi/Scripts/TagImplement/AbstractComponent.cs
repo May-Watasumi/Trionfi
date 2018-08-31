@@ -5,8 +5,6 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    public delegate IEnumerator TRTagSyncFunction();
-
     public abstract class AbstractComponent
     {
         public TRVariable tagParam;
@@ -48,16 +46,16 @@ namespace Trionfi
 
         //タグ実行本体
         abstract protected void TagFunction();
-        protected virtual IEnumerator TagSyncFunction() { yield return null; }
-        protected virtual void TagSyncFinished() { }
+        public virtual IEnumerator TagSyncFunction() { yield return null; }
+        public virtual void TagSyncFinished() {  }
 
         //タグの実行
         public void Execute()
         {
             TagFunction();
 
-            if (hasSync)
-                TRVirtualMachine.Instance.tagSyncFunction += TagSyncFunction;
+//            if (hasSync)
+//                TRVirtualMachine.Instance.tagSyncFunction += TagSyncFunction;
         }
 
         public virtual void Before() { }

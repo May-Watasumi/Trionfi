@@ -84,8 +84,6 @@ namespace Trionfi
 
     public class TRVirtualMachine : SingletonMonoBehaviour<TRVirtualMachine>
     {
-        public TRTagSyncFunction tagSyncFunction;
-
         public class FunctionalObject
         {
             public string scriptName;
@@ -174,7 +172,7 @@ namespace Trionfi
         {
             tag.currentComponentIndex = index;
 
-            if (tag.currentComponentIndex < tag.arrayComponents.Count)
+            while (tag.currentComponentIndex < tag.arrayComponents.Count)
             {
                 AbstractComponent _tagComponent = tag.arrayComponents[tag.currentComponentIndex];
 
@@ -196,7 +194,7 @@ namespace Trionfi
 
                 _tagComponent.After();
 
-                yield return tagSyncFunction();
+                yield return _tagComponent.TagSyncFunction();
 
                 //ToDo:flag
                 tag.currentComponentIndex++;

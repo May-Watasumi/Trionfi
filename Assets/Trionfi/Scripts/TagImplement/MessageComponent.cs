@@ -77,7 +77,7 @@ namespace Trionfi
         {
         }
 
-        protected override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             yield return Trionfi.Instance.messageWindow.Wait();
         }

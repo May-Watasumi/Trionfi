@@ -25,7 +25,7 @@ namespace Trionfi
             hasSync = true;
         }
 
-        protected override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             string storage = tagParam.Identifier("storage");
 

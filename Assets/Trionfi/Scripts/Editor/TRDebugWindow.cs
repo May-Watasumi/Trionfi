@@ -58,7 +58,7 @@ namespace Trionfi
                     consoleLog += ("Tag: " + tagComponent.tagName + "\n");
 
                     tagComponent.Execute();
-                    Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.tagSyncFunction());
+                    Trionfi.Instance.StartCoroutine(tagComponent.TagSyncFunction());
                 }
                 else
                     consoleLog += ("Invalid Tag!\n");

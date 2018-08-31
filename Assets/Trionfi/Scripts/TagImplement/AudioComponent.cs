@@ -26,7 +26,7 @@ namespace Trionfi
             hasSync = true;
         }
 
-        protected override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             int id = tagParam.Int("buf");
 
