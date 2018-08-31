@@ -20,6 +20,11 @@ namespace Trionfi
             string message = tagParam.Identifier("val");
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.Instance.configData.textspeed);
         }
+
+        public override IEnumerator TagSyncFunction()
+        {
+            yield return new WaitWhile(() => Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None);
+        }
     }
 
     //[name val="なまえ" face="表情"]

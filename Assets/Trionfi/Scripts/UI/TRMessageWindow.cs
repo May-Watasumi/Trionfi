@@ -50,7 +50,17 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
 
     public void ShowMessage(string text, float mesCurrentWait = 0)
     {
+        state = MessageState.OnShow;
+
         StartCoroutine(ShowMessageSub(text, mesCurrentWait));
+    }
+
+    public void onClickEvent()
+    {
+        if (state == MessageState.OnShow)
+            state = MessageState.OnWait;
+        else if (state == MessageState.OnWait)
+            state = MessageState.None;
     }
 
     private IEnumerator ShowMessageSub(string message, float mesCurrentWait)
@@ -59,9 +69,10 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
 
         string tempMessage = "";
 
+        Trionfi.Trionfi.Instance.ClickEvent += onClickEvent;
+
         if(!onSkip && mesCurrentWait > 0.0f)
         {
-            state = MessageState.OnShow;
             currentMessage.text = "";
 
             for(int i = 0; i < message.Length; i++)
@@ -138,7 +149,8 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
         }
 
         yield return new WaitWhile(() => state == MessageState.OnWait);
-    }
+
+        Trionfi.Trionfi.Instance.ClickEvent -= onClickEvent;    }
 
     public void ShowName(string name, Sprite face = null)
     {

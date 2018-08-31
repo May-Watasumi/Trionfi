@@ -16,7 +16,10 @@ namespace Trionfi
         {
             ErrorLogger.Clear();
 
-            TRScriptParser tagParser = new TRScriptParser(text);
+            //改行コードをパースしやすくするために1byte化しておく。
+            string _returnFixText = text.Replace("\r\n", "\n");
+
+            TRScriptParser tagParser = new TRScriptParser(_returnFixText);
 
             arrayComponents = tagParser.BeginParse();
 

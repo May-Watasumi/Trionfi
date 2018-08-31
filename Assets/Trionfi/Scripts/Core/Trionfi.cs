@@ -115,9 +115,11 @@ namespace Trionfi
                 layerInstance[0].instance.gameObject.transform.SetAsFirstSibling();
 //                referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                
             }
-            
+
             if (targetCamera == null)
                 targetCamera = Camera.main;
+
+            targetCanvas.worldCamera = targetCamera;
 
             if (TRSystemConfig.instance.KAGCompatibility)
                 InitKAGAlias();
@@ -139,7 +141,10 @@ namespace Trionfi
         public delegate void OnClickEvent();
         public OnClickEvent ClickEvent;
 
-        public void OnGlobalTapEvent() { }
+        public void OnGlobalTapEvent()
+        {
+            ClickEvent();
+        }
 
         public static bool IsPointerOverGameObject()
         {
@@ -160,11 +165,6 @@ namespace Trionfi
 
         public void Update()
         {
-            if (IsPointerOverGameObject())
-            {
-                if (messageWindow.state == TRMessageWindow.MessageState.OnWait)
-                    messageWindow.state = TRMessageWindow.MessageState.None;
-            }
         }
 
         public void Run(TRTagList tagList)
