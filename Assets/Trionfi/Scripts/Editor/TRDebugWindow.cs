@@ -1,9 +1,4 @@
-﻿
-#if UNITY_EDITOR
-using UnityEditor;
-using EditorCoroutines;
-#endif
-
+﻿using UnityEditor;
 using UnityEngine;
 using System.Diagnostics;
 using System.Collections;
@@ -63,7 +58,7 @@ namespace Trionfi
                     consoleLog += ("Tag: " + tagComponent.tagName + "\n");
 
                     tagComponent.Execute();
-                    this.StartCoroutine(TRVirtualMachine.Instance.tagSyncFunction());
+                    Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.tagSyncFunction());
                 }
                 else
                     consoleLog += ("Invalid Tag!\n");
@@ -96,7 +91,7 @@ namespace Trionfi
                 TRTagInstance _tagInstance = new TRTagInstance();
 
                 if (_tagInstance.CompileScriptString(scriptText))
-                    this.StartCoroutine(TRVirtualMachine.Instance.Run(_tagInstance));
+                    Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(_tagInstance));
                 else
                     consoleLog += ("failed compile\n");
             }

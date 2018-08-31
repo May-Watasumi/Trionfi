@@ -158,7 +158,7 @@ namespace Trionfi
                         resourceInstance.result = (resourceInstance.audio = Resources.Load<AudioClip>(fullpath)) != null;
                         break;
                     case TRResourceType.Movie:
-                        //たぶんそんなものはない
+                        //たぶんそんなものはない。
                         resourceInstance.result = (resourceInstance.movie = Resources.Load<MovieTexture>(fullpath)) != null;
                         break;
                     default:
@@ -173,17 +173,34 @@ namespace Trionfi
                 switch (type)
                 {
                     case TRResourceType.Texture:
+#if UNITY_2017_1_OR_NEWER
                         request = UnityWebRequestTexture.GetTexture(fullpath);
+#else
+                        request = UnityWebRequest.GetTexture(fullpath);
+#endif
                         break;
                     case TRResourceType.AssetBundle:
+#if UNITY_2018_1_OR_NEWER
+                        request = UnityWebRequestAssetBundle.GetAssetBundle(fullpath);
+#else
                         request = UnityWebRequest.GetAssetBundle(fullpath);
+#endif
                         break;
                     case TRResourceType.Audio:
                         AudioType _type = audioType[(System.IO.Path.GetExtension(url)).ToLower()];
+#if UNITY_2017_1_OR_NEWER
                         request = UnityWebRequestMultimedia.GetAudioClip(fullpath, _type);
+#else
+                        request = UnityWebRequest.GetAudioClip(fullpath, _type);
+#endif
                         break;
                     case TRResourceType.Movie:
+//ムービーテクスチャはモバイル非対応らしい。
+#if UNITY_2017_1_OR_NEWER
                         request = UnityWebRequestMultimedia.GetMovieTexture(fullpath);
+#else
+                        request = UnityWebRequest.GetTexture(fullpath);
+#endif
                         break;
                     default:
                         request = UnityWebRequest.Get(fullpath);
