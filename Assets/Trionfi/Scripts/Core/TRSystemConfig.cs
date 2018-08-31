@@ -39,6 +39,9 @@ namespace Trionfi
         public int standObjectCount = 3;
 
         [SerializeField]
+        Font defaultFont = null;//Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+
+        [SerializeField]
         public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
         [SerializeField]

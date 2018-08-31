@@ -56,9 +56,9 @@ namespace Trionfi
         }
 
         [SerializeField]
-        public string localReourcesPath = "TRdata/";
+        public string localReourcesPath = "";
         [SerializeField]
-        public string localFilePath = "TRdata/";
+        public string localFilePath = "Trionfi/Example/Resources/";
         [SerializeField]
         public string saveDataPath = "savedata/";
 

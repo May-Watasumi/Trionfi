@@ -52,7 +52,7 @@ namespace Trionfi
         [SerializeField]
         public Camera targetCamera;
         [SerializeField]
-        public Canvas targetCanvas;
+        public Canvas layerCanvas;
         [SerializeField]
         public Canvas uiCanvas;
         [SerializeField]
@@ -108,7 +108,7 @@ namespace Trionfi
             rawImage.texture = captureBuffer;
 
             //Init Screen Size
-            targetCanvas.gameObject.GetComponent<CanvasScaler>().referenceResolution = TRSystemConfig.Instance.screenSize;
+            layerCanvas.gameObject.GetComponent<CanvasScaler>().referenceResolution = TRSystemConfig.Instance.screenSize;
             
             if (changeLayerOrder)
             {
@@ -119,7 +119,7 @@ namespace Trionfi
             if (targetCamera == null)
                 targetCamera = Camera.main;
 
-            targetCanvas.worldCamera = targetCamera;
+            layerCanvas.worldCamera = targetCamera;
 
             if (TRSystemConfig.instance.KAGCompatibility)
                 InitKAGAlias();
