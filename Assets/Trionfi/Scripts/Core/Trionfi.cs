@@ -141,7 +141,8 @@ namespace Trionfi
 
         public void OnGlobalTapEvent()
         {
-            ClickEvent();
+            if(ClickEvent != null)
+                ClickEvent();
         }
 
         public static bool IsPointerOverGameObject()
@@ -166,17 +167,21 @@ namespace Trionfi
             uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(0.0f, 1.0f).OnComplete
                 (() =>
                     {
-                        messageWindow.gameObject.SetActive(true);
-                        systemMenuWindow.gameObject.SetActive(true);
-                        TRTitle.Instance.gameObject.SetActive(false);
-                        uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f);
+                    messageWindow.gameObject.SetActive(true);
+                    systemMenuWindow.gameObject.SetActive(true);
+                    TRTitle.Instance.gameObject.SetActive(false);
 
+                    uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f).OnComplete
+                    (() =>
+                    {
                         if (!string.IsNullOrEmpty(scriptName))
                         {
                             TRVirtualMachine.Instance.CompileScriptFile(scriptName);
-                            TRVirtualMachine.Instance.Run(scriptName);
+                            StartCoroutine(TRVirtualMachine.Instance.Run(scriptName));
                         }
                     }
+                        ); 
+                   }
                 );
         }
 

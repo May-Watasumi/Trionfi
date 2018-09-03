@@ -357,6 +357,9 @@ namespace Trionfi
                     string _temp = ReadLine();
                     if (_temp[0] == nameSplitter[0] && _temp[_temp.Length - 1] == nameSplitter[1])
                     {
+                        string _value = _temp.Remove(0, 1);
+                        _temp = _value.Remove(_value.Length - 1, 1);
+
                         _tagComponent = new NameComponent();
                         _tagComponent.tagParam = new TRVariable();
                         _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(_temp, TRDataType.Literal);

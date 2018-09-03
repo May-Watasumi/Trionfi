@@ -25,6 +25,8 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
     [SerializeField]
     public Image waitCursor;
 
+    public string nameString = "";
+
     public void Start()
     {
         currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
@@ -69,28 +71,27 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
     {
         float mesWait = mesCurrentWait;
 
-        string tempMessage = "";
-
         Trionfi.Trionfi.Instance.ClickEvent += onClickEvent;
 
-        if(!onSkip && mesCurrentWait > 0.0f)
-        {
-            currentMessage.text = "";
+        currentMessage.VisibleLength = 0;
+        currentMessage.text = message;
 
-            for(int i = 0; i < message.Length; i++)
+        currentName.text = nameString;
+
+        if (!onSkip && mesCurrentWait > 0.0f)
+        {
+            for(int i = 0; i < currentMessage.MaxIndex; i++)
             {
                 if (state == MessageState.OnShow)
-                    tempMessage += message[i];
+                    currentMessage.VisibleLength++;
                 else
                     break;
-
-                currentMessage.text = tempMessage;
 
                 yield return new WaitForSeconds(mesWait);
             }
         }
-
-        currentMessage.text = message;
+    
+        currentMessage.VisibleLength = -1;
 
         yield return Wait();
     }
@@ -114,12 +115,14 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
 
         waitCursor.gameObject.SetActive(false);
 
+        /*
         if(TRMessageLogWindow.Instance != null && enableLogWindow)
         {
             TRMessageLogWindow.Instance.AddLogData(currentName.text, currentMessage.text);
         }
+        */
 
-        if(!Trionfi.TRSystemConfig.Instance.isNovelMode)
+        if (!Trionfi.TRSystemConfig.Instance.isNovelMode)
             ClearMessage();
 
         Trionfi.Trionfi.Instance.ClickEvent -= onClickEvent;
@@ -156,9 +159,9 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
 
         Trionfi.Trionfi.Instance.ClickEvent -= onClickEvent;    }
 
-    public void ShowName(string name, Sprite face = null)
+    public void ShowName(string _name, Sprite face = null)
     {
-        currentName.text = name;
+        nameString = _name;
     }
 }
 

@@ -40,7 +40,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string name = tagParam.Identifier("val");
+            string name = tagParam.Literal("val");
             Trionfi.Instance.messageWindow.ShowName(name);
         }
     }
