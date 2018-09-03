@@ -22,7 +22,7 @@ namespace Trionfi
         [MenuItem("Tools/Trionfi/DebugWindow")]
         private static void Open()
         {
-            var window = GetWindow<TRDebugger>("Trinofi DebugWindow");
+            GetWindow<TRDebugger>("Trinofi DebugWindow");
         }
 
         [MenuItem("Tools/Trionfi/OpenScriptFile")]

@@ -85,8 +85,8 @@ namespace Trionfi
         {
             int id = tagParam.Int("buf");
 
-            float delay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+//            float delay = tagParam.Float("delay");
+//            float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Stop();
@@ -108,8 +108,8 @@ namespace Trionfi
         {
             int id = tagParam.Int("buf");
 
-            float delay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+//            float delay = tagParam.Float("delay");
+//            float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Pause();
@@ -131,8 +131,8 @@ namespace Trionfi
         {
             int id = tagParam.Int("buf");
 
-            float delay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+//            float delay = tagParam.Float("delay");
+//            float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.UnPause();

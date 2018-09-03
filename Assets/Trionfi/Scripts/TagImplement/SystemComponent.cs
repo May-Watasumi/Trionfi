@@ -168,7 +168,6 @@ namespace Trionfi {
 
 			Debug.Log("RETURN scn=\"" + stack.scenarioNname + "\" " + "index=\"" + stack.index.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
 
-
 //ToDo:
 			//タグを実行
 //			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);

@@ -1,16 +1,15 @@
-Trionfi　Version α1 　(C)　渡澄萌衣
+Trionfi　Version 1.00 　copyright by 渡澄萌衣/2018
 
 ■Trionfi（とりおんふぃ）とは？
 ノベルゲームや、その他ゲームにおけるいわゆる会話パートを構築するためのスクリプトエンジンです。
-「宴」とは違い、美少女ゲームでよく使われている「吉里吉里」に近いテキストファイル＋タグ埋め込みによる動作が特徴です。
+美少女ゲームでよく使われている「吉里吉里」と互換性のある、
+シナリオテキストファイルにタグ埋め込むだけのシンプルな動作が特徴です。
 
 ■必要な外部アセット
 ・DoTween（FREE版）(https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)
-・EditorCoroutines（デバッグ用）(https://assetstore.unity.com/packages/tools/utilities/editor-coroutines-27373)
-・SerializableDictionary(https://assetstore.unity.com/packages/tools/integration/serializabledictionary-90477)
 
 
-■基本的な使い方
+■シナリオフォーマット
 【】で名前をくくり、その下に会話文を続けていきます。
 会話文の間は行をあけてください。
 
@@ -23,9 +22,20 @@ Trionfi　Version α1 　(C)　渡澄萌衣
 こんにちわ。
 わたしは神林ゆうこ。
 
+以下のシナリオ専用タグが使えます
+<ruby value='るび' color=#FF0000>ルビ(colorは省略可能)</ruby>
+<b>太字</b>
+<i>イタリック</i>
+<s>打ち消し線</s>
+<u>下線</u>
+<color value=#FF0000>
+<color value=yellow>
+<size value=30>
+ 
+
 
 ■リファレンス等
-オンラインマニュアル（予定地）
+オンラインマニュアル
 http://cybernetic-cute.sakura.ne.jp/trionfi
 
 
@@ -37,10 +47,12 @@ http://cybernetic-cute.sakura.ne.jp/trionfi
 バグ修正や要望については下記の連絡先にいただければ可能な限り対応していく予定です。
 
 ■ToDo
-・セーブロード機能（必須？）
-・台本ツール（ボイスナンバリング、PDF吐き出し）（必須）
-・Live2D、E-mote、ADX対応（必須）
-・宴エクスポーター（スクリプトコンバータ）もしくはダイレクトな命令置換実行（余裕があれば）
+・選択肢
+・セーブロード機能
+・変数演算
+・台本ツール（ボイスナンバリング、PDF吐き出し）開発中：50％
+・Live2D、E-mote、ADX対応
+・宴エクスポーター（スクリプトコンバータ）もしくはダイレクトな命令置換実行（需要により）
 
 
 ■連絡先

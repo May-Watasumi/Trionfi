@@ -27,6 +27,8 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
 
     public void Start()
     {
+        currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
+        currentMessage.color = TRSystemConfig.Instance.fontColor;
     }
 
     public void Reset()

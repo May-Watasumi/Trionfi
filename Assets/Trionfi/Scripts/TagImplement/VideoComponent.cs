@@ -11,8 +11,6 @@ namespace Trionfi
 {
     public class VideoplayComponent : AbstractComponent
     {
-        bool isWait;
-
         public VideoplayComponent()
         {
             //必須項目
@@ -29,12 +27,12 @@ namespace Trionfi
         public override IEnumerator TagSyncFunction()
         {
             string storage = tagParam.Identifier("storage");
-            float playDelay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+//            float playDelay = tagParam.Float("delay");
 
             bool loop = tagParam.Bool("loop");
 
             Trionfi.Instance.videoPlayer.url = storage;
+            Trionfi.Instance.videoPlayer.isLooping = loop;
             Trionfi.Instance.videoPlayer.Play();
 
             yield return null;
@@ -53,8 +51,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            float delay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+//            float delay = tagParam.Float("delay");
             Trionfi.Instance.videoPlayer.Stop();
         }
     }
@@ -71,8 +68,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            float delay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+//            float delay = tagParam.Float("delay");
 
             if(Trionfi.Instance.videoPlayer.isPlaying)
                 Trionfi.Instance.videoPlayer.Pause();
@@ -91,8 +87,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            float delay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+//            float delay = tagParam.Float("delay");
 
             if (Trionfi.Instance.videoPlayer.isPrepared && !Trionfi.Instance.videoPlayer.isPlaying)
                 Trionfi.Instance.videoPlayer.Play();

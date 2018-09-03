@@ -97,7 +97,7 @@ namespace Trionfi
                 return lastDataType == TRDataProtocol.LocalResource ? resourceInstance.texture : DownloadHandlerTexture.GetContent(request);
             }
         }
-        public AudioClip audio
+        public new AudioClip audio
         {
             get
             {
