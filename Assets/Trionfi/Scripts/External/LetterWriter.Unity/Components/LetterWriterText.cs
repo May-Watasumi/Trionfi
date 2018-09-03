@@ -344,8 +344,14 @@ namespace LetterWriter.Unity.Components
             return new UnityTextFormatter(this.Font, this.fontSize, this.color);
         }
 
+#if UNITY_5_2
+        protected override void OnPopulateMesh(Mesh m)
+        {
+            var vertexHelper = new VertexHelper(m);
+#elif UNITY_5_3_OR_NEWER
         protected override void OnPopulateMesh(VertexHelper vertexHelper)
         {
+#endif
             if (this.Font == null)
                 return;
 
@@ -490,6 +496,9 @@ namespace LetterWriter.Unity.Components
                 // 1行分下に進めて、さらにLineHeight-1の半分の空きを足す
                 y -= (lineHeight * (1 + ((this.LineHeight - 1) / 2)));
             }
+#if UNITY_5_2
+            vertexHelper.FillMesh(m);
+#endif
         }
 
 #if UNITY_EDITOR
@@ -552,7 +561,7 @@ namespace LetterWriter.Unity.Components
         public float flexibleHeight { get { return -1; } }
         public int layoutPriority { get { return 0; } }
 
-#endregion
+        #endregion
 
         /// <summary>
         /// 指定した高さに文章が収まる最小の幅を算出します。
