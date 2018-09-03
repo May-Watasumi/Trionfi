@@ -120,6 +120,8 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
         if(!Trionfi.TRSystemConfig.Instance.isNovelMode)
             ClearMessage();
 
+        Trionfi.Trionfi.Instance.ClickEvent -= onClickEvent;
+
         yield return null;
     }
 

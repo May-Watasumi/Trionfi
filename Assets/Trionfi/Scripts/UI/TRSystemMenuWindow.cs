@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Trionfi
 {
-    public class TRSystemMenuWindow : MonoBehaviour
+    public class TRSystemMenuWindow : SingletonMonoBehaviour<TRSystemMenuWindow>
     {
 
         // Use this for initialization
