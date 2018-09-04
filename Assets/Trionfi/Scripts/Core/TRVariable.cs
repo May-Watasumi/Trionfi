@@ -160,7 +160,7 @@ namespace Trionfi
             res = "";
             if (ContainsKey(key))
             {
-                if (this[key].Value != TRDataType.Literal )
+                if (this[key].Value != TRDataType.Literal && this[key].Value != TRDataType.Identifier)
                     return false;
 
                 res = this[key].Key;

@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.Networking;
 using System.Collections;
 using System.Collections.Generic;
@@ -61,6 +62,9 @@ namespace Trionfi
         public string localFilePath = "Trionfi/Example/Resources/";
         [SerializeField]
         public string saveDataPath = "savedata/";
+        [SerializeField]
+        public Image loadingIcon = null;
+
 
         const TRDataProtocol defaultDataType =
 #if TR_DEBUG

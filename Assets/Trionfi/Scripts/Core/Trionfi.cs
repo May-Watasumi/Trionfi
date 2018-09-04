@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using UnityEditor;
+
+using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
@@ -16,6 +18,16 @@ namespace Trionfi
         CENTER = 0,
         LEFT = 1,
         RIGHT = 2
+    }
+
+    public enum TRKeyboardShortCut
+    {
+        AutoMode,
+        SkipMode,
+        HideWindow,
+        LogWindow,
+        SystemWindow,
+        AutoSave,
     }
 
     [System.Serializable]
@@ -101,6 +113,8 @@ namespace Trionfi
 
             { layerID["bg"], null },
             { layerID["stand"], null },
+            { layerID["stand"]+1, null },
+            { layerID["stand"]+2, null },
             { layerID["event"], null },
         };
 
@@ -215,6 +229,7 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["stopvoice"].tagParam = _temp;
 
             TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
+            TRVirtualMachine.aliasTagInstance["img"] = new ImageComponent();
 
             TRVirtualMachine.aliasTagInstance["playvideo"] = new VideoplayComponent();
             TRVirtualMachine.aliasTagInstance["pausevideo"] = new VideopauseComponent();

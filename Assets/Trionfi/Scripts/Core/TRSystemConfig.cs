@@ -7,6 +7,10 @@ namespace Trionfi
     [ExecuteInEditMode]
 	public class TRSystemConfig : SingletonMonoBehaviour<TRSystemConfig>
     {
+        [System.Serializable]
+        public class LayerPos : SerializableDictionary<string, int> { };
+
+
         [SerializeField]
         public bool debugMode = false;
 
@@ -24,6 +28,21 @@ namespace Trionfi
         public Vector2 screenSize = new Vector2(1280, 720);
 
         [SerializeField]
+        public LayerPos layerPos = new LayerPos()
+        {
+            { "left", -360 },
+            { "center", 0 },
+            { "right", 360 },
+            { "left_center",  -420 },
+            { "right_center", 420 },
+            { "l", -360 },
+            { "c", 0 },
+            { "r", 360 },
+            { "lc",  -420 },
+            { "rc", 420 },
+        };
+
+        [SerializeField]
         public int characterPosdescent = 30;
 
         [SerializeField]
@@ -39,7 +58,7 @@ namespace Trionfi
         public int standObjectCount = 3;
 
         [SerializeField]
-        Font defaultFont = null;//Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        Font defaultFont = null;
 
         [SerializeField]
         public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -60,6 +79,11 @@ namespace Trionfi
         private int frame = 0;
         private float frameRate = 0f;
         private const float INTERVAL = 0.5f;
+
+        private void Start()
+        {
+            defaultFont = defaultFont ?? Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        }
 
         void Update() {
 			if(showFPS)

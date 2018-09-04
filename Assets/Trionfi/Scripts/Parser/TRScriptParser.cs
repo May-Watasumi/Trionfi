@@ -215,7 +215,9 @@ namespace Trionfi
                 int _isInt;
                 double _isFloat;
 
-                if (rightParam[0] == '0' && (rightParam[1] == 'x' || rightParam[1] == 'X') && int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt))
+                if (rightParam[0] == '0' && rightParam.Length > 2 && (rightParam[1] == 'x' || rightParam[1] == 'X') && 
+                    int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt)
+                   )
                     paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Hex);
                 else if (int.TryParse(rightParam, out _isInt))
                     paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Int);

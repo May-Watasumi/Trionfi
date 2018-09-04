@@ -6,6 +6,9 @@ namespace Trionfi
     [System.Serializable]
     public class TREnviroment : SerializableDictionary<string, Color> { }
 
+    [System.Serializable]
+    public class TRKeyboardEvent : SerializableDictionary<KeyCode, TRKeyboardShortCut> { }
+
     public class TRStageObject : ScriptableObject
     {
         public static readonly string assetName = "Stage.asset";
@@ -27,6 +30,9 @@ namespace Trionfi
         };
 
 
+        [SerializeField]
+        TRKeyboardEvent keyEvent = new TRKeyboardEvent()
+        { };
     }
 }
 

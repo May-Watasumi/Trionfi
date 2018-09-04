@@ -41,10 +41,28 @@ namespace Trionfi
                 RawImage _image;
                 _image = Trionfi.Instance.layerInstance[id].instance;
 
+                Vector2 pos = _image.gameObject.GetComponent<RectTransform>().anchoredPosition;
+
+                string layerPos = "";
+                
+                if (tagParam.IsValid(ref layerPos, "pos") && TRSystemConfig.Instance.layerPos.ContainsKey(layerPos))
+                    pos.x = TRSystemConfig.Instance.layerPos[layerPos];
+
+                if(id != 0)
+                    pos.y = (TRResourceLoader.Instance.texture.height - TRSystemConfig.Instance.screenSize.y) / 2.0f;
+
+                int offsetY = 0;
+
+                if (tagParam.IsValid(ref offsetY, "yoff"))
+                    pos.y += offsetY;
+
                 Trionfi.Instance.layerInstance[id].path = storage;
 
+                _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
                 _image.texture = TRResourceLoader.Instance.texture;
                 _image.SetNativeSize();
+
+                _image.enabled = true;
             }
         }
     }
@@ -68,6 +86,7 @@ namespace Trionfi
             else
                 _image = Trionfi.Instance.layerInstance[0].instance;
 
+            _image.enabled = false;
             _image.texture = null;
         }
     }

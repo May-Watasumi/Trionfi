@@ -8,7 +8,10 @@ using System.IO;
 
 namespace Trionfi
 {
-#if UNITY_EDITOR
+    [CustomPropertyDrawer(typeof(Trionfi.TRAudioInstance))]
+    [CustomPropertyDrawer(typeof(Trionfi.TRImageInstance))]
+    public class AnySerializableDictionaryPropertyDrawer : SerializableDictionaryPropertyDrawer { }
+
     public class TRDebugger : EditorWindow
     {
         string consoleLog;
@@ -32,8 +35,9 @@ namespace Trionfi
             string path = EditorUtility.OpenFilePanel("シナリオファイル", Application.dataPath, "txt");
             if (path.Length != 0)
             {
-                string fileContent = File.ReadAllText(path);
-                TRVirtualMachine.currentTagInstance.CompileScriptString(fileContent);
+                string _name = Path.GetFileNameWithoutExtension(path);
+                TRVirtualMachine.Instance.CompileScriptFile(_name);
+                Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(_name));
             }
         }
 
@@ -103,5 +107,4 @@ namespace Trionfi
             EditorGUILayout.EndScrollView();
         }
     }
-#endif
 }
