@@ -12,7 +12,9 @@ namespace Trionfi {
     {
         public AliasComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             essentialParams = new List<string> { "name", "tag" };
+#endif
         }
 
         protected override void TagFunction()
@@ -39,12 +41,10 @@ namespace Trionfi {
     {
         public LabelComponent()
         {
-
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-                "name"
-            };
-
+            essentialParams = new List<string> { "name" };
+#endif
         }
 
         protected override void TagFunction()
@@ -60,7 +60,9 @@ namespace Trionfi {
     {
         public DatasaveComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             essentialParams = new List<string> { "file" };
+#endif
         }
 
         protected override void TagFunction()
@@ -72,12 +74,13 @@ namespace Trionfi {
     //ジャンプ＝コールスタックを変えない。いわゆるgoto
 	public class JumpComponent : AbstractComponent {
 		public JumpComponent() {
-
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 //				"target"
 			};
-		}
+#endif
+        }
 
         protected override void TagFunction() {  }
 
@@ -116,18 +119,20 @@ namespace Trionfi {
 	//コールスタックに保存されるジャンプ。いわゆるサブルーチン
 	public class CallComponent : AbstractComponent {
 		public CallComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				//"target"
 			};
-/*
-			originalParamDic = new ParamDictionary() {
-				{ "target","" },
-				{ "file","" },
-				//{ "index",""},
-			};
-*/
-		}
+            /*
+                        originalParamDic = new ParamDictionary() {
+                            { "target","" },
+                            { "file","" },
+                            //{ "index",""},
+                        };
+            */
+#endif
+        }
 
 		protected override void TagFunction()
 		{
@@ -149,11 +154,13 @@ namespace Trionfi {
     //サブルーチン等の返値を伴うコールスタック復帰処理。
 	public class ReturnComponent : AbstractComponent {
 		public ReturnComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				//"target"
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
             CallStackObject stack = TRVirtualMachine.callStack.Pop();
@@ -178,11 +185,13 @@ namespace Trionfi {
     //Unityシーン追加呼び出し
     public class SceneComponent : AbstractComponent {
 		public SceneComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"file"
 			};
-		}
+#endif
+        }
 
         AsyncOperation syncState;
 
@@ -203,11 +212,13 @@ namespace Trionfi {
     //Jaceによってcalcとflagは差別化がなくなったので不要になる
     public class EvalComponent : AbstractComponent {
 		public EvalComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"exp"
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
             string _exp = tagParam.Literal("exp");
@@ -219,11 +230,13 @@ namespace Trionfi {
     }
 	public class FlagComponent : AbstractComponent {
 		public FlagComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"exp"
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
             double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam.Literal("exp"));
@@ -233,10 +246,12 @@ namespace Trionfi {
     //if
 	public class IfComponent : AbstractComponent {
 		public IfComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"exp"
 			};
+#endif
         }
 
 		protected override void TagFunction() {
@@ -257,11 +272,13 @@ namespace Trionfi {
 	public class ElseifComponent : AbstractComponent {
 		public ElseifComponent()
         {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"exp"
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
 
@@ -291,10 +308,12 @@ namespace Trionfi {
     //else
 	public class ElseComponent : AbstractComponent {
 		public ElseComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
             bool _stack = TRVirtualMachine.ifStack.Pop();
@@ -307,10 +326,12 @@ namespace Trionfi {
     //endif
     public class EndifComponent : AbstractComponent {
 		public EndifComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
             //ToDo:コールスタックチェック
@@ -334,10 +355,12 @@ namespace Trionfi {
     //変数の中身をデバックコンソールで確認することができます。
 	public class TraceComponent : AbstractComponent {
 		public TraceComponent() {
+#if UNITY_EDITOR && TR_DEBUG
             essentialParams = new List<string>
             {
                    "exp"
             };
+#endif
         }
 
         protected override void TagFunction() {
@@ -353,11 +376,13 @@ namespace Trionfi {
         float _time = 0.0f;
 		public WaitComponent()
 		{
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"time"
 			};
-		}
+#endif
+        }
 
         //時間を止める。
         protected override void TagFunction()
@@ -374,11 +399,13 @@ namespace Trionfi {
     //title=Webページヘジャンプします。
 	public class WebComponent : AbstractComponent {
 		public WebComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"url"
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction()
         {
@@ -392,11 +419,13 @@ namespace Trionfi {
 	//変数削除
 	public class ClearvarComponent : AbstractComponent {
 		public ClearvarComponent() {
-			//必須項目
-			essentialParams = new List<string> {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
 				"name"
 			};
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
 			//削除

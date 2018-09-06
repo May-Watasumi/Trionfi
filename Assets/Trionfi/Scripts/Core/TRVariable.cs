@@ -62,7 +62,7 @@ namespace Trionfi
                     return false;
                 }
             }
-            return true;
+            return false;
         }
 
         public bool IsValid(ref float res, string key)
@@ -80,13 +80,14 @@ namespace Trionfi
                     ErrorLogger.Log("InvalidParam: key=" + key + " Value=" + v);
                     return false;
                 }
+
+                return true;
             }
             else
             {
                 ErrorLogger.Log("NoParam: key=" + key);
                 return false;
             }
-            return true;
         }
 
         public bool IsValid(ref int res, string key)

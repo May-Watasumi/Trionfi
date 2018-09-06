@@ -13,11 +13,13 @@ namespace Trionfi
     public class ImageComponent : AbstractComponent {
         public ImageComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "storage",
                 "layer"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -69,12 +71,14 @@ namespace Trionfi
     
 	public class ImagefreeComponent : AbstractComponent {
 		public ImagefreeComponent() {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string>
             {
                 "layer"
             };
-		}
+#endif
+        }
 
 		protected override void TagFunction() {
             RawImage _image;
@@ -95,11 +99,13 @@ namespace Trionfi
     {
         public LayoptComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string>
             {
                 "layer"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -122,11 +128,13 @@ namespace Trionfi
     {
         public ImagetweenComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string>
             {
                 "layer"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -153,66 +161,122 @@ namespace Trionfi
         }
     }
 
-    public class LockComponent : AbstractComponent
+    public class SnapshotComponent : AbstractComponent
     {
-        public LockComponent()
+        public SnapshotComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
+
             //必須項目
             essentialParams = new List<string>
             {
             };
+#endif
         }
 
         protected override void TagFunction()
         {
             Trionfi.Instance.rawImage.color = Color.white;
-            Trionfi.Instance.rawImage.gameObject.SetActive(true);
-            Trionfi.Instance.rawImage.gameObject.GetComponent<MaskFader>().Range = 0.0f;
             Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
             Trionfi.Instance.targetCamera.Render();
+        }
+
+        public override IEnumerator TagSyncFunction()
+        {
+            yield return new WaitForEndOfFrame();
             Trionfi.Instance.targetCamera.targetTexture = null;
+            Trionfi.Instance.rawImage.gameObject.SetActive(true);
         }
     }
 
 
     public class TransComponent : AbstractComponent
     {
+        bool isSync = true;
+
         public TransComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string>
             {
             };
+#endif
         }
 
         protected override void TagFunction()
+        {
+            //default is "sync" = true.
+            if(!tagParam.IsValid(ref isSync, "sync"))
+                isSync = true;
+
+            if(!isSync)
+                Trionfi.Instance.StartCoroutine(FadeFunction());
+
+        }
+
+        public override IEnumerator TagSyncFunction()
+        {
+            if (isSync)
+                yield return (FadeFunction());
+        }
+
+        IEnumerator FadeFunction()
         {
             float time = tagParam.Float("time", TRSystemConfig.Instance.defaultEffectTime);
 
             string ruleTexture = "";
             if (!tagParam.IsValid(ref ruleTexture, "rule"))
             {
+                bool wait = false;
+
+                Color _color = Trionfi.Instance.rawImage.color;
+                Trionfi.Instance.rawImage.color = new Color(_color.r, _color.g, _color.b, 1.0f);
+
+                Trionfi.Instance.rawImage.material = null;
+                Trionfi.Instance.rawImage.gameObject.GetComponent<MaskFader>().enabled = false;
+
                 DOTween.ToAlpha(
                                 () => Trionfi.Instance.rawImage.color,
                                 color => Trionfi.Instance.rawImage.color = color,
                                 0.0f,
                                 time
-                            ).OnComplete(() => Trionfi.Instance.rawImage.gameObject.SetActive(false));
+                            ).OnKill(() =>
+                            {
+                                Trionfi.Instance.rawImage.gameObject.SetActive(false);
+                                wait = true;
+                            });
+
+                yield return new WaitUntil( () => wait);
             }
             else
             {
                 Texture _rule = Resources.Load<Texture>(ruleTexture);
 
                 MaskFader maskFader = Trionfi.Instance.rawImage.gameObject.GetComponent<MaskFader>();
+                maskFader.Range = 0.0f;
                 maskFader.maskTexture = _rule;
+                maskFader.enabled = true;
 
-                DOTween.To(
-                    () => maskFader.Range,          // 何を対象にするのか
-                    num => maskFader.Range = num,   // 値の更新
-                    1.0f,                  // 最終的な値
-                    time                  // アニメーション時間
-                );
+                float timeCount = 0.0f;
+
+                while(timeCount < time)
+                {
+                    maskFader.Range = timeCount / time;
+                    yield return new WaitForEndOfFrame();
+                    timeCount += Time.deltaTime;
+                }
+
+                maskFader.Range = 1.0f;
+
             }
+
+            int waitTime = 0;
+
+            if (tagParam.IsValid(ref waitTime, "wait"))
+                yield return new WaitForSeconds((float)waitTime / 1000.0f);
+
+            yield return null;
         }
     }
 }

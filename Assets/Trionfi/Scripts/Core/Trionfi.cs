@@ -1,6 +1,4 @@
-﻿using UnityEditor;
-
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
@@ -227,14 +225,15 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["pausevoice"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["stopvoice"] = new AudiostopComponent();
             TRVirtualMachine.aliasTagInstance["stopvoice"].tagParam = _temp;
-
-            TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
-            TRVirtualMachine.aliasTagInstance["img"] = new ImageComponent();
-
+             
             TRVirtualMachine.aliasTagInstance["playvideo"] = new VideoplayComponent();
             TRVirtualMachine.aliasTagInstance["pausevideo"] = new VideopauseComponent();
             TRVirtualMachine.aliasTagInstance["resumevideo"] = new VideoresumeComponent();
             TRVirtualMachine.aliasTagInstance["stopvideo"] = new VideostopComponent();
+
+            TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
+            TRVirtualMachine.aliasTagInstance["copylay"] = new SnapshotComponent();
+            TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
         }
 
         public void Start()

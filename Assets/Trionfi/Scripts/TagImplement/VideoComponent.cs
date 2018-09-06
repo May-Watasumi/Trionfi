@@ -13,10 +13,12 @@ namespace Trionfi
     {
         public VideoplayComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "storage",
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -44,9 +46,10 @@ namespace Trionfi
     {
         public VideostopComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-            };
+            essentialParams = new List<string> { };
+#endif
         }
 
         protected override void TagFunction()
@@ -61,9 +64,10 @@ namespace Trionfi
     {
         public VideopauseComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-            };
+            essentialParams = new List<string> { };
+#endif
         }
 
         protected override void TagFunction()
@@ -80,9 +84,11 @@ namespace Trionfi
     {
         public VideoresumeComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
             };
+#endif
         }
 
         protected override void TagFunction()

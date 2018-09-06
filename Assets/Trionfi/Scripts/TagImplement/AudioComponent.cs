@@ -14,11 +14,13 @@ namespace Trionfi
 
         public AudioComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "storage",
                 "buf"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -75,10 +77,12 @@ namespace Trionfi
     {
         public AudiostopComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "buf"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -98,10 +102,12 @@ namespace Trionfi
     {
         public AudiopauseComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "buf"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -121,10 +127,12 @@ namespace Trionfi
     {
         public AudioresumeComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "buf"
             };
+#endif
         }
 
         protected override void TagFunction()

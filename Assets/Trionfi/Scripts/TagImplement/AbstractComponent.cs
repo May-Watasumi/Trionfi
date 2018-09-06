@@ -12,13 +12,13 @@ namespace Trionfi
         
 //        protected const string syncwait = "syncWait";
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
+#if UNITY_EDITOR || TR_DEBUG
         string sourceName = "";
         int lineCount = 0;
 
         public List<string> essentialParams = new List<string>();
 
-        [Conditional("UNITY_EDITOR"), Conditional("TRIONFI_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
+        [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void Validate(bool stopOnError = false)
         {
             //タグから必須項目が漏れていないか、デフォルト値が入ってない場合はエラーとして警告を返す
@@ -67,10 +67,12 @@ namespace Trionfi
     {
         public UnknownComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "name"
             };
+#endif
         }
 
         protected override void TagFunction()

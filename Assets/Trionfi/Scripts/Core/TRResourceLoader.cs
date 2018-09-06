@@ -52,7 +52,9 @@ namespace Trionfi
             public Texture2D texture;
             public AudioClip audio;
             public string text;
+#if UNITY_STANDALONE
             public MovieTexture movie;
+#endif
             public AssetBundle assetBundole;
         }
 
@@ -116,7 +118,7 @@ namespace Trionfi
                 return lastDataType == TRDataProtocol.LocalResource ? resourceInstance.text : request.downloadHandler.text;
             }
         }
-
+#if UNITY_STANDALONE
         public MovieTexture movie
         {
             get
@@ -125,6 +127,7 @@ namespace Trionfi
             }
         }
 
+#endif
         public AssetBundle assetBundole
         {
             get
@@ -161,11 +164,13 @@ namespace Trionfi
                     case TRResourceType.Audio:
                         resourceInstance.result = (resourceInstance.audio = Resources.Load<AudioClip>(fullpath)) != null;
                         break;
-                    case TRResourceType.Movie:
+#if UNITY_STANDALONE
+                        case TRResourceType.Movie:
                         //たぶんそんなものはない。
                         resourceInstance.result = (resourceInstance.movie = Resources.Load<MovieTexture>(fullpath)) != null;
                         break;
-                    default:
+#endif
+                        default:
                         resourceInstance.result = (resourceInstance.text = Resources.Load<TextAsset>(fullpath).text) != null;
                         break;
                 }
@@ -198,6 +203,7 @@ namespace Trionfi
                         request = UnityWebRequest.GetAudioClip(fullpath, _type);
 #endif
                         break;
+#if UNITY_STANDALONE
                     case TRResourceType.Movie:
 //ムービーテクスチャはモバイル非対応らしい。
 #if UNITY_2017_1_OR_NEWER
@@ -206,7 +212,8 @@ namespace Trionfi
                         request = UnityWebRequest.GetTexture(fullpath);
 #endif
                         break;
-                    default:
+#endif
+                        default:
                         request = UnityWebRequest.Get(fullpath);
                         break;
                 }

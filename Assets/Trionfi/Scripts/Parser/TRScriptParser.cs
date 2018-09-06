@@ -255,8 +255,9 @@ namespace Trionfi
                     }
 
                     _component.tagParam = paramList;
+#if UNITY_EDITOR && TR_DEBUG
                     _component.Validate();
-
+#endif
                     return _component;
                 }
                 else

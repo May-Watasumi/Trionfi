@@ -20,8 +20,8 @@ public class MaskFader : MonoBehaviour, IMaterialModifier, IMeshModifier
         set
         {
             _target = value;
-            _material = _target.material;
-            _target.SetMaterialDirty();
+//            _material = _target.material;
+//            _target.SetMaterialDirty();
         }
     }
 
@@ -44,7 +44,8 @@ public class MaskFader : MonoBehaviour, IMaterialModifier, IMeshModifier
 
     protected  void Start()
     {
-
+        _material = new Material(Shader.Find("UI/Mask"));
+        target.material = _material;
     }
 
     public float Range
@@ -89,27 +90,30 @@ public class MaskFader : MonoBehaviour, IMaterialModifier, IMeshModifier
 
     public Material GetModifiedMaterial(Material baseMaterial)
     {
+        Debug.Log("MATERIAL:" + _material.ToString());
+
         Texture srcTexture = target.mainTexture;
         _material.SetTexture("_MaskTex", maskTexture);
         _material.SetTexture("_MainTex", srcTexture);
         //        _material.SetColor("_Color", color);
         _material.SetFloat("_Range", Range);
-/*
-        if (IsPremultipliedAlpha)
-        {
-            baseMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
-            baseMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
 
-            baseMaterial.EnableKeyword("PREMULTIPLIED_ALPHA");
-        }
+        /*
+                if (IsPremultipliedAlpha)
+                {
+                    baseMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    baseMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
 
-        else
-        {
-            baseMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
-            baseMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
-            baseMaterial.DisableKeyword("PREMULTIPLIED_ALPHA");
-        }
-*/
+                    baseMaterial.EnableKeyword("PREMULTIPLIED_ALPHA");
+                }
+
+                else
+                {
+                    baseMaterial.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.SrcAlpha);
+                    baseMaterial.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    baseMaterial.DisableKeyword("PREMULTIPLIED_ALPHA");
+                }
+        */
         return baseMaterial;
     }
 }

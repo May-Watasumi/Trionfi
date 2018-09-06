@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+#if UNITY_EDITOR
 using UnityEditor;
+#endif
 using CsvReadWrite;
 
 namespace Trionfi
@@ -12,7 +14,7 @@ namespace Trionfi
         public static readonly string assetName = "Actor.asset";
 
         Dictionary<string, TRActorObject> actors = new Dictionary<string, TRActorObject>();
-
+#if UNITY_EDITOR
         [MenuItem("Tools/Trionfi/Actor/Newly")]
         static void CreateEnviroment()
         {
@@ -70,5 +72,6 @@ namespace Trionfi
                 }
             }
         }
+#endif
     }
 }

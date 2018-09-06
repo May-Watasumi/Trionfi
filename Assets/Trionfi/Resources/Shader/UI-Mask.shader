@@ -27,6 +27,7 @@ Shader "UI/Mask"
 	Properties
 	{
 		[PerRendererData] _MaskTex("Mask Texture", 2D) = "white" {}
+				_MainTex ("Source Texture", 2D) = "white" {}
 		_Color ("Tint", Color) = (1,1,1,1)
 		
 		_StencilComp ("Stencil Comparison", Float) = 8
@@ -104,7 +105,6 @@ Shader "UI/Mask"
 				v2f OUT;
 				OUT.worldPosition = IN.vertex;
 				OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
-
 				OUT.texcoord = IN.texcoord;
 				
 				#ifdef UNITY_HALF_TEXEL_OFFSET

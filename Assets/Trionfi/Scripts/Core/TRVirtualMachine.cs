@@ -178,7 +178,7 @@ namespace Trionfi
 
                 _tagComponent.Before();
 
-#if UNITY_EDITOR || DEVELOPMENT_BUILD || TRIONFI_DEBUG
+#if UNITY_EDITOR || TR_DEBUG
                 if (TRSystemConfig.Instance.showTag)
                 {
                     string _params = "";

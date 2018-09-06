@@ -9,10 +9,12 @@ namespace Trionfi
     {
         public MessageComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "val"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -32,10 +34,12 @@ namespace Trionfi
     {
         public NameComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "val"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -101,13 +105,15 @@ namespace Trionfi
     //[font size=26 color=#FFFFFF80]
 	public class FontComponent : AbstractComponent {
 		public FontComponent() {
-			//必須項目
-			essentialParams = new List<string> { };
-//			originalParamDic = new ParamDictionary() {
-//				{"size",""},
-//				{"color",""},
-//			};
-		}
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> { };
+            //			originalParamDic = new ParamDictionary() {
+            //				{"size",""},
+            //				{"color",""},
+            //			};
+#endif
+        }
 
 		protected override void TagFunction() {
             int size = tagParam.Int("size");

@@ -12,10 +12,12 @@ namespace Trionfi
     {
         public MacroComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "name"
             };
+#endif
         }
 
         protected override void TagFunction()
@@ -79,10 +81,12 @@ namespace Trionfi
     {
         public MacroEraceComponent()
         {
+#if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "name"
             };
+#endif
         }
 
         protected override void TagFunction()
