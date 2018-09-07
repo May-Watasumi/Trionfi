@@ -223,7 +223,8 @@ namespace Trionfi
 
         IEnumerator FadeFunction()
         {
-            float time = tagParam.Float("time", TRSystemConfig.Instance.defaultEffectTime);
+            int timeMsec = tagParam.Int("time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f));
+            float time = timeMsec / 1000.0f;
 
             string ruleTexture = "";
             if (!tagParam.IsValid(ref ruleTexture, "rule"))

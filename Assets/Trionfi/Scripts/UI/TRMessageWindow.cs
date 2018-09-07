@@ -20,8 +20,8 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
     public LetterWriter.Unity.Components.LetterWriterText currentMessage;
     [SerializeField]
     public Text currentName;
-    [SerializeField]
-    private Image MessageFrameImage;
+//    [SerializeField]
+//    private Image MessageFrameImage;
     [SerializeField]
     public Image waitCursor;
 
@@ -100,8 +100,6 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
     {
         state = MessageState.OnWait;
 
-        waitCursor.gameObject.SetActive(true);
-
         WaitCursor(icon);
 
         if (onAuto)
@@ -112,8 +110,6 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
         {
             yield return new WaitWhile(() => state == MessageState.OnWait);
         }
-
-        waitCursor.gameObject.SetActive(false);
 
         /*
         if(TRMessageLogWindow.Instance != null && enableLogWindow)
@@ -135,33 +131,43 @@ public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
         StartCoroutine(WaitCusorSub(icon));
     }
 
-    public IEnumerator WaitCusorSub(WaitIcon icon)
+    public IEnumerator WaitCusorSub(WaitIcon icon, float loopTime = 1.2f)
     {
+        Tweener _sequence = null;
+
+        waitCursor.color = new Color(waitCursor.color.r, waitCursor.color.g, waitCursor.color.b, 1.0f);
+
+        waitCursor.gameObject.SetActive(true);
+
         switch (icon)
         {
             case WaitIcon.Alpha:
-                waitCursor.color = new Color(waitCursor.color.r, waitCursor.color.g, waitCursor.color.b, 0.0f);
-                DOTween.ToAlpha(
+
+                waitCursor.gameObject.SetActive(true);
+
+                _sequence = DOTween.ToAlpha(
                 () => waitCursor.color,
                 color => waitCursor.color = color,
-                1.0f,                                // 最終的なalpha値
-                1.5f
+                0.0f,                                // 最終的なalpha値
+                loopTime
                 )
                 .SetLoops(-1, LoopType.Yoyo);
                 break;
             case WaitIcon.Rotate:
-//                waitCursor.GetComponent<RectTransform>().rotation = Vector3.zero;
-                waitCursor.GetComponent<RectTransform>().DORotate(new Vector3(0, 0, 359), 1.0f).SetRelative(true).SetLoops(-1);
+                //                waitCursor.GetComponent<RectTransform>().rotation = Vector3.zero;
+                _sequence = waitCursor.GetComponent<RectTransform>().DORotate(new Vector3(0, 0, 359), 1.0f).SetRelative(true).SetLoops(-1);
                 break;
         }
 
         yield return new WaitWhile(() => state == MessageState.OnWait);
 
-        Trionfi.Trionfi.Instance.ClickEvent -= onClickEvent;    }
+        _sequence.Kill();
+
+        waitCursor.gameObject.SetActive(false);
+    }
 
     public void ShowName(string _name, Sprite face = null)
     {
         nameString = _name;
     }
 }
-

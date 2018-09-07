@@ -3,7 +3,7 @@
 [image layer=0 storage=sprite/bg/BG481a]
 [image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41]
 [image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41]
-[trans rule=sprite/mask/001  wait = 500]
+[trans rule=sprite/mask/030  wait = 750]
 
 【こはく】
 ということで呼ばれて飛び出るUnityちゃんこと、
