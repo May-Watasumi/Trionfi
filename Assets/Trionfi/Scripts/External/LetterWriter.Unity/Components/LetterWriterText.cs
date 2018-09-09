@@ -107,6 +107,12 @@ namespace LetterWriter.Unity.Components
             set { this._lineHeight = value; this.MarkAsReformatRequired(); }
         }
 
+        [SerializeField]
+        /// <summary>
+        /// LineHeightに上積みされる行間を設定します。
+        /// </summary>
+        private float lineSpace = 0;
+
         /// <summary>
         /// 表示される長さを取得、設定します。
         /// </summary>
@@ -372,10 +378,9 @@ namespace LetterWriter.Unity.Components
 
             vertexHelper.Clear();
 
-
             // 打消し線の元ネタを用意する
             var lineGlyphs = new List<IGlyph>();
-            this._cachedTextFormatter.GlyphProvider.GetGlyphsFromString(new UnityTextModifierScope(null, new UnityTextModifier() { FontSize = this.fontSize }), "―", lineGlyphs);
+            this._cachedTextFormatter.GlyphProvider.GetGlyphsFromString(new UnityTextModifierScope(null, new UnityTextModifier() { FontSize = this.fontSize }), "—"/*"―"*/, lineGlyphs);
             var lineGlyph = (UnityGlyph)lineGlyphs[0];
             var lineVertices = new[] { UIVertex.simpleVert, UIVertex.simpleVert, UIVertex.simpleVert, UIVertex.simpleVert };
 
@@ -401,7 +406,7 @@ namespace LetterWriter.Unity.Components
                             max = p.Glyph.Height;
                         }
                     }
-                    lineHeight += max;
+                    lineHeight += (max + lineSpace);
                 }
 
                 // オーバーフロー
@@ -596,7 +601,7 @@ namespace LetterWriter.Unity.Components
 
             foreach (var textLine in formattedLines)
             {
-                var lineHeight = (this.fontSize + (leadingBase * this.fontSize));
+                var lineHeight = (this.fontSize + lineSpace + (leadingBase * this.fontSize));
 
                 // 上に突き抜けてる分を計算してあげないと…
                 if (!this.IsLineHeightFixed && textLine.PlacedGlyphs.Any(p => p.Y < 0))
