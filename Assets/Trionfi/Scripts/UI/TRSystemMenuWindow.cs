@@ -18,7 +18,7 @@ namespace Trionfi
         {
 
         }
-
+         
         public void OnAutoButton()
         {
             Trionfi.Instance.messageWindow.onAuto = true;
@@ -40,6 +40,8 @@ namespace Trionfi
         {
             Trionfi.Instance.messageWindow.gameObject.SetActive(false);
             Trionfi.Instance.messageLogwindow.gameObject.SetActive(false);
+            Trionfi.Instance.ClickEvent += Trionfi.Instance.ReactiveWindow;
+
             gameObject.SetActive(false);
         }
     }

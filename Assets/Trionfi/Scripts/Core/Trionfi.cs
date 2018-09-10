@@ -52,7 +52,7 @@ namespace Trionfi
         public static readonly string assetPath = "Assets/Trionfi/";
 
         [SerializeField]
-        TextAsset bootScript;
+        string bootScriptName;
         [SerializeField]
         public UnityEngine.Video.VideoPlayer videoPlayer;
 
@@ -139,12 +139,9 @@ namespace Trionfi
             if (TRSystemConfig.instance.KAGCompatibility)
                 InitKAGAlias();
 
-            if (bootScript != null)
+            if(!string.IsNullOrEmpty(bootScriptName))
             {
-                TRTagInstance _tagInstance = new TRTagInstance();
-                _tagInstance.CompileScriptString(bootScript.text);
-                TRVirtualMachine.tagInstance[bootScript.name] = _tagInstance;
-                StartCoroutine(TRVirtualMachine.Instance.Run("boot"));
+                Begin(bootScriptName);
             }
         }
 
@@ -155,6 +152,13 @@ namespace Trionfi
         {
             if(ClickEvent != null)
                 ClickEvent();
+        }
+
+        public void ReactiveWindow()
+        {
+            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+            TRSystemMenuWindow.Instance.gameObject.SetActive(true);
+            ClickEvent -= this.ReactiveWindow;
         }
 
         public static bool IsPointerOverGameObject()
@@ -181,7 +185,9 @@ namespace Trionfi
                     {
                     messageWindow.gameObject.SetActive(true);
                     systemMenuWindow.gameObject.SetActive(true);
-                    TRTitle.Instance.gameObject.SetActive(false);
+                    
+                   if(TRTitle.Instance != null)
+                        TRTitle.Instance.gameObject.SetActive(false);
 
                     uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f).OnComplete
                     (() =>
