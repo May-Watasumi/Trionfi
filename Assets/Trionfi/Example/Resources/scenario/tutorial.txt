@@ -5,6 +5,8 @@
 [image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41]
 [trans rule=sprite/mask/030  wait = 750]
 
+[audio buf=0 storage=sound/bgm/c3]
+
 【こはく】
 ということで呼ばれて飛び出るUnityちゃんこと、
 大鳥こはくだよ。

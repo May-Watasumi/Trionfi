@@ -21,12 +21,12 @@ namespace Trionfi
          
         public void OnAutoButton()
         {
-            Trionfi.Instance.messageWindow.onAuto = true;
+            Trionfi.Instance.messageWindow.onAuto = !Trionfi.Instance.messageWindow.onAuto;
         }
 
         public void OnSkipButton()
         {
-            Trionfi.Instance.messageWindow.onSkip = true;
+            Trionfi.Instance.messageWindow.onSkip = !Trionfi.Instance.messageWindow.onSkip;
         }
 
         public void OnMessageLogButton()

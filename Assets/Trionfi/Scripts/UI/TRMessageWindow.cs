@@ -22,9 +22,9 @@ namespace Trionfi
             set{
                 _onSkip = value;
 
-                if (_onSkip)
+                if (_onSkip && state == MessageState.OnShow)
                 {
-//                    state = MessageState.None;
+                    state = MessageState.None;
 
 //                    if (!onAuto)
 //                        Trionfi.Instance.ClickEvent += ResetMessageMode;

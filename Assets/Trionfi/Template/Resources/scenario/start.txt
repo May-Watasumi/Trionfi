@@ -1,0 +1,4 @@
+[image layer=0 storage=black]
+
+開始用スクリプトです。
+
