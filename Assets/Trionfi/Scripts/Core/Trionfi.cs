@@ -156,7 +156,7 @@ namespace Trionfi
 
         public void ReactiveWindow()
         {
-            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+            Trionfi.Instance.messageWindow.Open();
             TRSystemMenuWindow.Instance.gameObject.SetActive(true);
             ClickEvent -= this.ReactiveWindow;
         }

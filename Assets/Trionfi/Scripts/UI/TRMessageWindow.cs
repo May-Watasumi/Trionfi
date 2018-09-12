@@ -6,7 +6,6 @@ using UnityEngine.UI;
 
 namespace Trionfi
 {
-
     public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
     {
         public bool enableLogWindow = true;
@@ -52,7 +51,7 @@ namespace Trionfi
             }
         }
 
-        public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait }
+        public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait, OnClose }
         public enum WaitIcon { None, Alpha, Rotate }
 
         public MessageState state = MessageState.None;
@@ -93,17 +92,38 @@ namespace Trionfi
                 state = MessageState.None;
         }
 
+        public void Close()
+        {
+            if (state == MessageState.OnShow)
+                StopCoroutine(_waitCoroutine);
+
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+        }
+
+        public void Open()
+        {
+            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+
+            if (state == MessageState.OnShow)
+            {
+                StartCoroutine(_waitCoroutine);
+            }
+        }
+
         public void ClearMessage()
         {
             currentMessage.text = "";
             currentName.text = "";
         }
 
+        public IEnumerator _waitCoroutine = null;
+
         public void ShowMessage(string text, float mesCurrentWait = 0)
         {
             state = MessageState.OnShow;
 
-            StartCoroutine(ShowMessageSub(text, mesCurrentWait));
+            _waitCoroutine = ShowMessageSub(text, mesCurrentWait);// StartCoroutine(ShowMessageSub(text, mesCurrentWait));
+            StartCoroutine(_waitCoroutine);
         }
 
         private IEnumerator ShowMessageSub(string message, float mesCurrentWait)
@@ -141,6 +161,7 @@ namespace Trionfi
             if(!enableSkip)
             {
                 state = MessageState.OnWait;
+
                 WaitCursor(icon);
 
                 if (onAuto)
