@@ -53,8 +53,6 @@ namespace Trionfi {
         }
     }
 
-
-
     //ユーザーデータセーブ。
     public class DatasaveComponent : AbstractComponent
     {
@@ -105,14 +103,12 @@ namespace Trionfi {
 
             int index = TRVirtualMachine.tagInstance[file].arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.tagInstance[file].arrayComponents.labelPos[target];
 
-            if (index < 0)
-                ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
+            if (tagParam.IsValid(ref target, "target"))
+                TRVirtualMachine.currentTagInstance.Jump(target);
             else
-                ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentScriptName + "\" " + "index=\"" + TRVirtualMachine.currentTagInstance.currentComponentIndex + "\"");
+                ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
 
-            //ToDo:メインループ側で配列Indexが++されるのであまり美しくない。
-            TRVirtualMachine.currentTagInstance.currentComponentIndex = index;
-            TRVirtualMachine.currentTagInstance.currentComponentIndex--;
+            ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentScriptName + "\" " + "index=\"" + TRVirtualMachine.currentTagInstance.currentComponentIndex + "\"");
         }
 	}
 

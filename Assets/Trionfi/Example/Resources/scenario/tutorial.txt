@@ -1,3 +1,5 @@
+*開始位置
+
 [image layer=0 storage=black]
 [snapshot]
 [image layer=0 storage=sprite/bg/BG481a]
@@ -48,8 +50,27 @@ Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 コマンドタグについてはオンラインリファレンスを
 参照してください。
 
+[seladd target=*答１ text=かわいい]
+[seladd target=*答２ text=とてもかわいい]
+[seladd target=*答３ text=ガバかわいい]
+[select]
+
+*答１
 【こはく】
-今は会話文だけだけど、もちろん選択肢や
+その通り。
+
+*答２
+【こはく】
+もっと言っていいのよ？
+
+*答３
+【こはく】
+ガバ……。
+
+*合流
+
+
+【こはく】
 フラグ制御等も近いうちに実装する予定だって。
 そんなにお待たせすることはない……はず？
 

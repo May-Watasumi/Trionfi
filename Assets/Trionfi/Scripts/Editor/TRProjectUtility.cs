@@ -32,37 +32,50 @@ namespace Trionfi
             GetWindow<TRProjectUtility>("Input ProjectName");
         }
 
+        [MenuItem("Tools/Trionfi/Build AssetBundle")]
+        private static void BuildAssetBundle()
+        {
+            string path = EditorUtility.OpenFolderPanel("対象プロジェクトフォルダ", "Assets", "Template");
+        }
+
         private void SetupProject(string name)
         {
             string _newPath = "Assets/" + name;// + "/" + TRAssetPathObject.assetName;
             const string _templatePath = "Assets/Trionfi/Template";
 
-            AssetDatabase.CopyAsset("Assets/Trionfi/Template", "Assets/" + _newPath);
+            AssetDatabase.CopyAsset(_templatePath, _newPath);
+
             AssetDatabase.Refresh();
             AssetDatabase.SaveAssets();
 
-            AssetDatabase.StartAssetEditing();
+            TRAssetPathObject _instance = CreateInstance<TRAssetPathObject>();
+            _instance.projectName = name;
+            AssetDatabase.CreateAsset(_instance, _newPath + "/" + TRAssetPathObject.assetName);
+            AssetDatabase.ImportAsset(_newPath + "/" + TRAssetPathObject.assetName);
 
-            EditorUtility.DisplayProgressBar("DeepDuplicate", "Start", 0);
+            //            AssetDatabase.Refresh();
+            //            AssetDatabase.SaveAssets();
+            /*
 
-            foreach (string filePath in Directory.GetFiles(_newPath, "*", SearchOption.AllDirectories))
-            {
-                string _ext = Path.GetExtension(filePath);
+                        foreach (string filePath in Directory.GetFiles(_newPath, "*", SearchOption.AllDirectories))
+                        {
+                            string _ext = Path.GetExtension(filePath);
 
-                if (_ext == ".meta" || _ext == ".unity")
-                    continue;
+                            if (_ext == ".meta" || _ext == ".unity")
+                                continue;
 
-                foreach (Object _object in AssetDatabase.LoadAllAssetsAtPath(filePath))
-                {
-                    if (_object == null)
-                        continue;
+                            foreach (Object _object in AssetDatabase.LoadAllAssetsAtPath(filePath))
+                            {
+                                if (_object == null)
+                                    continue;
 
-                    if (PrefabUtility.GetPrefabType(_object) == PrefabType.Prefab)
-                    {
-                        Object oldAsset = AssetDatabase.LoadMainAssetAtPath(filePath);
-                    }
-                }
-            }
+                                if (PrefabUtility.GetPrefabType(_object) == PrefabType.Prefab)
+                                {
+                                    Object oldAsset = AssetDatabase.LoadMainAssetAtPath(filePath);
+                                }
+                            }
+                        }
+            */
         }
 
         void OnGUI()

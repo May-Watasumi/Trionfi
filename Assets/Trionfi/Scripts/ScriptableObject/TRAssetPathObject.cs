@@ -1,11 +1,13 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 public class TRAssetPathObject : ScriptableObject
 {
-    public static readonly string assetName = "AssetPath.asset";
+    public static readonly string assetName = "AssetManager.asset";
 
+    public string projectName = "";
     [SerializeField]
     string bg = "bg";
     [SerializeField]

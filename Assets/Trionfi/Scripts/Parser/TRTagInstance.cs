@@ -26,5 +26,14 @@ namespace Trionfi
             //エラーがあるときはtrue
             return !ErrorLogger.ShowAll();
         }
+
+        public bool Jump(string label)
+        {
+            if (!arrayComponents.labelPos.ContainsKey(label))
+                return false;
+
+            currentComponentIndex = arrayComponents.labelPos[label];
+            return true;
+        }
 	}
 }

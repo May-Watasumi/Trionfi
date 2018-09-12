@@ -200,9 +200,6 @@ namespace Trionfi
                 tag.currentComponentIndex++;
             }
 
-            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
-            Trionfi.Instance.systemMenuWindow.gameObject.SetActive(false);
-
             yield return null;
         }
 

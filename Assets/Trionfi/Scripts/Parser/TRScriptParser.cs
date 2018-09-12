@@ -298,8 +298,6 @@ namespace Trionfi
 
             string textBuffer = "";
 
-//            bool lastIsText = false;
-
             while (currentPos < charArray.Length)
             {
                 bool isText = false;
@@ -339,8 +337,8 @@ namespace Trionfi
                 //label
                 else if (charArray[currentPos] == '*')
                 {
-                    textBuffer = ReadLine();
-                    result.labelPos[textBuffer] = result.Count;
+                    string labelBuffer = ReadLine();
+                    result.labelPos[labelBuffer] = result.Count-1;
                 }
                 //tag
                 else if (charArray[currentPos] == '[')

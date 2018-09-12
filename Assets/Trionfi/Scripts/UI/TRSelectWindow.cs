@@ -1,101 +1,54 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor;
 
 namespace Trionfi
 {
-    public class TRSelectWindow : MonoBehaviour
+    public class TRSelectWindow : SingletonMonoBehaviour<TRSelectWindow>
     {
-        public enum SelectState { None, Wait };
-        public SelectState state = SelectState.None;
+        public string result;
+        int activeSelector = 0;
+
+        public bool onWait = false;
 
         [SerializeField]
-        GameObject selectorPrefab;
+        List<TRSelectButton> selectorList = new List<TRSelectButton>();
+
+//        [Range(1, 10)]
+//        readonly int maxSelectorCount = 5;
 
         [SerializeField]
-        private string returnKey = "f.Selectoresult";
-        private string _resultString = "result";
+        public AudioSource decisionSound;
 
         [SerializeField]
         float AreaHeight = 560.0f;
 
-        List<TRSelectorPrefab> selectorList = new List<TRSelectorPrefab>();
-        int activeSelector = 0;
-
-        public string resultString
-        {
-            get
-            {
-                return _resultString;
-            }
-            set
-            {
-                _resultString = value;
-            }
-        }
-
         // Use this for initialization
         void Start()
-        {
-//            Init(10);
-        }
+        {    }
 
-        public void Init(int selectorCount)
+        public void Add(string content, string result)
         {
-            TRSelectorPrefab.currentWindow = this;
-
-            for (int a = 0; a < selectorCount; a++)
-            {
-                GameObject _sel = GameObject.Instantiate(selectorPrefab);
-                _sel.GetComponent<TRSelectorPrefab>().answer = a;
-                _sel.transform.SetParent(gameObject.transform);
-                _sel.transform.localPosition = Vector3.zero;
-                _sel.SetActive(false);
-                selectorList.Add(_sel.GetComponent<TRSelectorPrefab>());
-            }
-        }
-
-        public void Add(string text)
-        {
-            selectorList[activeSelector].Set(text, null);
-            selectorList[activeSelector].gameObject.SetActive(true);
-            activeSelector++;
+            selectorList[activeSelector++].Set(content, result);
         }
 
         public void Begin()
         {
-            state = SelectState.Wait;
-
-            for (int a = 0; a < activeSelector; a++)
-            {
-                //ToDo:選択肢が１つのときはゼロ除算になる。
-                selectorList[a].gameObject.transform.localPosition = new Vector3(0, (AreaHeight / activeSelector * a), 0);
-            }
-
-            gameObject.SetActive(true);
-
-            StartCoroutine(BeginSub());
-        }
-
-        public IEnumerator BeginSub()
-        {
-            while (state == SelectState.Wait)
-                yield return null;
-
-            ResetSelect();
-
-            yield return null;
-        }
-
-        public void ResetSelect()
-        {
-            activeSelector = 0;
-
-            for(int a = 0; a < selectorList.Count; a++)
+            for (int a = 0; a < selectorList.Count; a++)
             {
                 selectorList[a].gameObject.SetActive(false);
             }
-            gameObject.SetActive(false);
+
+            for (int a = 0; a < activeSelector; a++)
+            {
+                selectorList[a].gameObject.SetActive(true);
+                selectorList[a].gameObject.transform.localPosition = new Vector3(0, (AreaHeight / activeSelector * -a + (AreaHeight / 2)) , 0);
+            }
+
+            activeSelector = 0;
+
+            gameObject.SetActive(true);
         }
     }
 }
