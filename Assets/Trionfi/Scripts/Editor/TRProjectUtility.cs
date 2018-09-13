@@ -2,7 +2,10 @@
 using System.Collections.Generic;
 using System.IO;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 namespace Trionfi
 {
@@ -40,42 +43,80 @@ namespace Trionfi
 
         private void SetupProject(string name)
         {
-            string _newPath = "Assets/" + name;// + "/" + TRAssetPathObject.assetName;
+            string _newPath = "Assets/" + name;
             const string _templatePath = "Assets/Trionfi/Template";
 
             AssetDatabase.CopyAsset(_templatePath, _newPath);
 
+            string scenepath = _newPath + "/Start.unity";
+
+            var scenes = EditorBuildSettings.scenes;
+            ArrayUtility.Add( ref scenes, new EditorBuildSettingsScene(scenepath, true));
+            EditorBuildSettings.scenes = scenes;
+
+            //シーンを開く
+            Scene scene = EditorSceneManager.OpenScene(scenepath);//, OpenSceneMode.Additive);
+
+            Object[] ggg = Resources.FindObjectsOfTypeAll(typeof(TRMessageLogWindow));
+
+            List<GameObject> prefabList = new List<GameObject>();
+            Dictionary<string, Vector2> transformPos = new Dictionary<string, Vector2>();
+
+            GameObject[] rootObject = scene.GetRootGameObjects();
+            CanvasScaler uiCanvas = null;
+            CanvasScaler layerCanvas = null;
+
+            foreach (GameObject _object in rootObject)
+            {
+                if (_object.name == "Layer")
+                    layerCanvas = _object.GetComponent<CanvasScaler>();
+                else if (_object.name == "UI")
+                    uiCanvas = _object.GetComponent<CanvasScaler>();
+            }
+
+            if (!int.TryParse(_x, out width))
+                width = 1280;
+            if (!int.TryParse(_y, out height))
+                height = 720;
+
+            if (uiCanvas != null)
+                uiCanvas.referenceResolution = new Vector2(width, height);
+
+            if (layerCanvas != null)
+                layerCanvas.referenceResolution = new Vector2(width, height);
+
+            Transform[] transforms = uiCanvas.gameObject.GetComponentsInChildren<Transform>();
+
+            while (transforms != null && transforms.Length > 1)
+            {
+                GameObject.DestroyImmediate(transforms[1].gameObject);
+                transforms = uiCanvas.gameObject.GetComponentsInChildren<Transform>();
+            }
+
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/TitleBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/MessageLogWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/SelectWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/SystemMenuBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/GameConfigBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);
+
+            foreach (GameObject _object in prefabList)
+            {
+               GameObject _instance = PrefabUtility.InstantiatePrefab(_object, scene) as GameObject;
+
+                _instance.GetComponent<RectTransform>().SetParent(uiCanvas.gameObject.transform);
+                _instance.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;// transformPos[_instance.name];
+                _instance.GetComponent<RectTransform>().localScale = Vector3.one;// transformPos[_instance.name];
+
+                if (_instance.name == "GlobalTap")
+                   _instance.GetComponent<RectTransform>().sizeDelta = new Vector2(width, height);
+            }
+
             AssetDatabase.Refresh();
             AssetDatabase.SaveAssets();
-
-            TRAssetPathObject _instance = CreateInstance<TRAssetPathObject>();
-            _instance.projectName = name;
-            AssetDatabase.CreateAsset(_instance, _newPath + "/" + TRAssetPathObject.assetName);
-            AssetDatabase.ImportAsset(_newPath + "/" + TRAssetPathObject.assetName);
-
-            //            AssetDatabase.Refresh();
-            //            AssetDatabase.SaveAssets();
-            /*
-
-                        foreach (string filePath in Directory.GetFiles(_newPath, "*", SearchOption.AllDirectories))
-                        {
-                            string _ext = Path.GetExtension(filePath);
-
-                            if (_ext == ".meta" || _ext == ".unity")
-                                continue;
-
-                            foreach (Object _object in AssetDatabase.LoadAllAssetsAtPath(filePath))
-                            {
-                                if (_object == null)
-                                    continue;
-
-                                if (PrefabUtility.GetPrefabType(_object) == PrefabType.Prefab)
-                                {
-                                    Object oldAsset = AssetDatabase.LoadMainAssetAtPath(filePath);
-                                }
-                            }
-                        }
-            */
         }
 
         void OnGUI()

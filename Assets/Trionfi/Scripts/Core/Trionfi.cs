@@ -67,13 +67,19 @@ namespace Trionfi
         [SerializeField]
         public Canvas uiCanvas;
         [SerializeField]
+        public TRMessageLogWindow messageLogwindow;
+        [SerializeField]
         public TRMessageWindow messageWindow;
+        [SerializeField]
+        public TRSelectWindow selectWindow;
         [SerializeField]
         public TRSystemMenuWindow systemMenuWindow;
         [SerializeField]
-        public TRMessageLogWindow messageLogwindow;
+        public TRGameConfigWindow configWindow;
         [SerializeField]
-        public TRSelectWindow selectWindow;
+        public TRCustomDialog dialogWindow;
+        [SerializeField]
+        public GameObject nowLoading;
 
         static readonly SerializableDictionary<string, int> audioID = new SerializableDictionary<string, int>()
         {
@@ -244,11 +250,26 @@ namespace Trionfi
 
         public void Start()
         {
+            if(messageLogwindow != null)
+                messageLogwindow.gameObject.SetActive(false);
+            if(messageWindow != null)
+                messageWindow.gameObject.SetActive(false);
+            if(selectWindow != null)
+                selectWindow.gameObject.SetActive(false);
+            if(systemMenuWindow != null)
+                systemMenuWindow.gameObject.SetActive(false);
+            if(configWindow != null)
+                configWindow.gameObject.SetActive(false);
+            if(dialogWindow != null)
+                dialogWindow.gameObject.SetActive(false);
+            if(nowLoading != null)
+                nowLoading.gameObject.SetActive(false);
+
             Init();
         }
+
         public void Update()
         {
         }
-
     }
 }
