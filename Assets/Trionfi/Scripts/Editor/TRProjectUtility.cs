@@ -16,7 +16,8 @@ namespace Trionfi
 
         int width = 1280;
         int height = 720;
-        string _input = "NewProject";
+        string _input = "Assets/NewProject";
+        string _trionfiPath = "Assets/Trionfi";
         string _x = 1280.ToString();
         string _y = 720.ToString();
 
@@ -34,17 +35,17 @@ namespace Trionfi
         {
             GetWindow<TRProjectUtility>("Input ProjectName");
         }
-
+        /*
         [MenuItem("Tools/Trionfi/Build AssetBundle")]
         private static void BuildAssetBundle()
         {
             string path = EditorUtility.OpenFolderPanel("対象プロジェクトフォルダ", "Assets", "Template");
         }
-
-        private void SetupProject(string name)
+        */
+        private void SetupProject()
         {
-            string _newPath = "Assets/" + name;
-            const string _templatePath = "Assets/Trionfi/Template";
+            string _newPath = _input;// "Assets/" + name;
+            string _templatePath = _trionfiPath + "/Template";
 
             AssetDatabase.CopyAsset(_templatePath, _newPath);
 
@@ -100,15 +101,15 @@ namespace Trionfi
             GameObject.DestroyImmediate(trionfiInstandce.dialogWindow.gameObject);
             GameObject.DestroyImmediate(trionfiInstandce.nowLoading.gameObject);
 
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/TitleBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/MessageLogWindowBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/SelectWindowBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/SystemMenuBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/GameConfigBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath("Assets/" + name + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/TitleBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageLogWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SelectWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SystemMenuBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GameConfigBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);
 
             foreach (GameObject _object in prefabList)
             {
@@ -138,11 +139,14 @@ namespace Trionfi
 
         void OnGUI()
         {
-            GUILayout.Label("Project Setting");
+            GUILayout.Label("Project Path");
             GUI.SetNextControlName("ForcusField");
 
             _input = GUILayout.TextField(_input);
             GUILayout.Space(10f);
+
+            GUILayout.Label("Trionfi Path");
+            _trionfiPath = GUILayout.TextField(_trionfiPath);
 
             GUILayout.Label("解像度");
 
@@ -156,7 +160,7 @@ namespace Trionfi
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10f);
-
+            /*
             GUILayout.Label("Resource Path(Advanced)");
             GUILayout.Space(5.0f);
 
@@ -178,13 +182,13 @@ namespace Trionfi
             _otherPath = GUILayout.TextField(_otherPath);
 
             GUILayout.Space(10.0f);
-
+            */
             // 何かしら入力しないとOKボタンを押せないようにするDisableGroup
             EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(_input) || !int.TryParse(_x, out width) || !int.TryParse(_y, out height));
             GUILayout.BeginHorizontal();
             if (GUILayout.Button("OK", GUILayout.Height(30f)))
             {
-                SetupProject(_input);
+                SetupProject();
                 Close();
             }
 
