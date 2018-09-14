@@ -21,27 +21,12 @@ namespace Trionfi
         string _x = 1280.ToString();
         string _y = 720.ToString();
 
-        string _bgPath = "bg";
-        string _standPath = "fgimage";
-        string _uiImagePath = "image";
-        string _bgmPath = "bgm";
-        string _ruleImagePath = "rule";
-        string _voicePath = "voice";
-        string _sePath = "sound";
-        string _otherPath = "other";
-
         [MenuItem("Tools/Trionfi/New Project")]
         private static void Open()
         {
             GetWindow<TRProjectUtility>("Input ProjectName");
         }
-        /*
-        [MenuItem("Tools/Trionfi/Build AssetBundle")]
-        private static void BuildAssetBundle()
-        {
-            string path = EditorUtility.OpenFolderPanel("対象プロジェクトフォルダ", "Assets", "Template");
-        }
-        */
+
         private void SetupProject()
         {
             string _newPath = _input;// "Assets/" + name;
@@ -58,11 +43,8 @@ namespace Trionfi
             //シーンを開く
             Scene scene = EditorSceneManager.OpenScene(scenepath);//, OpenSceneMode.Additive);
 
-//            Object[] ggg = Resources.FindObjectsOfTypeAll(typeof(TRMessageLogWindow));
-
             List<GameObject> prefabList = new List<GameObject>();
             List<GameObject> instanceList = new List<GameObject>();
-            Dictionary<string, Vector2> transformPos = new Dictionary<string, Vector2>();
 
             GameObject[] rootObject = scene.GetRootGameObjects();
             Trionfi trionfiInstandce = null;
@@ -160,29 +142,7 @@ namespace Trionfi
             GUILayout.EndHorizontal();
 
             GUILayout.Space(10f);
-            /*
-            GUILayout.Label("Resource Path(Advanced)");
-            GUILayout.Space(5.0f);
 
-            GUILayout.Label("BG");
-            _bgPath = GUILayout.TextField(_bgPath);
-            GUILayout.Label("FIGURE");
-            _standPath = GUILayout.TextField(_standPath);
-            GUILayout.Label("UI");
-            _uiImagePath = GUILayout.TextField(_uiImagePath);
-            GUILayout.Label("BGM");
-            _bgmPath = GUILayout.TextField(_bgmPath);
-            GUILayout.Label("RULE");
-            _ruleImagePath = GUILayout.TextField(_ruleImagePath);
-            GUILayout.Label("VOICE");
-            _voicePath = GUILayout.TextField(_voicePath);
-            GUILayout.Label("SE");
-            _sePath = GUILayout.TextField(_sePath);
-            GUILayout.Label("OTHER");
-            _otherPath = GUILayout.TextField(_otherPath);
-
-            GUILayout.Space(10.0f);
-            */
             // 何かしら入力しないとOKボタンを押せないようにするDisableGroup
             EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(_input) || !int.TryParse(_x, out width) || !int.TryParse(_y, out height));
             GUILayout.BeginHorizontal();
