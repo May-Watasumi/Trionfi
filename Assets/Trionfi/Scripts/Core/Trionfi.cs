@@ -66,10 +66,15 @@ namespace Trionfi
         public Canvas layerCanvas;
         [SerializeField]
         public Canvas uiCanvas;
+
+        [SerializeField]
+        public TRTitle titleWindow;
         [SerializeField]
         public TRMessageLogWindow messageLogwindow;
         [SerializeField]
         public TRMessageWindow messageWindow;
+        [SerializeField]
+        public GameObject globalTap;
         [SerializeField]
         public TRSelectWindow selectWindow;
         [SerializeField]
@@ -191,9 +196,9 @@ namespace Trionfi
                     {
                     messageWindow.gameObject.SetActive(true);
                     systemMenuWindow.gameObject.SetActive(true);
-                    
-                   if(TRTitle.Instance != null)
-                        TRTitle.Instance.gameObject.SetActive(false);
+
+                    if (titleWindow != null)
+                        titleWindow.gameObject.SetActive(false);
 
                     uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f).OnComplete
                     (() =>
@@ -250,7 +255,10 @@ namespace Trionfi
 
         public void Start()
         {
-            if(messageLogwindow != null)
+            Vector2 canvasSize = uiCanvas.GetComponent<CanvasScaler>().referenceResolution;
+            globalTap.GetComponent<RectTransform>().sizeDelta = canvasSize;
+
+            if (messageLogwindow != null)
                 messageLogwindow.gameObject.SetActive(false);
             if(messageWindow != null)
                 messageWindow.gameObject.SetActive(false);
