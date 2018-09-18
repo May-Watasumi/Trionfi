@@ -12,44 +12,11 @@ namespace Trionfi
 
         public bool forceSkip = false;
 
-        public bool _onSkip = false;
-        public bool _onAuto = false;
-
-        public bool onSkip
-        {
-            get { return _onSkip; }
-            set{
-                _onSkip = value;
-
-                if (_onSkip && state == MessageState.OnShow)
-                {
-                    state = MessageState.None;
-
-//                    if (!onAuto)
-//                        Trionfi.Instance.ClickEvent += ResetMessageMode;
-                }
-            }
-        }
-
+        public bool onSkip = false;
+        public bool onAuto = false;
+        
         public bool enableSkip
         { get { return forceSkip || onSkip; } }
-
-        public bool onAuto
-        {
-            get { return _onAuto; }
-            set
-            {
-                _onAuto = value;
-
-                if (_onAuto)
-                {
-//                    state = MessageState.None;
-
-//                    if (!onSkip)
-//                        Trionfi.Instance.ClickEvent += ResetMessageMode;
-                }
-            }
-        }
 
         public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait, OnClose }
         public enum WaitIcon { None, Alpha, Rotate }
@@ -140,7 +107,7 @@ namespace Trionfi
             {
                 for (int i = 0; i < currentMessage.MaxIndex; i++)
                 {
-                    if (state == MessageState.OnShow)
+                    if (state == MessageState.OnShow && !enableSkip)
                         currentMessage.VisibleLength++;
                     else
                         break;
@@ -167,7 +134,7 @@ namespace Trionfi
                 if (onAuto)
                     yield return new WaitForSeconds(autoWait);
                 else
-                    yield return new WaitWhile(() => state == MessageState.OnWait);
+                    yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip);
             }
 
             /*
@@ -221,7 +188,7 @@ namespace Trionfi
                     break;
             }
 
-            yield return new WaitWhile(() => state == MessageState.OnWait);
+            yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip);
 
             _sequence.Kill();
             _sequence = null;
