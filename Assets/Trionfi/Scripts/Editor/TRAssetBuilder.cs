@@ -4,6 +4,19 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
+
+[System.Serializable]
+public class TRManifestInfo
+{
+    [SerializeField]
+    public string bundleName;
+    [SerializeField]
+    public Hash128 hash;
+    [SerializeField]
+    public uint crc;
+}
+
+
 public class TRReleaser : EditorWindow
 {
     string _projectRoot = "Assets/Trionfi/Example/Resources";
@@ -13,17 +26,21 @@ public class TRReleaser : EditorWindow
 
     bool target_iOS = false;
     bool target_Android = false;
-//    bool target_Standalone = false;
-    bool target_WebGL = true;
+    bool target_Standalone = true;
+    bool target_WebGL = false;
 
-    string _bgPath = "bg";
-    string _standPath = "fgimage";
-    string _uiImagePath = "image";
-    string _bgmPath = "bgm";
-    string _ruleImagePath = "rule";
-    string _voicePath = "voice";
-    string _sePath = "sound";
-    string _otherPath = "other";
+
+    int advanvedCountID = 0;
+
+    class TRAssetBundleInfo
+    {
+        public int ID;
+        public string sourcePath;
+        public string destPath;
+    }
+
+
+    Dictionary<int, TRAssetBundleInfo> bundleDictionary = new Dictionary<int, TRAssetBundleInfo>();
 
     List<string> _targetFiles = new List<string>();
 
@@ -49,7 +66,7 @@ public class TRReleaser : EditorWindow
         GUILayout.BeginHorizontal();
         target_iOS = GUILayout.Toggle(target_iOS, "iOS");
         target_Android = GUILayout.Toggle(target_Android, "Android");
-        //        target_Standalone = GUILayout.Toggle(target_iOS, "PC");
+        target_Standalone = GUILayout.Toggle(target_Standalone, "PC");
         target_WebGL = GUILayout.Toggle(target_WebGL, "WebGL");
         GUILayout.EndHorizontal();
 
@@ -70,25 +87,6 @@ public class TRReleaser : EditorWindow
 
         if (enableAdvanced)
         {
-            /*
-            GUILayout.Label("BG");
-            _bgPath = GUILayout.TextField(_bgPath);
-            GUILayout.Label("FIGURE");
-            _standPath = GUILayout.TextField(_standPath);
-            GUILayout.Label("UI");
-            _uiImagePath = GUILayout.TextField(_uiImagePath);
-            GUILayout.Label("BGM");
-            _bgmPath = GUILayout.TextField(_bgmPath);
-            GUILayout.Label("RULE");
-            _ruleImagePath = GUILayout.TextField(_ruleImagePath);
-            GUILayout.Label("VOICE");
-            _voicePath = GUILayout.TextField(_voicePath);
-            GUILayout.Label("SE");
-            _sePath = GUILayout.TextField(_sePath);
-            GUILayout.Label("OTHER");
-            _otherPath = GUILayout.TextField(_otherPath);
-            */
-
             GUILayout.Label("【Advanced Mode】");
             GUILayout.Space(5.0f);
 
@@ -122,26 +120,39 @@ public class TRReleaser : EditorWindow
 
                         foreach (string _path in DragAndDrop.paths)
                         {
-                            _targetFiles.Add(_path);
+//                            _targetFiles.Add(_path);
+                            //ファイルの名前を取得し、AssetBundleの名前に設定する
+                            //string fileName = Path.GetFileNameWithoutExtension(srcFilePath);
+
+                            TRAssetBundleInfo _info = new TRAssetBundleInfo();
+                            _info.ID = advanvedCountID;
+                            _info.sourcePath = _path;
+                            _info.destPath = _outputPath;
+                            bundleDictionary[advanvedCountID] = _info;
+
+                            advanvedCountID++;
+
                         }
-                        /*
-                        foreach (var draggedObject in DragAndDrop.objectReferences)
-                        {
-                            Debug.Log(draggedObject);
-                        }
-                        */
                         DragAndDrop.activeControlID = 0;
                     }
                     Event.current.Use();
                     break;
             }
 
-            foreach (string _path in _targetFiles)
+            foreach (KeyValuePair<int, TRAssetBundleInfo> _infoKey in bundleDictionary)
             {
                 GUILayout.BeginHorizontal();
 
-                EditorGUILayout.TextField("SourcePath", _path);
-                EditorGUILayout.TextField("DestPath", "Assets/StreamingAssets/" + Path.GetFileName(_path));
+                EditorGUILayout.LabelField("", _infoKey.Value.sourcePath);
+                EditorGUILayout.TextField("", _infoKey.Value.destPath);
+                if (GUILayout.Button("Select Folder", GUILayout.Height(20.0f)))
+                {
+                    _infoKey.Value.sourcePath = EditorUtility.OpenFolderPanel("出力先フォルダ", "Assets", "Template");
+                }
+                if (GUILayout.Button("Delete", GUILayout.Height(20.0f)))
+                {
+                    bundleDictionary.Remove(_infoKey.Key);
+                }
 
                 GUILayout.EndHorizontal();
             }
@@ -168,69 +179,64 @@ public class TRReleaser : EditorWindow
         }
     }
 
-    void BuildSimple()
+    void SaveInfo(string path, AssetBundleManifest manifest)
     {
-        //AssetImporter importer = AssetImporter.GetAtPath(_projectRoot);
-        //        AssetBundleManifest _manifest;
+        
+    }
 
-        string _temp = Path.Combine(_outputPath, "Windows");
+    void BuildSimpleSub(string path, BuildTarget target)
+    {
+        TRManifestInfo _info = new TRManifestInfo();
+        string _bundleFullpath;
 
         // AssetBundle一つを作成する場合
         AssetBundleBuild[] buildMap = new AssetBundleBuild[1];
         buildMap[0].assetBundleName = Path.GetFileName(_projectRoot);
         buildMap[0].assetNames = new string[1] { _projectRoot };
 
-        _temp = Path.Combine(_outputPath, "Windows");
+        string _temp = Path.Combine(_outputPath, path);
 
         if (!Directory.Exists(_temp))
             Directory.CreateDirectory(_temp);
 
-        BuildPipeline.BuildAssetBundles(_temp, buildMap, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows);
+        AssetBundleManifest _manifest = BuildPipeline.BuildAssetBundles(_temp, buildMap, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneWindows);
 
-        _temp = Path.Combine(_outputPath, "MacOS");
+        _info.bundleName = buildMap[0].assetBundleName;
+        _bundleFullpath = Path.Combine(_temp, buildMap[0].assetBundleName);
 
-        if (!Directory.Exists(_temp))
-            Directory.CreateDirectory(_temp);
-        BuildPipeline.BuildAssetBundles(_temp, buildMap, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneOSX);
+        if (BuildPipeline.GetCRCForAssetBundle(_bundleFullpath, out _info.crc) &&
+            BuildPipeline.GetHashForAssetBundle(_bundleFullpath, out _info.hash))
+        {
+            string _json = JsonUtility.ToJson(_info);
+        }
+    }
 
+    void BuildSimple()
+    {
+        if (target_Standalone)
+        {
+#if UNITY_EDITOR_WIN
+            BuildSimpleSub("Windows", BuildTarget.StandaloneWindows64);
+#elif UNITY_EDITOR_OSX
+        BuildSimpleSub("MacOS", BuildTarget.StandaloneOSX);
+#endif
+        }
         if (target_iOS)
         {
-            _temp = Path.Combine(_outputPath, "iOS");
-
-            if (_temp != null)
-                Directory.CreateDirectory(_temp);
-            BuildPipeline.BuildAssetBundles(_temp, buildMap, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.iOS);
+            BuildSimpleSub("iOS", BuildTarget.iOS);
         }
-
         if (target_Android)
         {
-            _temp = Path.Combine(_outputPath, "Android");
-
-            if (!Directory.Exists(_temp))
-                Directory.CreateDirectory(_temp);
-            BuildPipeline.BuildAssetBundles(_temp, buildMap, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.Android);
+            BuildSimpleSub("Android", BuildTarget.Android);
         }
-
         if (target_WebGL)
         {
-            _temp = Path.Combine(_outputPath, "WebGL");
-
-            if (!Directory.Exists(_temp))
-                Directory.CreateDirectory(_temp);
-            BuildPipeline.BuildAssetBundles(_temp, buildMap, BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.WebGL);
+            BuildSimpleSub("WebGL", BuildTarget.WebGL);
         }
     }
 
     void BuildAllAsset()
     {
-        BuildAssetBundles(_projectRoot + "/" + _bgPath);
-        BuildAssetBundles(_projectRoot + "/" + _standPath);
-        BuildAssetBundles(_projectRoot + "/" + _uiImagePath);
-        BuildAssetBundles(_projectRoot + "/" + _bgmPath);
-        BuildAssetBundles(_projectRoot + "/" + _ruleImagePath);
-        BuildAssetBundles(_projectRoot + "/" + _voicePath);
-        BuildAssetBundles(_projectRoot + "/" + _sePath);
-        BuildAssetBundles(_projectRoot + "/" + _otherPath);
     }
 
     void BuildAssetBundles(string rootPath)
@@ -243,14 +249,15 @@ public class TRReleaser : EditorWindow
         {
             //ファイルの名前を取得し、AssetBundleの名前に設定する
             string fileName = Path.GetFileNameWithoutExtension(srcFilePath);
-            AssetImporter importer = AssetImporter.GetAtPath(srcFilePath);
-            if (importer != null)
-            {
-                importer.SetAssetBundleNameAndVariant(fileName, "");
-            }
-        }
 
-        //        AssetBundleManifest _manifest;
+            TRAssetBundleInfo _info = new TRAssetBundleInfo();
+            _info.ID = advanvedCountID;
+            _info.sourcePath = srcFilePath;
+            _info.destPath = _outputPath;
+            bundleDictionary[advanvedCountID] = _info;
+
+            advanvedCountID++;
+        }
 
         if (!Directory.Exists(_outputPath + "Windows"))
             Directory.CreateDirectory(_outputPath + "Standalone");

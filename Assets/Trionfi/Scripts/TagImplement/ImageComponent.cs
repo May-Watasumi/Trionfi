@@ -46,21 +46,31 @@ namespace Trionfi
                 Vector2 pos = _image.gameObject.GetComponent<RectTransform>().anchoredPosition;
 
                 string layerPos = "";
-                
-                if (tagParam.IsValid(ref layerPos, "pos") && TRSystemConfig.Instance.layerPos.ContainsKey(layerPos))
-                    pos.x = TRSystemConfig.Instance.layerPos[layerPos];
 
-                if(id != 0)
-                    pos.y = (TRResourceLoader.Instance.texture.height - TRSystemConfig.Instance.screenSize.y) / 2.0f;
+                bool updatePos = false;
+
+                if (tagParam.IsValid(ref layerPos, "pos") && TRSystemConfig.Instance.layerPos.ContainsKey(layerPos))
+                {
+                    pos.x = TRSystemConfig.Instance.layerPos[layerPos];
+                    updatePos = true;
+                }
+
+//                if(id != 0)
+//                    pos.y = (TRResourceLoader.Instance.texture.height - TRSystemConfig.Instance.screenSize.y) / 2.0f;
 
                 int offsetY = 0;
 
                 if (tagParam.IsValid(ref offsetY, "yoff"))
+                {
                     pos.y += offsetY;
+                    updatePos = true;
+                }
 
                 Trionfi.Instance.layerInstance[id].path = storage;
 
-                _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
+                if (updatePos)
+                    _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
+
                 _image.texture = TRResourceLoader.Instance.texture;
                 _image.SetNativeSize();
 
