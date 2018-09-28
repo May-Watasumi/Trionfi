@@ -43,7 +43,7 @@ namespace Trionfi
                 RawImage _image;
                 _image = Trionfi.Instance.layerInstance[id].instance;
 
-                Vector2 pos = _image.gameObject.GetComponent<RectTransform>().anchoredPosition;
+                Vector2 pos =  _image.gameObject.GetComponent<RectTransform>().anchoredPosition;
 
                 string layerPos = "";
 
@@ -51,7 +51,7 @@ namespace Trionfi
 
                 if (tagParam.IsValid(ref layerPos, "pos") && TRSystemConfig.Instance.layerPos.ContainsKey(layerPos))
                 {
-                    pos.x = TRSystemConfig.Instance.layerPos[layerPos];
+                    pos.x = TRSystemConfig.Instance.layerPos[layerPos] * TRSystemConfig.Instance.screenSize.x / 2.0f;
                     updatePos = true;
                 }
 

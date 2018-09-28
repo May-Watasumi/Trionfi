@@ -4,7 +4,6 @@ using System.IO;
 using UnityEngine;
 using UnityEditor;
 
-
 [System.Serializable]
 public class TRManifestInfo
 {
@@ -15,7 +14,6 @@ public class TRManifestInfo
     [SerializeField]
     public uint crc;
 }
-
 
 public class TRReleaser : EditorWindow
 {
@@ -29,20 +27,19 @@ public class TRReleaser : EditorWindow
     bool target_Standalone = true;
     bool target_WebGL = false;
 
-
-    int advanvedCountID = 0;
-
+    [System.Serializable]
     class TRAssetBundleInfo
     {
+        [SerializeField]
         public int ID;
+        [SerializeField]
         public string sourcePath;
-        public string destPath;
+        [SerializeField]
+        public string bundleName;
     }
 
-
-    Dictionary<int, TRAssetBundleInfo> bundleDictionary = new Dictionary<int, TRAssetBundleInfo>();
-
-    List<string> _targetFiles = new List<string>();
+    List<TRAssetBundleInfo> bundleList = new List<TRAssetBundleInfo>();
+    List<bool> bundleActivity = new List<bool>();
 
     [MenuItem("Tools/Trionfi/Releaser")]
     private static void BuildAssetBundle()
@@ -55,13 +52,24 @@ public class TRReleaser : EditorWindow
         GUILayout.Label("Target Platform");
         GUILayout.Space(2.5f);
 
-        if (GUILayout.Button("SelectAll", GUILayout.Height(30f)))
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("SelectAll", GUILayout.Height(30.0f)))
         {
             target_iOS = true;
             target_Android = true;
             //target_Standalone = true;
             target_WebGL = true;
         }
+        if (GUILayout.Button("Build", GUILayout.Height(30.0f)))
+        {
+            if(enableAdvanced)
+                BuildAllAsset();
+            else
+                BuildSimple();
+        }
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(2.5f);
 
         GUILayout.BeginHorizontal();
         target_iOS = GUILayout.Toggle(target_iOS, "iOS");
@@ -83,7 +91,7 @@ public class TRReleaser : EditorWindow
 
         GUILayout.Space(7.5f);
         enableAdvanced = GUILayout.Toggle(enableAdvanced, "Advanced");
-        GUILayout.Space(5.0f);
+        GUILayout.Space(12.5f);
 
         if (enableAdvanced)
         {
@@ -91,14 +99,36 @@ public class TRReleaser : EditorWindow
             GUILayout.Space(5.0f);
 
             GUILayout.BeginHorizontal();
-            if (GUILayout.Button("Build", GUILayout.Height(25.0f)))
+            if (GUILayout.Button("Save", GUILayout.Height(25.0f)))
             {
-                BuildAllAsset();
+                string _File  = EditorUtility.SaveFilePanel("リスト保存", _outputPath, "List", "json");
+                if (!string.IsNullOrEmpty(_File))
+                {
+                    string _json = JsonUtility.ToJson(bundleList);
+                    File.WriteAllText(_File, _json);
+                }
             }
+
+            if (GUILayout.Button("Load", GUILayout.Height(25.0f)))
+            {
+                string _File = EditorUtility.OpenFilePanel("リスト読み込み", "Lists", "json");
+                if (!string.IsNullOrEmpty(_File))
+                {
+                    StreamReader _stream = File.OpenText(_File);
+                    if (_stream != null)
+                    {
+                        string _json = _stream.ReadToEnd();
+                        bundleList = JsonUtility.FromJson<List<TRAssetBundleInfo>>(_json);
+                    }
+                }
+            }
+
             if (GUILayout.Button("Clear", GUILayout.Height(25.0f)))
             {
-                _targetFiles.Clear();
+                bundleList.Clear();
+                bundleActivity.Clear();
             }
+
             GUILayout.EndHorizontal();
 
             var evt = Event.current;
@@ -120,18 +150,17 @@ public class TRReleaser : EditorWindow
 
                         foreach (string _path in DragAndDrop.paths)
                         {
-//                            _targetFiles.Add(_path);
+                            //                            _targetFiles.Add(_path);
                             //ファイルの名前を取得し、AssetBundleの名前に設定する
                             //string fileName = Path.GetFileNameWithoutExtension(srcFilePath);
 
                             TRAssetBundleInfo _info = new TRAssetBundleInfo();
-                            _info.ID = advanvedCountID;
+                            //                            _info.ID = advanvedCountID;
                             _info.sourcePath = _path;
-                            _info.destPath = _outputPath;
-                            bundleDictionary[advanvedCountID] = _info;
+                            _info.bundleName = Path.GetFileNameWithoutExtension(_info.sourcePath);
 
-                            advanvedCountID++;
-
+                            bundleList.Add(_info);
+                            bundleActivity.Add(true);
                         }
                         DragAndDrop.activeControlID = 0;
                     }
@@ -139,43 +168,36 @@ public class TRReleaser : EditorWindow
                     break;
             }
 
-            foreach (KeyValuePair<int, TRAssetBundleInfo> _infoKey in bundleDictionary)
+            for(int a = 0; a < bundleActivity.Count;a++)
             {
-                GUILayout.BeginHorizontal();
-
-                EditorGUILayout.LabelField("", _infoKey.Value.sourcePath);
-                EditorGUILayout.TextField("", _infoKey.Value.destPath);
-                if (GUILayout.Button("Select Folder", GUILayout.Height(20.0f)))
+                if (bundleActivity[a])
                 {
-                    _infoKey.Value.sourcePath = EditorUtility.OpenFolderPanel("出力先フォルダ", "Assets", "Template");
-                }
-                if (GUILayout.Button("Delete", GUILayout.Height(20.0f)))
-                {
-                    bundleDictionary.Remove(_infoKey.Key);
-                }
+                    GUILayout.BeginHorizontal();
 
-                GUILayout.EndHorizontal();
+                    EditorGUILayout.LabelField("", bundleList[a].sourcePath);
+                    EditorGUILayout.TextField("", bundleList[a].bundleName);
+
+                    if (GUILayout.Button("Delete", GUILayout.Height(20.0f)))
+                    {
+                        bundleActivity[a] = false;
+                    }
+
+                    GUILayout.EndHorizontal();
+                }
             }
         }
         else
         {
-            GUILayout.Label("【Simple Mode(Archive 1 file)】");
-            GUILayout.Label("Resources Foloder");
-            _projectRoot = GUILayout.TextField(_projectRoot);
-
             GUILayout.BeginHorizontal();
-
+            GUILayout.Label("【Simple Mode(Archive 1 file)】");
             if (GUILayout.Button("Select Folder", GUILayout.Height(30.0f)))
             {
                 _projectRoot = EditorUtility.OpenFolderPanel("リソースフォルダ", "Assets", "Template");
             }
-
-            if (GUILayout.Button("Build", GUILayout.Height(30f)))
-            {
-                BuildSimple();
-            }
-
             GUILayout.EndHorizontal();
+
+            GUILayout.Label("Resources Foloder");
+            _projectRoot = GUILayout.TextField(_projectRoot);
         }
     }
 
@@ -251,12 +273,11 @@ public class TRReleaser : EditorWindow
             string fileName = Path.GetFileNameWithoutExtension(srcFilePath);
 
             TRAssetBundleInfo _info = new TRAssetBundleInfo();
-            _info.ID = advanvedCountID;
+//            _info.ID = advanvedCountID;
             _info.sourcePath = srcFilePath;
-            _info.destPath = _outputPath;
-            bundleDictionary[advanvedCountID] = _info;
-
-            advanvedCountID++;
+            _info.bundleName = _outputPath;
+            //            bundleDictionary[advanvedCountID] = _info;
+//            advanvedCountID++;
         }
 
         if (!Directory.Exists(_outputPath + "Windows"))

@@ -8,7 +8,7 @@ namespace Trionfi
 	public class TRSystemConfig : SingletonMonoBehaviour<TRSystemConfig>
     {
         [System.Serializable]
-        public class LayerPos : SerializableDictionary<string, int> { };
+        public class LayerPos : SerializableDictionary<string, float> { };
 
 
         [SerializeField]
@@ -30,16 +30,16 @@ namespace Trionfi
         [SerializeField]
         public LayerPos layerPos = new LayerPos()
         {
-            { "left", -360 },
-            { "center", 0 },
-            { "right", 360 },
-            { "left_center",  -420 },
-            { "right_center", 420 },
-            { "l", -360 },
-            { "c", 0 },
-            { "r", 360 },
-            { "lc",  -420 },
-            { "rc", 420 },
+            { "left", -0.5f },//-360 },
+            { "center", 0.0f },
+            { "right", 0.5f },//360 },
+            { "left_center", -0.6f },// -420 },
+            { "right_center", 0.6f },//420 },
+            { "l", -0.5f },//-360 },
+            { "c", 0.0f },
+            { "r", 0.5f },//360 },
+            { "lc", -0.6f },// -420 },
+            { "rc", 0.6f },//420 },
         };
 
         [SerializeField]
