@@ -77,8 +77,25 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            //ToDo:関数呼び出し
+            /*
+            expressionedParams["name"] = tagName;
+
+            Macro macro = TRVirtualMachine.GetMacro(expressionedParams["name"]);
+
+            if (macro != null)
+            {
+
+                expressionedParams["index"] = "" + macro.index;
+                expressionedParams["file"] = macro.file_name;
+
+                TRVirtualMachine.macroNum++;
+                //this.gameManager.scenarioManager.addMacroStack (macro.name, this.expressionedParams);
+                AbstractComponent cmp = TRScriptParser.Instance.MakeTag("call", expressionedParams);
+                cmp.Execute();
+            }
+            */
         }
+        //ToDo:関数呼び出し
     }
 }
 

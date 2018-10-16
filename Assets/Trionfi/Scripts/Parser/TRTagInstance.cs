@@ -8,7 +8,7 @@ namespace Trionfi
     [Serializable]
 	public class TRTagInstance
     {
-        public int currentComponentIndex = -1;
+//        public int currentComponentIndex = -1;
 
         public TRTagList arrayComponents = new TRTagList();
 
@@ -26,14 +26,5 @@ namespace Trionfi
             //エラーがあるときはtrue
             return !ErrorLogger.ShowAll();
         }
-
-        public bool Jump(string label)
-        {
-            if (!arrayComponents.labelPos.ContainsKey(label))
-                return false;
-
-            currentComponentIndex = arrayComponents.labelPos[label];
-            return true;
-        }
-	}
+    }
 }

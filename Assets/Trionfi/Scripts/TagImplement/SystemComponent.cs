@@ -85,30 +85,29 @@ namespace Trionfi {
         public override IEnumerator TagSyncFunction()
         {
             string target = tagParam.Label("target");
-            string file = tagParam.Identifier("file", TRVirtualMachine.currentScriptName);
+            string file = tagParam.Identifier("file", TRVirtualMachine.currentCallStack.scriptName);
 
 			//ファイルが異なるものになる場合、シナリオをロードする
-			if(TRVirtualMachine.currentScriptName != file)
+			if(file != TRVirtualMachine.currentCallStack.scriptName)
 			{
                 yield return TRVirtualMachine.Instance.LoadScenarioAsset(file);
 
                 //ToDo:スタックをすべて削除する
-                TRVirtualMachine.RemoveAllStacks();
-
-                TRVirtualMachine.currentScriptName = file;
+//                TRVirtualMachine.RemoveAllStacks();
+//                TRVirtualMachine.currentScriptName = file;
             }
 
             if (string.IsNullOrEmpty(file))
-                file = TRVirtualMachine.currentScriptName;
+                file = TRVirtualMachine.currentCallStack.scriptName;
 
-            int index = TRVirtualMachine.tagInstance[file].arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.tagInstance[file].arrayComponents.labelPos[target];
+            int index = TRVirtualMachine.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
 
             if (tagParam.IsValid(ref target, "target"))
-                TRVirtualMachine.currentTagInstance.Jump(target);
+                TRVirtualMachine.currentCallStack.LocalJump(target);
             else
                 ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
 
-            ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentScriptName + "\" " + "index=\"" + TRVirtualMachine.currentTagInstance.currentComponentIndex + "\"");
+            ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.currentCallStack.currentPos + "\"");
         }
 	}
 
@@ -134,13 +133,13 @@ namespace Trionfi {
 		{
             string target = tagParam.Label("target");
 
-            string file = tagParam.Identifier("file", TRVirtualMachine.currentScriptName);
+            string file = tagParam.Identifier("file", TRVirtualMachine.currentCallStack.scriptName);
 
-            int index = string.IsNullOrEmpty(file) ? -1 : TRVirtualMachine.tagInstance[file].arrayComponents.labelPos[target];
+            int index = string.IsNullOrEmpty(file) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
 
 			ErrorLogger.Log("Call : file=\"" + file + "\" " + "index = \"" + index.ToString()+ "\"");
 
-            TRVirtualMachine.callStack.Push(new CallStackObject(TRVirtualMachine.currentScriptName, TRVirtualMachine.currentTagInstance.currentComponentIndex, tagParam));
+//            TRVirtualMachine.callStack.Push(new CallStackObject(TRVirtualMachine.currentCallStack.currentPos , tagParam));
             //ToDo:ジャンプ
             //メインループ側で配列Indexが++されるので
 //			Trionfi.Instance.currentTagInstance.currentComponentIndex--;
@@ -159,7 +158,7 @@ namespace Trionfi {
         }
 
 		protected override void TagFunction() {
-            CallStackObject stack = TRVirtualMachine.callStack.Pop();
+            TRVirtualMachine.FunctionalObjectInstance callStack = TRVirtualMachine.callStack.Pop();
 
 			string tag_str = "";
 
@@ -167,9 +166,9 @@ namespace Trionfi {
 			if( string.IsNullOrEmpty(tagParam.Identifier("file")) && string.IsNullOrEmpty(tagParam.Label("target")) )
 				tag_str = "[jump file='" + tagParam["file"] + "' target='" + tagParam["target"] + "' ]";
 			else
-				tag_str = "[jump file='" + stack.scenarioNname + "' index='" + stack.index + "' ]";
+				tag_str = "[jump file='" + callStack.scriptName + "' index='" + callStack.currentPos + "' ]";
 
-			Debug.Log("RETURN scn=\"" + stack.scenarioNname + "\" " + "index=\"" + stack.index.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
+			Debug.Log("RETURN scn=\"" + callStack.scriptName + "\" " + "index=\"" + callStack.currentPos.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
 
 //ToDo:
 			//タグを実行

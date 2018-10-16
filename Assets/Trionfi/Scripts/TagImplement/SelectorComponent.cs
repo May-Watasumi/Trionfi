@@ -35,9 +35,8 @@ namespace Trionfi
         {
             yield return new WaitWhile(() => Trionfi.Instance.selectWindow.onWait);
 
-            if (!TRVirtualMachine.currentTagInstance.Jump(TRSelectWindow.Instance.result))
+            if (!TRVirtualMachine.currentCallStack.LocalJump(TRSelectWindow.Instance.result))
                 ErrorLogger.Log("No Jump target:" + TRSelectWindow.Instance.result);
-                
         }
     }
 }

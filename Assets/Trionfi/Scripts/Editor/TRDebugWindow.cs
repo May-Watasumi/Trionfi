@@ -14,6 +14,8 @@ namespace Trionfi
 
     public class TRDebugger : EditorWindow
     {
+        const string _TEMPSCRIPTNAME_ = "__temp__";
+
         string consoleLog;
         Vector2 logScroll;
 
@@ -95,7 +97,10 @@ namespace Trionfi
                 TRTagInstance _tagInstance = new TRTagInstance();
 
                 if (_tagInstance.CompileScriptString(scriptText))
-                    Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(_tagInstance));
+                {
+                    TRVirtualMachine.tagInstances[_TEMPSCRIPTNAME_] = _tagInstance;
+                    Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(_TEMPSCRIPTNAME_));
+                }
                 else
                     consoleLog += ("failed compile\n");
             }
