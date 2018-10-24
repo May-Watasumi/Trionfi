@@ -64,7 +64,7 @@ namespace Trionfi
 
     //無名タグ。コンパイル時に生成される。
     public class UnknownComponent : AbstractComponent
-    {
+    {          
         public UnknownComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
@@ -74,28 +74,14 @@ namespace Trionfi
             };
 #endif
         }
-
         protected override void TagFunction()
         {
-            /*
-            expressionedParams["name"] = tagName;
-
-            Macro macro = TRVirtualMachine.GetMacro(expressionedParams["name"]);
-
-            if (macro != null)
-            {
-
-                expressionedParams["index"] = "" + macro.index;
-                expressionedParams["file"] = macro.file_name;
-
-                TRVirtualMachine.macroNum++;
-                //this.gameManager.scenarioManager.addMacroStack (macro.name, this.expressionedParams);
-                AbstractComponent cmp = TRScriptParser.Instance.MakeTag("call", expressionedParams);
-                cmp.Execute();
-            }
-            */
         }
-        //ToDo:関数呼び出し
+
+        public override IEnumerator TagSyncFunction()
+        {
+            yield return TRVirtualMachine.Instance.Call(tagParam.Identifier("name"), tagParam);
+        }
     }
 }
 

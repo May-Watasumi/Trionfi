@@ -31,7 +31,6 @@ namespace Trionfi
     }
 }
 
-
 public class CoroutineHelper<TResult, TDetail>
 {
     public CoroutineHelper(ProcessFunc i_function)

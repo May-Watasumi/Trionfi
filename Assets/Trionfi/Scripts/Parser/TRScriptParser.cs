@@ -244,11 +244,14 @@ namespace Trionfi
 
                     string className = nameSpace + "." + tf.ToTitleCase(tagName) + "Component";
 
+                    AbstractComponent _component = null;
+
                     // リフレクションで動的型付け
                     Type masterType = Type.GetType(className);
-                    AbstractComponent _component = (AbstractComponent)Activator.CreateInstance(masterType);
 
-                    if (_component == null)
+                    if (masterType != null)
+                        _component = (AbstractComponent)Activator.CreateInstance(masterType);
+                    else
                     {
                         _component = new UnknownComponent();
                         paramList["name"] = new KeyValuePair<string, TRDataType>(tagName, TRDataType.Literal);

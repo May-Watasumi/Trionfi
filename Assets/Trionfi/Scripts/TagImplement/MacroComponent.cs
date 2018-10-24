@@ -25,7 +25,7 @@ namespace Trionfi
             string name = tagParam.Literal("name");
             TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
 
-            TRVirtualMachine.FunctionalObjectInstance function = new TRVirtualMachine.FunctionalObjectInstance(TRVirtualMachine.FunctionalObjectType.Macro, _cuttentStack.scriptName, _cuttentStack.currentPos);
+            TRVirtualMachine.FunctionalObjectInstance function = new TRVirtualMachine.FunctionalObjectInstance(TRVirtualMachine.FunctionalObjectType.Macro, _cuttentStack.scriptName, _cuttentStack.currentPos+1);
             TRVirtualMachine.functionalObjects[name] = function;
             _cuttentStack.SkipTo<MacroendComponent>();
         }
@@ -39,7 +39,12 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRVirtualMachine.callStack.Pop();
+            TRVirtualMachine.FunctionalObjectInstance _func = TRVirtualMachine.callStack.Peek();
+
+            if (_func.type == TRVirtualMachine.FunctionalObjectType.Macro)
+            {
+                _func.currentPos += 999999;
+            }
         }
     }
 

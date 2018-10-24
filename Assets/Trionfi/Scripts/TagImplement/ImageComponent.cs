@@ -29,14 +29,6 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
-            string storage = tagParam.Identifier("storage");
-
-            TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
-
-            while (TRResourceLoader.Instance.isLoading)
-                yield return new WaitForSeconds(1.0f);
-
-            if (TRResourceLoader.Instance.isSuceeded)
             {
                 int id = tagParam.Int("layer");
 
@@ -66,12 +58,35 @@ namespace Trionfi
                     updatePos = true;
                 }
 
-                Trionfi.Instance.layerInstance[id].path = storage;
+                string storage = tagParam.Identifier("storage");
+
+                _image.texture = null;
+
+                if (!string.IsNullOrEmpty(storage))
+                {
+                    TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+
+                    while (TRResourceLoader.Instance.isLoading)
+                        yield return new WaitForSeconds(1.0f);
+
+                    if (TRResourceLoader.Instance.isSuceeded)
+                    {
+                        Trionfi.Instance.layerInstance[id].path = storage;
+                        _image.texture = TRResourceLoader.Instance.texture;
+                    }
+                }
+
+                string colorValue = "";
+                Color _color = Color.white;
+
+                if (tagParam.IsValid(ref colorValue, "color"))
+                    TRUtility.GetColorName(ref _color, colorValue);
+
+                _image.color = _color;
 
                 if (updatePos)
                     _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
 
-                _image.texture = TRResourceLoader.Instance.texture;
                 _image.SetNativeSize();
 
                 _image.enabled = true;
