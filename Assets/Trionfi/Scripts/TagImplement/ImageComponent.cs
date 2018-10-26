@@ -87,7 +87,11 @@ namespace Trionfi
                 if (updatePos)
                     _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
 
-                _image.SetNativeSize();
+                if (!string.IsNullOrEmpty(storage))
+                    _image.SetNativeSize();
+                else
+                    _image.GetComponent<RectTransform>().sizeDelta = TRSystemConfig.Instance.screenSize;
+
 
                 _image.enabled = true;
             }
