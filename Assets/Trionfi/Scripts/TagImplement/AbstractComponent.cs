@@ -83,5 +83,57 @@ namespace Trionfi
             yield return TRVirtualMachine.Instance.Call(tagParam.Identifier("name"), tagParam);
         }
     }
+
+    //アクタータグ。
+    public class ActorComponent : AbstractComponent
+    {
+        public ActorComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+                "param"
+            };
+#endif
+        }
+        protected override void TagFunction()
+        {
+            string _paramString;
+            _paramString = tagParam.Literal("param");
+
+            string[] _params = _paramString.Split(new char[] { ' ', '　' } );
+
+            List<string> paramList = new List<string>();
+
+            paramList.AddRange(_params);
+
+//            string dress = ""
+            string suffix = "01";
+            string prefix = "";
+            int id = -1;
+
+            foreach (string _param in paramList)
+            {
+                if (TRStageEnviroment.Instance.actorInfoes.ContainsKey(_param))
+                    prefix = TRStageEnviroment.Instance.actorInfoes[_param].prefix;
+                if (TRStageEnviroment.Instance.actPatterAlias.ContainsKey(_param))
+                    suffix = TRStageEnviroment.Instance.actPatterAlias[_param];
+                if(TRStageEnviroment.Instance.layerAlias.ContainsKey(_param))
+                    id = TRStageEnviroment.Instance.layerAlias[_param];
+
+                string storage = TRStageEnviroment.Instance._LAYER_PATH_ + TRStageEnviroment.Instance._FILE_HEADER_ + prefix + "_" + suffix;
+
+                tagParam["layer"] = new KeyValuePair<string, TRDataType>(id.ToString(), TRDataType.Int);
+                tagParam["storage"] = new KeyValuePair<string, TRDataType>(storage, TRDataType.Identifier);
+            }
+        }
+
+        public override IEnumerator TagSyncFunction()
+        {
+            ImageComponent _tag = new ImageComponent();
+            _tag.tagParam = tagParam;
+            yield return _tag.TagSyncFunction();
+        }
+    }
 }
 

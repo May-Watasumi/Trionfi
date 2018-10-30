@@ -1,25 +1,53 @@
-﻿using System.Collections;
+﻿using NUnit.Framework;
+using System;
+using System.Text;
+using TinyCsvParser.Tokenizer;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System.Linq;
+using TinyCsvParser;
+using TinyCsvParser.Mapping;
+using TinyCsvParser.Tokenizer.RFC4180;
+
 
 namespace Trionfi
 {
-    public class TRActorInfo
+    public class TRStageEnviroment : SingletonMonoBehaviour<TRStageEnviroment>
     {
-        public int imageID = -1;
-        public int emotionID = -1;
-        public bool hasVoice = false;
-        public string prefix;
-    }
+        [SerializeField]
+        public string _FILE_HEADER_ = "portrait_";
+        [SerializeField]
+        public string _LAYER_PATH_ = "sprite/character/";
+        [SerializeField]
+        public string _BGM_PATH_ = "sound/bgm/";
 
-    public class TRStageEnviroment : MonoBehaviour
-    {
         [System.Serializable]
         public class TREnviroment : SerializableDictionary<string, Color> { }
         [System.Serializable]
         public class TRKeyboardEvent : SerializableDictionary<KeyCode, TRKeyboardShortCut> { }
         [System.Serializable]
-        public class TRActPattern : SerializableDictionary<string, string> { }
+        public class TRActPatternAlias : SerializableDictionary<string, string> { }
+        [System.Serializable]
+        public class TRActorInfoes : SerializableDictionary<string, TRActorInfo> { }
+        public class TRLayerAlias : SerializableDictionary<string, int> { }
+
+ 
+        [System.Serializable]
+        public class TRActorInfo
+        {
+            public int imageID = -1;
+            public int emotionID = -1;
+            public string displayName { get; set; }
+            public string prefix { get; set; }
+            public bool hasVoice { get; set; }
+        }
+
+        public class TRActPatternInfo
+        {
+            public string alias { get; set; }
+            public string suffix { get; set; }
+        }
 
         [SerializeField]
         TREnviroment bgEnviroment = new TREnviroment()
@@ -28,7 +56,6 @@ namespace Trionfi
             { "夕" , new Color(1.0f, 0.375f, 0.0625f, 0.75f) },
             { "夜" , new Color(0.0f, 0.0f, 0.25f, 0.75f) },
         };
-
         [SerializeField]
         TREnviroment charaEnviroment = new TREnviroment()
         {
@@ -37,59 +64,71 @@ namespace Trionfi
             { "夜" , new Color(0.25f, 0.0f, 0.5f, 1.0f) },
         };
 
-        [SerializeField]
-        TextAsset CharacterNameListCSV;
+        public readonly TRLayerAlias layerAlias = new TRLayerAlias()
+        {
+            { "左", 1 },
+            { "中央", 2 },
+            { "右", 3 },
+            { "左中", 4 },
+            { "右中", 5 },
+        };
+
+        public class CsvActorMapping : CsvMapping<TRActorInfo>
+        {
+            public CsvActorMapping()
+            {
+                MapProperty(0, x => x.displayName);
+                MapProperty(1, x => x.prefix);
+                MapProperty(2, x => x.hasVoice);
+            }
+        }
+
+        public class CsvActPatternMapping : CsvMapping<TRActPatternInfo>
+        {
+            public CsvActPatternMapping()
+            {
+                MapProperty(0, x => x.alias);
+                MapProperty(1, x => x.suffix);
+            }
+        }
 
         [SerializeField]
-        TextAsset CharacterEmotionPatternListCSV;
+        public TextAsset CharacterNameListCSV;
 
-        public Dictionary<string, TRActorInfo >actorInfo = new Dictionary<string, TRActorInfo>();
-        public TRActPattern actSuffix = new TRActPattern();
+        [SerializeField]
+        public TextAsset CharacterEmotionPatternListCSV;
 
-        public Dictionary<string, int> imageState = new Dictionary<string, int>();
+        public TRActPatternAlias actPatterAlias = new TRActPatternAlias();
+        public TRActorInfoes actorInfoes = new TRActorInfoes();
 
         // Use this for initialization
         void Start()
         {
+            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
+            CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
+            CsvActorMapping csvMapper = new CsvActorMapping();
+            CsvActPatternMapping csvMapper2 = new CsvActPatternMapping();
+
             if (CharacterNameListCSV != null)
             {
-                System.Text.StringBuilder _text = new System.Text.StringBuilder(CharacterNameListCSV.text);
-                CsvReadWrite.CsvReader csvReader = new CsvReadWrite.CsvReader(_text);
-                List<string> _row = null;
-                do
+                CsvParser<TRActorInfo> csvParser = new CsvParser<TRActorInfo>(csvParserOptions, csvMapper);
+
+                var result = csvParser.ReadFromString(csvReaderOptions, CharacterNameListCSV.text).ToList();
+                foreach (var _info in result)
                 {
-                    _row = csvReader.ReadRow();
-
-                    if (_row != null)
-                    {
-                        actorInfo[_row[0]] = new TRActorInfo();
-                        actorInfo[_row[0]].prefix = _row[1];
-
-                        int result = 0;
-
-                        actorInfo[_row[0]].hasVoice = _row[2].ToLower() == "true" || (int.TryParse(_row[2], out result) && result != 0) ? true : false;
-                    }
-                    else
-                        break;
+                    actorInfoes[_info.Result.displayName] = _info.Result;
                 }
-                while (true);
             }
 
             if (CharacterEmotionPatternListCSV != null)
             {
-                System.Text.StringBuilder _text = new System.Text.StringBuilder(CharacterEmotionPatternListCSV.text);
-                CsvReadWrite.CsvReader csvReader = new CsvReadWrite.CsvReader(_text);
-                List<string> _row = null;
-                do
-                {
-                    _row = csvReader.ReadRow();
+                CsvParser<TRActPatternInfo> csvParser = new CsvParser<TRActPatternInfo>(csvParserOptions, csvMapper2);
 
-                    if (_row != null)
-                        actSuffix[_row[0]] = _row[1];
-                    else
-                        break;
+                var result = csvParser.ReadFromString(csvReaderOptions, CharacterEmotionPatternListCSV.text).ToList();
+                foreach (var _info in result)
+                {
+                    actPatterAlias[_info.Result.alias] = _info.Result.suffix;
                 }
-                while (true);
             }
         }
 

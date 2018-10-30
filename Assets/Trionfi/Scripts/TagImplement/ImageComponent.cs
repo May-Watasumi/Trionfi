@@ -218,7 +218,6 @@ namespace Trionfi
         }
     }
 
-
     public class TransComponent : AbstractComponent
     {
         bool isSync = true;
@@ -305,6 +304,58 @@ namespace Trionfi
 
             if (tagParam.IsValid(ref waitTime, "wait"))
                 yield return new WaitForSeconds((float)waitTime / 1000.0f);
+
+            yield return null;
+        }
+    }
+
+    public class ShakeComponent : AbstractComponent
+    {
+        bool isSync = true;
+
+        public ShakeComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string>
+            {
+                "lauyer",
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+
+        }
+
+        public override IEnumerator TagSyncFunction()
+        {
+            if (isSync)
+                yield return (ShakeFunction());
+        }
+
+        IEnumerator ShakeFunction()
+        {
+            RectTransform _rect = null;
+
+            int id = -1;
+            string name = string.Empty;
+
+            int strength = tagParam.Int("strength", 5);
+            int vibratio = tagParam.Int("vibrato", 20);
+
+            if (tagParam.IsValid(ref name, "layer") && name == "message")
+                _rect = Trionfi.Instance.messageWindow.gameObject.GetComponent<RectTransform>();
+            else if (tagParam.IsValid(ref id, "layer"))
+                _rect = Trionfi.Instance.layerInstance[id].instance.gameObject.GetComponent<RectTransform>();
+            else
+                _rect = Trionfi.Instance.layerInstance[0].instance.gameObject.GetComponent<RectTransform>(); ;
+
+            int timeMsec = tagParam.Int("time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f));
+            float time = timeMsec / 1000.0f;
+
+            _rect.GetComponent<RectTransform>().DOShakePosition(time, strength, vibratio, 90.0f, false, false);
 
             yield return null;
         }

@@ -349,8 +349,18 @@ namespace Trionfi
                     currentPos++;
                     string _tagParam = GetString(']');
 
-                    TRTagParser tagParser = new TRTagParser(_tagParam);
-                    _tagComponent = tagParser.Parse();
+                    //非ASCIIで始まるときはアクタータグと認識する
+                    if (_tagParam[0] < 0 || _tagParam[0] > 127)
+                    {
+                        _tagComponent = new ActorComponent();
+                        _tagComponent.tagParam = new TRVariable();
+                        _tagComponent.tagParam["param"] = new KeyValuePair<string, TRDataType>(_tagParam, TRDataType.Literal);
+                    }
+                    else
+                    {
+                        TRTagParser tagParser = new TRTagParser(_tagParam);
+                        _tagComponent = tagParser.Parse();
+                    }
 
                     if (_tagComponent != null)
                         result.Add(_tagComponent);

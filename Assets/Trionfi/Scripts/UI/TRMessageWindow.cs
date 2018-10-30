@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace Trionfi
 {
-    public class TRMessageWindow : SingletonMonoBehaviour<TRMessageWindow>
+    public class TRMessageWindow : MonoBehaviour
     {
         public bool enableLogWindow = true;
 
@@ -102,6 +102,8 @@ namespace Trionfi
 
             currentMessage.text = message;
             currentName.text = nameString;
+
+            Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, currentName.text);
 
             if (!enableSkip && mesCurrentWait > 0.0f)
             {

@@ -72,6 +72,12 @@ namespace Trionfi
             if (layerCanvas != null)
                 layerCanvas.referenceResolution = new Vector2(width, height);
 
+            if (trionfiInstandce != null)
+            {
+                trionfiInstandce.gameObject.GetComponent<TRStageEnviroment>().CharacterNameListCSV = AssetDatabase.LoadAssetAtPath<TextAsset>(_newPath + "/Resources/ActorList.csv");
+                trionfiInstandce.gameObject.GetComponent<TRStageEnviroment>().CharacterEmotionPatternListCSV = AssetDatabase.LoadAssetAtPath<TextAsset>(_newPath + "/Resources/ActPatternList.csv");
+            }
+
             //これはひどい。
             GameObject.DestroyImmediate(trionfiInstandce.titleWindow.gameObject);
             GameObject.DestroyImmediate(trionfiInstandce.messageWindow.gameObject);
