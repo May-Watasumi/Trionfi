@@ -1,5 +1,4 @@
-﻿using NUnit.Framework;
-using System;
+﻿using System;
 using System.Text;
 using TinyCsvParser.Tokenizer;
 using System.Collections;
