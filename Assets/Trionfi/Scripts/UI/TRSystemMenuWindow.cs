@@ -32,6 +32,7 @@ namespace Trionfi
         {
             Trionfi.Instance.messageWindow.gameObject.SetActive(false);
             Trionfi.Instance.messageLogwindow.gameObject.SetActive(true);
+            Trionfi.Instance.ClickEvent += Trionfi.Instance.messageLogwindow.OnClick;
             gameObject.SetActive(false);
         }
 

@@ -16,7 +16,7 @@ namespace Trionfi
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
-                "storage",
+//                "storage",
                 "layer"
             };
 #endif
@@ -29,73 +29,90 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
+            int id = tagParam.Int("layer");
+
+            RawImage _image;
+            _image = Trionfi.Instance.layerInstance[id].instance;
+
+            Vector2 pos = _image.gameObject.GetComponent<RectTransform>().anchoredPosition;
+
+            string layerPos = "";
+
+            bool updatePos = false;
+
+            if (tagParam.IsValid(ref layerPos, "pos") && TRSystemConfig.Instance.layerPos.ContainsKey(layerPos))
             {
-                int id = tagParam.Int("layer");
+                pos.x = TRSystemConfig.Instance.layerPos[layerPos] * TRSystemConfig.Instance.screenSize.x / 2.0f;
+                updatePos = true;
+            }
 
-                RawImage _image;
-                _image = Trionfi.Instance.layerInstance[id].instance;
+            int offsetY = 0;
 
-                Vector2 pos =  _image.gameObject.GetComponent<RectTransform>().anchoredPosition;
+            if (tagParam.IsValid(ref offsetY, "yoff"))
+            {
+                pos.y += offsetY;
+                updatePos = true;
+            }
 
-                string layerPos = "";
+            string storage = tagParam.Identifier("storage");
 
-                bool updatePos = false;
+            _image.texture = null;
 
-                if (tagParam.IsValid(ref layerPos, "pos") && TRSystemConfig.Instance.layerPos.ContainsKey(layerPos))
-                {
-                    pos.x = TRSystemConfig.Instance.layerPos[layerPos] * TRSystemConfig.Instance.screenSize.x / 2.0f;
-                    updatePos = true;
-                }
+            int mtime = tagParam.Int("time", 0);
+            float time = (float)mtime / 1000.0f;
 
-//                if(id != 0)
-//                    pos.y = (TRResourceLoader.Instance.texture.height - TRSystemConfig.Instance.screenSize.y) / 2.0f;
+            Color tempColor = Color.white;
+            Color destColor = Color.white;
 
-                int offsetY = 0;
-
-                if (tagParam.IsValid(ref offsetY, "yoff"))
-                {
-                    pos.y += offsetY;
-                    updatePos = true;
-                }
-
-                string storage = tagParam.Identifier("storage");
-
-                _image.texture = null;
-
-                if (!string.IsNullOrEmpty(storage))
-                {
-                    TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
-
-                    while (TRResourceLoader.Instance.isLoading)
-                        yield return new WaitForSeconds(1.0f);
-
-                    if (TRResourceLoader.Instance.isSuceeded)
-                    {
-                        Trionfi.Instance.layerInstance[id].path = storage;
-                        _image.texture = TRResourceLoader.Instance.texture;
-                    }
-                }
-
+            if (time > 0.0f)
+                tempColor = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+            else
+            {
                 string colorValue = "";
-                Color _color = Color.white;
 
                 if (tagParam.IsValid(ref colorValue, "color"))
-                    TRUtility.GetColorName(ref _color, colorValue);
+                    TRUtility.GetColorName(ref tempColor, colorValue);
 
-                _image.color = _color;
-
-                if (updatePos)
-                    _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
-
-                if (!string.IsNullOrEmpty(storage))
-                    _image.SetNativeSize();
-                else
-                    _image.GetComponent<RectTransform>().sizeDelta = TRSystemConfig.Instance.screenSize;
-
-
-                _image.enabled = true;
             }
-        }
+
+            _image.color = tempColor;
+
+            if (!string.IsNullOrEmpty(storage))
+            {
+                TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+
+                while (TRResourceLoader.Instance.isLoading)
+                    yield return new WaitForSeconds(1.0f);
+
+                if (TRResourceLoader.Instance.isSuceeded)
+                {
+                    Trionfi.Instance.layerInstance[id].path = storage;
+                    _image.texture = TRResourceLoader.Instance.texture;
+                }
+            }
+
+
+            if (updatePos)
+                _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
+
+            if (!string.IsNullOrEmpty(storage))
+                _image.SetNativeSize();
+            else
+                _image.GetComponent<RectTransform>().sizeDelta = TRSystemConfig.Instance.screenSize;
+
+            _image.enabled = true;
+
+            if (time > 0)
+            {
+                Tweener _tweener = DOTween.ToAlpha(
+                                () => _image.color,
+                                color => _image.color = color,
+                                1.0f,
+                                time
+                               );
+                yield return new WaitWhile(_tweener.IsPlaying);
+            }
+        }    
     }
     
 	public class ImagefreeComponent : AbstractComponent {

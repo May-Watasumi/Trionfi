@@ -30,7 +30,6 @@ namespace Trionfi
         [System.Serializable]
         public class TRActorInfoes : SerializableDictionary<string, TRActorInfo> { }
         public class TRLayerAlias : SerializableDictionary<string, int> { }
-
  
         [System.Serializable]
         public class TRActorInfo

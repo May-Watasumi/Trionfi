@@ -12,17 +12,18 @@
 
 *開始位置
 
-
 [image layer=0 storage=black]
 [snapshot]
 [image layer=0 storage=sprite/bg/BG481a]
 [こはく 左]
 [ゆうこ 右]
-//[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41]
-//[image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41]
+//[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000]
+//[image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41 time=1000]
 [trans rule=sprite/mask/030  wait = 750]
 
-[audio buf=0 storage=sound/bgm/c3]
+[audio buf=0 storage=sound/bgm/c3 time=10000]
+
+
 
 [shake layer=message time=1000]
 

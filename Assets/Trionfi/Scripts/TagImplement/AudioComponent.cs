@@ -10,15 +10,13 @@ using System.Collections.Generic;
 namespace Trionfi
 {    public class AudioComponent : AbstractComponent
     {
-        bool isWait;
-
         public AudioComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
                 "storage",
-                "buf"
+//                "buf"
             };
 #endif
         }
@@ -33,15 +31,12 @@ namespace Trionfi
             int id = tagParam.Int("buf");
 
             string storage = tagParam.Identifier("storage");
-            float playDelay = tagParam.Float("delay");
-            float fadeTime = tagParam.Float("time");
+            int playDelaymsec = tagParam.Int("delay");
+            int fadeTimemsec = tagParam.Int("time");
 
-            bool loop = false;
-
-            if(!tagParam.IsValid(ref loop, "loop"))
-            {
-                loop = id == 0 ? true : false;
-            }
+            float playDelay = (float)playDelaymsec / 1000.0f;
+            float fadeTime = (float)fadeTimemsec / 1000.0f;
+            bool loop = tagParam.Bool("loop");
 
             TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
 
@@ -55,16 +50,21 @@ namespace Trionfi
                 AudioClip _clip = TRResourceLoader.Instance.audio;
                 _source.clip = _clip;
 
-                if (playDelay > 0.1f)
-                    _source.PlayDelayed(playDelay);
-                else
-                    _source.Play();
+                _source.volume = 0.0f;
 
-                if (fadeTime > 0.1f)
+                if (playDelay > 0.0f)
+                    yield return new WaitForSeconds(playDelay);
+
+                if (fadeTime > 0.09f)
                 {
-                    //ToDo:
+                    _source.Play();
                     float _vol = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
                     _source.DOFade(_vol, fadeTime);
+                }
+                else
+                {
+                    _source.volume = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
+                    _source.Play();
                 }
             }
 
@@ -72,7 +72,6 @@ namespace Trionfi
         }
     }
 
-    //[audiostop type=bgm delay=0]
     public class AudiostopComponent : AbstractComponent
     {
         public AudiostopComponent()
@@ -89,15 +88,15 @@ namespace Trionfi
         {
             int id = tagParam.Int("buf");
 
-//            float delay = tagParam.Float("delay");
-//            float fadeTime = tagParam.Float("time");
+            int fadeTimemsec = tagParam.Int("time");
+
+            float fadeTime = (float)fadeTimemsec / 1000.0f;
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Stop();
         }
     }
 
-    //[audiostop type=bgm delay=0]
     public class AudiopauseComponent : AbstractComponent
     {
         public AudiopauseComponent()
@@ -114,8 +113,9 @@ namespace Trionfi
         {
             int id = tagParam.Int("buf");
 
-//            float delay = tagParam.Float("delay");
-//            float fadeTime = tagParam.Float("time");
+            int fadeTimemsec = tagParam.Int("time");
+
+            float fadeTime = (float)fadeTimemsec / 1000.0f;
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Pause();

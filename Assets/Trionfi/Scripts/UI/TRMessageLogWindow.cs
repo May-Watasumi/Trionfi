@@ -24,6 +24,8 @@ namespace Trionfi {
 		public void AddLogData(string message, string name, AudioClip voice = null)
 		{
             GameObject _temp = GameObject.Instantiate(logContentPrefab);
+            _temp.hideFlags = HideFlags.HideInHierarchy;
+
             TRMessageLogData logData = _temp.GetComponent<TRMessageLogData>();
 
             logData.logText.text = message;
@@ -59,7 +61,14 @@ namespace Trionfi {
             logDataList.Clear();
         }
 
-		public void Show()
+        public void OnClick()
+        {
+            Trionfi.Instance.ReactiveWindow();
+            gameObject.SetActive(false);
+            Trionfi.Instance.ClickEvent -= this.OnClick;
+        }
+
+        public void Show()
 		{
 /*
 			//ToDo:
