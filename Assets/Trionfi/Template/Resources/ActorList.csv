@@ -1,3 +1,5 @@
-男性１,male
-女性１,female
-子供１,child
+name,prefix,hasVoice
+男性１,male,false
+女性１,female,false
+子供１,child,false
+

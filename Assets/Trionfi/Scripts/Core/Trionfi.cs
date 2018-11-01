@@ -216,6 +216,9 @@ namespace Trionfi
 
         public void InitKAGAlias()
         {
+            Button _button = globalTap.GetComponent<Button>();
+            _button.onClick.AddListener(OnGlobalTapEvent);
+
             TRVariable _temp = new TRVariable();
             _temp.Set("buf", audioID["bgm"]);
             TRVirtualMachine.aliasTagInstance["playbgm"] = new AudioComponent();

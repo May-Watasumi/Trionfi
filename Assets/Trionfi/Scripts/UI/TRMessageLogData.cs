@@ -29,6 +29,8 @@ public class TRMessageLogData : MonoBehaviour {
     {
         if (string.IsNullOrEmpty(name))
             characterIcon.enabled = false;
+//        else
+//        { /*ToDo*/}
     }
 
     public void PlayVoice()

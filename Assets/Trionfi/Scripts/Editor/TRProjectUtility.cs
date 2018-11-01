@@ -89,15 +89,15 @@ namespace Trionfi
             GameObject.DestroyImmediate(trionfiInstandce.systemMenuWindow.gameObject);
             GameObject.DestroyImmediate(trionfiInstandce.titleWindow.gameObject);
 
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GameConfigBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageLogWindowBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SelectWindowBase.prefab", typeof(GameObject)) as GameObject);
-            prefabList.Add( AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SystemMenuBase.prefab", typeof(GameObject)) as GameObject);
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/TitleBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageLogWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SelectWindowBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GameConfigBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SystemMenuBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);
 
             foreach (GameObject _object in prefabList)
             {
@@ -109,20 +109,20 @@ namespace Trionfi
             }
 
             trionfiInstandce.titleWindow = instanceList[0].GetComponent<TRTitle>() ?? prefabList[0].GetComponent<TRTitle>();
-            trionfiInstandce.messageLogwindow = instanceList[1].GetComponent<TRMessageLogWindow>() ?? prefabList[2].GetComponent<TRMessageLogWindow>();
-            trionfiInstandce.messageWindow = instanceList[2].GetComponent<TRMessageWindow>() ?? prefabList[1].GetComponent<TRMessageWindow>();
+            trionfiInstandce.messageWindow = instanceList[1].GetComponent<TRMessageWindow>() ?? prefabList[1].GetComponent<TRMessageWindow>();
+            trionfiInstandce.messageLogwindow = instanceList[2].GetComponent<TRMessageLogWindow>() ?? prefabList[2].GetComponent<TRMessageLogWindow>();
             trionfiInstandce.globalTap = instanceList[3] ?? prefabList[3];
             trionfiInstandce.selectWindow = instanceList[4].GetComponent<TRSelectWindow>() ?? prefabList[4].GetComponent<TRSelectWindow>();
-            trionfiInstandce.systemMenuWindow = instanceList[5].GetComponent<TRSystemMenuWindow>() ?? prefabList[5].GetComponent<TRSystemMenuWindow>();
-            trionfiInstandce.configWindow = instanceList[6].GetComponent<TRGameConfigWindow>() ?? prefabList[6].GetComponent<TRGameConfigWindow>();
+            trionfiInstandce.systemMenuWindow = instanceList[6].GetComponent<TRSystemMenuWindow>() ?? prefabList[6].GetComponent<TRSystemMenuWindow>();
             trionfiInstandce.dialogWindow = instanceList[7].GetComponent<TRCustomDialog>() ?? prefabList[7].GetComponent<TRCustomDialog>();
             trionfiInstandce.nowLoading = instanceList[8] ?? prefabList[8];
-/*
-            AssetDatabase.Refresh();
-            AssetDatabase.SaveAssets();
+            /*
+                        AssetDatabase.Refresh();
+                        AssetDatabase.SaveAssets();
+
+            */
 
             EditorSceneManager.SaveScene(scene);
-*/
         }
 
         void OnGUI()
