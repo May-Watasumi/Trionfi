@@ -131,7 +131,7 @@ namespace Trionfi
         public TRTagParser(string statement) : base(statement) { }
 
         protected string tagName;
-        protected TRVariable paramList = new TRVariable();
+        protected TRVariableDictionary paramList = new TRVariableDictionary();
 
         //you must check statement is not empty. 
         public bool GetFirstToken()
@@ -197,7 +197,7 @@ namespace Trionfi
 
                 } while (!isEnd);
 
-                paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Literal);
+                paramList[leftParam] = new TRVariable(rightParam);
 
                 currentPos++;
                 return true;
@@ -215,16 +215,16 @@ namespace Trionfi
                 int _isInt;
                 double _isFloat;
 
-                if (rightParam[0] == '0' && rightParam.Length > 2 && (rightParam[1] == 'x' || rightParam[1] == 'X') && 
+                if (rightParam[0] == '0' && rightParam.Length > 2 && (rightParam[1] == 'x' || rightParam[1] == 'X') &&
                     int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt)
                    )
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Hex);
+                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.Hex);
                 else if (int.TryParse(rightParam, out _isInt))
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Int);
+                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.Int);
                 else if (double.TryParse(rightParam, out _isFloat))
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Float);
+                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.Float);
                 else
-                    paramList[leftParam] = new KeyValuePair<string, TRDataType>(rightParam, TRDataType.Identifier);
+                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.String);
 
                 return true;
             }
@@ -254,7 +254,7 @@ namespace Trionfi
                     else
                     {
                         _component = new UnknownComponent();
-                        paramList["name"] = new KeyValuePair<string, TRDataType>(tagName, TRDataType.Literal);
+                        paramList["name"] = new TRVariable(tagName);
                     }
 
                     _component.tagParam = paramList;
@@ -353,8 +353,8 @@ namespace Trionfi
                     if (_tagParam[0] < 0 || _tagParam[0] > 127)
                     {
                         _tagComponent = new ActorComponent();
-                        _tagComponent.tagParam = new TRVariable();
-                        _tagComponent.tagParam["param"] = new KeyValuePair<string, TRDataType>(_tagParam, TRDataType.Literal);
+                        _tagComponent.tagParam = new TRVariableDictionary();
+                        _tagComponent.tagParam["param"] = new TRVariable(_tagParam);
                     }
                     else
                     {
@@ -375,8 +375,8 @@ namespace Trionfi
                         _temp = _value.Remove(_value.Length - 1, 1);
 
                         _tagComponent = new NameComponent();
-                        _tagComponent.tagParam = new TRVariable();
-                        _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(_temp, TRDataType.Literal);
+                        _tagComponent.tagParam = new TRVariableDictionary();
+                        _tagComponent.tagParam["val"] = new TRVariable(_temp);
                         result.Add(_tagComponent);
                     }
                     else
@@ -389,8 +389,8 @@ namespace Trionfi
                 if (!isText && !string.IsNullOrEmpty(textBuffer))
                 {
                     _tagComponent = new MessageComponent();
-                    _tagComponent.tagParam = new TRVariable();
-                    _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(textBuffer, TRDataType.Literal);
+                    _tagComponent.tagParam = new TRVariableDictionary();
+                    _tagComponent.tagParam["val"] = new TRVariable(textBuffer);
                     result.Add(_tagComponent);
                     textBuffer = "";
                 }
@@ -401,8 +401,8 @@ namespace Trionfi
             if(!string.IsNullOrEmpty(textBuffer))
             {
                 _tagComponent = new MessageComponent();
-                _tagComponent.tagParam = new TRVariable();
-                _tagComponent.tagParam["val"] = new KeyValuePair<string, TRDataType>(textBuffer, TRDataType.Literal);
+                _tagComponent.tagParam = new TRVariableDictionary();
+                _tagComponent.tagParam["val"] = new TRVariable(textBuffer);
                 result.Add(_tagComponent);
             }
 

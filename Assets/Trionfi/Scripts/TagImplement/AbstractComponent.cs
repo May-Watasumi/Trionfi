@@ -7,7 +7,7 @@ namespace Trionfi
 {
     public abstract class AbstractComponent
     {
-        public TRVariable tagParam;
+        public TRVariableDictionary tagParam;
         protected bool hasSync = false;
         
 //        protected const string syncwait = "syncWait";
@@ -80,7 +80,7 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
-            yield return TRVirtualMachine.Instance.Call(tagParam.Identifier("name"), tagParam);
+            yield return TRVirtualMachine.Instance.Call(tagParam["name"].Literal(), tagParam);
         }
     }
 
@@ -99,7 +99,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string _paramString;
-            _paramString = tagParam.Literal("param");
+            _paramString = tagParam["param"].Literal();
 
             string[] _params = _paramString.Split(new char[] { ' ', '　' } );
 
@@ -123,8 +123,8 @@ namespace Trionfi
 
                 string storage = TRStageEnviroment.Instance._LAYER_PATH_ + TRStageEnviroment.Instance._FILE_HEADER_ + prefix + "_" + suffix;
 
-                tagParam["layer"] = new KeyValuePair<string, TRDataType>(id.ToString(), TRDataType.Int);
-                tagParam["storage"] = new KeyValuePair<string, TRDataType>(storage, TRDataType.Identifier);
+                tagParam["layer"] = new TRVariable(id);
+                tagParam["storage"] = new TRVariable(storage);
             }
         }
 

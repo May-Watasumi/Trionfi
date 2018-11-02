@@ -16,7 +16,7 @@ namespace Trionfi
         }
 
 		protected override void TagFunction() {
-            Trionfi.Instance.selectWindow.Add(tagParam.Identifier("text"), tagParam.Identifier("target"));
+            Trionfi.Instance.selectWindow.Add(tagParam["text"].Literal(), tagParam["target"].Literal());
         }
     }
 

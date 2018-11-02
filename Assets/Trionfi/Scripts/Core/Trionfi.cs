@@ -219,8 +219,8 @@ namespace Trionfi
             Button _button = globalTap.GetComponent<Button>();
             _button.onClick.AddListener(OnGlobalTapEvent);
 
-            TRVariable _temp = new TRVariable();
-            _temp.Set("buf", audioID["bgm"]);
+            TRVariableDictionary _temp = new TRVariableDictionary();
+            _temp["buf"] = new TRVariable(audioID["bgm"]);
             TRVirtualMachine.aliasTagInstance["playbgm"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playbgm"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausebgm"] = new AudiopauseComponent();
@@ -230,7 +230,7 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["stopbgm"] = new AudiostopComponent();
             TRVirtualMachine.aliasTagInstance["stopbgm"].tagParam = _temp;
 
-            _temp.Set("buf", audioID["se"]);
+            _temp["buf"].Set(audioID["se"]);
             TRVirtualMachine.aliasTagInstance["playse"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playse"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausese"] = new AudiopauseComponent();
@@ -238,7 +238,7 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["stopse"] = new AudiostopComponent();
             TRVirtualMachine.aliasTagInstance["stopse"].tagParam = _temp;
 
-            _temp.Set("buf", audioID["voice"]);
+            _temp["buf"].Set(audioID["voice"]);
             TRVirtualMachine.aliasTagInstance["playvoice"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playvoice"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausevoice"] = new AudiopauseComponent();

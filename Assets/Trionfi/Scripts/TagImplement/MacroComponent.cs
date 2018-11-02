@@ -22,7 +22,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string name = tagParam.Literal("name");
+            string name = tagParam["name"].Literal();
             TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
 
             TRVirtualMachine.FunctionalObjectInstance function = new TRVirtualMachine.FunctionalObjectInstance(TRVirtualMachine.FunctionalObjectType.Macro, _cuttentStack.scriptName, _cuttentStack.currentPos+1);
@@ -63,7 +63,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string name = tagParam.Literal("name");
+            string name = tagParam["name"].Literal();
             TRVirtualMachine.functionalObjects.Remove(name);
         }
     }

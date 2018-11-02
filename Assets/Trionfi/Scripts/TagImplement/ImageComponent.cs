@@ -29,7 +29,7 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
-            int id = tagParam.Int("layer");
+            int id = tagParam["layer", 0];
 
             RawImage _image;
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -40,25 +40,26 @@ namespace Trionfi
 
             bool updatePos = false;
 
-            if (tagParam.IsValid(ref layerPos, "pos") && TRSystemConfig.Instance.layerPos.ContainsKey(layerPos))
+            if (tagParam.ContainsKey("pos"))
             {
+                layerPos = tagParam["pos"].Literal();
                 pos.x = TRSystemConfig.Instance.layerPos[layerPos] * TRSystemConfig.Instance.screenSize.x / 2.0f;
                 updatePos = true;
             }
 
             int offsetY = 0;
 
-            if (tagParam.IsValid(ref offsetY, "yoff"))
+            if (tagParam.ContainsKey("yoff"))
             {
+                offsetY = tagParam["yoff"].Int();
                 pos.y += offsetY;
                 updatePos = true;
             }
 
-            string storage = tagParam.Identifier("storage");
-
+            string storage = tagParam["storage", string.Empty];
             _image.texture = null;
 
-            int mtime = tagParam.Int("time", 0);
+            int mtime = tagParam["time", 0];
             float time = (float)mtime / 1000.0f;
 
             Color tempColor = Color.white;
@@ -66,14 +67,8 @@ namespace Trionfi
 
             if (time > 0.0f)
                 tempColor = new Color(1.0f, 1.0f, 1.0f, 0.0f);
-            else
-            {
-                string colorValue = "";
-
-                if (tagParam.IsValid(ref colorValue, "color"))
-                    TRUtility.GetColorName(ref tempColor, colorValue);
-
-            }
+            else if (tagParam.ContainsKey("color"))
+                TRUtility.GetColorName(ref tempColor, tagParam["color"].Literal());
 
             _image.color = tempColor;
 
@@ -129,13 +124,9 @@ namespace Trionfi
 		protected override void TagFunction() {
             RawImage _image;
 
-            int id = -1;
+            int id = tagParam["layer", 0];
 
-            if (tagParam.IsValid(ref id, "layer"))
-                _image = Trionfi.Instance.layerInstance[id].instance;
-            else
-                _image = Trionfi.Instance.layerInstance[0].instance;
-
+            _image = Trionfi.Instance.layerInstance[id].instance;
             _image.enabled = false;
             _image.texture = null;
         }
@@ -158,12 +149,8 @@ namespace Trionfi
         {
             RawImage _image;
 
-            int id = -1;
-
-            if (tagParam.IsValid(ref id, "layer"))
-                _image = Trionfi.Instance.layerInstance[id].instance;
-            else
-                _image = Trionfi.Instance.layerInstance[0].instance;
+            int id = tagParam["layer", 0];
+            _image = Trionfi.Instance.layerInstance[id].instance;
 
             //ToDo:
         }
@@ -187,17 +174,13 @@ namespace Trionfi
         {
             RawImage _image;
 
-            int id = -1;
+            int id = tagParam["layer", 0];
+            _image = Trionfi.Instance.layerInstance[id].instance;
 
-            if (tagParam.IsValid(ref id, "layer"))
-                _image = Trionfi.Instance.layerInstance[id].instance;
-            else
-                _image = Trionfi.Instance.layerInstance[0].instance;
-
-            float time = tagParam.Float("time", 1.0f);
-            Vector3 pos = new Vector3(tagParam.Float("pos_x"), tagParam.Float("pos_y"), tagParam.Float("pos_z"));
-            Vector3 scale  = new Vector3(tagParam.Float("scale_x", 1.0f), tagParam.Float("scale_y", 1.0f), tagParam.Float("scale_z", 1.0f));
-            Vector3 rotate = new Vector3(tagParam.Float("rot_x"), tagParam.Float("rot_y"), tagParam.Float("rot_z"));
+            float time = tagParam["time", 1.0f];
+            Vector3 pos = new Vector3(tagParam["pos_x", 0.0f], tagParam["pos_y", 0.0f], tagParam["pos_z", 0.0f]);
+            Vector3 scale  = new Vector3 (tagParam["scale_x", 1.0f], tagParam["scale_y", 1.0f], tagParam["scale_z", 1.0f]);
+            Vector3 rotate = new Vector3(tagParam["rot_x", 0.0f], tagParam["rot_y", 0.0f], tagParam["rot_z", 1.0f]);
 
             Sequence seq = DOTween.Sequence();
             seq.Append(_image.rectTransform.DOLocalMove(pos, time));
@@ -252,8 +235,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
             //default is "sync" = true.
-            if(!tagParam.IsValid(ref isSync, "sync"))
-                isSync = true;
+            isSync = tagParam["sync", true];
 
             if(!isSync)
                 Trionfi.Instance.StartCoroutine(FadeFunction());
@@ -268,11 +250,10 @@ namespace Trionfi
 
         IEnumerator FadeFunction()
         {
-            int timeMsec = tagParam.Int("time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f));
+            int timeMsec = tagParam["time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f)];
             float time = timeMsec / 1000.0f;
 
-            string ruleTexture = "";
-            if (!tagParam.IsValid(ref ruleTexture, "rule"))
+            if (!tagParam.ContainsKey("rule"))
             {
                 bool wait = false;
 
@@ -297,6 +278,10 @@ namespace Trionfi
             }
             else
             {
+                string ruleTexture = string.Empty;
+                ruleTexture = tagParam["rule", string.Empty];
+
+                //ルール画像はResourcesで固定
                 Texture _rule = Resources.Load<Texture>(ruleTexture);
 
                 MaskFader maskFader = Trionfi.Instance.rawImage.gameObject.GetComponent<MaskFader>();
@@ -317,9 +302,9 @@ namespace Trionfi
 
             }
 
-            int waitTime = 0;
+            int waitTime = tagParam["time", 0];
 
-            if (tagParam.IsValid(ref waitTime, "wait"))
+            if (waitTime > 0)
                 yield return new WaitForSeconds((float)waitTime / 1000.0f);
 
             yield return null;
@@ -336,7 +321,7 @@ namespace Trionfi
             //必須項目
             essentialParams = new List<string>
             {
-                "lauyer",
+                "layer",
             };
 #endif
         }
@@ -359,22 +344,20 @@ namespace Trionfi
             int id = -1;
             string name = string.Empty;
 
-            int strength = tagParam.Int("strength", 5);
-            int vibratio = tagParam.Int("vibrato", 20);
+            int strength = tagParam["strength", 5];
+            int vibratio = tagParam["vibrato", 20];
 
-            if (tagParam.IsValid(ref name, "layer") && name == "message")
+            if ( tagParam["layer", string.Empty] == "message")
                 _rect = Trionfi.Instance.messageWindow.gameObject.GetComponent<RectTransform>();
-            else if (tagParam.IsValid(ref id, "layer"))
-                _rect = Trionfi.Instance.layerInstance[id].instance.gameObject.GetComponent<RectTransform>();
             else
-                _rect = Trionfi.Instance.layerInstance[0].instance.gameObject.GetComponent<RectTransform>(); ;
+                _rect = Trionfi.Instance.layerInstance[tagParam["layer", 0]].instance.gameObject.GetComponent<RectTransform>();
 
-            int timeMsec = tagParam.Int("time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f));
+            int timeMsec = tagParam["time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f)];
             float time = timeMsec / 1000.0f;
 
-            _rect.GetComponent<RectTransform>().DOShakePosition(time, strength, vibratio, 90.0f, false, false);
+            Tweener _tween = _rect.GetComponent<RectTransform>().DOShakePosition(time, strength, vibratio, 90.0f, false, false);
 
-            yield return null;
+            yield return new WaitWhile(_tween.IsPlaying);
         }
     }
 }

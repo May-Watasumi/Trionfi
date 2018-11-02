@@ -84,7 +84,7 @@ namespace Trionfi
 
             public TRTagInstance tagInstance { get { return tagInstances[scriptName]; } }
 
-            public TRVariable tempParam = new TRVariable();//仮引数
+            public TRVariableDictionary tempParam = new TRVariableDictionary();//仮引数
             public FunctionalObjectType type = FunctionalObjectType.Macro;
             public string scriptName;
             public int startPos;
@@ -141,7 +141,7 @@ namespace Trionfi
         public static FunctionalObjectInstance currentCallStack { get { return callStack.Peek(); } }
 
         public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
-        public static TRVariable variableInstance = new TRVariable();
+        public static TRVariableDictionary variableInstance = new TRVariableDictionary();
         public static TRCallStack callStack = new TRCallStack();
         public static Stack<bool> ifStack = new Stack<bool>();
 
@@ -159,7 +159,7 @@ namespace Trionfi
             ifStack.Clear();
         }
 
-        public static double Calc(TRVariable _variable, string calcString)
+        public static double Calc(TRVariableDictionary _variable, string calcString)
         {
             Dictionary<string, double> calcValue = new Dictionary<string, double>();
             Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
@@ -204,7 +204,7 @@ namespace Trionfi
             }
         }
 
-        public IEnumerator Run(string storage, int index = 0, TRVariable param = null)
+        public IEnumerator Run(string storage, int index = 0, TRVariableDictionary param = null)
         {
             if (tagInstances.ContainsKey(storage))
             {
@@ -218,7 +218,7 @@ namespace Trionfi
                 ErrorLogger.Log("not find script file:" + storage);
         }
 
-        public IEnumerator Call(string name, TRVariable param)
+        public IEnumerator Call(string name, TRVariableDictionary param)
         {
             if (functionalObjects.ContainsKey(name))
             {
@@ -231,7 +231,7 @@ namespace Trionfi
                 ErrorLogger.Log("not find Function:" + name);
         }
 
-        public IEnumerator Execute(FunctionalObjectInstance _func, TRVariable _param)
+        public IEnumerator Execute(FunctionalObjectInstance _func, TRVariableDictionary _param)
         {
             TRTagInstance _tag = null;
             _func.currentPos = _func.startPos;
@@ -253,9 +253,9 @@ namespace Trionfi
                 {
                     string _params = "";
 
-                    foreach (KeyValuePair<string, KeyValuePair<string, TRDataType>> key in _tagComponent.tagParam)
+                    foreach (KeyValuePair<string, TRVariable> key in _tagComponent.tagParam)
                     {
-                        _params += " " + key.Key + "= " + key.Value.Key;
+                        _params += " " + key.Key + "= " + key.Value.paramString;
                     }
                     ErrorLogger.Log("[" + _tagComponent.tagName + _params + " ]");
                 }

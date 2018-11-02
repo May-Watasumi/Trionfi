@@ -19,7 +19,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            string className = "Trionfi." + TRParserBase.tf.ToTitleCase(tagParam.Identifier("tag")) + "Component";
+            string className = "Trionfi." + TRParserBase.tf.ToTitleCase(tagParam["tag"].Literal()) + "Component";
 
             // リフレクションで動的型付け
             Type masterType = Type.GetType(className);
@@ -32,7 +32,7 @@ namespace Trionfi {
             else
             {
                 _component.tagParam = tagParam;
-                TRVirtualMachine.aliasTagInstance[tagParam.Identifier("name")] = _component;
+                TRVirtualMachine.aliasTagInstance[tagParam["name"].Literal()] = _component;
             }
         }
     }
@@ -65,7 +65,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            TRVirtualMachine.Serialize(tagParam.Identifier("file"));
+            TRVirtualMachine.Serialize(tagParam["file"].Literal());
         }
     }
 
@@ -84,8 +84,8 @@ namespace Trionfi {
 
         public override IEnumerator TagSyncFunction()
         {
-            string target = tagParam.Label("target");
-            string file = tagParam.Identifier("file", TRVirtualMachine.currentCallStack.scriptName);
+            string target = tagParam["target"].Literal();
+            string file = tagParam["file"].Literal();// TRVirtualMachine.currentCallStack.scriptName);
 
 			//ファイルが異なるものになる場合、シナリオをロードする
 			if(file != TRVirtualMachine.currentCallStack.scriptName)
@@ -102,8 +102,8 @@ namespace Trionfi {
 
             int index = TRVirtualMachine.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
 
-            if (tagParam.IsValid(ref target, "target"))
-                TRVirtualMachine.currentCallStack.LocalJump(target);
+            if (tagParam.ContainsKey("target"))
+                TRVirtualMachine.currentCallStack.LocalJump(tagParam["target"].Literal());
             else
                 ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
 
@@ -131,9 +131,9 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
-            string target = tagParam.Label("target");
+            string target = tagParam["target"].Literal();
 
-            string file = tagParam.Identifier("file", TRVirtualMachine.currentCallStack.scriptName);
+            string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
 
             int index = string.IsNullOrEmpty(file) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
 
@@ -163,7 +163,7 @@ namespace Trionfi {
 			string tag_str = "";
 
 			//return 時の戻り場所を指定できます
-			if( string.IsNullOrEmpty(tagParam.Identifier("file")) && string.IsNullOrEmpty(tagParam.Label("target")) )
+			if( string.IsNullOrEmpty(tagParam["file", string.Empty]) && string.IsNullOrEmpty(tagParam["target", string.Empty]) )
 				tag_str = "[jump file='" + tagParam["file"] + "' target='" + tagParam["target"] + "' ]";
 			else
 				tag_str = "[jump file='" + callStack.scriptName + "' index='" + callStack.currentPos + "' ]";
@@ -198,7 +198,7 @@ namespace Trionfi {
 
         public override IEnumerator TagSyncFunction()
         {
-            string file = tagParam.Identifier("file");
+            string file = tagParam["file"].Literal();
             syncState = SceneManager.LoadSceneAsync(file, LoadSceneMode.Additive);
             yield return new WaitUntil(() => syncState.isDone);
         }
@@ -216,11 +216,11 @@ namespace Trionfi {
         }
 
 		protected override void TagFunction() {
-            string _exp = tagParam.Literal("exp");
+            string _exp = tagParam["exp"].Literal();
             string[] _exp2 = _exp.Split('=');
             double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, _exp2[1]);
 
-            TRVirtualMachine.variableInstance[_exp2[0]] = new KeyValuePair<string, TRDataType>(result.ToString(), TRDataType.Float);
+            TRVirtualMachine.variableInstance[_exp2[0]] = new TRVariable((float)result);
         }
     }
 	public class FlagComponent : AbstractComponent {
@@ -234,7 +234,7 @@ namespace Trionfi {
         }
 
 		protected override void TagFunction() {
-            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam.Literal("exp"));
+            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam["exp"].Literal());
         }
     }
 
@@ -251,7 +251,7 @@ namespace Trionfi {
 
 		protected override void TagFunction() {
 
-            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam.Literal("exp"));
+            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam["exp"].Literal());
 //            ToDo:
             /*
 			//条件に合致した場合はそのままifの中へ
@@ -284,7 +284,7 @@ namespace Trionfi {
                 TRVirtualMachine.ifStack.Push(false);
             else
             {
-                string exp = tagParam.Literal("exp");
+                string exp = tagParam["exp"].Literal();
                 double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, exp);
                 //ToDo:
 /*
@@ -368,7 +368,6 @@ namespace Trionfi {
 	//ディレイ
 	public class WaitComponent : AbstractComponent
 	{
-        float _time = 0.0f;
 		public WaitComponent()
 		{
 #if UNITY_EDITOR && TR_DEBUG
@@ -382,11 +381,14 @@ namespace Trionfi {
         //時間を止める。
         protected override void TagFunction()
         {
-            _time = tagParam.Float("time");
 		}
 
         public override IEnumerator TagSyncFunction()
         {
+            int timeMsec = tagParam["time", 0];
+
+            float _time = (float)timeMsec / 1000.0f;
+
             yield return new WaitForSeconds(_time);
         }
     }
@@ -404,7 +406,7 @@ namespace Trionfi {
 
 		protected override void TagFunction()
         {
-			string url = tagParam.Identifier("url");
+			string url = tagParam["url"].Literal();
 			Application.OpenURL(url);
             //ToDo:
 //            yield return null;

@@ -28,10 +28,10 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
-            string storage = tagParam.Identifier("storage");
+            string storage = tagParam["storage"].Literal();
 //            float playDelay = tagParam.Float("delay");
 
-            bool loop = tagParam.Bool("loop");
+            bool loop = tagParam["loop", false];
 
             Trionfi.Instance.videoPlayer.url = storage;
             Trionfi.Instance.videoPlayer.isLooping = loop;

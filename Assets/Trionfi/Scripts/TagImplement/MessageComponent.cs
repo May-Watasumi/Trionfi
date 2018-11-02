@@ -19,7 +19,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string message = tagParam.Identifier("val");
+            string message = tagParam["val"].Literal();
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.Instance.configData.textspeed);
         }
 
@@ -44,7 +44,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string name = tagParam.Literal("val");
+            string name = tagParam["val"].Literal();
             Trionfi.Instance.messageWindow.ShowName(name);
         }
     }
@@ -116,10 +116,10 @@ namespace Trionfi
         }
 
 		protected override void TagFunction() {
-            int size = tagParam.Int("size");
-            uint colorValue = tagParam.Uint("color", 0xFFFFFFFF);
+            int size = tagParam["size", TRSystemConfig.Instance.fontSize];
+            uint colorValue = tagParam["color", 0xFFFFFFFF];
 
-            Color color = TRVariable.ToRGB(colorValue);
+            Color color = TRVariableDictionary.ToRGB(colorValue);
             Trionfi.Instance.messageWindow.currentMessage.fontSize = size;
             Trionfi.Instance.messageWindow.currentMessage.color = color;
         }

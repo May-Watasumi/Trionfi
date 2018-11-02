@@ -28,15 +28,14 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
-            int id = tagParam.Int("buf");
-
-            string storage = tagParam.Identifier("storage");
-            int playDelaymsec = tagParam.Int("delay");
-            int fadeTimemsec = tagParam.Int("time");
+            int id = tagParam["buf", 0];
+            string storage = tagParam["storage"].Literal() ;
+            int playDelaymsec = tagParam["delay", 0];
+            int fadeTimemsec = tagParam["time", 0];
 
             float playDelay = (float)playDelaymsec / 1000.0f;
             float fadeTime = (float)fadeTimemsec / 1000.0f;
-            bool loop = tagParam.Bool("loop");
+            bool loop = tagParam["loop", false];
 
             TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
 
@@ -79,16 +78,16 @@ namespace Trionfi
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
-                "buf"
+//                "buf"
             };
 #endif
         }
 
         protected override void TagFunction()
         {
-            int id = tagParam.Int("buf");
+            int id = tagParam["buf", 0];
 
-            int fadeTimemsec = tagParam.Int("time");
+            int fadeTimemsec = tagParam["time", 0];
 
             float fadeTime = (float)fadeTimemsec / 1000.0f;
 
@@ -111,9 +110,9 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            int id = tagParam.Int("buf");
+            int id = tagParam["buf", 0];
 
-            int fadeTimemsec = tagParam.Int("time");
+            int fadeTimemsec = tagParam["time", 0];
 
             float fadeTime = (float)fadeTimemsec / 1000.0f;
 
@@ -137,7 +136,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            int id = tagParam.Int("buf");
+            int id = tagParam["buf", 0];
 
 //            float delay = tagParam.Float("delay");
 //            float fadeTime = tagParam.Float("time");

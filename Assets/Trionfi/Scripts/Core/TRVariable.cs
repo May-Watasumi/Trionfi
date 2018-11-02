@@ -11,12 +11,333 @@ namespace Trionfi
         Int,
         Float,
         Hex,
-        Literal,
-        Identifier,
-        Label
+        String,
+//        Literal,
+//        Identifier,
+//        Label
     }
-    
-    public class TRVariable : SerializableDictionary<string, KeyValuePair<string, TRDataType>>
+
+    public class TRVariable
+    {
+        public TRDataType dataType;
+        public string paramString;
+        bool lastResult;
+
+        public TRVariable(string param, TRDataType type)
+        {
+            paramString = param;
+            dataType = type;
+        }
+
+        public TRVariable(bool param) { Set(param); }
+        public TRVariable(int param) { Set(param); }
+        public TRVariable(float param) { Set(param); }
+        public TRVariable(string param) { Set(param); }
+
+        /*
+        TRDataType Set(string param)
+        {
+            return TRDataType.Null;
+        }
+        */
+        public void Set(int param)
+        {
+            paramString = param.ToString();
+            dataType = TRDataType.Int;
+        }
+
+        public void Set(float param)
+        {
+            paramString = param.ToString();
+            dataType = TRDataType.Float;
+        }
+
+        public void Set(string param)
+        {
+            paramString = param;
+            dataType = TRDataType.String;//.Literal;
+        }
+
+        public void Set(bool param)
+        {
+            paramString = param.ToString();
+            dataType = TRDataType.Bool;
+        }
+
+
+        public bool Bool(bool defaultValue = false)
+        {
+            bool result = false;
+            return (lastResult = bool.TryParse(paramString, out result)) ? result : defaultValue;
+        }
+        public float Float(float defaultValue = 0.0f)
+        {
+            float result = 0.0f;
+            return (lastResult = float.TryParse(paramString, out result)) ? result : defaultValue;
+        }
+
+        public int Int(int defaultValue = 0)
+        {
+            int result = 0;
+            return (lastResult = int.TryParse(paramString, out result)) ? result : defaultValue;
+        }
+
+        public uint Hex(uint defaultValue = 0)
+        {
+            uint result = 0;
+
+            return ( lastResult = 
+                    paramString[0] == '0' && paramString.Length > 2 && (paramString[1] == 'x' || paramString[1] == 'X') &&
+                     uint.TryParse(paramString, System.Globalization.NumberStyles.AllowHexSpecifier, null, out result)
+                   ) ? result : defaultValue;
+        }
+
+        public string Literal(string defaultValue = null)
+        {
+            return paramString;
+        }
+
+        public static TRVariable operator +(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                case TRDataType.Bool:
+                    return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() + dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() + dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() + dest.Hex());
+                case TRDataType.String:
+                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator -(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+ //               case TRDataType.Bool:
+ //                   return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() - dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() - dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() - dest.Hex());
+                case TRDataType.String:
+                    return new TRVariable(string.Empty);
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator *(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+//                case TRDataType.Bool:
+//                    return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() * dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() * dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() * dest.Hex());
+//                case TRDataType.Literal:
+//                    return new TRVariable(string.Empty);
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator /(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+//               case TRDataType.Bool:
+//                    return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() / dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() / dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() / dest.Hex());
+//                case TRDataType.Literal:
+//                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator &(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                case TRDataType.Bool:
+                    return new TRVariable(src.Bool() && dest.Bool());
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() !=0 && dest.Int()!=1);
+                case TRDataType.Float:
+                    return new TRVariable(src.Float()!=0.0f && dest.Float()!=0.0f);
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex()!=0 && dest.Hex()!=0);
+                //                case TRDataType.Literal:
+                //                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator |(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                case TRDataType.Bool:
+                    return new TRVariable(src.Bool() || dest.Bool());
+                case TRDataType.Int:
+                    return new TRVariable((src.Int() != 0) || (dest.Int() != 1));
+                case TRDataType.Float:
+                    return new TRVariable((src.Float() != 0.0f) || (dest.Float() != 0.0f));
+                case TRDataType.Hex:
+                    return new TRVariable((src.Hex() != 0) ||( dest.Hex() != 0));
+                //                case TRDataType.Literal:
+                //                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator ==(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                case TRDataType.Bool:
+                    return new TRVariable(src.Bool() == dest.Bool());
+                case TRDataType.Int:
+                    return new TRVariable((src.Int() != 0) == (dest.Int() != 1));
+                case TRDataType.Float:
+                    return new TRVariable((src.Float() != 0.0f) == (dest.Float() != 0.0f));
+                case TRDataType.Hex:
+                    return new TRVariable((src.Hex() != 0) == (dest.Hex() != 0));
+                case TRDataType.String:
+                    return new TRVariable(src.Literal() == dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator !=(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                case TRDataType.Bool:
+                    return new TRVariable(src.Bool() != dest.Bool());
+                case TRDataType.Int:
+                    return new TRVariable((src.Int() != 0) != (dest.Int() != 1));
+                case TRDataType.Float:
+                    return new TRVariable((src.Float() != 0.0f) != (dest.Float() != 0.0f));
+                case TRDataType.Hex:
+                    return new TRVariable((src.Hex() != 0) != (dest.Hex() != 0));
+                case TRDataType.String:
+                    return new TRVariable(src.Literal() != dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator <=(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                //               case TRDataType.Bool:
+                //                    return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() <= dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() <= dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() <= dest.Hex());
+                //                case TRDataType.Literal:
+                //                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator >=(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                //               case TRDataType.Bool:
+                //                    return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() >= dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() >= dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() >= dest.Hex());
+                //                case TRDataType.Literal:
+                //                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator <(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                //               case TRDataType.Bool:
+                //                    return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() < dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() < dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() < dest.Hex());
+                //                case TRDataType.Literal:
+                //                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        public static TRVariable operator >(TRVariable src, TRVariable dest)
+        {
+            switch (src.dataType)
+            {
+                //               case TRDataType.Bool:
+                //                    return new TRVariable(true);
+                case TRDataType.Int:
+                    return new TRVariable(src.Int() > dest.Int());
+                case TRDataType.Float:
+                    return new TRVariable(src.Float() > dest.Float());
+                case TRDataType.Hex:
+                    return new TRVariable(src.Hex() > dest.Hex());
+                //                case TRDataType.Literal:
+                //                    return new TRVariable(src.Literal() + dest.Literal());
+                default:
+                    throw new TRParserExecption(TRParserError.UnmatchType);
+            }
+        }
+
+        /*
+        public static string evaluateString(string exp)
+        {
+            //変数かどうかを判定する。今のところの定義は「最初の文字がアルファベット＆'.'がある」
+            if (Regex.IsMatch(exp[0].ToString(), "^[a-zA-Z_]+$") && exp.IndexOf(".") != -1)
+                return _var.Get(exp);
+
+            return exp;
+        }
+        */
+    }
+
+    public class TRVariableDictionary : SerializableDictionary<string, TRVariable>//KeyValuePair<string, TRDataType>>
     {
         public static Color ToARGB(uint val)
         {
@@ -42,6 +363,64 @@ namespace Trionfi
             return c;
         }
 
+        const float defaultFloat = 0.0f;
+        const int defaultInt = 0;
+        string defaultString = string.Empty;
+        const uint defaultUint = 0;
+        const bool defaultBool = false;
+
+        public float this[string t, float u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Float();
+                else return u;
+            }
+        }
+
+        public int this[string t, int u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Int();
+                else return u;
+            }
+        }
+
+        public uint this[string t, uint u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Hex();
+                else return u;
+            }
+        }
+
+        public bool this[string t, bool u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Bool();
+                else return u;
+            }
+        }
+
+        public string this[string t, string u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Literal();
+                else return u;
+            }
+        }
+
+        
+        #if false
         public bool IsValid(ref bool res, string key)
         {
             res = false;
@@ -239,16 +618,6 @@ namespace Trionfi
 
             this[key] = new KeyValuePair<string, TRDataType>(value.ToString(), TRDataType.Float);
         }
-
-        /*
-        public static string evaluateString(string exp)
-        {
-            //変数かどうかを判定する。今のところの定義は「最初の文字がアルファベット＆'.'がある」
-            if (Regex.IsMatch(exp[0].ToString(), "^[a-zA-Z_]+$") && exp.IndexOf(".") != -1)
-                return _var.Get(exp);
-
-            return exp;
-        }
-        */
+#endif
     }
 }

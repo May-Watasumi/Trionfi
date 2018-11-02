@@ -49,6 +49,9 @@ namespace Trionfi
 
         private void OnClick()
         {
+            Debug.Log("agjaeopgjaepgjkaeopgjasijg");
+
+
             if (!gameObject.activeSelf)
                 return;
             else if (onSkip)
