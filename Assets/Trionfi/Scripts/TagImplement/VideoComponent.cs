@@ -35,8 +35,11 @@ namespace Trionfi
             if (storage.IndexOf("https://") >= 0 || storage.IndexOf("http://") >= 0)
                 url = storage;
             else
+#if UNITY_2017_3_OR_NEWER
                 url += "/" + storage;
-
+#else
+                url = "files:///" + Application.dataPath + " / " + storage;
+#endif
             bool loop = tagParam["loop", false];
 
             if (!loop)

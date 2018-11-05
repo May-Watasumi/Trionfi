@@ -38,7 +38,17 @@ namespace Trionfi
     }
 
     [System.Serializable]
-    public class TRAudio : TRMediaInstance<AudioSource> { }
+    public class TRAudio : TRMediaInstance<AudioSource>
+    {
+    }
+
+#if TR_USE_CRI
+    [System.Serializable]
+    public class TRAdx : TRMediaInstance<CriAtomSource>
+    {
+        public static string curSheetName;
+    }
+#endif
 
     [System.Serializable]
     public class TRLayer : TRMediaInstance<RawImage>
@@ -55,6 +65,8 @@ namespace Trionfi
         string bootScriptName;
         [SerializeField]
         public UnityEngine.Video.VideoPlayer videoPlayer;
+        [SerializeField]
+        public GameObject otherComponent;
 
         [SerializeField]
         public RenderTexture captureBuffer;
@@ -106,6 +118,19 @@ namespace Trionfi
         public class TRAudioInstance : SerializableDictionary<int, TRAudio> { }
         [Serializable]
         public class TRImageInstance : SerializableDictionary<int, TRLayer> { }
+#if TR_USE_CRI
+        [Serializable]
+        public class TRAdxInstance : SerializableDictionary<int, TRAdxInstance> { }
+
+        [SerializeField]
+        public TRAdxInstance adxInstance = new TRAdxInstance()
+        {
+            { audioID["bgm"] , null },
+            { audioID["se"] , null },
+            { audioID["voice"] , null },
+
+        };
+#endif
 
         [SerializeField]
         public TRAudioInstance audioInstance = new TRAudioInstance()
@@ -271,6 +296,30 @@ namespace Trionfi
 
         public void Start()
         {
+#if TR_USE_CRI
+            if(otherComponent.GetComponent< CriWareInitializer>())
+                otherComponent.AddComponent<CriWareInitializer>();
+            if(otherComponent.GetComponent<CriWareErrorHandler>())
+                otherComponent.AddComponent<CriWareInitializer>();
+
+            foreach (KeyValuePair<int, TRAudio> _pair in audioInstance)
+            {
+                CriAtomSource _atom = _pair.Value.instance.gameObject.GetComponent<CriAtomSource>();
+
+                if (_atom == null)
+                {
+                    _atom = _pair.Value.instance.gameObject.AddComponent<CriAtomSource>();
+                }
+
+                if (_atom != null)
+                {
+                    _atom.use3dPositioning = false;
+
+                    if (_pair.Key == 0)
+                        _atom.loop = true;
+                }
+            }
+#endif
             Vector2 canvasSize = uiCanvas.GetComponent<CanvasScaler>().referenceResolution;
             globalTap.GetComponent<RectTransform>().sizeDelta = canvasSize;
 
