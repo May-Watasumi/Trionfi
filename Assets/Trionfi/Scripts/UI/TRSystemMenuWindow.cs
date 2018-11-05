@@ -38,11 +38,7 @@ namespace Trionfi
 
         public void OnWindowCloseButton()
         {
-            Trionfi.Instance.messageWindow.Close();
-            Trionfi.Instance.messageLogwindow.gameObject.SetActive(false);
-            Trionfi.Instance.ClickEvent += Trionfi.Instance.ReactiveWindow;
-
-            gameObject.SetActive(false);
+            Trionfi.Instance.CloseWindow();
         }
     }
 }

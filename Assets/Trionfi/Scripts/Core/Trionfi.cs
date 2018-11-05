@@ -98,8 +98,8 @@ namespace Trionfi
         {
             { "bg", 0 },
             { "stand", 1 },
-            { "movie", 9 },
             { "event", 10 },
+            { "movie", 99 },
         };
 
         [Serializable]
@@ -165,8 +165,21 @@ namespace Trionfi
                 ClickEvent();
         }
 
+        public void CloseWindow()
+        {
+            TRSystemMenuWindow.Instance.gameObject.SetActive(false);
+
+            messageWindow.Close();
+            messageLogwindow.gameObject.SetActive(false);
+            ClickEvent += ReactiveWindow;
+
+        }
+
         public void ReactiveWindow()
         {
+            if (Trionfi.Instance.videoPlayer.isPlaying)
+                Trionfi.Instance.videoPlayer.Stop();
+
             Trionfi.Instance.messageWindow.Open();
             TRSystemMenuWindow.Instance.gameObject.SetActive(true);
             ClickEvent -= this.ReactiveWindow;

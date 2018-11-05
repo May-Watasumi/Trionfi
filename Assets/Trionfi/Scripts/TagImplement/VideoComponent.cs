@@ -16,26 +16,47 @@ namespace Trionfi
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
-                "storage",
+                "url",
             };
 #endif
         }
 
         protected override void TagFunction()
         {
-            hasSync = true;
+//            hasSync = true;
         }
 
         public override IEnumerator TagSyncFunction()
         {
-            string storage = tagParam["storage"].Literal();
-//            float playDelay = tagParam.Float("delay");
+            string storage = tagParam["url"].Literal();
+            //            float playDelay = tagParam.Float("delay");
+            string url = Application.dataPath;
+
+            if (storage.IndexOf("https://") >= 0 || storage.IndexOf("http://") >= 0)
+                url = storage;
+            else
+                url += "/" + storage;
 
             bool loop = tagParam["loop", false];
 
-            Trionfi.Instance.videoPlayer.url = storage;
+            if (!loop)
+                hasSync = tagParam["wait", true];
+            else
+                hasSync = false;
+
+            RawImage _image = Trionfi.Instance.layerInstance[99].instance;
+            Trionfi.Instance.videoPlayer.url = url;
             Trionfi.Instance.videoPlayer.isLooping = loop;
             Trionfi.Instance.videoPlayer.Play();
+            _image.enabled = true;
+
+            if (hasSync)
+            {
+                Trionfi.Instance.CloseWindow();
+                yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.isPlaying);
+                _image.enabled = false;
+                Trionfi.Instance.ReactiveWindow();
+            }
 
             yield return null;
         }
@@ -56,6 +77,8 @@ namespace Trionfi
         {
 //            float delay = tagParam.Float("delay");
             Trionfi.Instance.videoPlayer.Stop();
+            RawImage _image = Trionfi.Instance.layerInstance[99].instance;
+            _image.enabled = false;
         }
     }
 

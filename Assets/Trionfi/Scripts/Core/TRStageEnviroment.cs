@@ -29,8 +29,11 @@ namespace Trionfi
         public class TRActPatternAlias : SerializableDictionary<string, string> { }
         [System.Serializable]
         public class TRActorInfoes : SerializableDictionary<string, TRActorInfo> { }
+        [System.Serializable]
         public class TRLayerAlias : SerializableDictionary<string, int> { }
- 
+        [System.Serializable]
+        public class TRLayerID : SerializableDictionary<string, int> { }
+
         [System.Serializable]
         public class TRActorInfo
         {

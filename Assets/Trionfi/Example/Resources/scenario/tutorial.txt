@@ -21,7 +21,10 @@
 //[image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41 time=1000]
 [trans rule=sprite/mask/030  wait = 750]
 
+//[videoplay url=Trionfi/Resources/TEST.mp4]
+
 [audio buf=0 storage=sound/bgm/c3 time=10000]
+
 
 【こはく】
 ということで呼ばれて飛び出るUnityちゃんこと、
