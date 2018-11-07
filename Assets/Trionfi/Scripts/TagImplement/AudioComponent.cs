@@ -149,9 +149,9 @@ namespace Trionfi
     }
 
 #if TR_USE_CRI
-    public class AdxcuesheetComponent : AbstractComponent
+    public class AdxloadacfComponent : AbstractComponent
     {
-        public AdxcuesheetComponent()
+        public AdxloadacfComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -163,7 +163,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAudio.curSheetName = tagParam["stprage", string.Empty];
+            TRAdx.LoadAcf(tagParam["storage"].Literal());
         }
     }
 
@@ -189,7 +189,7 @@ namespace Trionfi
         {
             int id = tagParam["buf", 0];
             string storage = tagParam["storage"].Literal();
-            string cueSheet = tagParam["cuesheet", TRAudio.curSheetName];
+            string cueSheet = tagParam["cuesheet"].Literal();
             int playDelaymsec = tagParam["delay", 0];
             int fadeTimemsec = tagParam["time", 0];
 
@@ -197,24 +197,14 @@ namespace Trionfi
             float fadeTime = (float)fadeTimemsec / 1000.0f;
             bool loop = tagParam["loop", false];
 
-            //            TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
-            //            while (TRResourceLoader.Instance.isLoading)
-            //                yield return new WaitForSeconds(1.0f);
-
-            //            if (TRResourceLoader.Instance.isSuceeded)
             {
-                AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
-                CriAtomSource _atom = _source.gameObject.GetComponent<CriAtomSource>();
+                CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
                 if (_atom != null)
                 {
                     Trionfi.Instance.audioInstance[id].path = storage;
-                    //                AudioClip _clip = TRResourceLoader.Instance.audio;
-                    //_source.clip = _clip;
-                    //_source.volume = 0.0f;
-                    _atom.cueName = storage;
-                    _atom.cueSheet = cueSheet;
-                    _atom.loop = loop;
-                    _atom.volume = 0.0f;
+                    _atom.Loop(loop);
+                    _atom.SetCue(Trionfi.Instance.adxInstance[id].acb, storage);
+                    _atom.SetVolume(0.0f);
 
                     if (playDelay > 0.0f)
                         yield return new WaitForSeconds(playDelay);
@@ -227,12 +217,42 @@ namespace Trionfi
                     //}
                     //else
                     {
-                        _source.volume = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
-                        _source.Play();
+                        _atom.SetVolume(TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume);
+                        _atom.Start();
                     }
                 }
                 yield return null;
             }
+        }
+    }
+
+    public class adxloadacbComponent : AbstractComponent
+    {
+        public adxloadacbComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string>
+            {
+                                "buf",
+                                "storage"
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            int id = tagParam["buf", 0];
+
+            string storage = tagParam["storage"].Literal();
+
+            CriAtomExAcb _acb = Trionfi.Instance.adxInstance[id].acb;
+
+            if (_acb != null)
+                _acb.Dispose();
+
+            Trionfi.Instance.adxInstance[id].acb = CriAtomExAcb.LoadAcbFile(null, storage+".acb", storage+".awb");
+
         }
     }
 
@@ -257,8 +277,7 @@ namespace Trionfi
 
             float fadeTime = (float)fadeTimemsec / 1000.0f;
 
-            AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
-            CriAtomSource _atom = _source.gameObject.GetComponent<CriAtomSource>();
+            CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
             if (_atom != null)
                 _atom.Stop();
         }
@@ -284,9 +303,8 @@ namespace Trionfi
 
             float fadeTime = (float)fadeTimemsec / 1000.0f;
 
-            AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
-            CriAtomSource _atom = _source.gameObject.GetComponent<CriAtomSource>();
-            _atom.Pause(true);
+            CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
+            _atom.Pause();
         }
     }
 
@@ -310,10 +328,8 @@ namespace Trionfi
             //            float delay = tagParam.Float("delay");
             //            float fadeTime = tagParam.Float("time");
 
-            AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
-            CriAtomSource _atom = _source.gameObject.GetComponent<CriAtomSource>();
-            _atom.Pause(false);
-//            _source.UnPause();
+            CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
+            _atom.Resume(CriAtomEx.ResumeMode.PausedPlayback);
         }
     }
 #endif

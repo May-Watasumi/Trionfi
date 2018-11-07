@@ -2,6 +2,7 @@
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using DG.Tweening;
+using System.IO;
 using System;
 using System.Diagnostics;
 using System.Collections;
@@ -44,9 +45,19 @@ namespace Trionfi
 
 #if TR_USE_CRI
     [System.Serializable]
-    public class TRAdx : TRMediaInstance<CriAtomSource>
+    public class TRAdx : TRMediaInstance<CriAtomExPlayer>
     {
-        public static string curSheetName;
+        public static void  LoadAcf(string path)
+        {
+            if (!File.Exists(path))
+            {
+                return;
+            }
+            CriAtomEx.UnregisterAcf();
+            CriAtomEx.RegisterAcf(null, path);
+        }
+
+        public CriAtomExAcb acb;
     }
 #endif
 
@@ -120,7 +131,7 @@ namespace Trionfi
         public class TRImageInstance : SerializableDictionary<int, TRLayer> { }
 #if TR_USE_CRI
         [Serializable]
-        public class TRAdxInstance : SerializableDictionary<int, TRAdxInstance> { }
+        public class TRAdxInstance : SerializableDictionary<int, TRAdx> { }
 
         [SerializeField]
         public TRAdxInstance adxInstance = new TRAdxInstance()
@@ -302,22 +313,9 @@ namespace Trionfi
             if(otherComponent.GetComponent<CriWareErrorHandler>())
                 otherComponent.AddComponent<CriWareInitializer>();
 
-            foreach (KeyValuePair<int, TRAudio> _pair in audioInstance)
+            foreach (KeyValuePair<int, TRAdx> _pair in adxInstance )
             {
-                CriAtomSource _atom = _pair.Value.instance.gameObject.GetComponent<CriAtomSource>();
-
-                if (_atom == null)
-                {
-                    _atom = _pair.Value.instance.gameObject.AddComponent<CriAtomSource>();
-                }
-
-                if (_atom != null)
-                {
-                    _atom.use3dPositioning = false;
-
-                    if (_pair.Key == 0)
-                        _atom.loop = true;
-                }
+                _pair.Value.instance = new CriAtomExPlayer();
             }
 #endif
             Vector2 canvasSize = uiCanvas.GetComponent<CanvasScaler>().referenceResolution;
