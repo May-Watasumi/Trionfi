@@ -293,7 +293,7 @@ namespace Trionfi {
         }
 
 		protected override void TagFunction() {
-            bool _stack = TRVirtualMachine.ifStack.Pop();
+            bool _stack = TRVirtualMachine.ifStack.Peek();
 
             //直前が真の場合はelseifは実行されない
             if (_stack)
