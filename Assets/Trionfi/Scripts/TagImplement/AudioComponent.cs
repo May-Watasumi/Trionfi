@@ -3,6 +3,7 @@ using UnityEngine.Networking;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 
 //ToDo:フェード、再生しているストレージ情保存
 //クリック待ち、同期
@@ -163,7 +164,59 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAdx.LoadAcf(tagParam["storage"].Literal());
+            TRAdx.LoadAcf( Path.Combine(TRAdx.basePath, tagParam["storage"].Literal()));
+        }
+    }
+
+    public class AdxloadacbComponent : AbstractComponent
+    {
+        CriAtomExAcbLoader acbLoader;
+
+        public AdxloadacbComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+                "storage",
+                "buf"
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            hasSync = true;
+
+            string _path = tagParam["storage", string.Empty];
+            acbLoader = CriAtomExAcbLoader.LoadAcbFileAsync(null, Path.Combine(TRAdx.basePath, _path + ".acb"), Path.Combine(_path, ".awb"), false);
+
+        }
+
+        public override IEnumerator TagSyncFunction()
+        {
+            if (acbLoader != null)
+            {
+                CriAtomExAcbLoader.Status status;
+
+                do
+                {
+                    yield return new WaitForEndOfFrame();
+
+                    status = acbLoader.GetStatus();
+                    if (status == CriAtomExAcbLoader.Status.Complete)
+                    {
+                        int buf = tagParam["buf", 0];
+                        Trionfi.Instance.adxInstance[buf].acb = acbLoader.MoveAcb();
+                        break;
+                    }
+                    else if (status == CriAtomExAcbLoader.Status.Error)
+                    {
+                        break;
+                    }
+
+                } while (true);
+            }
+            yield return null;
         }
     }
 
@@ -189,13 +242,17 @@ namespace Trionfi
         {
             int id = tagParam["buf", 0];
             string storage = tagParam["storage"].Literal();
-            string cueSheet = tagParam["cuesheet"].Literal();
+//            string cueSheet = tagParam["cuesheet"].Literal();
             int playDelaymsec = tagParam["delay", 0];
             int fadeTimemsec = tagParam["time", 0];
 
             float playDelay = (float)playDelaymsec / 1000.0f;
             float fadeTime = (float)fadeTimemsec / 1000.0f;
+
             bool loop = tagParam["loop", false];
+
+            if (!tagParam.ContainsKey("buf") && !tagParam.ContainsKey("buf"))
+                loop = true;
 
             {
                 CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
@@ -207,7 +264,11 @@ namespace Trionfi
                     _atom.SetVolume(0.0f);
 
                     if (playDelay > 0.0f)
+                    {
+                        _atom.Prepare();
                         yield return new WaitForSeconds(playDelay);
+                        _atom.Resume(CriAtomEx.ResumeMode.PreparedPlayback);
+                    }
 
                     //if (fadeTime > 0.09f)
                     //{
@@ -215,7 +276,7 @@ namespace Trionfi
                     //    float _vol = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
                     //    _source.DOFade(_vol, fadeTime);
                     //}
-                    //else
+                    else
                     {
                         _atom.SetVolume(TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume);
                         _atom.Start();
@@ -225,40 +286,10 @@ namespace Trionfi
             }
         }
     }
-
-    public class adxloadacbComponent : AbstractComponent
+    
+    public class AdxstopComponent : AbstractComponent
     {
-        public adxloadacbComponent()
-        {
-#if UNITY_EDITOR && TR_DEBUG
-            //必須項目
-            essentialParams = new List<string>
-            {
-                                "buf",
-                                "storage"
-            };
-#endif
-        }
-
-        protected override void TagFunction()
-        {
-            int id = tagParam["buf", 0];
-
-            string storage = tagParam["storage"].Literal();
-
-            CriAtomExAcb _acb = Trionfi.Instance.adxInstance[id].acb;
-
-            if (_acb != null)
-                _acb.Dispose();
-
-            Trionfi.Instance.adxInstance[id].acb = CriAtomExAcb.LoadAcbFile(null, storage+".acb", storage+".awb");
-
-        }
-    }
-
-    public class adxstopComponent : AbstractComponent
-    {
-        public adxstopComponent()
+        public AdxstopComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -283,9 +314,9 @@ namespace Trionfi
         }
     }
 
-    public class adxpauseComponent : AbstractComponent
+    public class AdxpauseComponent : AbstractComponent
     {
-        public adxpauseComponent()
+        public AdxpauseComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -309,9 +340,9 @@ namespace Trionfi
     }
 
     //[audiostop type=bgm delay=0]
-    public class adxresumeComponent : AbstractComponent
+    public class AdxresumeComponent : AbstractComponent
     {
-        public adxresumeComponent()
+        public AdxresumeComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目

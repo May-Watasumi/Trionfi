@@ -9,6 +9,9 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.IO.Compression;
 using System.Text;
 using Jace.Execution;
+using Jace.Operations;
+using TRVariable = Jace.Operations.VariableCalcurator;
+using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
@@ -113,10 +116,17 @@ namespace Trionfi
             {
                 TRTagList arrayComponents = tagInstance.arrayComponents;
 
-                while (arrayComponents[currentPos].GetType() != typeof(T) && arrayComponents[currentPos].GetType() != typeof(Y)) ;
-                currentPos++;
+                while (arrayComponents[currentPos].GetType() != typeof(T) && arrayComponents[currentPos].GetType() != typeof(Y))
+                    currentPos++;
             }
 
+            public void SkipTo<X, Y, Z>()
+            {
+                TRTagList arrayComponents = tagInstance.arrayComponents;
+
+                while (arrayComponents[currentPos].GetType() != typeof(X) && arrayComponents[currentPos].GetType() != typeof(Y) && arrayComponents[currentPos].GetType() != typeof(Z))
+                    currentPos++;
+            }
         }
 
         public class TRCallStack : Stack<FunctionalObjectInstance>
@@ -159,27 +169,26 @@ namespace Trionfi
             ifStack.Clear();
         }
 
-        public static double Calc(TRVariableDictionary _variable, string calcString)
+        public static VariableCalcurator Calc(string formula, TRVariableDictionary _variable = null)
         {
-            Dictionary<string, double> calcValue = new Dictionary<string, double>();
-            Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+            Jace.Tokenizer.TokenReader reader = new Jace.Tokenizer.TokenReader(System.Globalization.CultureInfo.InvariantCulture);
+            List<Jace.Tokenizer.Token> tokens = reader.Read(formula);
 
-            double result = engine.Calculate(calcString, calcValue);
+            Jace.Execution.IFunctionRegistry functionRegistry = new Jace.Execution.FunctionRegistry(false);
 
-            /*
-                                    foreach(KeyValuePair<string, KeyValuePair<string, TRDataType>> _pair in _variable)
-                                    {
-                                        float _value = 0.0f;
+            Jace.AstBuilder astBuilder = new Jace.AstBuilder(functionRegistry);
+            Operation operation = astBuilder.Build(tokens);
+            Jace.Execution.Interpreter executor = new Jace.Execution.Interpreter();
 
-                                        if (_variable.IsValid(ref _value, _pair.Key))
-                                            calcValue[_pair.Key] = _value;
-                                        else
-                                            calcValue[_pair.Key] = float.PositiveInfinity;
-                                    }
+            //            Dictionary<string, VariableCalcurator> variablesv2 = new Dictionary<string, VariableCalcurator>();
 
-                                    double result = engine.Calculate(calcString, calcValue);
-                                    return result;
-                        */
+            VariableCalcurator result = executor.Execute(operation, null, variableInstance);
+
+//            Dictionary<string, VariableCalcurator> calcValue = new Dictionary<string, VariableCalcurator>();
+//            Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
+
+//            VariableCalcurator result = engine.CalculateV2(calcString, calcValue);
+
             return result;
         }
 

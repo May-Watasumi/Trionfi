@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using Trionfi;
+using TRVariable = Jace.Operations.VariableCalcurator;
+using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
@@ -212,19 +214,20 @@ namespace Trionfi
                 if (string.IsNullOrEmpty(rightParam))
                     throw new TRParserExecption(TRParserError.UnmatchType);
 
-                int _isInt;
-                double _isFloat;
+                int _int;
+                uint _uint;
+                float _float;
 
                 if (rightParam[0] == '0' && rightParam.Length > 2 && (rightParam[1] == 'x' || rightParam[1] == 'X') &&
-                    int.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _isInt)
+                    uint.TryParse(rightParam, System.Globalization.NumberStyles.AllowHexSpecifier, null, out _uint)
                    )
-                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.Hex);
-                else if (int.TryParse(rightParam, out _isInt))
-                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.Int);
-                else if (double.TryParse(rightParam, out _isFloat))
-                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.Float);
+                    paramList[leftParam] = new TRVariable(_uint);
+                else if (int.TryParse(rightParam, out _int))
+                    paramList[leftParam] = new TRVariable(_int);
+                else if (float.TryParse(rightParam, out _float))
+                    paramList[leftParam] = new TRVariable(_float);
                 else
-                    paramList[leftParam] = new TRVariable(rightParam, TRDataType.String);
+                    paramList[leftParam] = new TRVariable(rightParam);
 
                 return true;
             }

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 //using ExpressionParser;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
+using Jace.Operations;
 
 namespace Trionfi {
     //エイリアスを定義する。実行はUnknownTag任せでパーサーでは変換しない（独立性）
@@ -204,7 +204,6 @@ namespace Trionfi {
         }
     }
 
-    //Jaceによってcalcとflagは差別化がなくなったので不要になる
     public class EvalComponent : AbstractComponent {
 		public EvalComponent() {
 #if UNITY_EDITOR && TR_DEBUG
@@ -216,25 +215,8 @@ namespace Trionfi {
         }
 
 		protected override void TagFunction() {
-            string _exp = tagParam["exp"].Literal();
-            string[] _exp2 = _exp.Split('=');
-            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, _exp2[1]);
-
-            TRVirtualMachine.variableInstance[_exp2[0]] = new TRVariable((float)result);
-        }
-    }
-	public class FlagComponent : AbstractComponent {
-		public FlagComponent() {
-#if UNITY_EDITOR && TR_DEBUG
-            //必須項目
-            essentialParams = new List<string> {
-				"exp"
-			};
-#endif
-        }
-
-		protected override void TagFunction() {
-            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam["exp"].Literal());
+            string exp = tagParam["exp"].Literal();
+            VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
         }
     }
 
@@ -250,16 +232,16 @@ namespace Trionfi {
         }
 
 		protected override void TagFunction() {
+            string exp = tagParam["exp"].Literal();
 
-            double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, tagParam["exp"].Literal());
-//            ToDo:
-            /*
-			//条件に合致した場合はそのままifの中へ
-			if(result == "false" || result == "0")
-                TRVirtualMachine.ifStack.Push(false);
-            else
-                TRVirtualMachine.ifStack.Push(true);
-            */
+            VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
+            TRVirtualMachine.ifStack.Push(result.Bool());
+
+            if (!result.Bool())
+            {
+                TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+                _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
+            }
         }
     }
     
@@ -281,21 +263,21 @@ namespace Trionfi {
 
             //直前が真の場合はelseifは実行されない
             if (_stack)
-                TRVirtualMachine.ifStack.Push(false);
+            {
+                TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+                _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
+            }
             else
             {
                 string exp = tagParam["exp"].Literal();
-                double result = TRVirtualMachine.Calc(TRVirtualMachine.variableInstance, exp);
-                //ToDo:
-/*
-                string result = ExpObject.calc(exp);
+                VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
+                TRVirtualMachine.ifStack.Push(result.Bool());
 
-                //条件に合致した場合はそのままifの中へ
-                if (result == "false" || result == "0")
-                    TRVirtualMachine.ifStack.Push(false);
-                else
-                    TRVirtualMachine.ifStack.Push(true);
-*/
+                if (!result.Bool())
+                {
+                    TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+                    _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
+                }
             }
         }
     }
@@ -314,7 +296,11 @@ namespace Trionfi {
             bool _stack = TRVirtualMachine.ifStack.Pop();
 
             //直前が真の場合はelseifは実行されない
-            TRVirtualMachine.ifStack.Push(!_stack);
+            if (_stack)
+            {
+                TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+                _cuttentStack.SkipTo<EndifComponent>();
+            }
         }
     }
 

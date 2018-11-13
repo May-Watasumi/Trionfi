@@ -2,6 +2,8 @@
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+using TRVariable = Jace.Operations.VariableCalcurator;
+using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {

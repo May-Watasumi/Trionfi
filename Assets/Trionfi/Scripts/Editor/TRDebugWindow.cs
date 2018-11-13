@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
+using Jace.Operations;
 
 namespace Trionfi
 {
@@ -23,6 +24,7 @@ namespace Trionfi
         Vector2 scriptScroll;
 
         string statementText;
+        string expressionText;
 
         [MenuItem("Tools/Trionfi/DebugWindow")]
         private static void Open()
@@ -68,6 +70,16 @@ namespace Trionfi
                 }
                 else
                     consoleLog += ("Invalid Tag!\n");
+            }
+
+            GUILayout.Space(20);
+            GUILayout.Label("expression Test");
+
+            expressionText = EditorGUILayout.TextField("", expressionText);
+            if (GUILayout.Button("実行"))
+            {
+                VariableCalcurator _var = TRVirtualMachine.Calc(expressionText, TRVirtualMachine.variableInstance);
+                UnityEngine.Debug.Log(_var.paramString);
             }
 
             GUILayout.Space(20);

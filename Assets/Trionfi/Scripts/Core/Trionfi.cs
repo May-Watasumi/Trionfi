@@ -7,6 +7,8 @@ using System;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+using TRVariable = Jace.Operations.VariableCalcurator;
+using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
@@ -47,6 +49,7 @@ namespace Trionfi
     [System.Serializable]
     public class TRAdx : TRMediaInstance<CriAtomExPlayer>
     {
+        public static string basePath;
         public static void  LoadAcf(string path)
         {
             if (!File.Exists(path))
@@ -279,7 +282,7 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["stopbgm"] = new AudiostopComponent();
             TRVirtualMachine.aliasTagInstance["stopbgm"].tagParam = _temp;
 
-            _temp["buf"].Set(audioID["se"]);
+            _temp["buf"] = new TRVariable(audioID["se"]);
             TRVirtualMachine.aliasTagInstance["playse"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playse"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausese"] = new AudiopauseComponent();
@@ -287,7 +290,7 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["stopse"] = new AudiostopComponent();
             TRVirtualMachine.aliasTagInstance["stopse"].tagParam = _temp;
 
-            _temp["buf"].Set(audioID["voice"]);
+            _temp["buf"] = new TRVariable(audioID["voice"]);
             TRVirtualMachine.aliasTagInstance["playvoice"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playvoice"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausevoice"] = new AudiopauseComponent();
@@ -308,11 +311,13 @@ namespace Trionfi
         public void Start()
         {
 #if TR_USE_CRI
-            if(otherComponent.GetComponent< CriWareInitializer>())
+            TRAdx.basePath = Application.streamingAssetsPath;
+            /*
+            if (otherComponent.GetComponent< CriWareInitializer>())
                 otherComponent.AddComponent<CriWareInitializer>();
             if(otherComponent.GetComponent<CriWareErrorHandler>())
                 otherComponent.AddComponent<CriWareInitializer>();
-
+            */
             foreach (KeyValuePair<int, TRAdx> _pair in adxInstance )
             {
                 _pair.Value.instance = new CriAtomExPlayer();

@@ -1,9 +1,96 @@
 ﻿using UnityEngine;
 using System.Collections.Generic;
 using System.Globalization;
+using TRVariable = Jace.Operations.VariableCalcurator;
+using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
+
+    public class TRVariableDictionary : SerializableDictionary<string, TRVariable>//KeyValuePair<string, TRDataType>>
+    {
+        public static Color ToARGB(uint val)
+        {
+            var inv = 1f / 255f;
+            var c = Color.black;
+            c.a = inv * ((val >> 24) & 0xFF);
+            c.r = inv * ((val >> 16) & 0xFF);
+            c.g = inv * ((val >> 8) & 0xFF);
+            c.b = inv * (val & 0xFF);
+            c.a = 1f;
+            return c;
+        }
+
+        public static Color ToRGB(uint val)
+        {
+            var inv = 1f / 255f;
+            var c = Color.black;
+            c.a = 1.0f;
+            c.r = inv * ((val >> 16) & 0xFF);
+            c.g = inv * ((val >> 8) & 0xFF);
+            c.b = inv * (val & 0xFF);
+            c.a = 1f;
+            return c;
+        }
+
+        const float defaultFloat = 0.0f;
+        const int defaultInt = 0;
+        string defaultString = string.Empty;
+        const uint defaultUint = 0;
+        const bool defaultBool = false;
+
+        public float this[string t, float u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Float();
+                else return u;
+            }
+        }
+
+        public int this[string t, int u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Int();
+                else return u;
+            }
+        }
+
+        public uint this[string t, uint u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Uint();
+                else return u;
+            }
+        }
+
+        public bool this[string t, bool u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Bool();
+                else return u;
+            }
+        }
+
+        public string this[string t, string u]
+        {
+            get
+            {
+                if (ContainsKey(t))
+                    return this[t].Literal();
+                else return u;
+            }
+        }
+
+
+#if false
     public enum TRDataType
     {
         Null,
@@ -336,91 +423,9 @@ namespace Trionfi
         }
         */
     }
+#endif
 
-    public class TRVariableDictionary : SerializableDictionary<string, TRVariable>//KeyValuePair<string, TRDataType>>
-    {
-        public static Color ToARGB(uint val)
-        {
-            var inv = 1f / 255f;
-            var c = Color.black;
-            c.a = inv * ((val >> 24) & 0xFF);
-            c.r = inv * ((val >> 16) & 0xFF);
-            c.g = inv * ((val >> 8) & 0xFF);
-            c.b = inv * (val & 0xFF);
-            c.a = 1f;
-            return c;
-        }
-
-        public static Color ToRGB(uint val)
-        {
-            var inv = 1f / 255f;
-            var c = Color.black;
-            c.a = 1.0f;
-            c.r = inv * ((val >> 16) & 0xFF);
-            c.g = inv * ((val >> 8) & 0xFF);
-            c.b = inv * (val & 0xFF);
-            c.a = 1f;
-            return c;
-        }
-
-        const float defaultFloat = 0.0f;
-        const int defaultInt = 0;
-        string defaultString = string.Empty;
-        const uint defaultUint = 0;
-        const bool defaultBool = false;
-
-        public float this[string t, float u]
-        {
-            get
-            {
-                if (ContainsKey(t))
-                    return this[t].Float();
-                else return u;
-            }
-        }
-
-        public int this[string t, int u]
-        {
-            get
-            {
-                if (ContainsKey(t))
-                    return this[t].Int();
-                else return u;
-            }
-        }
-
-        public uint this[string t, uint u]
-        {
-            get
-            {
-                if (ContainsKey(t))
-                    return this[t].Hex();
-                else return u;
-            }
-        }
-
-        public bool this[string t, bool u]
-        {
-            get
-            {
-                if (ContainsKey(t))
-                    return this[t].Bool();
-                else return u;
-            }
-        }
-
-        public string this[string t, string u]
-        {
-            get
-            {
-                if (ContainsKey(t))
-                    return this[t].Literal();
-                else return u;
-            }
-        }
-
-        
-        #if false
+#if false
         public bool IsValid(ref bool res, string key)
         {
             res = false;
