@@ -75,7 +75,7 @@ namespace Trionfi {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialParams = new List<string> {
-//				"target"
+				"target"
 			};
 #endif
         }
@@ -85,7 +85,7 @@ namespace Trionfi {
         public override IEnumerator TagSyncFunction()
         {
             string target = tagParam["target"].Literal();
-            string file = tagParam["file"].Literal();// TRVirtualMachine.currentCallStack.scriptName);
+            string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
 
 			//ファイルが異なるものになる場合、シナリオをロードする
 			if(file != TRVirtualMachine.currentCallStack.scriptName)

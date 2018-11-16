@@ -8,32 +8,6 @@ Trionfi　Version 1.00 　copyright by 渡澄萌衣/2018
 ■必要な外部アセット
 ・DoTween（FREE版）(https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)
 
-
-■シナリオフォーマット
-【】で名前をくくり、その下に会話文を続けていきます。
-会話文の間は行をあけてください。
-
-※例
-【こはく】
-こんにちわ。
-わたしは大鳥こはくだよ。
-
-【ゆうこ】
-こんにちわ。
-わたしは神林ゆうこ。
-
-以下のシナリオ専用タグが使えます
-<ruby value='るび' color=#FF0000>ルビ(colorは省略可能)</ruby>
-<b>太字</b>
-<i>イタリック</i>
-<s>打ち消し線</s>
-<u>下線</u>
-<color value=#FF0000>
-<color value=yellow>
-<size value=30>
- 
-
-
 ■リファレンス等
 オンラインマニュアル
 http://cybernetic-cute.sakura.ne.jp/trionfi

@@ -21,9 +21,11 @@ namespace Trionfi
                 TRSelectWindow.Instance.decisionSound.Play();
 
             TRSelectWindow.Instance.gameObject.SetActive(false);
-            Trionfi.Instance.ReactiveWindow();
 
-            TRSelectWindow.Instance.onWait = false;           
+            Trionfi.Instance.ReactiveWindow();
+            Trionfi.Instance.globalTap.SetActive(true);
+
+            TRSelectWindow.Instance.onWait = false;
         }
 
         public Text contentText;

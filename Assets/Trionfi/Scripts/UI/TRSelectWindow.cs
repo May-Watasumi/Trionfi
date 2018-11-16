@@ -34,6 +34,8 @@ namespace Trionfi
 
         public void Begin()
         {
+            Trionfi.Instance.globalTap.SetActive(false);
+
             for (int a = 0; a < selectorList.Count; a++)
             {
                 selectorList[a].gameObject.SetActive(false);
