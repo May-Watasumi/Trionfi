@@ -19,14 +19,14 @@ http://cybernetic-cute.sakura.ne.jp/trionfi
 
 ■サポート
 バグ修正や要望については下記の連絡先にいただければ可能な限り対応していく予定です。
+https://twitter.com/Trionfi_Unity
+saya.swatty@gmail.com
 
 ■ToDo
-・選択肢
 ・セーブロード機能
-・変数演算
 ・台本ツール（ボイスナンバリング、PDF吐き出し）開発中：50％
-・Live2D、E-mote、ADX対応
-・宴エクスポーター（スクリプトコンバータ）もしくはダイレクトな命令置換実行（需要により）
+・Live2D、E-mote対応
+・”宴”エクスポーター（スクリプトコンバータ）もしくはダイレクトな命令置換実行（需要により）
 
 
 ■連絡先

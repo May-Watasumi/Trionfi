@@ -6,12 +6,14 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
+    [SerializeField]
     public enum TRDataProtocol
     {
+        Default,
         File,
         LocalResource,
         Network,
-        Null
+        Null,
     }
 
     public enum TRResourceType
@@ -66,14 +68,8 @@ namespace Trionfi
         public string saveDataPath = "savedata/";
         [SerializeField]
         public Image loadingIcon = null;
-
-
-        const TRDataProtocol defaultDataType =
-#if TR_DEBUG
-            TRDataProtocol.LocalResource;
-#else
-            TRDataProtocol.File;
-#endif
+        [SerializeField]
+        public TRDataProtocol defaultDataType = TRDataProtocol.LocalResource;
 
         TRDataProtocol lastDataType = TRDataProtocol.Null;
 
@@ -136,9 +132,12 @@ namespace Trionfi
             }
         }
 
-        public void Load(string url, TRResourceType type, TRDataProtocol protocol = defaultDataType)
+        public void Load(string url, TRResourceType type, TRDataProtocol protocol = TRDataProtocol.Default)
         {
             isLoading = true;
+
+            if (protocol == TRDataProtocol.Default)
+                protocol = defaultDataType;
 
             StartCoroutine(LoadCoroutine(url, type, protocol));
         }
