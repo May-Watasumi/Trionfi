@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
+using DG.Tweening;
 
 namespace Trionfi
 {
@@ -49,6 +50,51 @@ namespace Trionfi
         }
     }
 
+    public class MesspeedComponent : AbstractComponent
+    {
+        public MesspeedComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+                "ratio"
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            float ratio = tagParam["ratio", 1.0f];
+            Trionfi.Instance.messageWindow.speedRatio = ratio;
+        }
+    }
+
+    public class MesshakeComponent : AbstractComponent
+    {
+        public MesshakeComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string>
+            {
+//                "layer",
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            //振幅
+            int strength = tagParam["strength", 5];
+            //振動頻度
+            int vibratio = tagParam["vibrato", 20];
+
+            RectTransform _rect = Trionfi.Instance.messageWindow.gameObject.GetComponent<RectTransform>();
+
+            Trionfi.Instance.messageWindow.tweener = _rect.GetComponent<RectTransform>().DOShakePosition(1.0f, strength, vibratio, 90.0f, false, false).SetLoops(-1);
+        }
+    }
+    
     /*
         //改行命令 [r]
         public class RComponent : AbstractComponent

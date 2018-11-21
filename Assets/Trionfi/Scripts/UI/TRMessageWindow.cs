@@ -8,6 +8,9 @@ namespace Trionfi
 {
     public class TRMessageWindow : MonoBehaviour
     {
+        public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait, OnClose }
+        public enum WaitIcon { None, Alpha, Rotate }
+
         public bool enableLogWindow = true;
 
         public bool forceSkip = false;
@@ -18,10 +21,11 @@ namespace Trionfi
         public bool enableSkip
         { get { return forceSkip || onSkip; } }
 
-        public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait, OnClose }
-        public enum WaitIcon { None, Alpha, Rotate }
-
         public MessageState state = MessageState.None;
+
+        public float speedRatio = 1.0f;
+
+        public Tweener tweener = null;
 
         [SerializeField]
         public LetterWriter.Unity.Components.LetterWriterText currentMessage;
@@ -49,9 +53,6 @@ namespace Trionfi
 
         private void OnClick()
         {
-            Debug.Log("agjaeopgjaepgjkaeopgjasijg");
-
-
             if (!gameObject.activeSelf)
                 return;
             else if (onSkip)
@@ -84,6 +85,7 @@ namespace Trionfi
         {
             currentMessage.text = "";
             currentName.text = "";
+            speedRatio = 1.0f;
         }
 
         public IEnumerator _waitCoroutine = null;
@@ -98,7 +100,7 @@ namespace Trionfi
 
         private IEnumerator ShowMessageSub(string message, float mesCurrentWait)
         {
-            float mesWait = mesCurrentWait;
+            float mesWait = mesCurrentWait / speedRatio;
 
             if(!enableSkip)
                 currentMessage.VisibleLength = 0;
@@ -108,7 +110,7 @@ namespace Trionfi
 
             Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, currentName.text);
 
-            if (!enableSkip && mesCurrentWait > 0.0f)
+            if (!enableSkip && mesWait > 0.0f)
             {
                 for (int i = 0; i < currentMessage.MaxIndex; i++)
                 {
@@ -130,6 +132,9 @@ namespace Trionfi
 
         public IEnumerator Wait(WaitIcon icon = WaitIcon.Alpha, float autoWait = 1.0f)
         {
+            if (tweener != null)
+                tweener.Kill();
+
             if(!enableSkip)
             {
                 state = MessageState.OnWait;
