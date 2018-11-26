@@ -212,12 +212,16 @@ namespace Trionfi
 #endif
                         break;
 #endif
-                        default:
+                    default:
                         request = UnityWebRequest.Get(fullpath);
                         break;
                 }
 
+#if UNITY_2017_2_OR_NEWER               
                 yield return request.SendWebRequest();
+#else
+                yield return request.Send();
+#endif
             }
 
 

@@ -286,8 +286,11 @@ public class TRReleaser : EditorWindow
 
         if (!Directory.Exists(_outputPath + "MacOS"))
             Directory.CreateDirectory(_outputPath + "MacOS");
+#if UNITY_2017_2_OR_NEWER
         BuildPipeline.BuildAssetBundles(_outputPath + "MacOS", BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneOSX);
-
+#else
+        BuildPipeline.BuildAssetBundles(_outputPath + "MacOS", BuildAssetBundleOptions.ChunkBasedCompression, BuildTarget.StandaloneOSXUniversal);
+#endif
         if (target_iOS)
         {
             if (!Directory.Exists(_outputPath + "iOS"))
