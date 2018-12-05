@@ -28,11 +28,22 @@ namespace Trionfi
         public Tweener tweener = null;
 
         [SerializeField]
+        public bool useUguiText = false;
+
+        [SerializeField]
         public LetterWriter.Unity.Components.LetterWriterText currentMessage;
+
+        [SerializeField]
+        public Text currentUguiMessage;
+
         [SerializeField]
         public Text currentName;
         //    [SerializeField]
         //    private Image MessageFrameImage;
+
+        [SerializeField]
+        public Image faceIcon;
+
         [SerializeField]
         public Image waitCursor;
 
@@ -40,6 +51,7 @@ namespace Trionfi
 
         public void Start()
         {
+            currentUguiMessage.fontSize = TRSystemConfig.Instance.fontSize;
             currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
             currentMessage.color = TRSystemConfig.Instance.fontColor;
 
@@ -83,6 +95,7 @@ namespace Trionfi
 
         public void ClearMessage()
         {
+            currentUguiMessage.text = "";
             currentMessage.text = "";
             currentName.text = "";
             speedRatio = 1.0f;
@@ -94,7 +107,11 @@ namespace Trionfi
         {
             state = MessageState.OnShow;
 
-            _waitCoroutine = ShowMessageSub(text, mesCurrentWait);// StartCoroutine(ShowMessageSub(text, mesCurrentWait));
+            if (useUguiText)
+                _waitCoroutine = ShowMessageUguiSub(text, mesCurrentWait);
+            else
+                _waitCoroutine = ShowMessageSub(text, mesCurrentWait);
+
             StartCoroutine(_waitCoroutine);
         }
 
@@ -106,7 +123,9 @@ namespace Trionfi
                 currentMessage.VisibleLength = 0;
 
             currentMessage.text = message;
-            currentName.text = nameString;
+
+            if (currentName != null)
+                currentName.text = nameString;
 
             Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, currentName.text);
 
@@ -127,6 +146,49 @@ namespace Trionfi
 
             yield return Wait();
         }
+
+        private IEnumerator ShowMessageUguiSub(string message, float mesCurrentWait)
+        {
+            float mesWait = mesCurrentWait / speedRatio;
+
+            string tempString = string.Empty;
+
+            if (!enableSkip)
+            {
+                for (int a = 0; a < message.Length; a++)
+                {
+                    if(message[a] == '\n' || message[a] == '\r')
+                        tempString += message[a];
+                    else
+                        tempString += "@"+a.ToString();
+                }
+            }
+
+//            currentUguiMessage.text = tempString;
+
+            if(currentName != null)
+                currentName.text = nameString;
+
+            Trionfi.Instance.messageLogwindow.AddLogData(message, nameString);
+
+            if (!enableSkip && mesWait > 0.0f)
+            {
+                for (int i = 0; i < message.Length; i++)
+                {
+                    if (state == MessageState.OnShow && !enableSkip)
+                        currentUguiMessage.text += message[i].ToString(); //.Replace("@" + i.ToString(), message[i].ToString());
+                    else
+                        break;
+
+                    yield return new WaitForSeconds(mesWait);
+                }
+            }
+
+            currentUguiMessage.text = message;
+
+            yield return Wait();
+        }
+
 
         Tweener _sequence = null;
 

@@ -112,6 +112,9 @@ namespace Trionfi
         [SerializeField]
         public GameObject nowLoading;
 
+        [SerializeField]
+        public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
+
         static readonly SerializableDictionary<string, int> audioID = new SerializableDictionary<string, int>()
         {
             { "bgm", 0 },
@@ -324,8 +327,9 @@ namespace Trionfi
             }
 #endif
             Vector2 canvasSize = uiCanvas.GetComponent<CanvasScaler>().referenceResolution;
-            globalTap.GetComponent<RectTransform>().sizeDelta = canvasSize;
 
+            if(globalTap != null)
+                globalTap.GetComponent<RectTransform>().sizeDelta = canvasSize;
             if (messageLogwindow != null)
                 messageLogwindow.gameObject.SetActive(false);
             if(messageWindow != null)

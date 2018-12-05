@@ -94,7 +94,31 @@ namespace Trionfi
             Trionfi.Instance.messageWindow.tweener = _rect.GetComponent<RectTransform>().DOShakePosition(1.0f, strength, vibratio, 90.0f, false, false).SetLoops(-1);
         }
     }
-    
+
+    public class MeswindowComponent : AbstractComponent
+    {
+        public MeswindowComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string>
+            {
+                "id"
+                //                "layer",
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.Instance.messageWindow = Trionfi.Instance.messageWindowList[tagParam["id"].Int()];
+            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+
+        }
+    }
+
+
     /*
         //改行命令 [r]
         public class RComponent : AbstractComponent
