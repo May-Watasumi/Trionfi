@@ -4,7 +4,9 @@ using UnityEngine.Networking;
 using DG.Tweening;
 using System.Collections;
 using System.Collections.Generic;
-
+#if UNITY_2017_1_OR_NEWER
+using UnityEngine.U2D;
+#endif
 namespace Trionfi
 {
     //  color
@@ -72,20 +74,30 @@ namespace Trionfi
 
             _image.color = tempColor;
 
-            if (!string.IsNullOrEmpty(storage))
+#if UNITY_2017_1_OR_NEWER
+            if (tagParam.ContainsKey("atlas"))
             {
-                TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
-
-                while (TRResourceLoader.Instance.isLoading)
-                    yield return new WaitForSeconds(1.0f);
-
-                if (TRResourceLoader.Instance.isSuceeded)
+                SpriteAtlas atlas = Resources.Load<SpriteAtlas>(tagParam["atlas"].Literal());
+                Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
+                _image.texture = sprite.texture;
+            }
+            else
+            {
+#endif
+                if (!string.IsNullOrEmpty(storage))
                 {
-                    Trionfi.Instance.layerInstance[id].path = storage;
-                    _image.texture = TRResourceLoader.Instance.texture;
+                    TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+
+                    while (TRResourceLoader.Instance.isLoading)
+                        yield return new WaitForSeconds(1.0f);
+
+                    if (TRResourceLoader.Instance.isSuceeded)
+                    {
+                        Trionfi.Instance.layerInstance[id].path = storage;
+                        _image.texture = TRResourceLoader.Instance.texture;
+                    }
                 }
             }
-
 
             if (updatePos)
                 _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
