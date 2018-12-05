@@ -35,13 +35,19 @@ namespace Trionfi
         [MenuItem("Tools/Trionfi/OpenScriptFile")]
         private static void ExecuteScriptFile()
         {
-            
             string path = EditorUtility.OpenFilePanel("シナリオファイル", Application.dataPath, "txt");
             if (path.Length != 0)
             {
-                string _name = Path.GetFileNameWithoutExtension(path);
-                TRVirtualMachine.Instance.CompileScriptFile(_name);
-                Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(_name));
+                string _name = Regex.Replace(path, ".*Assets", "Assets");//  Path.GetFileNameWithoutExtension(path);
+                string storage = Path.GetFileNameWithoutExtension(path);
+
+                TextAsset _text = AssetDatabase.LoadAssetAtPath<TextAsset>(_name);
+
+                TRTagInstance _instance = new TRTagInstance();
+                _instance.CompileScriptString(_text.text);
+
+                TRVirtualMachine.tagInstances[storage] = _instance;
+                Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(storage));
             }
         }
 

@@ -21,6 +21,10 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string message = tagParam["val"].Literal();
+
+            if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
+                Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.Instance.configData.textspeed);
         }
 
