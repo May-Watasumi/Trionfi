@@ -1,4 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
+#if UNITY_2017_1_OR_NEWER
+using UnityEngine.U2D;
+#endif
 using System.Collections;
 using System.Collections.Generic;
 using DG.Tweening;
@@ -51,6 +55,66 @@ namespace Trionfi
         {
             string name = tagParam["val"].Literal();
             Trionfi.Instance.messageWindow.ShowName(name);
+        }
+    }
+
+    public class MesfaceComponent : AbstractComponent
+    {
+        public MesfaceComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+                "storage"
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            hasSync = true;
+        }
+
+        public override IEnumerator TagSyncFunction()
+        {
+            Image _image;
+            _image = Trionfi.Instance.messageWindow.faceIcon;
+
+            if (_image == null)
+                yield break;
+
+            string storage = tagParam["storage", string.Empty];
+
+            //            _image.sprite = null;
+
+#if UNITY_2017_1_OR_NEWER
+            if (tagParam.ContainsKey("atlas"))
+            {
+                SpriteAtlas atlas = Resources.Load<SpriteAtlas>(tagParam["atlas"].Literal());
+                Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
+                _image.sprite = sprite;
+            }
+            else
+#endif
+            {
+                if (!string.IsNullOrEmpty(storage))
+                {
+                    TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+
+                    while (TRResourceLoader.Instance.isLoading)
+                        yield return new WaitForSeconds(1.0f);
+
+                    if (TRResourceLoader.Instance.isSuceeded)
+                    {
+                        _image.sprite = Sprite.Create(TRResourceLoader.Instance.texture, new Rect(0, 0, TRResourceLoader.Instance.texture.width, TRResourceLoader.Instance.texture.height), Vector2.zero);
+                    }
+                }
+            }
+            //            if (!string.IsNullOrEmpty(storage))
+            //                _image.SetNativeSize();
+            //            else
+            //                _image.GetComponent<RectTransform>().sizeDelta = TRSystemConfig.Instance.screenSize;
+            _image.enabled = true;
         }
     }
 

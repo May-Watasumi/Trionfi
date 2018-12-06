@@ -106,6 +106,8 @@ namespace Trionfi
                 currentMessage.text = "";
             if (currentName != null)
                 currentName.text = "";
+            if (faceIcon != null)
+                faceIcon.enabled = false;
 
             speedRatio = 1.0f;
         }
