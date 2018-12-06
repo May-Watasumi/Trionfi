@@ -2,12 +2,10 @@
 using System.Collections.Generic;
 using System.Globalization;
 using TRVariable = Jace.Operations.VariableCalcurator;
-using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
-
-    public class TRVariableDictionary : SerializableDictionary<string, TRVariable>//KeyValuePair<string, TRDataType>>
+    public class TRVariableDictionary : SerializableDictionary<string, TRVariable>
     {
         public static Color ToARGB(uint val)
         {
