@@ -17,7 +17,7 @@ namespace Trionfi
 
         public bool onSkip = false;
         public bool onAuto = false;
-        
+
         public bool enableSkip
         { get { return forceSkip || onSkip; } }
 
@@ -51,9 +51,14 @@ namespace Trionfi
 
         public void Start()
         {
-            currentUguiMessage.fontSize = TRSystemConfig.Instance.fontSize;
-            currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
-            currentMessage.color = TRSystemConfig.Instance.fontColor;
+            if (currentUguiMessage != null)
+                currentUguiMessage.fontSize = TRSystemConfig.Instance.fontSize;
+
+            if (currentMessage != null)
+            {
+                currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
+                currentMessage.color = TRSystemConfig.Instance.fontColor;
+            }
 
             Trionfi.Instance.ClickEvent += OnClick;
         }
@@ -95,9 +100,13 @@ namespace Trionfi
 
         public void ClearMessage()
         {
-            currentUguiMessage.text = "";
-            currentMessage.text = "";
-            currentName.text = "";
+            if (currentUguiMessage != null)
+                currentUguiMessage.text = "";
+            if (currentMessage != null)
+                currentMessage.text = "";
+            if (currentName != null)
+                currentName.text = "";
+
             speedRatio = 1.0f;
         }
 
@@ -119,7 +128,7 @@ namespace Trionfi
         {
             float mesWait = mesCurrentWait / speedRatio;
 
-            if(!enableSkip)
+            if (!enableSkip)
                 currentMessage.VisibleLength = 0;
 
             currentMessage.text = message;
@@ -157,16 +166,16 @@ namespace Trionfi
             {
                 for (int a = 0; a < message.Length; a++)
                 {
-                    if(message[a] == '\n' || message[a] == '\r')
+                    if (message[a] == '\n' || message[a] == '\r')
                         tempString += message[a];
                     else
-                        tempString += "@"+a.ToString();
+                        tempString += "@" + a.ToString();
                 }
             }
 
-//            currentUguiMessage.text = tempString;
+            //            currentUguiMessage.text = tempString;
 
-            if(currentName != null)
+            if (currentName != null)
                 currentName.text = nameString;
 
             Trionfi.Instance.messageLogwindow.AddLogData(message, nameString);
@@ -197,7 +206,7 @@ namespace Trionfi
             if (tweener != null)
                 tweener.Kill();
 
-            if(!enableSkip)
+            if (!enableSkip)
             {
                 state = MessageState.OnWait;
 
