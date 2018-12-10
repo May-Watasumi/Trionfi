@@ -252,6 +252,10 @@ namespace Trionfi
                     // リフレクションで動的型付け
                     Type masterType = Type.GetType(className);
 
+                    //別アセンブリの時がある（Unityの特殊フォルダに入れた時とか）
+                    if (masterType == null)
+                        masterType = Type.GetType(className + ",Assembly-CSharp");
+
                     if (masterType != null)
                         _component = (AbstractComponent)Activator.CreateInstance(masterType);
                     else
