@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 
 public class TRMessageLogData : MonoBehaviour {
+    public string logName;
+
     [SerializeField]
     public Image characterIcon;
 

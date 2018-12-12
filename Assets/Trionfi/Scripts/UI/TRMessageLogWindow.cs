@@ -29,7 +29,8 @@ namespace Trionfi {
             TRMessageLogData logData = _temp.GetComponent<TRMessageLogData>();
 
             logData.logText.text = message;
-            logData.SetIcon(name);
+            logData.logName = name;
+//            logData.SetIcon(name);
             logData.voice = voice;
 
             //ToDo:
