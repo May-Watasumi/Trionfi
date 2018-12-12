@@ -37,6 +37,34 @@ namespace Trionfi {
         }
     }
 
+    public class InitsceneComponent : AbstractComponent
+    {
+        public InitsceneComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            Trionfi.Instance.ResetCanvas();
+        }
+    }
+
+    public class EndsceneComponent : AbstractComponent
+    {
+        public EndsceneComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            Trionfi.Instance.ResetCanvas();
+        }
+    }
+
     public class LabelComponent : AbstractComponent
     {
         public LabelComponent()

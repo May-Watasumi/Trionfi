@@ -311,9 +311,10 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
         }
 
-        public void Reset(int mesWindowID = 0)
+        public void ResetCanvas(int mesWindowID = 0)
         {
             messageWindow = messageWindowList[mesWindowID];
+            messageWindow.ClearMessage();
 
             foreach (KeyValuePair<int,TRLayer> instance in layerInstance)
             {
@@ -332,7 +333,7 @@ namespace Trionfi
 
         }
 
-        public void Terminate()
+        public void HideCanvas()
         {
             layerCanvas.gameObject.SetActive(false);
             uiCanvas.gameObject.SetActive(false);
