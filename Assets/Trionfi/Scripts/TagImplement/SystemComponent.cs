@@ -62,7 +62,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            Trionfi.Instance.ResetCanvas();
+            Trionfi.Instance.HideCanvas();
         }
     }
 

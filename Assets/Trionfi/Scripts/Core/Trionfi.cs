@@ -173,7 +173,9 @@ namespace Trionfi
         {
             //Create Screen Cahpure Buffer;
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
+
             rawImage.texture = captureBuffer;
+            rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(TRSystemConfig.Instance.screenSize.y * Screen.width / Screen.height, TRSystemConfig.Instance.screenSize.y);
 
             //Init Screen Size
             layerCanvas.gameObject.GetComponent<CanvasScaler>().referenceResolution = TRSystemConfig.Instance.screenSize;
