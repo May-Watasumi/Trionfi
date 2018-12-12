@@ -47,7 +47,7 @@ namespace Trionfi
         [SerializeField]
         public Image waitCursor;
 
-        public string nameString = "";
+        public string nameString = string.Empty;
 
         public void Start()
         {
@@ -101,13 +101,15 @@ namespace Trionfi
         public void ClearMessage()
         {
             if (currentUguiMessage != null)
-                currentUguiMessage.text = "";
+                currentUguiMessage.text = string.Empty;
             if (currentMessage != null)
-                currentMessage.text = "";
+                currentMessage.text = string.Empty;
             if (currentName != null)
-                currentName.text = "";
+                currentName.text = string.Empty;
             if (faceIcon != null)
                 faceIcon.enabled = false;
+
+            nameString = string.Empty;
 
             speedRatio = 1.0f;
         }
