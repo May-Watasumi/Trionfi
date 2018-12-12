@@ -336,6 +336,8 @@ namespace Trionfi
 
         public void HideCanvas()
         {
+            messageWindow.gameObject.SetActive(false);
+
             layerCanvas.gameObject.SetActive(false);
             uiCanvas.gameObject.SetActive(false);
 
