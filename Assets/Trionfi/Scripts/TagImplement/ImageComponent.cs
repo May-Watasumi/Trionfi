@@ -64,11 +64,11 @@ namespace Trionfi
             int mtime = tagParam["time", 0];
             float time = (float)mtime / 1000.0f;
 
-            Color tempColor = Color.white;
-            Color destColor = Color.white;
+            Color tempColor = TRSystemConfig.Instance.imageDefaultColor;//Color.white;
+            Color destColor = TRSystemConfig.Instance.imageDefaultColor;//Color.white;
 
             if (time > 0.0f)
-                tempColor = new Color(1.0f, 1.0f, 1.0f, 0.0f);
+                tempColor = new Color(destColor.r, destColor.g, destColor.b, 0.0f);
             else if (tagParam.ContainsKey("color"))
                 TRUtility.GetColorName(ref tempColor, tagParam["color"].Literal());
 
@@ -168,6 +168,35 @@ namespace Trionfi
         }
     }
 
+    //
+    public class ImagecolorComponent : AbstractComponent
+    {
+        public ImagecolorComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string>
+            {
+                "layer",
+                "color"
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            RawImage _image;
+
+            int id = tagParam["layer", 0];
+            _image = Trionfi.Instance.layerInstance[id].instance;
+
+            Color color = Color.white;
+
+            TRUtility.GetColorName(ref color, tagParam["color"].Literal());
+
+            _image.color = color;
+        }
+    }
     //
     public class ImagetweenComponent : AbstractComponent
     {

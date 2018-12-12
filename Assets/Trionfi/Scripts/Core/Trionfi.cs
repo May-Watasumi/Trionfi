@@ -311,6 +311,39 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
         }
 
+        public void Reset(int mesWindowID = 0)
+        {
+            messageWindow = messageWindowList[mesWindowID];
+
+            foreach (KeyValuePair<int,TRLayer> instance in layerInstance)
+            {
+                instance.Value.instance.enabled = false;
+                instance.Value.path = string.Empty;
+            }
+
+            foreach (KeyValuePair<int, TRAudio> instance in audioInstance)
+            {
+                instance.Value.instance.Stop();
+                instance.Value.path = string.Empty;
+            }
+
+            layerCanvas.gameObject.SetActive(true);
+            uiCanvas.gameObject.SetActive(true);
+
+        }
+
+        public void Terminate()
+        {
+            layerCanvas.gameObject.SetActive(false);
+            uiCanvas.gameObject.SetActive(false);
+
+            foreach (KeyValuePair<int, TRAudio> instance in audioInstance)
+            {
+                instance.Value.instance.Stop();
+                instance.Value.path = string.Empty;
+            }
+        }
+
         public void Start()
         {
 #if TR_USE_CRI

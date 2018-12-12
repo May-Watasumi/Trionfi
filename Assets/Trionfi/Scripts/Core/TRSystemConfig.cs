@@ -67,6 +67,9 @@ namespace Trionfi
         public int fontSize = 26;
 
         [SerializeField]
+        public Color imageDefaultColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+
+        [SerializeField]
         public float defaultEffectTime = 1.0f;
 
         [SerializeField]
