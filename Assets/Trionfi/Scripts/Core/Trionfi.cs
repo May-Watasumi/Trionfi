@@ -319,6 +319,7 @@ namespace Trionfi
             foreach (KeyValuePair<int,TRLayer> instance in layerInstance)
             {
                 instance.Value.instance.enabled = false;
+                instance.Value.instance.texture = null;
                 instance.Value.path = string.Empty;
             }
 
