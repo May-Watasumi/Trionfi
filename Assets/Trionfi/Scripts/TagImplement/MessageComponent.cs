@@ -35,6 +35,9 @@ namespace Trionfi
         public override IEnumerator TagSyncFunction()
         {
             yield return new WaitWhile(() => Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None);
+
+            if (!TRSystemConfig.Instance.isNovelMode)
+                Trionfi.Instance.messageWindow.ClearMessage();
         }
     }
 

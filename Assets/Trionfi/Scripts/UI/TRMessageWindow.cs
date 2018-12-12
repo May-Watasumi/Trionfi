@@ -233,8 +233,8 @@ namespace Trionfi
 
             yield return new WaitForEndOfFrame();
 
-            if (!TRSystemConfig.Instance.isNovelMode)
-                ClearMessage();
+            //if (!TRSystemConfig.Instance.isNovelMode)
+            //    ClearMessage();
 
             //            if (!onSkip && !onAuto)
             //            Trionfi.Instance.ClickEvent -= onClickEvent;

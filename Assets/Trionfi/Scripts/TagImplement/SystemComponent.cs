@@ -47,7 +47,8 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            Trionfi.Instance.ResetCanvas();
+            int mesID = tagParam["mes", 0];
+            Trionfi.Instance.ResetCanvas(mesID);
         }
     }
 
