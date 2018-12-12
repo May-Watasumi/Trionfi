@@ -103,7 +103,22 @@ namespace Trionfi
                 _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
 
             if (!string.IsNullOrEmpty(storage))
-                _image.SetNativeSize();
+            {
+
+                if (tagParam.ContainsKey("width") || tagParam.ContainsKey("height"))
+                {
+                    Vector2 size = TRSystemConfig.Instance.screenSize;
+                    size.x = tagParam["width", TRSystemConfig.Instance.screenSize.x];
+                    size.y = tagParam["height", TRSystemConfig.Instance.screenSize.y];
+                    _image.GetComponent<RectTransform>().sizeDelta = size;
+                }
+                else if (tagParam["snap", false])
+                {
+                    _image.GetComponent<RectTransform>().sizeDelta = TRSystemConfig.Instance.screenSize;
+                }
+                else
+                    _image.SetNativeSize();
+            }
             else
                 _image.GetComponent<RectTransform>().sizeDelta = TRSystemConfig.Instance.screenSize;
 
