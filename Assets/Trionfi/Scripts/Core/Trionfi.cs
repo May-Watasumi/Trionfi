@@ -163,7 +163,6 @@ namespace Trionfi
         [SerializeField]
         public TRImageInstance layerInstance = new TRImageInstance()
         {
-
             { layerID["bg"], null },
             { layerID["stand"], null },
             { layerID["stand"]+1, null },
@@ -177,7 +176,14 @@ namespace Trionfi
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
 
             rawImage.texture = captureBuffer;
-            rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(TRSystemConfig.Instance.screenSize.y * Screen.width / Screen.height, TRSystemConfig.Instance.screenSize.y);
+
+            float screenAspect = (float)Screen.width / (float)Screen.height;
+            float canvasAspect = TRSystemConfig.Instance.screenSize.x / TRSystemConfig.Instance.screenSize.y;
+
+            if(screenAspect >= canvasAspect)
+                rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(TRSystemConfig.Instance.screenSize.y * Screen.width / Screen.height, TRSystemConfig.Instance.screenSize.y);
+            else
+                rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(TRSystemConfig.Instance.screenSize.x, TRSystemConfig.Instance.screenSize.x * Screen.height / Screen.width);
 
             //Init Screen Size
             layerCanvas.gameObject.GetComponent<CanvasScaler>().referenceResolution = TRSystemConfig.Instance.screenSize;
