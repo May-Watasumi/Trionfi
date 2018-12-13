@@ -67,6 +67,8 @@ namespace Trionfi
     [System.Serializable]
     public class TRLayer : TRMediaInstance<RawImage>
     {
+        public static string speaker;
+
         public string actor;
     }
 
@@ -323,6 +325,7 @@ namespace Trionfi
                 instance.Value.instance.enabled = false;
                 instance.Value.instance.texture = null;
                 instance.Value.path = string.Empty;
+                instance.Value.actor = string.Empty;
             }
 
             foreach (KeyValuePair<int, TRAudio> instance in audioInstance)
@@ -347,6 +350,17 @@ namespace Trionfi
             {
                 instance.Value.instance.Stop();
                 instance.Value.path = string.Empty;
+            }
+        }
+
+        public void SetStandLayerTone()
+        {
+            foreach (KeyValuePair<int, TRLayer> instance in layerInstance)
+            {
+                if(instance.Key == 0 || instance.Key >= 10 || string.IsNullOrEmpty(TRLayer.speaker) || instance.Value.actor == TRLayer.speaker)
+                    instance.Value.instance.color = Color.white;
+                else
+                    instance.Value.instance.color = Color.gray;
             }
         }
 

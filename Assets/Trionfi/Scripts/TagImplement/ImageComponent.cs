@@ -36,6 +36,9 @@ namespace Trionfi
             RawImage _image;
             _image = Trionfi.Instance.layerInstance[id].instance;
 
+            string actor = tagParam["actor", string.Empty];
+            Trionfi.Instance.layerInstance[id].actor = actor;
+
             Vector2 pos = _image.gameObject.GetComponent<RectTransform>().anchoredPosition;
 
             string layerPos = "";

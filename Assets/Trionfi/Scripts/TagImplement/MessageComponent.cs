@@ -24,6 +24,8 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+            Trionfi.Instance.SetStandLayerTone();
+
             string message = tagParam["val"].Literal();
 
             if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
@@ -57,7 +59,18 @@ namespace Trionfi
         protected override void TagFunction()
         {
             string name = tagParam["val"].Literal();
-            Trionfi.Instance.messageWindow.ShowName(name);
+
+            if (name.Contains("/"))
+            {
+                string[] nameInfo = name.Split('/');
+                Trionfi.Instance.messageWindow.ShowName(nameInfo[0]);
+                TRLayer.speaker = nameInfo[1];
+            }
+            else
+            {
+                Trionfi.Instance.messageWindow.ShowName(name);
+                TRLayer.speaker = name;
+            }
         }
     }
 
@@ -184,6 +197,7 @@ namespace Trionfi
         {
             Trionfi.Instance.messageWindow.gameObject.SetActive(false);
             Trionfi.Instance.messageWindow = Trionfi.Instance.messageWindowList[tagParam["id"].Int()];
+            Trionfi.Instance.messageWindow.ClearMessage();
             Trionfi.Instance.messageWindow.gameObject.SetActive(true);
 
         }
