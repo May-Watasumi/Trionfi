@@ -162,6 +162,28 @@ namespace Trionfi
         }
     }
 
+    public class LaytextComponent : AbstractComponent
+    {
+        public LaytextComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string>
+            {
+//                "string"
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            RawImage _image;
+
+            string text = tagParam["string", string.Empty];
+            Trionfi.Instance.layerText.text = text;
+        }
+    }
+
     public class LayoptComponent : AbstractComponent
     {
         public LayoptComponent()

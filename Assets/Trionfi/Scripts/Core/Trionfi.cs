@@ -89,11 +89,15 @@ namespace Trionfi
         [SerializeField]
         public RawImage rawImage;
         [SerializeField]
+        public Text layerText;
+        [SerializeField]
         public Camera targetCamera;
         [SerializeField]
         public Canvas layerCanvas;
         [SerializeField]
         public Canvas uiCanvas;
+        [SerializeField]
+        public RectMask2D layerMask;
 
         [SerializeField]
         public TRTitle titleWindow;
@@ -180,10 +184,19 @@ namespace Trionfi
             float screenAspect = (float)Screen.width / (float)Screen.height;
             float canvasAspect = TRSystemConfig.Instance.screenSize.x / TRSystemConfig.Instance.screenSize.y;
 
-            if(screenAspect >= canvasAspect)
+            if (screenAspect >= canvasAspect)
+            {
                 rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(TRSystemConfig.Instance.screenSize.y * Screen.width / Screen.height, TRSystemConfig.Instance.screenSize.y);
+                uiCanvas.gameObject.GetComponent<CanvasScaler>().matchWidthOrHeight = 1.0f;
+            }
             else
+            {
                 rawImage.GetComponent<RectTransform>().sizeDelta = new Vector2(TRSystemConfig.Instance.screenSize.x, TRSystemConfig.Instance.screenSize.x * Screen.height / Screen.width);
+                uiCanvas.gameObject.GetComponent<CanvasScaler>().matchWidthOrHeight = 0.0f;
+            }
+
+            if (layerMask != null)
+                layerMask.GetComponent<RectTransform>().sizeDelta = TRSystemConfig.Instance.screenSize;
 
             //Init Screen Size
             layerCanvas.gameObject.GetComponent<CanvasScaler>().referenceResolution = TRSystemConfig.Instance.screenSize;
