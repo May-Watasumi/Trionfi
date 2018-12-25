@@ -193,23 +193,29 @@ namespace Trionfi
         }
 
         //ToDo:boolの評価。Jaceの拡張
-        public void CompileScriptFile(string storage)
+        public void CompileScriptFile(string storage, bool execute = false)
         {
-            StartCoroutine(LoadScenarioAsset(storage));
+            StartCoroutine(LoadScenarioAsset(storage, execute));
         }
 
-        public IEnumerator LoadScenarioAsset(string storage)
+        public IEnumerator LoadScenarioAsset(string storage, bool execute = false)
         {
             TRResourceLoader.Instance.Load(storage, TRResourceType.Text);
 
-            while (TRResourceLoader.Instance.isLoading)
-                yield return new WaitForSeconds(1.0f);
+            yield return TRResourceLoader.Instance.LoadText(storage);
 
-            if (TRResourceLoader.Instance.isSuceeded)
+            //            while (TRResourceLoader.Instance.isLoading)
+            //                yield return new WaitForSeconds(1.0f);
+
+            //           if (TRResourceLoader.Instance.isSuceeded)
+            if (!string.IsNullOrEmpty(TRResourceLoader.Instance.defaultTextLoader.instance))
             {
                 TRTagInstance _instance = new TRTagInstance();
                 _instance.CompileScriptString(TRResourceLoader.Instance.text);
                 tagInstances[storage] = _instance;
+
+                if (execute)
+                    StartCoroutine(Run(storage));
             }
         }
 

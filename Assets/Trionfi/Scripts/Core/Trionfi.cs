@@ -283,8 +283,8 @@ namespace Trionfi
                     {
                         if (!string.IsNullOrEmpty(scriptName))
                         {
-                            TRVirtualMachine.Instance.CompileScriptFile(scriptName);
-                            StartCoroutine(TRVirtualMachine.Instance.Run(scriptName));
+                            TRVirtualMachine.Instance.CompileScriptFile(scriptName, true);
+//                            StartCoroutine(TRVirtualMachine.Instance.Run(scriptName));
                         }
                     }
                         ); 

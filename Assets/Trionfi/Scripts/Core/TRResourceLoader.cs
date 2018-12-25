@@ -187,6 +187,52 @@ namespace Trionfi
                 }       
         */
 
+        public IResourceLoader<AudioClip> defaultAudioLoader;
+        public IResourceLoader<Texture2D> defaultTextureLoader;
+        public IResourceLoader<string> defaultTextLoader;
+        public IResourceLoader<AssetBundle> defaultAssetBundleLoader;
+
+        TRDefaultTextLoader resourcesTextLoader = new TRDefaultTextLoader();
+        TRDefaultAudioLoader resourcesAudioLoader = new TRDefaultAudioLoader();
+        TRDefaultTextureLoader resourcesTextureLoader = new TRDefaultTextureLoader();
+        TRDefaultAssetBundleLoader resourcesAssetBundleLoader = new TRDefaultAssetBundleLoader();
+
+        public IEnumerator LoadText(string storage, IResourceLoader<string> loader = null)
+        {
+            if (loader == null)
+                loader = defaultTextLoader;
+            yield return loader.Load(storage);
+        }
+
+        public IEnumerator LoadAudio(string storage, IResourceLoader<AudioClip> loader = null)
+        {
+            if (loader == null)
+                loader = defaultAudioLoader;
+            yield return loader.Load(storage);
+        }
+
+        public IEnumerator LoadTexture(string storage, IResourceLoader<Texture2D> loader = null)
+        {
+            if (loader == null)
+                loader = defaultTextureLoader;
+            yield return loader.Load(storage);
+        }
+
+        public IEnumerator LoadAssetBundle(string storage, IResourceLoader<AssetBundle> loader = null)
+        {
+            if (loader == null)
+                loader = defaultAssetBundleLoader;
+            yield return loader.Load(storage);
+        }
+
+        private void Start()
+        {
+            defaultTextLoader = resourcesTextLoader;
+            defaultAudioLoader = resourcesAudioLoader;
+            defaultTextureLoader = resourcesTextureLoader;
+            defaultAssetBundleLoader = resourcesAssetBundleLoader;
+        }
+
         readonly Dictionary<string, AudioType> audioType = new Dictionary<string, AudioType>()
         {
             { "wav", AudioType.WAV },
