@@ -89,15 +89,15 @@ namespace Trionfi
 #endif
                 if (!string.IsNullOrEmpty(storage))
                 {
-                    TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+                    yield return TRResourceLoader.Instance.LoadTexture(storage);
 
-                    while (TRResourceLoader.Instance.isLoading)
-                        yield return new WaitForSeconds(1.0f);
+                    //                    while (TRResourceLoader.Instance.isLoading)
+                    //                        yield return new WaitForSeconds(1.0f);
 
-                    if (TRResourceLoader.Instance.isSuceeded)
+                    if (TRResourceLoader.Instance.defaultTextureLoader.instance != null)
                     {
                         Trionfi.Instance.layerInstance[id].path = storage;
-                        _image.texture = TRResourceLoader.Instance.texture;
+                        _image.texture = TRResourceLoader.Instance.defaultTextureLoader.instance;
                     }
                 }
             }

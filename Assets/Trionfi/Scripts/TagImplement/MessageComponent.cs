@@ -115,14 +115,14 @@ namespace Trionfi
             {
                 if (!string.IsNullOrEmpty(storage))
                 {
-                    TRResourceLoader.Instance.Load(storage, TRResourceType.Texture);
+                    TRResourceLoader.Instance.LoadTexture(storage);
 
-                    while (TRResourceLoader.Instance.isLoading)
-                        yield return new WaitForSeconds(1.0f);
+//                    while (TRResourceLoader.Instance.isLoading)
+//                        yield return new WaitForSeconds(1.0f);
 
-                    if (TRResourceLoader.Instance.isSuceeded)
+                    if (TRResourceLoader.Instance.defaultTextureLoader.instance != null)
                     {
-                        _image.sprite = Sprite.Create(TRResourceLoader.Instance.texture, new Rect(0, 0, TRResourceLoader.Instance.texture.width, TRResourceLoader.Instance.texture.height), Vector2.zero);
+                        _image.sprite = Sprite.Create(TRResourceLoader.Instance.defaultTextureLoader.instance, new Rect(0, 0, TRResourceLoader.Instance.defaultTextureLoader.instance.width, TRResourceLoader.Instance.defaultTextureLoader.instance.height), Vector2.zero);
                     }
                 }
             }

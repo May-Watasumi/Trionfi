@@ -39,16 +39,17 @@ namespace Trionfi
             float fadeTime = (float)fadeTimemsec / 1000.0f;
             bool loop = tagParam["loop", false];
 
-            TRResourceLoader.Instance.Load(storage, TRResourceType.Audio);
+            yield return TRResourceLoader.Instance.LoadAudio(storage);
 
-            while (TRResourceLoader.Instance.isLoading)
-                yield return new WaitForSeconds(1.0f);
+            //            while (TRResourceLoader.Instance.isLoading)
+            //                yield return new WaitForSeconds(1.0f);
 
-            if (TRResourceLoader.Instance.isSuceeded)
+            //            if (TRResourceLoader.Instance.isSuceeded)
+            if (TRResourceLoader.Instance.defaultAudioLoader.instance != null)
             {
                 Trionfi.Instance.audioInstance[id].path = storage;
                 AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
-                AudioClip _clip = TRResourceLoader.Instance.audio;
+                AudioClip _clip = TRResourceLoader.Instance.defaultAudioLoader.instance;
                 _source.clip = _clip;
 
                 _source.volume = 0.0f;

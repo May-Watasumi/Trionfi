@@ -200,8 +200,6 @@ namespace Trionfi
 
         public IEnumerator LoadScenarioAsset(string storage, bool execute = false)
         {
-            TRResourceLoader.Instance.Load(storage, TRResourceType.Text);
-
             yield return TRResourceLoader.Instance.LoadText(storage);
 
             //            while (TRResourceLoader.Instance.isLoading)
@@ -211,7 +209,7 @@ namespace Trionfi
             if (!string.IsNullOrEmpty(TRResourceLoader.Instance.defaultTextLoader.instance))
             {
                 TRTagInstance _instance = new TRTagInstance();
-                _instance.CompileScriptString(TRResourceLoader.Instance.text);
+                _instance.CompileScriptString(TRResourceLoader.Instance.defaultTextLoader.instance);
                 tagInstances[storage] = _instance;
 
                 if (execute)
