@@ -117,7 +117,10 @@ namespace Trionfi
             foreach (string _param in paramList)
             {
                 if (TRStageEnviroment.Instance.actorInfoes.ContainsKey(_param))
+                {
                     prefix = TRStageEnviroment.Instance.actorInfoes[_param].prefix;
+                    tagParam["actor"] = new TRVariable(_param);
+                }
                 if (TRStageEnviroment.Instance.actPatterAlias.ContainsKey(_param))
                     suffix = TRStageEnviroment.Instance.actPatterAlias[_param];
                 if(TRStageEnviroment.Instance.layerAlias.ContainsKey(_param))

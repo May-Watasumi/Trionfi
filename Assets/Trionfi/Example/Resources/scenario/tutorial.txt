@@ -30,7 +30,7 @@
 ということで呼ばれて飛び出るUnityちゃんこと、
 大鳥こはくだよ。
 
-[shake layer=message time=1000]
+//[shake layer=message time=1000]
 
 [fadeout]
 
@@ -44,11 +44,9 @@
 これを使うとアドベンチャーゲームや会話シーン
 なんかをお手軽＆簡単に作れるんだって。
 
-[image layer=1 storage=sprite/character/portrait_kohaku_02 pos=left yoff =-41]
-
 【こはく】
 テキストファイルに命令タグを挟むだけで
-こんなふうに、絵や音の変更が出来ちゃいます。
+いろんなことが出来ちゃいます。
 
 【ゆうこ】
 PCゲームのスクリプトエンジン「吉里吉里」と
@@ -82,9 +80,14 @@ Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 【こはく】
 その通り。
 
+[jump target=*合流]
+
 *答２
 【こはく】
 もっと言っていいのよ？
+
+[jump target=*合流]
+
 
 *答３
 【こはく】

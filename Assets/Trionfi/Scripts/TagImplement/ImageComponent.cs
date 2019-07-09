@@ -179,7 +179,7 @@ namespace Trionfi
         {
             RawImage _image;
 
-            string text = tagParam["string", string.Empty];
+            string text = tagParam["text", string.Empty];
             Trionfi.Instance.layerText.text = text;
         }
     }
