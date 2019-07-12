@@ -31,6 +31,25 @@ namespace Trionfi
         AutoSave,
     }
 
+    [SerializeField]
+    public enum TRResourceType
+    {
+        LocalStatic,
+        LocalStreaming,
+        WWW,
+        AssetBundle,
+    }
+    
+    public enum TRAssetType
+    {
+        Texture,
+        Audio,
+        Text,
+        Movie,
+        AssetBundle,
+        Unknown
+    };
+
     [System.Serializable]
     public class TRMediaInstance<T>
     {
@@ -139,6 +158,7 @@ namespace Trionfi
 
         [Serializable]
         public class TRAudioInstance : SerializableDictionary<int, TRAudio> { }
+
         [Serializable]
         public class TRImageInstance : SerializableDictionary<int, TRLayer> { }
 #if TR_USE_CRI

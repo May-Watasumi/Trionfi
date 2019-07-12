@@ -6,33 +6,13 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    [SerializeField]
-    public enum TRDataProtocol
-    {
-        Default,
-        File,
-        LocalResource,
-        Network,
-        Null,
-    }
-
-    public enum TRResourceType
-    {
-        Texture,
-        Audio,
-        Text,
-        Movie,
-        AssetBundle,
-        Terminate
-    };
-
-    public abstract class IResourceLoader<T>
+    public abstract class IAssetLoader<T>
     {
         public T instance;
         public abstract IEnumerator Load(string storage);
     }
 
-    public class TRDefaultTextLoader : IResourceLoader<string>
+    public class TRDefaultTextLoader : IAssetLoader<string>
     {
         public override IEnumerator Load(string storage)
         {
@@ -41,7 +21,7 @@ namespace Trionfi
         }
     }
 
-    public class TRDefaultAudioLoader : IResourceLoader<AudioClip>
+    public class TRDefaultAudioLoader : IAssetLoader<AudioClip>
     {
         public override IEnumerator Load(string storage)
         {
@@ -50,7 +30,7 @@ namespace Trionfi
         }
     }
 
-    public class TRDefaultTextureLoader : IResourceLoader<Texture2D>
+    public class TRDefaultTextureLoader : IAssetLoader<Texture2D>
     {
         public override IEnumerator Load(string storage)
         {
@@ -59,7 +39,7 @@ namespace Trionfi
         }
     }
 
-    public class TRDefaultAssetBundleLoader : IResourceLoader<AssetBundle>
+    public class TRDefaultAssetBundleLoader : IAssetLoader<AssetBundle>
     {
         public override IEnumerator Load(string storage)
         {
@@ -68,7 +48,7 @@ namespace Trionfi
         }
     }
 
-    public class TRWebTextLoader : IResourceLoader<string>
+    public class TRWebTextLoader : IAssetLoader<string>
     {
         public override IEnumerator Load(string storage)
         {
@@ -88,7 +68,7 @@ namespace Trionfi
         }
     }
 
-    public class TRWebAudioLoader : IResourceLoader<AudioClip>
+    public class TRWebAudioLoader : IAssetLoader<AudioClip>
     {
         readonly Dictionary<string, AudioType> audioType = new Dictionary<string, AudioType>()
         {
@@ -122,7 +102,7 @@ namespace Trionfi
         }
     }
 
-    public class TRWebTextureLoader : IResourceLoader<Texture2D>
+    public class TRWebTextureLoader : IAssetLoader<Texture2D>
     {
         public override IEnumerator Load(string storage)
         {
@@ -147,7 +127,7 @@ namespace Trionfi
         }
     }
 
-    public class TRWebAssetBundleLoader : IResourceLoader<AssetBundle>
+    public class TRWebAssetBundleLoader : IAssetLoader<AssetBundle>
     {
         public override IEnumerator Load(string storage)
         {
@@ -187,38 +167,38 @@ namespace Trionfi
                 }       
         */
 
-        public IResourceLoader<AudioClip> defaultAudioLoader;
-        public IResourceLoader<Texture2D> defaultTextureLoader;
-        public IResourceLoader<string> defaultTextLoader;
-        public IResourceLoader<AssetBundle> defaultAssetBundleLoader;
+        public IAssetLoader<AudioClip> defaultAudioLoader;
+        public IAssetLoader<Texture2D> defaultTextureLoader;
+        public IAssetLoader<string> defaultTextLoader;
+        public IAssetLoader<AssetBundle> defaultAssetBundleLoader;
 
         TRDefaultTextLoader resourcesTextLoader = new TRDefaultTextLoader();
         TRDefaultAudioLoader resourcesAudioLoader = new TRDefaultAudioLoader();
         TRDefaultTextureLoader resourcesTextureLoader = new TRDefaultTextureLoader();
         TRDefaultAssetBundleLoader resourcesAssetBundleLoader = new TRDefaultAssetBundleLoader();
 
-        public IEnumerator LoadText(string storage, IResourceLoader<string> loader = null)
+        public IEnumerator LoadText(string storage, IAssetLoader<string> loader = null)
         {
             if (loader == null)
                 loader = defaultTextLoader;
             yield return loader.Load(storage);
         }
 
-        public IEnumerator LoadAudio(string storage, IResourceLoader<AudioClip> loader = null)
+        public IEnumerator LoadAudio(string storage, IAssetLoader<AudioClip> loader = null)
         {
             if (loader == null)
                 loader = defaultAudioLoader;
             yield return loader.Load(storage);
         }
 
-        public IEnumerator LoadTexture(string storage, IResourceLoader<Texture2D> loader = null)
+        public IEnumerator LoadTexture(string storage, IAssetLoader<Texture2D> loader = null)
         {
             if (loader == null)
                 loader = defaultTextureLoader;
             yield return loader.Load(storage);
         }
 
-        public IEnumerator LoadAssetBundle(string storage, IResourceLoader<AssetBundle> loader = null)
+        public IEnumerator LoadAssetBundle(string storage, IAssetLoader<AssetBundle> loader = null)
         {
             if (loader == null)
                 loader = defaultAssetBundleLoader;

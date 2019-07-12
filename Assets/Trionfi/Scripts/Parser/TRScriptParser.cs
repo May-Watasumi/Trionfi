@@ -357,6 +357,7 @@ namespace Trionfi
                     string _tagParam = GetString(']');
 
                     //非ASCIIで始まるときはアクタータグと認識する
+                    //ToDo:ASCII（英語対応）
                     if (_tagParam[0] < 0 || _tagParam[0] > 127)
                     {
                         _tagComponent = new ActorComponent();
