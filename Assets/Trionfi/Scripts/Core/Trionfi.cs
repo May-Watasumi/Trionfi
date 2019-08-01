@@ -101,6 +101,8 @@ namespace Trionfi
         [SerializeField]
         public UnityEngine.Video.VideoPlayer videoPlayer;
         [SerializeField]
+        public UnityEngine.Audio.AudioMixer audioMixer;
+        [SerializeField]
         public GameObject otherComponent;
 
         [SerializeField]

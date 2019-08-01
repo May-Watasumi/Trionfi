@@ -28,6 +28,9 @@ namespace Trionfi
         public Vector2 screenSize = new Vector2(1280, 720);
 
         [SerializeField]
+        public bool useUnityAudioMixer = false;
+
+        [SerializeField]
         public LayerPos layerPos = new LayerPos()
         {
             { "left", -0.5f },//-360 },

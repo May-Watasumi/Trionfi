@@ -160,7 +160,7 @@ MonoBehaviour:
     m_values:
     - {r: 0, g: 0, b: 1, a: 1}
     - {r: 1, g: 0, b: 0, a: 1}
-  m_objectColorArrayDictionary:
+  m_stringColorArrayDictionary:
     m_keys:
     - rainbow
     - grayscale
@@ -179,6 +179,11 @@ MonoBehaviour:
       - {r: 0.5019608, g: 0.5019608, b: 0.5019608, a: 0.5019608}
       - {r: 0.7529412, g: 0.7529412, b: 0.7529412, a: 0.7529412}
       - {r: 1, g: 1, b: 1, a: 1}
+  m_stringHashSet:
+    m_keys:
+    - item 1
+    - item 2
+    - item 3
 --- !u!81 &714127985
 AudioListener:
   m_ObjectHideFlags: 0
