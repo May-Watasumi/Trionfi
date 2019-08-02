@@ -1,12 +1,15 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
-using DG.Tweening;
-using System.IO;
+﻿using System.IO;
 using System;
 using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
+using DG.Tweening;
+using SerializableCollections;
 using TRVariable = Jace.Operations.VariableCalcurator;
 using TRDataType = Jace.DataType;
 
@@ -14,13 +17,37 @@ namespace Trionfi
 {
     public enum MessageType { Error, Warning, Info };
 
-    enum TRStandPosition
+    [SerializeField]
+    public enum TRStandPosition
     {
         CENTER = 0,
         LEFT = 1,
-        RIGHT = 2
+        RIGHT = 2,
+        LEFT_CENTER = 3,
+        RIGHT_CENTER
     }
 
+    public enum TRAudioID
+    {
+        BGM = 0,
+        SE1 = 1,
+        VOICE1 = 11,
+    }
+
+    public enum TRLayerID
+    {
+        BG = 0,
+        STAND1 = 1,
+        STAND2 = 2,
+        STAND3 = 3,
+        STAND4 = 4,
+        STAND5 = 5,
+        EVENT = 11,
+        MOVIE = 99,
+        UI = 100
+    }
+
+    [SerializeField]
     public enum TRKeyboardShortCut
     {
         AutoMode,
@@ -51,17 +78,17 @@ namespace Trionfi
     };
 
     [System.Serializable]
+    public class MediaInstanceKey<T> : SerializableTuple<T, string> { };
+
+    [System.Serializable]
     public class TRMediaInstance<T>
     {
+        [SerializeField]
+        public TRResourceType resourceType;
         [SerializeField]
         public string path;
         [SerializeField]
         public T instance;
-    }
-
-    [System.Serializable]
-    public class TRAudio : TRMediaInstance<AudioSource>
-    {
     }
 
 #if TR_USE_CRI
@@ -84,11 +111,46 @@ namespace Trionfi
 #endif
 
     [System.Serializable]
+    public class TRAudio : TRMediaInstance<AudioSource>
+    {
+    }
+
+    [System.Serializable]
     public class TRLayer : TRMediaInstance<RawImage>
     {
         public static string speaker;
 
         public string actor;
+    }
+
+    [Serializable]
+    public class TRMediaInstanceDictionary<T, U> : SerializableDictionary<MediaInstanceKey<T>, U>
+    {
+        public U this[string id]
+        {
+            get
+            {
+                foreach (KeyValuePair<MediaInstanceKey<T>, U> key in this)
+                {
+                    if (key.Key.Item2 == id)
+                        return key.Value;
+                }
+                return default(U);
+            }
+        }
+
+        public U this[T id]
+        {
+            get
+            {
+                foreach (KeyValuePair<MediaInstanceKey<T>, U> key in this)
+                {
+                    if (key.Key.Item1.Equals(id))
+                        return key.Value;
+                }
+                return default(U);
+            }
+        }
     }
 
     [ExecuteInEditMode]
@@ -141,28 +203,26 @@ namespace Trionfi
 
         [SerializeField]
         public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
+        /*
+        [SerializeField]
+        MediaInstanceKey audioKey = new MediaInstanceKey();
 
-        static readonly SerializableDictionary<string, int> audioID = new SerializableDictionary<string, int>()
-        {
-            { "bgm", 0 },
-            { "se", 1 },
-            { "voice", 10 },
-        };
-
-        //SortOrderと等価
-        static readonly SerializableDictionary<string, int> layerID = new SerializableDictionary<string, int>()
-        {
-            { "bg", 0 },
-            { "stand", 1 },
-            { "event", 10 },
-            { "movie", 99 },
-        };
-
+        [SerializeField]
+        MediaInstanceKey layerKey = new MediaInstanceKey();       
+        */
+        /*
         [Serializable]
         public class TRAudioInstance : SerializableDictionary<int, TRAudio> { }
 
         [Serializable]
         public class TRImageInstance : SerializableDictionary<int, TRLayer> { }
+        */
+
+        [Serializable]
+        public class TRAudioInstance : TRMediaInstanceDictionary<TRAudioID, TRAudio> { };
+        [Serializable]
+        public class TRImageInstance : TRMediaInstanceDictionary<TRLayerID, TRLayer> { };
+
 #if TR_USE_CRI
         [Serializable]
         public class TRAdxInstance : SerializableDictionary<int, TRAdx> { }
@@ -176,25 +236,10 @@ namespace Trionfi
 
         };
 #endif
-
         [SerializeField]
-        public TRAudioInstance audioInstance = new TRAudioInstance()
-        {
-            { audioID["bgm"] , null },
-            { audioID["se"] , null },
-            { audioID["voice"] , null },
-
-        };
-
+        public TRAudioInstance audioInstance = new TRAudioInstance();
         [SerializeField]
-        public TRImageInstance layerInstance = new TRImageInstance()
-        {
-            { layerID["bg"], null },
-            { layerID["stand"], null },
-            { layerID["stand"]+1, null },
-            { layerID["stand"]+2, null },
-            { layerID["event"], null },
-        };
+        public TRImageInstance layerInstance = new TRImageInstance();
 
         public void Init(bool changeLayerOrder = false)
         {
@@ -225,7 +270,7 @@ namespace Trionfi
 
             if (changeLayerOrder)
             {
-                layerInstance[0].instance.gameObject.transform.SetAsFirstSibling();
+                layerInstance[TRLayerID.BG].instance.gameObject.transform.SetAsFirstSibling();
                 //                referencedObjects.eventLayer.gameObject.transform.SetAsLastSibling();                
             }
 
@@ -320,7 +365,7 @@ namespace Trionfi
             _button.onClick.AddListener(OnGlobalTapEvent);
 
             TRVariableDictionary _temp = new TRVariableDictionary();
-            _temp["buf"] = new TRVariable(audioID["bgm"]);
+            _temp["buf"] = new TRVariable((int)TRAudioID.BGM);
             TRVirtualMachine.aliasTagInstance["playbgm"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playbgm"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausebgm"] = new AudiopauseComponent();
@@ -330,7 +375,7 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["stopbgm"] = new AudiostopComponent();
             TRVirtualMachine.aliasTagInstance["stopbgm"].tagParam = _temp;
 
-            _temp["buf"] = new TRVariable(audioID["se"]);
+            _temp["buf"] = new TRVariable((int)TRAudioID.SE1);
             TRVirtualMachine.aliasTagInstance["playse"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playse"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausese"] = new AudiopauseComponent();
@@ -338,7 +383,7 @@ namespace Trionfi
             TRVirtualMachine.aliasTagInstance["stopse"] = new AudiostopComponent();
             TRVirtualMachine.aliasTagInstance["stopse"].tagParam = _temp;
 
-            _temp["buf"] = new TRVariable(audioID["voice"]);
+            _temp["buf"] = new TRVariable((int)TRAudioID.VOICE1);
             TRVirtualMachine.aliasTagInstance["playvoice"] = new AudioComponent();
             TRVirtualMachine.aliasTagInstance["playvoice"].tagParam = _temp;
             TRVirtualMachine.aliasTagInstance["pausevoice"] = new AudiopauseComponent();
@@ -361,7 +406,7 @@ namespace Trionfi
             messageWindow = messageWindowList[mesWindowID];
             messageWindow.ClearMessage();
 
-            foreach (KeyValuePair<int,TRLayer> instance in layerInstance)
+            foreach (KeyValuePair<MediaInstanceKey<TRLayerID> ,TRLayer> instance in layerInstance)
             {
                 instance.Value.instance.enabled = false;
                 instance.Value.instance.texture = null;
@@ -369,7 +414,7 @@ namespace Trionfi
                 instance.Value.actor = string.Empty;
             }
 
-            foreach (KeyValuePair<int, TRAudio> instance in audioInstance)
+            foreach (KeyValuePair<MediaInstanceKey<TRAudioID>, TRAudio> instance in audioInstance)
             {
                 instance.Value.instance.Stop();
                 instance.Value.path = string.Empty;
@@ -387,7 +432,7 @@ namespace Trionfi
             layerCanvas.gameObject.SetActive(false);
             uiCanvas.gameObject.SetActive(false);
 
-            foreach (KeyValuePair<int, TRAudio> instance in audioInstance)
+            foreach (KeyValuePair<MediaInstanceKey<TRAudioID>, TRAudio> instance in audioInstance)
             {
                 instance.Value.instance.Stop();
                 instance.Value.path = string.Empty;
@@ -396,7 +441,7 @@ namespace Trionfi
 
         public void SetStandLayerTone()
         {
-            foreach (KeyValuePair<int, TRLayer> instance in layerInstance)
+            foreach (KeyValuePair<MediaInstanceKey<TRLayerID> ,TRLayer> instance in layerInstance)
             {
                 if(instance.Key == 0 || instance.Key >= 10 || string.IsNullOrEmpty(TRLayer.speaker) || instance.Value.actor == TRLayer.speaker)
                     instance.Value.instance.color = Color.white;
