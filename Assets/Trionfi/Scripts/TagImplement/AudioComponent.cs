@@ -30,7 +30,7 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
-            int id = tagParam["buf", 0];
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
             string storage = tagParam["storage"].Literal();
             int playDelaymsec = tagParam["delay", 0];
             int fadeTimemsec = tagParam["time", 0];
@@ -89,7 +89,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            int id = tagParam["buf", 0];
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
 
@@ -114,7 +114,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            int id = tagParam["buf", 0];
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
 
@@ -140,7 +140,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            int id = tagParam["buf", 0];
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             //            float delay = tagParam.Float("delay");
             //            float fadeTime = tagParam.Float("time");

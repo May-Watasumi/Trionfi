@@ -9,7 +9,6 @@ using TinyCsvParser;
 using TinyCsvParser.Mapping;
 using TinyCsvParser.Tokenizer.RFC4180;
 
-
 namespace Trionfi
 {
     public class TRStageEnviroment : SingletonMonoBehaviour<TRStageEnviroment>

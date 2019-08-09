@@ -31,7 +31,7 @@ namespace Trionfi
 
         public override IEnumerator TagSyncFunction()
         {
-            int id = tagParam["layer", 0];
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
             RawImage _image;
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -154,7 +154,7 @@ namespace Trionfi
 		protected override void TagFunction() {
             RawImage _image;
 
-            int id = tagParam["layer", 0];
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
             _image = Trionfi.Instance.layerInstance[id].instance;
             _image.enabled = false;
@@ -201,7 +201,7 @@ namespace Trionfi
         {
             RawImage _image;
 
-            int id = tagParam["layer", 0];
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
 
             //ToDo:
@@ -227,7 +227,7 @@ namespace Trionfi
         {
             RawImage _image;
 
-            int id = tagParam["layer", 0];
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
 
             Color color = Color.white;
@@ -255,7 +255,7 @@ namespace Trionfi
         {
             RawImage _image;
 
-            int id = tagParam["layer", 0];
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
 
             float time = tagParam["time", 1.0f];
@@ -431,7 +431,7 @@ namespace Trionfi
             if ( tagParam["layer", string.Empty] == "message")
                 _rect = Trionfi.Instance.messageWindow.gameObject.GetComponent<RectTransform>();
             else
-                _rect = Trionfi.Instance.layerInstance[tagParam["layer", 0]].instance.gameObject.GetComponent<RectTransform>();
+                _rect = Trionfi.Instance.layerInstance[(TRLayerID)tagParam["layer", 0]].instance.gameObject.GetComponent<RectTransform>();
 
             int timeMsec = tagParam["time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f)];
             float time = timeMsec / 1000.0f;

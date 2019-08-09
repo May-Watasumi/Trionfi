@@ -9,7 +9,6 @@ using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 using DG.Tweening;
-using SerializableCollections;
 using TRVariable = Jace.Operations.VariableCalcurator;
 using TRDataType = Jace.DataType;
 
@@ -77,6 +76,7 @@ namespace Trionfi
         Unknown
     };
 
+
     [System.Serializable]
     public class MediaInstanceKey<T> : SerializableTuple<T, string> { };
 
@@ -110,49 +110,49 @@ namespace Trionfi
     }
 #endif
 
-    [System.Serializable]
+    [Serializable]
     public class TRAudio : TRMediaInstance<AudioSource>
     {
     }
 
-    [System.Serializable]
+    [Serializable]
     public class TRLayer : TRMediaInstance<RawImage>
     {
         public static string speaker;
 
         public string actor;
     }
-
+/*
     [Serializable]
-    public class TRMediaInstanceDictionary<T, U> : SerializableDictionary<MediaInstanceKey<T>, U>
+    public class TRMediaInstanceDictionary<T, U> : SerializableDictionary<T, U>
     {
         public U this[string id]
         {
             get
             {
-                foreach (KeyValuePair<MediaInstanceKey<T>, U> key in this)
+                foreach (KeyValuePair<T, U> key in this)
                 {
-                    if (key.Key.Item2 == id)
+                    if (key.Key == id)
                         return key.Value;
                 }
                 return default(U);
             }
         }
-
+        
         public U this[T id]
         {
             get
             {
-                foreach (KeyValuePair<MediaInstanceKey<T>, U> key in this)
+                foreach (KeyValuePair<T, U> key in this)
                 {
-                    if (key.Key.Item1.Equals(id))
+                    if (key.Key.Equals(id))
                         return key.Value;
                 }
                 return default(U);
             }
         }
     }
-
+*/
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
@@ -219,9 +219,9 @@ namespace Trionfi
         */
 
         [Serializable]
-        public class TRAudioInstance : TRMediaInstanceDictionary<TRAudioID, TRAudio> { };
+        public class TRAudioInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRAudioID, TRAudio> { };
         [Serializable]
-        public class TRImageInstance : TRMediaInstanceDictionary<TRLayerID, TRLayer> { };
+        public class TRImageInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRLayerID, TRLayer> { };
 
 #if TR_USE_CRI
         [Serializable]
@@ -406,7 +406,7 @@ namespace Trionfi
             messageWindow = messageWindowList[mesWindowID];
             messageWindow.ClearMessage();
 
-            foreach (KeyValuePair<MediaInstanceKey<TRLayerID> ,TRLayer> instance in layerInstance)
+            foreach (KeyValuePair</*MediaInstanceKey<*/TRLayerID/*>*/ ,TRLayer> instance in layerInstance)
             {
                 instance.Value.instance.enabled = false;
                 instance.Value.instance.texture = null;
@@ -414,7 +414,7 @@ namespace Trionfi
                 instance.Value.actor = string.Empty;
             }
 
-            foreach (KeyValuePair<MediaInstanceKey<TRAudioID>, TRAudio> instance in audioInstance)
+            foreach (KeyValuePair</*MediaInstanceKey<*/TRAudioID/*>*/, TRAudio> instance in audioInstance)
             {
                 instance.Value.instance.Stop();
                 instance.Value.path = string.Empty;
@@ -432,7 +432,7 @@ namespace Trionfi
             layerCanvas.gameObject.SetActive(false);
             uiCanvas.gameObject.SetActive(false);
 
-            foreach (KeyValuePair<MediaInstanceKey<TRAudioID>, TRAudio> instance in audioInstance)
+            foreach (KeyValuePair</*MediaInstanceKey<*/TRAudioID/*>*/, TRAudio> instance in audioInstance)
             {
                 instance.Value.instance.Stop();
                 instance.Value.path = string.Empty;
@@ -441,12 +441,13 @@ namespace Trionfi
 
         public void SetStandLayerTone()
         {
-            foreach (KeyValuePair<MediaInstanceKey<TRLayerID> ,TRLayer> instance in layerInstance)
+            foreach (KeyValuePair</*MediaInstanceKey<*/TRLayerID/*>*/ ,TRLayer> instance in layerInstance)
             {
-                if(instance.Key == 0 || instance.Key >= 10 || string.IsNullOrEmpty(TRLayer.speaker) || instance.Value.actor == TRLayer.speaker)
-                    instance.Value.instance.color = Color.white;
-                else
+                //レイヤー1～10が立ち絵として割り振ってある。
+                if ((instance.Key >= TRLayerID.STAND1 && instance.Key > (TRLayerID)10) && ( string.IsNullOrEmpty(TRLayer.speaker) || instance.Value.actor != TRLayer.speaker) )
                     instance.Value.instance.color = Color.gray;
+                else
+                    instance.Value.instance.color = Color.white;
             }
         }
 

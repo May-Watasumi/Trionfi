@@ -47,7 +47,7 @@ namespace Trionfi
             else
                 hasSync = false;
 
-            RawImage _image = Trionfi.Instance.layerInstance[99].instance;
+            RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
             Trionfi.Instance.videoPlayer.url = url;
             Trionfi.Instance.videoPlayer.isLooping = loop;
             Trionfi.Instance.videoPlayer.Play();
@@ -80,7 +80,7 @@ namespace Trionfi
         {
 //            float delay = tagParam.Float("delay");
             Trionfi.Instance.videoPlayer.Stop();
-            RawImage _image = Trionfi.Instance.layerInstance[99].instance;
+            RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
             _image.enabled = false;
         }
     }

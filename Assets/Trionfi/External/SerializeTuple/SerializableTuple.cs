@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace SerializableCollections
-{
+//namespace SerializableCollections
+//{
     [Serializable]
     public abstract class SerializableTuple<T1, T2> : IEquatable<SerializableTuple<T1, T2>>
     {
@@ -175,4 +175,4 @@ namespace SerializableCollections
             return String.Format("({0}, {1}, {2}, {3})", item1, item2, item3, item4);
         }
     }
-}
+//};
