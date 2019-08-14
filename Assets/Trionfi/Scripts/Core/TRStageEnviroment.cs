@@ -98,7 +98,7 @@ namespace Trionfi
         [SerializeField]
         public TextAsset CharacterEmotionPatternListCSV;
 
-        public TRActPatternAlias actPatterAlias = new TRActPatternAlias();
+        public TRActPatternAlias actPatternAlias = new TRActPatternAlias();
         public TRActorInfoes actorInfoes = new TRActorInfoes();
 
         // Use this for initialization
