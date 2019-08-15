@@ -7,16 +7,16 @@ using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
+    [System.Serializable]
     public abstract class AbstractComponent
     {
         public TRVariableDictionary tagParam;
+        public int lineCount;
+
         protected bool hasSync = false;
-        
-//        protected const string syncwait = "syncWait";
 
 #if UNITY_EDITOR || TR_DEBUG
         string sourceName = "";
-        int lineCount = 0;
 
         public List<string> essentialParams = new List<string>();
 
@@ -121,8 +121,9 @@ namespace Trionfi
                     prefix = TRStageEnviroment.Instance.actorInfoes[_param].prefix;
                     tagParam["actor"] = new TRVariable(_param);
                 }
-                if (TRStageEnviroment.Instance.actPatterAlias.ContainsKey(_param))
-                    suffix = TRStageEnviroment.Instance.actPatterAlias[_param];
+
+                if (TRStageEnviroment.Instance.actPatternAlias.ContainsKey(_param))
+                    suffix = TRStageEnviroment.Instance.actPatternAlias[_param];
                 if(TRStageEnviroment.Instance.layerAlias.ContainsKey(_param))
                     id = TRStageEnviroment.Instance.layerAlias[_param];
 

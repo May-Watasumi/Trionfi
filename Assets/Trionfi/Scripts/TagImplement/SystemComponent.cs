@@ -7,6 +7,21 @@ using UnityEngine.SceneManagement;
 using Jace.Operations;
 
 namespace Trionfi {
+
+    //コメント。何もしない。
+    public class CommentComponent : AbstractComponent
+    {
+        public CommentComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            essentialParams = new List<string> { "text" };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+        }
+    }
     //エイリアスを定義する。実行はUnknownTag任せでパーサーでは変換しない（独立性）
     public class AliasComponent : AbstractComponent
     {

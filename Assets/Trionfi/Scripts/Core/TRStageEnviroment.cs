@@ -127,7 +127,7 @@ namespace Trionfi
                 var result = csvParser.ReadFromString(csvReaderOptions, CharacterEmotionPatternListCSV.text).ToList();
                 foreach (var _info in result)
                 {
-                    actPatterAlias[_info.Result.alias] = _info.Result.suffix;
+                    actPatternAlias[_info.Result.alias] = _info.Result.suffix;
                 }
             }
         }

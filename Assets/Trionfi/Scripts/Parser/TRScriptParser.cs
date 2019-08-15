@@ -233,7 +233,7 @@ namespace Trionfi
             }
         }
 
-        public AbstractComponent Parse()
+        public AbstractComponent Parse(int line)
         {
             try
             {
@@ -268,6 +268,8 @@ namespace Trionfi
 #if UNITY_EDITOR && TR_DEBUG
                     _component.Validate();
 #endif
+                    _component.lineCount = line;
+
                     return _component;
                 }
                 else
@@ -296,7 +298,7 @@ namespace Trionfi
     public class TRScriptParser : TRParserBase
     {
         //名前仕切り文字
-        const string nameSplitter = "【】";
+        public string nameSplitter = "【】";
 
         public TRScriptParser(string statement) : base(statement) { }
 
@@ -328,7 +330,7 @@ namespace Trionfi
                     string statement = ReadLine();
 
                     TRTagParser tagParser = new TRTagParser(statement);
-                    _tagComponent = tagParser.Parse();
+                    _tagComponent = tagParser.Parse(lineCount);
 
                     if (_tagComponent != null)
                         result.Add(_tagComponent);
@@ -336,11 +338,18 @@ namespace Trionfi
                 //comment
                 else if ((charArray[currentPos] == '/' && charArray[currentPos + 1] == '/') || charArray[currentPos] == ';')
                 {
-                    ReadLine();
+                    string statement = ReadLine();
+
+                    _tagComponent = new CommentComponent();
+                    _tagComponent.tagParam = new TRVariableDictionary();
+                    _tagComponent.tagParam["text"] = new TRVariable(statement);
+                    _tagComponent.lineCount = lineCount;
+                    result.Add(_tagComponent);
                 }
                 //comments
                 else if (charArray[currentPos] == '/' && charArray[currentPos + 1] == '*')
                 {
+                    //ToDo:CommentComponent
                     while(!(charArray[currentPos] == '*' && charArray[currentPos + 1] == '/'))
                         currentPos++;
                 }
@@ -363,11 +372,12 @@ namespace Trionfi
                         _tagComponent = new ActorComponent();
                         _tagComponent.tagParam = new TRVariableDictionary();
                         _tagComponent.tagParam["param"] = new TRVariable(_tagParam);
+                        _tagComponent.lineCount = lineCount;
                     }
                     else
                     {
                         TRTagParser tagParser = new TRTagParser(_tagParam);
-                        _tagComponent = tagParser.Parse();
+                        _tagComponent = tagParser.Parse(lineCount);
                     }
 
                     if (_tagComponent != null)
@@ -377,14 +387,17 @@ namespace Trionfi
                 else
                 {
                     string _temp = ReadLine();
-                    if (_temp[0] == nameSplitter[0] && _temp[_temp.Length - 1] == nameSplitter[1])
+                    string _isName = (_temp.TrimStart()).TrimEnd();
+
+                    if (_isName[0] == nameSplitter[0] && _isName[_isName.Length - 1] == nameSplitter[1])
                     {
-                        string _value = _temp.Remove(0, 1);
+                        string _value = _isName.Remove(0, 1);
                         _temp = _value.Remove(_value.Length - 1, 1);
 
                         _tagComponent = new NameComponent();
                         _tagComponent.tagParam = new TRVariableDictionary();
                         _tagComponent.tagParam["val"] = new TRVariable(_temp);
+                        _tagComponent.lineCount = lineCount;
                         result.Add(_tagComponent);
                     }
                     else
@@ -399,8 +412,9 @@ namespace Trionfi
                     _tagComponent = new MessageComponent();
                     _tagComponent.tagParam = new TRVariableDictionary();
                     _tagComponent.tagParam["val"] = new TRVariable(textBuffer);
+                    _tagComponent.lineCount = lineCount;
                     result.Add(_tagComponent);
-                    textBuffer = "";
+                    textBuffer = string.Empty;
                 }
 
                 currentPos++;
@@ -411,6 +425,7 @@ namespace Trionfi
                 _tagComponent = new MessageComponent();
                 _tagComponent.tagParam = new TRVariableDictionary();
                 _tagComponent.tagParam["val"] = new TRVariable(textBuffer);
+                _tagComponent.lineCount = lineCount;
                 result.Add(_tagComponent);
             }
 

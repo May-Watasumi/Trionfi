@@ -5,6 +5,7 @@ using TRVariable = Jace.Operations.VariableCalcurator;
 
 namespace Trionfi
 {
+    [System.Serializable]
     public class TRVariableDictionary : SerializableDictionary<string, TRVariable>
     {
         public static Color ToARGB(uint val)

@@ -41,7 +41,11 @@ namespace Trionfi
         STAND3 = 3,
         STAND4 = 4,
         STAND5 = 5,
-        EVENT = 11,
+        STAND6 = 6,
+        STAND7 = 7,
+        STAND8 = 8,
+        STAND9 = 9,
+        EVENT = 10,
         MOVIE = 99,
         UI = 100
     }
@@ -122,37 +126,7 @@ namespace Trionfi
 
         public string actor;
     }
-/*
-    [Serializable]
-    public class TRMediaInstanceDictionary<T, U> : SerializableDictionary<T, U>
-    {
-        public U this[string id]
-        {
-            get
-            {
-                foreach (KeyValuePair<T, U> key in this)
-                {
-                    if (key.Key == id)
-                        return key.Value;
-                }
-                return default(U);
-            }
-        }
-        
-        public U this[T id]
-        {
-            get
-            {
-                foreach (KeyValuePair<T, U> key in this)
-                {
-                    if (key.Key.Equals(id))
-                        return key.Value;
-                }
-                return default(U);
-            }
-        }
-    }
-*/
+
     [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
@@ -203,20 +177,6 @@ namespace Trionfi
 
         [SerializeField]
         public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
-        /*
-        [SerializeField]
-        MediaInstanceKey audioKey = new MediaInstanceKey();
-
-        [SerializeField]
-        MediaInstanceKey layerKey = new MediaInstanceKey();       
-        */
-        /*
-        [Serializable]
-        public class TRAudioInstance : SerializableDictionary<int, TRAudio> { }
-
-        [Serializable]
-        public class TRImageInstance : SerializableDictionary<int, TRLayer> { }
-        */
 
         [Serializable]
         public class TRAudioInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRAudioID, TRAudio> { };

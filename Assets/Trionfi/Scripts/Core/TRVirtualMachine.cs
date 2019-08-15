@@ -176,18 +176,11 @@ namespace Trionfi
 
             Jace.Execution.IFunctionRegistry functionRegistry = new Jace.Execution.FunctionRegistry(false);
 
-            Jace.AstBuilder astBuilder = new Jace.AstBuilder(functionRegistry);
+            Jace.AstBuilder astBuilder = new Jace.AstBuilder(functionRegistry, false);
             Operation operation = astBuilder.Build(tokens);
             Jace.Execution.Interpreter executor = new Jace.Execution.Interpreter();
 
-            //            Dictionary<string, VariableCalcurator> variablesv2 = new Dictionary<string, VariableCalcurator>();
-
             VariableCalcurator result = executor.Execute(operation, null, variableInstance);
-
-//            Dictionary<string, VariableCalcurator> calcValue = new Dictionary<string, VariableCalcurator>();
-//            Jace.CalculationEngine engine = new Jace.CalculationEngine(CultureInfo.InvariantCulture, ExecutionMode.Interpreted);
-
-//            VariableCalcurator result = engine.CalculateV2(calcString, calcValue);
 
             return result;
         }
@@ -202,10 +195,6 @@ namespace Trionfi
         {
             yield return TRResourceLoader.Instance.LoadText(storage);
 
-            //            while (TRResourceLoader.Instance.isLoading)
-            //                yield return new WaitForSeconds(1.0f);
-
-            //           if (TRResourceLoader.Instance.isSuceeded)
             if (!string.IsNullOrEmpty(TRResourceLoader.Instance.defaultTextLoader.instance))
             {
                 TRTagInstance _instance = new TRTagInstance();

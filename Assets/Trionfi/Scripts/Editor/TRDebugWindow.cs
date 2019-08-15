@@ -67,7 +67,7 @@ namespace Trionfi
             if (GUILayout.Button("実行"))
             {
                 TRTagParser tagParser = new TRTagParser(statementText);
-                AbstractComponent tagComponent = tagParser.Parse();
+                AbstractComponent tagComponent = tagParser.Parse(0);
                 if (tagComponent != null)
                 {
                     consoleLog += ("Tag: " + tagComponent.tagName + "\n");
