@@ -186,12 +186,12 @@ namespace Trionfi
         }
 
         //ToDo:boolの評価。Jaceの拡張
-        public void CompileScriptFile(string storage, bool execute = false)
+        public Coroutine CompileScriptFile(string storage, TRResourceType type = TRResourceLoader.defaultResourceType,  bool execute = false)
         {
-            StartCoroutine(LoadScenarioAsset(storage, execute));
+            return StartCoroutine(LoadScenarioAsset(storage, type, execute));
         }
 
-        public IEnumerator LoadScenarioAsset(string storage, bool execute = false)
+        public IEnumerator LoadScenarioAsset(string storage, TRResourceType type, bool execute = false)
         {
             yield return TRResourceLoader.Instance.LoadText(storage);
 

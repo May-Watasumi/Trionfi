@@ -8,6 +8,16 @@ namespace Trionfi
     [System.Serializable]
     public class TRVariableDictionary : SerializableDictionary<string, TRVariable>
     {
+        readonly string[] reservedWords = new string[]
+        {
+            "storage",
+            "layer",
+            "audio",
+            "sound",
+            "type",
+            "buf"
+        };
+
         public static Color ToARGB(uint val)
         {
             var inv = 1f / 255f;

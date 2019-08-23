@@ -10,6 +10,13 @@ namespace Trionfi
     [System.Serializable]
     public abstract class AbstractComponent
     {
+        const string storageArgumentString = "storage";
+        const string layerArgumentString = "layer";
+        const string audioArgumentString = "audio";
+        const string aoundArgumentString = "sound";
+        const string resourceTypeArgumentString = "type";
+        const string bufferArgumentString = "buf";
+
         public TRVariableDictionary tagParam;
         public int lineCount;
 
