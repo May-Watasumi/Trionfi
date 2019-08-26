@@ -87,18 +87,18 @@ namespace Trionfi
             else
             {
 #endif
-                if (!string.IsNullOrEmpty(storage))
+                TRResourceType type = GetResourceType();
+
+                var coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
+
+                yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
+
+                Texture2D _texture = (Texture2D)coroutine.Current;
+
+                if (_texture != null)
                 {
-                    yield return TRResourceLoader.Instance.LoadTexture(storage);
-
-                    //                    while (TRResourceLoader.Instance.isLoading)
-                    //                        yield return new WaitForSeconds(1.0f);
-
-                    if (TRResourceLoader.Instance.defaultTextureLoader.instance != null)
-                    {
-                        Trionfi.Instance.layerInstance[id].path = storage;
-                        _image.texture = TRResourceLoader.Instance.defaultTextureLoader.instance;
-                    }
+                    Trionfi.Instance.layerInstance[id].path = storage;
+                    _image.texture = _texture;
                 }
             }
 

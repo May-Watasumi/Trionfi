@@ -53,6 +53,34 @@ namespace Trionfi
         }
 #endif
 
+        protected TRResourceType GetResourceType()
+        {
+            if (!tagParam.ContainsKey(resourceTypeArgumentString))
+                return TRResourceLoader.defaultResourceType;
+            else if(tagParam[resourceTypeArgumentString].DataType == TRDataType.Integer || tagParam[resourceTypeArgumentString].DataType == TRDataType.UnsighnedInteger)
+                return (TRResourceType)(tagParam[resourceTypeArgumentString].Int());
+            else if (tagParam[resourceTypeArgumentString].DataType == TRDataType.Literal)
+            {
+                switch (tagParam[resourceTypeArgumentString].Literal())
+                {
+                    default:
+                    case "local":
+                        return TRResourceType.LocalStatic;
+                    case "stream":
+                        return TRResourceType.LocalStreaming;
+                    case "www":
+                        return TRResourceType.WWW;
+                    case "bundle":
+                        return TRResourceType.AssetBundle;
+                }
+            }
+
+            //例外飛ばしたほうがいいかも？
+            else
+                return TRResourceLoader.defaultResourceType;
+        }
+
+
         //タグ実行本体
         abstract protected void TagFunction();
         public virtual IEnumerator TagSyncFunction() { yield return null; }

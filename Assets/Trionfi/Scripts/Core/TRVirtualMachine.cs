@@ -185,20 +185,16 @@ namespace Trionfi
             return result;
         }
 
-        //ToDo:boolの評価。Jaceの拡張
-        public Coroutine CompileScriptFile(string storage, TRResourceType type = TRResourceLoader.defaultResourceType,  bool execute = false)
+        public IEnumerator LoadScenarioAsset(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool execute = false)
         {
-            return StartCoroutine(LoadScenarioAsset(storage, type, execute));
-        }
+            var _coroutine = TRResourceLoader.Instance.LoadText(storage);
+            yield return StartCoroutine(_coroutine);
 
-        public IEnumerator LoadScenarioAsset(string storage, TRResourceType type, bool execute = false)
-        {
-            yield return TRResourceLoader.Instance.LoadText(storage);
-
-            if (!string.IsNullOrEmpty(TRResourceLoader.Instance.defaultTextLoader.instance))
+            if (!string.IsNullOrEmpty((string)_coroutine.Current))
             {
                 TRTagInstance _instance = new TRTagInstance();
-                _instance.CompileScriptString(TRResourceLoader.Instance.defaultTextLoader.instance);
+                _instance.CompileScriptString((string)_coroutine.Current);
+
                 tagInstances[storage] = _instance;
 
                 if (execute)

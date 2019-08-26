@@ -134,7 +134,9 @@ namespace Trionfi {
 			//ファイルが異なるものになる場合、シナリオをロードする
 			if(file != TRVirtualMachine.currentCallStack.scriptName)
 			{
-                yield return TRVirtualMachine.Instance.LoadScenarioAsset(file);
+                TRResourceType type = GetResourceType();
+
+                yield return TRVirtualMachine.Instance.LoadScenarioAsset(TRVirtualMachine.currentCallStack.scriptName, type);
 
                 //ToDo:スタックをすべて削除する
 //                TRVirtualMachine.RemoveAllStacks();

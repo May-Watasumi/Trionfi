@@ -90,7 +90,7 @@ public class MaskFader : MonoBehaviour, IMaterialModifier, IMeshModifier
 
     public Material GetModifiedMaterial(Material baseMaterial)
     {
-        Debug.Log("MATERIAL:" + _material.ToString());
+//        Debug.Log("MATERIAL:" + _material.ToString());
 
         Texture srcTexture = target.mainTexture;
         _material.SetTexture("_MaskTex", maskTexture);

@@ -223,21 +223,29 @@ namespace Trionfi
 
         public IEnumerator LoadAudio(string storage, TRResourceType type = defaultResourceType)
         {
-            yield return audioLoader[type].Load(storage);
+            var coroutine = audioLoader[type].Load(storage);
+            yield return StartCoroutine(coroutine);
+            yield return coroutine.Current;           
         }
 
         public IEnumerator LoadText(string storage, TRResourceType type = defaultResourceType)
         {
-            yield return textLoader[type].Load(storage);
+            var coroutine =  textLoader[type].Load(storage);
+            yield return StartCoroutine(coroutine);
+            yield return coroutine.Current;
         }
 
         public IEnumerator LoadTexture(string storage, TRResourceType type = defaultResourceType)
         {
-            yield return textureLoader[type].Load(storage);
+            var coroutine = textureLoader[type].Load(storage); ;
+            yield return StartCoroutine(coroutine);
+            yield return coroutine.Current;
         }
         public IEnumerator LoadAssetBundle(string storage, TRResourceType type = defaultResourceType)
         {
-            yield return assetBundleLoader[type].Load(storage);
+            var coroutine = assetBundleLoader[type].Load(storage);
+            yield return StartCoroutine(coroutine);
+            yield return coroutine.Current;
         }
 
         public IEnumerator LoadAudioFromBundle(string storage, string bundle)

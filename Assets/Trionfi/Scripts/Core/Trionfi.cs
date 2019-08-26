@@ -46,6 +46,7 @@ namespace Trionfi
         STAND8 = 8,
         STAND9 = 9,
         EVENT = 10,
+        MESICON = 98,
         MOVIE = 99,
         UI = 100
     }
@@ -64,11 +65,11 @@ namespace Trionfi
     [SerializeField]
     public enum TRResourceType
     {
-        LocalStatic,
-        LocalStreaming,
-        WWW,
-        AssetBundle,
-    }
+        LocalStatic = 0,
+        LocalStreaming = 1,
+        WWW = 2,
+        AssetBundle = 3,
+    }  
     
     public enum TRAssetType
     {
@@ -294,11 +295,14 @@ namespace Trionfi
             return false;
         }
 
-        public void Begin(string scriptName)
+        public void Begin(string scriptName, TRResourceType type = TRResourceLoader.defaultResourceType)
         {
             uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(0.0f, 1.0f).OnComplete
                 (() =>
                     {
+                    messageWindow.currentName.text = string.Empty;
+                    messageWindow.currentUguiMessage.text = string.Empty;
+                    messageWindow.currentName.text = string.Empty;
                     messageWindow.gameObject.SetActive(true);
                     systemMenuWindow.gameObject.SetActive(true);
 
@@ -310,8 +314,7 @@ namespace Trionfi
                     {
                         if (!string.IsNullOrEmpty(scriptName))
                         {
-                            TRVirtualMachine.Instance.CompileScriptFile(scriptName, true);
-//                            StartCoroutine(TRVirtualMachine.Instance.Run(scriptName));
+                            StartCoroutine(TRVirtualMachine.Instance.LoadScenarioAsset(scriptName, type, true));
                         }
                     }
                         ); 

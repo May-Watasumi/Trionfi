@@ -45,28 +45,40 @@ namespace Trionfi
             //                yield return new WaitForSeconds(1.0f);
 
             //            if (TRResourceLoader.Instance.isSuceeded)
-            if (TRResourceLoader.Instance.defaultAudioLoader.instance != null)
+
+            if (!string.IsNullOrEmpty(storage))
             {
-                Trionfi.Instance.audioInstance[id].path = storage;
-                AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
-                AudioClip _clip = TRResourceLoader.Instance.defaultAudioLoader.instance;
-                _source.clip = _clip;
+                TRResourceType type = GetResourceType();
 
-                _source.volume = 0.0f;
+                var coroutine = TRResourceLoader.Instance.LoadAudio(storage, type);
 
-                if (playDelay > 0.0f)
-                    yield return new WaitForSeconds(playDelay);
+                yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
 
-                if (fadeTime > 0.09f)
+                AudioClip _clip = (AudioClip)coroutine.Current;
+
+                if (_clip != null)
                 {
-                    _source.Play();
-                    float _vol = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
-                    _source.DOFade(_vol, fadeTime);
-                }
-                else
-                {
-                    _source.volume = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
-                    _source.Play();
+                    Trionfi.Instance.audioInstance[id].path = storage;
+                    AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
+
+                    _source.clip = _clip;
+
+                    _source.volume = 0.0f;
+
+                    if (playDelay > 0.0f)
+                        yield return new WaitForSeconds(playDelay);
+
+                    if (fadeTime > 0.09f)
+                    {
+                        _source.Play();
+                        float _vol = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
+                        _source.DOFade(_vol, fadeTime);
+                    }
+                    else
+                    {
+                        _source.volume = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
+                        _source.Play();
+                    }
                 }
             }
 
