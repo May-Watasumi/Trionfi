@@ -145,6 +145,8 @@ namespace Trionfi
         [SerializeField]
         public RenderTexture captureBuffer;
         [SerializeField]
+        public RenderTexture movieBuffer;
+        [SerializeField]
         public RawImage rawImage;
         [SerializeField]
         public Text layerText;
@@ -206,8 +208,12 @@ namespace Trionfi
         {
             //Create Screen Cahpure Buffer;
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
+            movieBuffer = new RenderTexture(Screen.width, Screen.height, 32);
 
             rawImage.texture = captureBuffer;
+
+            videoPlayer.targetTexture = movieBuffer;
+            layerInstance[TRLayerID.MOVIE].instance.texture = movieBuffer;
 
             float screenAspect = (float)Screen.width / (float)Screen.height;
             float canvasAspect = TRSystemConfig.Instance.screenSize.x / TRSystemConfig.Instance.screenSize.y;
@@ -453,6 +459,12 @@ namespace Trionfi
 
         public void Update()
         {
+        }
+
+        public void OnDestroy()
+        {
+            captureBuffer.Release();
+            movieBuffer.Release();
         }
     }
 }

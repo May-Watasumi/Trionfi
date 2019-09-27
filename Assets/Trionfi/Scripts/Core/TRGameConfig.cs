@@ -56,8 +56,7 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
 
     void Start()
     {
-        SetDefault();
-//        Load();		
+        Load();		
 	}
 	
 	void Update ()
