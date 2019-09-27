@@ -2,8 +2,10 @@ Trionfi is copyright(c)2019 渡澄萌衣(May-ClearBlue)
 
 Trionfi
 -------------------------------------------------------------
-Trionfi is a lightweight markup language to create talking scene (mainly Novel game).
+Trionfi is a lightweight markup language to create conversation scene for games, and Novel Game(Text Adventure Game).
+You can simply do that with writing  instruction tags in plane text. 
 It has compatibility with Kirikiri,  major Novel game tool in Japan. 
+
 
 
 REQUIREMENTS
