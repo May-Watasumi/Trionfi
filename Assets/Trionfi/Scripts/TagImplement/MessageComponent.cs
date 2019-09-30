@@ -72,8 +72,7 @@ namespace Trionfi
                 TRLayer.speaker = name;
             }
         }
-    }
-   
+    }  
 
     public class MesspeedComponent : AbstractComponent
     {

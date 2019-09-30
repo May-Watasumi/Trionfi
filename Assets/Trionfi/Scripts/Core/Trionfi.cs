@@ -132,6 +132,10 @@ namespace Trionfi
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
         public static readonly string assetPath = "Assets/Trionfi/";
+        [System.NonSerialized]
+        public RenderTexture captureBuffer;
+        [System.NonSerialized]
+        public RenderTexture movieBuffer;
 
         [SerializeField]
         string bootScriptName;
@@ -142,10 +146,6 @@ namespace Trionfi
         [SerializeField]
         public GameObject otherComponent;
 
-        [SerializeField]
-        public RenderTexture captureBuffer;
-        [SerializeField]
-        public RenderTexture movieBuffer;
         [SerializeField]
         public RawImage rawImage;
         [SerializeField]
@@ -306,25 +306,29 @@ namespace Trionfi
             uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(0.0f, 1.0f).OnComplete
                 (() =>
                     {
-                    messageWindow.currentName.text = string.Empty;
-                    messageWindow.currentUguiMessage.text = string.Empty;
-                    messageWindow.currentName.text = string.Empty;
-                    messageWindow.gameObject.SetActive(true);
-                    systemMenuWindow.gameObject.SetActive(true);
+                        if (messageWindow.currentName != null)
+                            messageWindow.currentName.text = string.Empty;
+                        if (messageWindow.currentUguiMessage != null)
+                            messageWindow.currentUguiMessage.text = string.Empty;
+                        if (messageWindow.currentMessage != null)
+                            messageWindow.currentMessage.text = string.Empty;
 
-                    if (titleWindow != null)
-                        titleWindow.gameObject.SetActive(false);
+                        messageWindow.gameObject.SetActive(true);
+                        systemMenuWindow.gameObject.SetActive(true);
 
-                    uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f).OnComplete
-                    (() =>
-                    {
-                        if (!string.IsNullOrEmpty(scriptName))
+                        if (titleWindow != null)
+                            titleWindow.gameObject.SetActive(false);
+
+                        uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f).OnComplete
+                        (() =>
                         {
-                            StartCoroutine(TRVirtualMachine.Instance.LoadScenarioAsset(scriptName, type, true));
+                            if (!string.IsNullOrEmpty(scriptName))
+                            {
+                                StartCoroutine(TRVirtualMachine.Instance.LoadScenarioAsset(scriptName, type, true));
+                            }
                         }
+                            );
                     }
-                        ); 
-                   }
                 );
         }
 
@@ -463,8 +467,10 @@ namespace Trionfi
 
         public void OnDestroy()
         {
-            captureBuffer.Release();
-            movieBuffer.Release();
+            if(captureBuffer != null)
+                captureBuffer.Release();
+            if(movieBuffer != null)
+                movieBuffer.Release();
         }
     }
 }
