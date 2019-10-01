@@ -3,6 +3,7 @@ Trionfi is copyright(c)2019 渡澄萌衣(May-ClearBlue)
 Trionfi
 -------------------------------------------------------------
 Trionfi is a lightweight markup language to create conversation scene for games, and Novel Game(Text Adventure Game).
+This is Open Source(MIT License).
 You can simply do that with writing  instruction tags in plane text. 
 It has compatibility with Kirikiri,  major Novel game tool in Japan. 
 
@@ -18,7 +19,8 @@ DOTween download link: https://assetstore.unity.com/packages/tools/animation/dot
 GETTING STARTED
 -------------------------------------------------------------
 Open Tools > Trionfi>New Project, and input parameter(project path, screen size etc).
-
+You can edit  'project name'/Resources/scenario/start.txt. (It's boot script file).
+And you can create  other scenario file if you need.
 
 LINKS
 -------------------------------------------------------------
@@ -34,7 +36,7 @@ FUTURE
 -Live2D and E-mote
 -"Utage" converter
 
-EXTERNAL LIBRARY (ALL MIT LICENSE)
+EXTERNAL LIBRARY (ALL MIT LICENSE) customized for Trionfi
 -Jace
 -TinyCSVParser
 -LetterWriter

@@ -32,13 +32,17 @@
 
 //[shake layer=message time=1000]
 
-[fadeout]
+//[fadeout]
+
+
+【yuko】
+"Trionfi" is a lightweight markup language to create conversation scene for games, and Novel Game.
 
 【ゆうこ】
 今日は新しいUnity用アセット「Trionfi」を
 紹介していくね。
 
-[fadein]
+//[fadein]
 
 【こはく】
 これを使うとアドベンチャーゲームや会話シーン

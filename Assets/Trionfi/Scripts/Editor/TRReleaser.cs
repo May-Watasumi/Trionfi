@@ -15,6 +15,10 @@ public class TRManifestInfo
     public uint crc;
 }
 
+//ToDo
+
+#if false
+
 public class TRReleaser : EditorWindow
 {
     string _projectRoot = "Assets/Trionfi/Example/Resources";
@@ -323,3 +327,4 @@ public class TRReleaser : EditorWindow
         }
     }
 }
+#endif
