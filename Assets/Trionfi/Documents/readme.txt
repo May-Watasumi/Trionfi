@@ -10,10 +10,9 @@ It has compatibility with Kirikiri,  major Novel game tool in Japan.
 
 GETTING STARTED
 -------------------------------------------------------------
--First, if  DoTween Setup dialog is Opened, please do it.
--Open Tools > Trionfi>New Project, and input parameter(project path, screen size etc).
- You can edit  'project name'/Resources/scenario/start.txt. (It's boot script file).
- And you can create  other scenario file if you need.
+-Open"File >BuildSetting>PlayerSetting" and change "Script Runtime Version"  to  ".Net4.x Equivalent", and reboot Unity(if you have already set it, you can skip it）.
+-Open "Tools/ Trionfi/New Project", and custom project setting(project name(path), reference resolution).
+- You can edit  'project name'/Resources/scenario/start.txt. (It's boot script file).  And you can create  other scenario file if you need.
 
 LINKS
 -------------------------------------------------------------

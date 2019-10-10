@@ -6,7 +6,7 @@ Trionfi　copyright(c) 渡澄萌衣/2019
 シナリオテキストファイルにタグを埋め込むだけのシンプルな動作が特徴です。
 
 ■使い方
-・DoTweenの初期化ダイアログが出ますので、初期化を行ってください。
+・メニューバーの File >BuildSetting>PlayerSettingを開いて、"Script Runtime Version"を".Net4.x Equivalent"に変更し、再起動を行ってください（既に設定済み、あるいはUnityのバージョンに酔っては不要です）
 ・メニューバーの Tools > Trionfi>New Project,を開いて、各種設定を行ってください(プロジェクトのパス（名前）や解像度等）.
 プロジェクト名/Resources/scenarioにあるstart.txtにメインシナリオとタグを追加していきます。
 必要に応じて他のシナリオファイルも作成してください。
