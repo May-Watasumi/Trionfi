@@ -83,7 +83,7 @@ namespace Trionfi
 
 
     [System.Serializable]
-    public class MediaInstanceKey<T> : SerializableTuple<T, string> { };
+    public class MediaInstanceKey<T> : SerializableDictionary<T, string> { };
 
     [System.Serializable]
     public class TRMediaInstance<T>

@@ -8,19 +8,12 @@ You can simply do that with writing  instruction tags in plane text.
 It has compatibility with Kirikiri,  major Novel game tool in Japan. 
 
 
-
-REQUIREMENTS
--------------------------------------------------------------
-DOTween is required to be installed and its initial setup performed before installing Trionfi.
-DOTween minimum required version v1.2
-DOTween download link: https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676
-
-
 GETTING STARTED
 -------------------------------------------------------------
-Open Tools > Trionfi>New Project, and input parameter(project path, screen size etc).
-You can edit  'project name'/Resources/scenario/start.txt. (It's boot script file).
-And you can create  other scenario file if you need.
+-First, if  DoTween Setup dialog is Opened, please do it.
+-Open Tools > Trionfi>New Project, and input parameter(project path, screen size etc).
+ You can edit  'project name'/Resources/scenario/start.txt. (It's boot script file).
+ And you can create  other scenario file if you need.
 
 LINKS
 -------------------------------------------------------------

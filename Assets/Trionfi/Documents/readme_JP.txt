@@ -5,11 +5,9 @@ Trionfi　copyright(c) 渡澄萌衣/2019
 美少女ゲームでよく使われている「吉里吉里」と親和性の高い、
 シナリオテキストファイルにタグを埋め込むだけのシンプルな動作が特徴です。
 
-■必要な外部アセット
-・DoTween (https://assetstore.unity.com/packages/tools/animation/dotween-hotween-v2-27676)
-
 ■使い方
-メニューバーの Tools > Trionfi>New Project,を開いて、各種設定を行ってください(プロジェクトのパス（名前）や解像度等）.
+・DoTweenの初期化ダイアログが出ますので、初期化を行ってください。
+・メニューバーの Tools > Trionfi>New Project,を開いて、各種設定を行ってください(プロジェクトのパス（名前）や解像度等）.
 プロジェクト名/Resources/scenarioにあるstart.txtにメインシナリオとタグを追加していきます。
 必要に応じて他のシナリオファイルも作成してください。
 
