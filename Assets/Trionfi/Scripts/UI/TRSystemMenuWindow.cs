@@ -36,6 +36,14 @@ namespace Trionfi
             gameObject.SetActive(false);
         }
 
+        public void OnOptionButton()
+        {
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.Instance.configWindow.gameObject.SetActive(true);
+            Trionfi.Instance.ClickEvent += Trionfi.Instance.messageLogwindow.OnClick;
+            gameObject.SetActive(false);
+        }
+
         public void OnWindowCloseButton()
         {
             Trionfi.Instance.CloseWindow();

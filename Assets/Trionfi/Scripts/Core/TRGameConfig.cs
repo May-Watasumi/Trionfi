@@ -26,23 +26,25 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
     }
 
     [SerializeField]
-    public GameConfigData configData = new GameConfigData();
+    public static GameConfigData configData = new GameConfigData();
 
-    public void Save()
+    public static void Save()
     {
         string jsonString = JsonUtility.ToJson(configData);
         PlayerPrefs.SetString(prefsKey, jsonString);
         PlayerPrefs.Save();
     }
 
-    public void Load()
+    public static void Load()
     {
         string jsonString = PlayerPrefs.GetString(prefsKey);
-        if(!string.IsNullOrEmpty(jsonString))
+        if (!string.IsNullOrEmpty(jsonString))
             configData = JsonUtility.FromJson<GameConfigData>(jsonString);
-    }
+        else
+            SetDefault();
+     }
 
-    public void SetDefault()
+    public static void SetDefault()
     {
         configData.mastervolume = 1.0f;
         configData.bgmvolume = 0.6f;
@@ -56,7 +58,6 @@ public class TRGameConfig : SingletonMonoBehaviour<TRGameConfig> {
 
     void Start()
     {
-        Load();		
 	}
 	
 	void Update ()

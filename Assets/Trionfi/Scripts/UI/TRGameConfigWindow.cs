@@ -52,36 +52,59 @@ public class TRGameConfigWindow : SingletonMonoBehaviour<TRGameConfigWindow> {
         switch(type)
         {
             case 0:
-                TRGameConfig.Instance.configData.mastervolume = mastervolumeSlider.value;
+                TRGameConfig.configData.mastervolume = mastervolumeSlider.value;
                 break;
             case 1:
-                TRGameConfig.Instance.configData.bgmvolume = bgmvolumeSlider.value;
+                TRGameConfig.configData.bgmvolume = bgmvolumeSlider.value;
                 break;
             case 2:
-                TRGameConfig.Instance.configData.sevolume = sevolumeSlider.value;
+                TRGameConfig.configData.sevolume = sevolumeSlider.value;
                 break;
             case 3:
-                TRGameConfig.Instance.configData.voicevolume = voicevolumeSlider.value;
+                TRGameConfig.configData.voicevolume = voicevolumeSlider.value;
                 break;
             case 4:
-                TRGameConfig.Instance.configData.textspeed = textspeedSlider.value;
+                TRGameConfig.configData.textspeed = textspeedSlider.value;
                 break;
             case 5:
-                TRGameConfig.Instance.configData.autotextWait= autotextwaitSlider.value;
+                TRGameConfig.configData.autotextWait= autotextwaitSlider.value;
                 break;
         }
     }
 
     public void OnChangeEffectSkip()
     {
-        TRGameConfig.Instance.configData.effectSkip = effectSkipToggle.isOn;
+        TRGameConfig.configData.effectSkip = effectSkipToggle.isOn;
     }
 
     public void OnChangeReadTextSkip()
     {
-        TRGameConfig.Instance.configData.readtextSkip = readTextSkipToggle.isOn;
+        TRGameConfig.configData.readtextSkip = readTextSkipToggle.isOn;
+    }
+
+    public void LoadParam()
+    {
+        mastervolumeSlider.value = TRGameConfig.configData.mastervolume;
+        bgmvolumeSlider.value = TRGameConfig.configData.bgmvolume;
+        sevolumeSlider.value = TRGameConfig.configData.sevolume;
+        voicevolumeSlider.value = TRGameConfig.configData.voicevolume;
+        textspeedSlider.value = TRGameConfig.configData.textspeed;
+        autotextwaitSlider.value = TRGameConfig.configData.autotextWait;
+        effectSkipToggle.isOn = TRGameConfig.configData.effectSkip;
+        readTextSkipToggle.isOn = TRGameConfig.configData.readtextSkip;
+    }
+
+    public void ResetDedault()
+    {
+        TRGameConfig.SetDefault();
+        LoadParam();
     }
     
-    void Start() { }
+    void Start()
+    {
+        TRGameConfig.Load();
+        LoadParam();
+    }
+
     void Update() { }
 }

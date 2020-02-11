@@ -31,7 +31,7 @@ namespace Trionfi
             if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
                 Trionfi.Instance.messageWindow.gameObject.SetActive(true);
 
-            Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.Instance.configData.textspeed);
+            Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
         }
 
         public override IEnumerator TagSyncFunction()

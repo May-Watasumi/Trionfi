@@ -28,3 +28,9 @@ Trionfi repository (github)  https://github.com/May-ClearBlue/Trionfi
 ・TinyCSVParser
 ・LetterWriter
 ・ClosedXML
+
+■サンプル素材
+びたちー素材館様
+http://www.vita-chi.net/sozai1.htm
+きまぐれアフター様
+http://k-after.at.webry.info/

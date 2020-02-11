@@ -71,12 +71,12 @@ namespace Trionfi
                     if (fadeTime > 0.09f)
                     {
                         _source.Play();
-                        float _vol = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
+                        float _vol = TRGameConfig.configData.mastervolume * TRGameConfig.configData.bgmvolume;
                         _source.DOFade(_vol, fadeTime);
                     }
                     else
                     {
-                        _source.volume = TRGameConfig.Instance.configData.mastervolume * TRGameConfig.Instance.configData.bgmvolume;
+                        _source.volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.bgmvolume;
                         _source.Play();
                     }
                 }
