@@ -30,23 +30,25 @@ namespace Trionfi
 
         public void OnMessageLogButton()
         {
-            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
-            Trionfi.Instance.messageLogwindow.gameObject.SetActive(true);
-            Trionfi.Instance.ClickEvent += Trionfi.Instance.messageLogwindow.OnClick;
-            gameObject.SetActive(false);
+            Trionfi.Instance.messageWindow.Pause();
+            Trionfi.Instance.HideObject(Trionfi.Instance.messageWindow.gameObject);
+            Trionfi.Instance.HideObject(gameObject);
+
+            Trionfi.Instance.OpenUI(Trionfi.Instance.messageLogwindow.gameObject);
         }
 
         public void OnOptionButton()
         {
-            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
-            Trionfi.Instance.configWindow.gameObject.SetActive(true);
-            Trionfi.Instance.ClickEvent += Trionfi.Instance.messageLogwindow.OnClick;
-            gameObject.SetActive(false);
+            Trionfi.Instance.messageWindow.Pause();
+            Trionfi.Instance.HideObject(Trionfi.Instance.messageWindow.gameObject);
+            Trionfi.Instance.HideObject(gameObject);
+
+            Trionfi.Instance.OpenUI(Trionfi.Instance.configWindow.gameObject);
         }
 
         public void OnWindowCloseButton()
         {
-            Trionfi.Instance.CloseWindow();
+            Trionfi.Instance.CloseAllUI();
         }
     }
 }

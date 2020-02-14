@@ -55,10 +55,10 @@ namespace Trionfi
 
             if (hasSync)
             {
-                Trionfi.Instance.CloseWindow();
+                Trionfi.Instance.CloseAllUI();
                 yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.isPlaying);
                 _image.enabled = false;
-                Trionfi.Instance.ReactiveWindow();
+                Trionfi.Instance.OpenAllUI();
             }
 
             yield return null;

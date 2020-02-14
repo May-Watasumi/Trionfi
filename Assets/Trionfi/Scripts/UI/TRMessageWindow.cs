@@ -80,18 +80,14 @@ namespace Trionfi
                 state = MessageState.None;
         }
 
-        public void Close()
+        public void Pause()
         {
             if (state == MessageState.OnShow)
                 StopCoroutine(_waitCoroutine);
-
-            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
         }
 
-        public void Open()
+        public void Restart()
         {
-            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
-
             if (state == MessageState.OnShow)
             {
                 StartCoroutine(_waitCoroutine);

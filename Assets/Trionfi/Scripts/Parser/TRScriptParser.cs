@@ -13,12 +13,13 @@ namespace Trionfi
     enum TRParserError
     {
         EOF,
-        UnmatchType
+        UnmatchType,
+        Unknown       
     }
 
     class TRParserExecption : System.Exception
     {
-        public TRParserError error;
+        public TRParserError error = TRParserError.Unknown;
         public TRParserExecption(TRParserError _error) { _error = error; }
     }
 

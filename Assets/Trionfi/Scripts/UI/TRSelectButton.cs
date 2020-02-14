@@ -20,10 +20,9 @@ namespace Trionfi
             else if(TRSelectWindow.Instance.decisionSound.clip != null)
                 TRSelectWindow.Instance.decisionSound.Play();
 
-            TRSelectWindow.Instance.gameObject.SetActive(false);
+            Trionfi.Instance.PopWindow();
 
-            Trionfi.Instance.ReactiveWindow();
-            Trionfi.Instance.globalTap.SetActive(true);
+            TRSelectWindow.Instance.gameObject.SetActive(false);
 
             TRSelectWindow.Instance.onWait = false;
         }

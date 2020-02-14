@@ -62,13 +62,6 @@ namespace Trionfi {
             logDataList.Clear();
         }
 
-        public void OnClick()
-        {
-            Trionfi.Instance.ReactiveWindow();
-            gameObject.SetActive(false);
-            Trionfi.Instance.ClickEvent -= this.OnClick;
-        }
-
         public void Show()
 		{
 /*

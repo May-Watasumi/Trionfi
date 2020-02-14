@@ -118,6 +118,14 @@ namespace Trionfi
     [Serializable]
     public class TRAudio : TRMediaInstance<AudioSource>
     {
+        public float mainVolume = 1.0f;
+        public float faderVolume = 1.0f;
+
+        public void UpdateVolume()
+        {
+            instance.volume = faderVolume * mainVolume * TRGameConfig.configData.mastervolume;
+        }
+
     }
 
     [Serializable]
@@ -136,6 +144,9 @@ namespace Trionfi
         public RenderTexture captureBuffer;
         [System.NonSerialized]
         public RenderTexture movieBuffer;
+
+        [SerializeField]
+        public string titleName = "Example";
 
         [SerializeField]
         string bootScriptName;
@@ -206,6 +217,10 @@ namespace Trionfi
 
         public void Init(bool changeLayerOrder = false)
         {
+            audioInstance[TRAudioID.BGM].mainVolume = TRGameConfig.configData.bgmvolume * TRGameConfig.configData.mastervolume;
+            audioInstance[TRAudioID.SE1].mainVolume = TRGameConfig.configData.sevolume * TRGameConfig.configData.mastervolume;
+            audioInstance[TRAudioID.VOICE1].mainVolume = TRGameConfig.configData.voicevolume * TRGameConfig.configData.mastervolume;
+
             //Create Screen Cahpure Buffer;
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
             movieBuffer = new RenderTexture(Screen.width, Screen.height, 32);
@@ -253,6 +268,8 @@ namespace Trionfi
             {
                 Begin(bootScriptName);
             }
+
+            return;
         }
 
         public delegate void OnClickEvent();
@@ -260,28 +277,68 @@ namespace Trionfi
 
         public void OnGlobalTapEvent()
         {
-            if(ClickEvent != null)
+            if (ClickEvent != null)
                 ClickEvent();
         }
 
-        public void CloseWindow()
+        public Queue<GameObject> closedWindow = new Queue<GameObject>();
+
+        GameObject currentUI;
+
+        public void HideObject(GameObject window)
         {
-            TRSystemMenuWindow.Instance.gameObject.SetActive(false);
+            if(window.activeSelf)
+                closedWindow.Enqueue(window);
 
-            messageWindow.Close();
-            messageLogwindow.gameObject.SetActive(false);
-            ClickEvent += ReactiveWindow;
-
+            window.SetActive(false);
         }
 
-        public void ReactiveWindow()
+        public void OpenUI(GameObject ui)
         {
-            if (Trionfi.Instance.videoPlayer.isPlaying)
-                Trionfi.Instance.videoPlayer.Stop();
+            currentUI = ui;
 
-            Trionfi.Instance.messageWindow.Open();
-            TRSystemMenuWindow.Instance.gameObject.SetActive(true);
-            ClickEvent -= this.ReactiveWindow;
+            if(currentUI != null)
+                currentUI.SetActive(true);
+
+            ClickEvent += PopWindow;
+        }
+
+        public void PopWindow()
+        {
+            while (closedWindow.Count > 0)
+            {
+                GameObject window =  closedWindow.Dequeue();
+                window.SetActive(true);
+            }
+
+            if (currentUI != null)
+                currentUI.SetActive(false);
+
+            ClickEvent -= PopWindow;
+        }
+
+        public void CloseAllUI(GameObject ui = null)
+        {
+            messageWindow.Pause();
+            HideObject(configWindow.gameObject);//   TRGameConfigWindow.Instance.gameObject);
+            HideObject(messageWindow.gameObject);
+            HideObject(systemMenuWindow.gameObject);// TRSystemMenuWindow.Instance.gameObject);
+            HideObject(messageLogwindow.gameObject);
+
+            ClickEvent += PopWindow;
+        }
+
+        public void OpenAllUI()
+        {
+            if (videoPlayer.isPlaying)
+                videoPlayer.Stop();
+
+            PopWindow();
+            messageWindow.Restart();
+            messageWindow.gameObject.SetActive(true);
+            systemMenuWindow.gameObject.gameObject.SetActive(true);
+
+            ClickEvent -= PopWindow;
         }
 
         public static bool IsPointerOverGameObject()
@@ -467,7 +524,7 @@ namespace Trionfi
 
         public void OnDestroy()
         {
-            if(captureBuffer != null)
+            if (captureBuffer != null)
                 captureBuffer.Release();
             if(movieBuffer != null)
                 movieBuffer.Release();
