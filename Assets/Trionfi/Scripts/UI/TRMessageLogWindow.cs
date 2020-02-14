@@ -30,7 +30,7 @@ namespace Trionfi {
 
             logData.logText.text = message;
             logData.logName = name;
-//            logData.SetIcon(name);
+            logData.SetLogData(name, voice);
             logData.voice = voice;
 
             //ToDo:
@@ -89,5 +89,10 @@ namespace Trionfi {
 
             logObjectList.Clear();
 		}
-	}
+
+        public void Exit()
+        {
+            Trionfi.Instance.PopWindow();
+        }
+    }
 }

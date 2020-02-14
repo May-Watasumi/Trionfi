@@ -99,6 +99,11 @@ namespace Trionfi
             UpdateAll(true);
         }
 
+        public void Exit()
+        {
+            Trionfi.Instance.PopWindow();
+        }
+
         void Start()
         {
             UpdateAll(false);

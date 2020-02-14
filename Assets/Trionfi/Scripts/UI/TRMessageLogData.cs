@@ -8,6 +8,8 @@ public class TRMessageLogData : MonoBehaviour {
 
     [SerializeField]
     public Image characterIcon;
+    [SerializeField]
+    public Button voicePlayButton;
 
     [SerializeField]
     public LetterWriter.Unity.Components.LetterWriterText/* Text*/ logText;
@@ -27,12 +29,20 @@ public class TRMessageLogData : MonoBehaviour {
 		
 	}
 
-    public void SetIcon(string name)
+    public void SetLogData(string name, AudioClip _voice)
     {
         if (string.IsNullOrEmpty(name))
-            characterIcon.enabled = false;
-//        else
-//        { /*ToDo*/}
+            characterIcon.gameObject.SetActive(false);
+        //        else
+        //        { /*ToDo*/}
+
+        if (_voice != null)
+        {
+            voice = _voice;
+            voicePlayButton.gameObject.SetActive(true);
+        }
+        else
+            voicePlayButton.gameObject.SetActive(false);
     }
 
     public void PlayVoice()
