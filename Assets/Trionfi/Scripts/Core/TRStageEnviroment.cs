@@ -19,6 +19,8 @@ namespace Trionfi
         public string _LAYER_PATH_ = "sprite/character/";
         [SerializeField]
         public string _BGM_PATH_ = "sound/bgm/";
+        [SerializeField]
+        public string _LOGICON_PREFIX_ = "logicon_";
 
         [System.Serializable]
         public class TREnviroment : SerializableDictionary<string, Color> { }

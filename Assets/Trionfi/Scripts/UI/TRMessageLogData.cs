@@ -15,6 +15,9 @@ public class TRMessageLogData : MonoBehaviour {
     public LetterWriter.Unity.Components.LetterWriterText/* Text*/ logText;
 
     [SerializeField]
+    public Text nameText;
+
+    [SerializeField]
     AudioSource audioSource;
 
     public AudioClip voice;
@@ -31,6 +34,8 @@ public class TRMessageLogData : MonoBehaviour {
 
     public void SetLogData(string name, AudioClip _voice)
     {
+        nameText.text = name;
+
         if (string.IsNullOrEmpty(name))
             characterIcon.gameObject.SetActive(false);
         //        else

@@ -16,15 +16,13 @@ namespace Trionfi {
         public event Action OnApplyLog;
 
 		public List<TRMessageLogData> logDataList = new List<TRMessageLogData>();
-		public List<GameObject> logObjectList = new List<GameObject>();
-
-        [SerializeField]
-		public int logLimit = 100;
+		//public List<GameObject> logObjectList = new List<GameObject>();
 
 		public void AddLogData(string message, string name, AudioClip voice = null)
 		{
             GameObject _temp = GameObject.Instantiate(logContentPrefab);
-            _temp.hideFlags = HideFlags.HideInHierarchy;
+
+            //_temp.hideFlags = HideFlags.HideInHierarchy;
 
             TRMessageLogData logData = _temp.GetComponent<TRMessageLogData>();
 
@@ -40,7 +38,7 @@ namespace Trionfi {
             logData.gameObject.transform.SetParent(logDataRoot.transform);
 
             //上限を超えていたら指定分の配列を削除する
-            if ((logLimit + 1) < logDataList.Count)
+            if (TRSystemConfig.Instance.backlogCount > 0 && (TRSystemConfig.Instance.backlogCount + 1) < logDataList.Count)
                 logDataList.RemoveRange(0, 1);
         }
 
@@ -52,7 +50,7 @@ namespace Trionfi {
 			}
 		}
 
-		public void ClearLog()
+		public void DeleteLogObject()
 		{
             foreach (TRMessageLogData logData in logDataList)
             {
@@ -61,38 +59,16 @@ namespace Trionfi {
 
             logDataList.Clear();
         }
-
-        public void Show()
-		{
-/*
-			//ToDo:
-			GameObject content = gameObject.GetComponentInChildren<UnityEngine.UI.VerticalLayoutGroup>().gameObject;
-			foreach (var item in logDataList)
-            {
-				GameObject logcontent = GameObject.Instantiate(logContentPrefab) as GameObject;
-//				logcontent.GetComponentInChildren<UnityEngine.UI.Text>().text = item.message;
-				logcontent.transform.SetParent(content.transform);
-
-                //何故か引き延ばされる
-				logcontent.transform.localScale = new Vector3(1.0f, 1.0f, 1.0f);
-				logObjectList.Add(logcontent);
-			}
-*/
-    }
-
-		public void Close()
-        {
-			for (int num=0; num < logObjectList.Count; num++)
-            {
-                GameObject.Destroy(logObjectList[num]);
-			}
-
-            logObjectList.Clear();
-		}
-
+        
         public void Exit()
         {
             Trionfi.Instance.PopWindow();
+        }
+
+        public void OnDestroy()
+        {
+            DeleteLogObject();
+
         }
     }
 }

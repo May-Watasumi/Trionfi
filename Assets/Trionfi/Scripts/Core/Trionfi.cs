@@ -31,6 +31,7 @@ namespace Trionfi
         BGM = 0,
         SE1 = 1,
         VOICE1 = 11,
+        UI = 99
     }
 
     public enum TRLayerID
@@ -314,6 +315,9 @@ namespace Trionfi
             if (currentUI != null)
                 currentUI.SetActive(false);
 
+            if(messageWindow.gameObject.activeSelf)
+                messageWindow.Restart();
+
             ClickEvent -= PopWindow;
         }
 
@@ -334,11 +338,11 @@ namespace Trionfi
                 videoPlayer.Stop();
 
             PopWindow();
-            messageWindow.Restart();
-            messageWindow.gameObject.SetActive(true);
+            //messageWindow.Restart();
+            //messageWindow.gameObject.SetActive(true);
             systemMenuWindow.gameObject.gameObject.SetActive(true);
 
-            ClickEvent -= PopWindow;
+            //ClickEvent -= PopWindow;
         }
 
         public static bool IsPointerOverGameObject()

@@ -26,8 +26,6 @@ namespace Trionfi
 
 		protected override void TagFunction()
 		{
-            Trionfi.Instance.selectWindow.onWait = true;
-            TRSystemMenuWindow.Instance.OnWindowCloseButton();
             Trionfi.Instance.selectWindow.Begin();
         }
 

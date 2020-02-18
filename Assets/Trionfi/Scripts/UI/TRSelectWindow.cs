@@ -23,10 +23,6 @@ namespace Trionfi
         [SerializeField]
         float AreaHeight = 560.0f;
 
-        // Use this for initialization
-        void Start()
-        {    }
-
         public void Add(string content, string result)
         {
             selectorList[activeSelector++].Set(content, result);
@@ -34,7 +30,14 @@ namespace Trionfi
 
         public void Begin()
         {
-            Trionfi.Instance.globalTap.SetActive(false);
+            Trionfi.Instance.selectWindow.onWait = true;
+
+            Trionfi.Instance.messageWindow.Pause();
+            Trionfi.Instance.HideObject(Trionfi.Instance.globalTap);
+            Trionfi.Instance.HideObject(Trionfi.Instance.configWindow.gameObject);
+            Trionfi.Instance.HideObject(Trionfi.Instance.messageWindow.gameObject);
+            Trionfi.Instance.HideObject(Trionfi.Instance.systemMenuWindow.gameObject);
+            Trionfi.Instance.HideObject(Trionfi.Instance.messageLogwindow.gameObject);
 
             for (int a = 0; a < selectorList.Count; a++)
             {
@@ -49,7 +52,7 @@ namespace Trionfi
 
             activeSelector = 0;
 
-            gameObject.SetActive(true);
+            Trionfi.Instance.OpenUI(Trionfi.Instance.selectWindow.gameObject);
         }
     }
 }

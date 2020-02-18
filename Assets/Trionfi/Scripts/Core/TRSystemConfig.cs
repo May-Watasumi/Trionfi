@@ -49,8 +49,8 @@ namespace Trionfi
         public int characterPosdescent = 30;
 
         [SerializeField]
-        [Range(10, 50)]
-        public int backlogCount = 30;
+        [Range(-1, 50)]
+        public int backlogCount = -1;
 
         [SerializeField]
         [Range(5, 30)]

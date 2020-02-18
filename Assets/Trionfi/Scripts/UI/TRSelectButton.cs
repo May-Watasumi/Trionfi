@@ -6,7 +6,8 @@ using UnityEngine.UI;
 namespace Trionfi
 {
     public class TRSelectButton : MonoBehaviour {
-        public string targetLabel;           //ジャンプ先ラベル@KAG仕様
+        //ジャンプ先ラベル@KAG仕様
+        public string targetLabel; 
 
         [SerializeField]
         public AudioSource decisionSound;
@@ -15,14 +16,29 @@ namespace Trionfi
         {
             TRSelectWindow.Instance.result = targetLabel;
 
+            AudioSource audio = null;
             if (decisionSound != null && decisionSound.clip != null)
-                decisionSound.Play();
-            else if(TRSelectWindow.Instance.decisionSound.clip != null)
-                TRSelectWindow.Instance.decisionSound.Play();
+                audio = decisionSound;
+            else if (TRSelectWindow.Instance.decisionSound.clip != null)
+                audio = TRSelectWindow.Instance.decisionSound;
+
+            StartCoroutine(EndSelector(audio));
+        }
+
+        IEnumerator EndSelector(AudioSource audio)
+        {
+            float volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.sevolume;
+
+            if (audio != null)
+            {
+                audio.volume = volume;
+                audio.Play();
+                yield return new WaitWhile(() => audio.isPlaying);
+            }
+
+            yield return new WaitForEndOfFrame();
 
             Trionfi.Instance.PopWindow();
-
-            TRSelectWindow.Instance.gameObject.SetActive(false);
 
             TRSelectWindow.Instance.onWait = false;
         }
@@ -36,15 +52,5 @@ namespace Trionfi
 
             targetLabel = result;
         }
-/*
-        // Use this for initialization
-        void Start() {
-
-        }
-
-        // Update is called once per frame
-        void Update() {
-        }
-*/
     }
 }
