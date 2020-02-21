@@ -40,11 +40,21 @@ namespace Trionfi
         {
             public int imageID = -1;
             public int emotionID = -1;
+//            public string displayName;
+//            public string prefix;
+//            public bool hasVoice;
+
+            [field: SerializeField]
             public string displayName { get; set; }
+            [field: SerializeField]
             public string prefix { get; set; }
+            [field: SerializeField]
             public bool hasVoice { get; set; }
+
+            public Sprite logIcon;
         }
 
+        [Serializable]
         public class TRActPatternInfo
         {
             public string alias { get; set; }
@@ -58,6 +68,7 @@ namespace Trionfi
             { "夕" , new Color(1.0f, 0.375f, 0.0625f, 0.75f) },
             { "夜" , new Color(0.0f, 0.0f, 0.25f, 0.75f) },
         };
+
         [SerializeField]
         TREnviroment charaEnviroment = new TREnviroment()
         {
@@ -100,6 +111,9 @@ namespace Trionfi
         [SerializeField]
         public TextAsset CharacterEmotionPatternListCSV;
 
+        [SerializeField]
+        TRActorParamAsset actorInfoInstance;
+
         public TRActPatternAlias actPatternAlias = new TRActPatternAlias();
         public TRActorInfoes actorInfoes = new TRActorInfoes();
 
@@ -108,9 +122,9 @@ namespace Trionfi
         {
             CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
             CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
-            CsvActorMapping csvMapper = new CsvActorMapping();
+//            CsvActorMapping csvMapper = new CsvActorMapping();
             CsvActPatternMapping csvMapper2 = new CsvActPatternMapping();
-
+            /*
             if (CharacterNameListCSV != null)
             {
                 CsvParser<TRActorInfo> csvParser = new CsvParser<TRActorInfo>(csvParserOptions, csvMapper);
@@ -121,6 +135,10 @@ namespace Trionfi
                     actorInfoes[_info.Result.displayName] = _info.Result;
                 }
             }
+            */
+
+            if (actorInfoInstance != null)
+                actorInfoes = actorInfoInstance.actorInfo;
 
             if (CharacterEmotionPatternListCSV != null)
             {

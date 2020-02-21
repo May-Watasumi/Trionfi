@@ -77,9 +77,6 @@ namespace Trionfi
 
         [SerializeField]
         public bool KAGCompatibility = true;
-        public bool useCRI = false;
-        public bool useLive2D = false;
-        public bool useEmote = false;
 
         private float oldTime;
         private int frame = 0;
@@ -115,7 +112,5 @@ namespace Trionfi
 			if(showFPS) 
 				GUI.Label(new Rect(25, 25, 160, 20), "FPS : " + frameRate.ToString());
 		}
-
 	}
-
 }

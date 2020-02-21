@@ -30,11 +30,16 @@ namespace Trionfi {
             logData.logName = name;
             logData.SetLogData(name, voice);
             logData.voice = voice;
+            if (TRStageEnviroment.Instance.actorInfoes != null &&
+                TRStageEnviroment.Instance.actorInfoes.ContainsKey(TRLayer.speaker) &&
+                TRStageEnviroment.Instance.actorInfoes[TRLayer.speaker].logIcon != null)
+                logData.characterIcon.sprite = TRStageEnviroment.Instance.actorInfoes[TRLayer.speaker].logIcon;
+            else
+                logData.characterIcon.gameObject.SetActive(false);
 
             //ToDo:
             //str += "<color=#"+name_color+">"+name+"</color>\n"+text + "";
             logDataList.Add(logData);
-
             logData.gameObject.transform.SetParent(logDataRoot.transform);
 
             //上限を超えていたら指定分の配列を削除する
