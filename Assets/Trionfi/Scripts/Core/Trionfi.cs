@@ -132,8 +132,7 @@ namespace Trionfi
     [Serializable]
     public class TRLayer : TRMediaInstance<RawImage>
     {
-        public static string speaker;
-
+        public static string currentSpeaker;
         public string actor;
     }
 
@@ -141,6 +140,7 @@ namespace Trionfi
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
         public static readonly string assetPath = "Assets/Trionfi/";
+
         [System.NonSerialized]
         public RenderTexture captureBuffer;
         [System.NonSerialized]
@@ -440,7 +440,7 @@ namespace Trionfi
             messageWindow = messageWindowList[mesWindowID];
             messageWindow.ClearMessage();
 
-            foreach (KeyValuePair</*MediaInstanceKey<*/TRLayerID/*>*/ ,TRLayer> instance in layerInstance)
+            foreach (KeyValuePair<TRLayerID ,TRLayer> instance in layerInstance)
             {
                 instance.Value.instance.enabled = false;
                 instance.Value.instance.texture = null;
@@ -448,7 +448,7 @@ namespace Trionfi
                 instance.Value.actor = string.Empty;
             }
 
-            foreach (KeyValuePair</*MediaInstanceKey<*/TRAudioID/*>*/, TRAudio> instance in audioInstance)
+            foreach (KeyValuePair<TRAudioID, TRAudio> instance in audioInstance)
             {
                 instance.Value.instance.Stop();
                 instance.Value.path = string.Empty;
@@ -466,7 +466,7 @@ namespace Trionfi
             layerCanvas.gameObject.SetActive(false);
             uiCanvas.gameObject.SetActive(false);
 
-            foreach (KeyValuePair</*MediaInstanceKey<*/TRAudioID/*>*/, TRAudio> instance in audioInstance)
+            foreach (KeyValuePair<TRAudioID, TRAudio> instance in audioInstance)
             {
                 instance.Value.instance.Stop();
                 instance.Value.path = string.Empty;
@@ -475,10 +475,10 @@ namespace Trionfi
 
         public void SetStandLayerTone()
         {
-            foreach (KeyValuePair</*MediaInstanceKey<*/TRLayerID/*>*/ ,TRLayer> instance in layerInstance)
+            foreach (KeyValuePair<TRLayerID ,TRLayer> instance in layerInstance)
             {
                 //レイヤー1～10が立ち絵として割り振ってある。
-                if ((instance.Key >= TRLayerID.STAND1 && instance.Key > (TRLayerID)10) && ( string.IsNullOrEmpty(TRLayer.speaker) || instance.Value.actor != TRLayer.speaker) )
+                if ((instance.Key >= TRLayerID.STAND1 && instance.Key > (TRLayerID)10) && ( string.IsNullOrEmpty(TRLayer.currentSpeaker) || instance.Value.actor != TRLayer.currentSpeaker) )
                     instance.Value.instance.color = Color.gray;
                 else
                     instance.Value.instance.color = Color.white;

@@ -31,9 +31,9 @@ namespace Trionfi {
             logData.SetLogData(name, voice);
             logData.voice = voice;
             if (TRStageEnviroment.Instance.actorInfoes != null &&
-                TRStageEnviroment.Instance.actorInfoes.ContainsKey(TRLayer.speaker) &&
-                TRStageEnviroment.Instance.actorInfoes[TRLayer.speaker].logIcon != null)
-                logData.characterIcon.sprite = TRStageEnviroment.Instance.actorInfoes[TRLayer.speaker].logIcon;
+                TRStageEnviroment.Instance.actorInfoes.ContainsKey(TRLayer.currentSpeaker) &&
+                TRStageEnviroment.Instance.actorInfoes[TRLayer.currentSpeaker].logIcon != null)
+                logData.characterIcon.sprite = TRStageEnviroment.Instance.actorInfoes[TRLayer.currentSpeaker].logIcon;
             else
                 logData.characterIcon.gameObject.SetActive(false);
 

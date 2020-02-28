@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+using System.Collections.Generic;
 
 namespace Trionfi
 {
@@ -8,8 +7,30 @@ namespace Trionfi
 	public class TRSystemConfig : SingletonMonoBehaviour<TRSystemConfig>
     {
         [System.Serializable]
-        public class LayerPos : SerializableDictionary<string, float> { };
+        public class LayerPos : SerializableDictionary<TRStandPosition, float>
+        {
+            readonly Dictionary<string, TRStandPosition> posString = new Dictionary<string, TRStandPosition>()
+            {
+                {"center",  TRStandPosition.CENTER },
+                {"c",  TRStandPosition.CENTER },
+                {"left",  TRStandPosition.LEFT },
+                {"l",  TRStandPosition.LEFT },
+                {"right",  TRStandPosition.RIGHT },
+                {"r", TRStandPosition.RIGHT },
+                {"left_center",  TRStandPosition.LEFT_CENTER },
+                {"lc",  TRStandPosition.LEFT_CENTER },
+                {"right_center",  TRStandPosition.RIGHT_CENTER },
+                {"rc",  TRStandPosition.RIGHT_CENTER },
+            };
 
+            public float GetPos(string pos)
+            {
+                if (posString.ContainsKey(pos))
+                    return this[posString[pos]];
+                else
+                    return 0.0f;
+            }
+        };
 
         [SerializeField]
         public bool debugMode = false;
@@ -33,16 +54,11 @@ namespace Trionfi
         [SerializeField]
         public LayerPos layerPos = new LayerPos()
         {
-            { "left", -0.5f },//-360 },
-            { "center", 0.0f },
-            { "right", 0.5f },//360 },
-            { "left_center", -0.6f },// -420 },
-            { "right_center", 0.6f },//420 },
-            { "l", -0.5f },//-360 },
-            { "c", 0.0f },
-            { "r", 0.5f },//360 },
-            { "lc", -0.6f },// -420 },
-            { "rc", 0.6f },//420 },
+            { TRStandPosition.LEFT, -0.5f },//-360 },
+            { TRStandPosition.CENTER, 0.0f },
+            { TRStandPosition.RIGHT, 0.5f },//360 },
+            { TRStandPosition.LEFT_CENTER, -0.6f },// -420 },
+            { TRStandPosition.RIGHT_CENTER, 0.6f },//420 },
         };
 
         [SerializeField]

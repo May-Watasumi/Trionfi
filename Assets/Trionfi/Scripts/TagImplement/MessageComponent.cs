@@ -64,12 +64,12 @@ namespace Trionfi
             {
                 string[] nameInfo = name.Split('/');
                 Trionfi.Instance.messageWindow.ShowName(nameInfo[0]);
-                TRLayer.speaker = nameInfo[1];
+                TRLayer.currentSpeaker = nameInfo[1];
             }
             else
             {
                 Trionfi.Instance.messageWindow.ShowName(name);
-                TRLayer.speaker = name;
+                TRLayer.currentSpeaker = name;
             }
         }
     }  

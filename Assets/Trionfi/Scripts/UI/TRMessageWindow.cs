@@ -106,7 +106,7 @@ namespace Trionfi
                 faceIcon.enabled = false;
 
             nameString = string.Empty;
-            TRLayer.speaker = string.Empty;
+            TRLayer.currentSpeaker = string.Empty;
 
             speedRatio = 1.0f;
         }

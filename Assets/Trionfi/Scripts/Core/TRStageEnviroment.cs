@@ -14,11 +14,15 @@ namespace Trionfi
     public class TRStageEnviroment : SingletonMonoBehaviour<TRStageEnviroment>
     {
         [SerializeField]
-        public string _FILE_HEADER_ = "portrait_";
+        public string _CHARACTER_PREFIX_ = "portrait_";
         [SerializeField]
-        public string _LAYER_PATH_ = "sprite/character/";
+        public string _CHARACTER_PATH_ = "sprite/character/";
         [SerializeField]
         public string _BGM_PATH_ = "sound/bgm/";
+        [SerializeField]
+        public string _VOICE_PATH_ = "sound/voice/";
+        [SerializeField]
+        public string _SE_PATH_ = "sound/se/";
         [SerializeField]
         public string _LOGICON_PREFIX_ = "logicon_";
 

@@ -162,7 +162,7 @@ namespace Trionfi
                 if(TRStageEnviroment.Instance.layerAlias.ContainsKey(_param))
                     id = TRStageEnviroment.Instance.layerAlias[_param];
 
-                string storage = TRStageEnviroment.Instance._LAYER_PATH_ + TRStageEnviroment.Instance._FILE_HEADER_ + prefix + "_" + suffix;
+                string storage = TRStageEnviroment.Instance._CHARACTER_PATH_ + TRStageEnviroment.Instance._CHARACTER_PREFIX_ + prefix + "_" + suffix;
 
                 tagParam["layer"] = new TRVariable(id);
                 tagParam["storage"] = new TRVariable(storage);

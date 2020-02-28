@@ -30,12 +30,13 @@ namespace Trionfi
         }
 
         public override IEnumerator TagSyncFunction()
-        {
+        {                                   
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
             RawImage _image;
             _image = Trionfi.Instance.layerInstance[id].instance;
 
+            //話者セット
             string actor = tagParam["actor", string.Empty];
             Trionfi.Instance.layerInstance[id].actor = actor;
 
@@ -48,7 +49,7 @@ namespace Trionfi
             if (tagParam.ContainsKey("pos"))
             {
                 layerPos = tagParam["pos"].Literal();
-                pos.x = TRSystemConfig.Instance.layerPos[layerPos] * TRSystemConfig.Instance.screenSize.x / 2.0f;
+                pos.x = TRSystemConfig.Instance.layerPos.GetPos(layerPos) * TRSystemConfig.Instance.screenSize.x / 2.0f;
                 updatePos = true;
             }
 
