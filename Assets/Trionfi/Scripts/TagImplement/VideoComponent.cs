@@ -1,7 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
-using DG.Tweening;
+﻿#if !TR_PARSEONLY
+ using UnityEngine;
+ using UnityEngine.UI;
+ using UnityEngine.Networking;
+ using DG.Tweening;
+#endif
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -26,9 +29,10 @@ namespace Trionfi
 //            hasSync = true;
         }
 
+#if !TR_PARSEONLY
         public override IEnumerator TagSyncFunction()
         {
-            string storage = tagParam["url"].Literal();
+			string storage = tagParam["url"].Literal();
             //            float playDelay = tagParam.Float("delay");
             string url = Application.dataPath;
 
@@ -63,10 +67,11 @@ namespace Trionfi
 
             yield return null;
         }
-    }
+#endif
+	}
 
-    //[audiostop type=bgm delay=0]
-    public class VideostopComponent : AbstractComponent
+	//[audiostop type=bgm delay=0]
+	public class VideostopComponent : AbstractComponent
     {
         public VideostopComponent()
         {
@@ -78,11 +83,13 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-//            float delay = tagParam.Float("delay");
-            Trionfi.Instance.videoPlayer.Stop();
+#if !TR_PARSEONLY
+			//            float delay = tagParam.Float("delay");
+			Trionfi.Instance.videoPlayer.Stop();
             RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
             _image.enabled = false;
-        }
+#endif
+		}
     }
 
     //[audiostop type=bgm delay=0]
@@ -98,11 +105,13 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-//            float delay = tagParam.Float("delay");
+#if !TR_PARSEONLY
+			//            float delay = tagParam.Float("delay");
 
-            if(Trionfi.Instance.videoPlayer.isPlaying)
+			if (Trionfi.Instance.videoPlayer.isPlaying)
                 Trionfi.Instance.videoPlayer.Pause();
-        }
+#endif
+		}
     }
 
     //[audiostop type=bgm delay=0]
@@ -119,10 +128,12 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-//            float delay = tagParam.Float("delay");
+#if !TR_PARSEONLY
+			//            float delay = tagParam.Float("delay");
 
-            if (Trionfi.Instance.videoPlayer.isPrepared && !Trionfi.Instance.videoPlayer.isPlaying)
+			if (Trionfi.Instance.videoPlayer.isPrepared && !Trionfi.Instance.videoPlayer.isPlaying)
                 Trionfi.Instance.videoPlayer.Play();
-        }
+#endif
+		}
     }
 }

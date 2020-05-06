@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿#if !TR_PARSEONLY
+ using UnityEngine;
+#endif
+
 using System.Collections;
 using System.Collections.Generic;
 
@@ -15,9 +18,12 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction() {
-            Trionfi.Instance.selectWindow.Add(tagParam["text"].Literal(), tagParam["target"].Literal());
-        }
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			Trionfi.Instance.selectWindow.Add(tagParam["text"].Literal(), tagParam["target"].Literal());
+#endif
+		}
     }
 
 	public class SelectComponent : AbstractComponent
@@ -26,15 +32,19 @@ namespace Trionfi
 
 		protected override void TagFunction()
 		{
-            Trionfi.Instance.selectWindow.Begin();
-        }
+#if !TR_PARSEONLY
+			Trionfi.Instance.selectWindow.Begin();
+#endif
+		}
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             yield return new WaitWhile(() => Trionfi.Instance.selectWindow.onWait);
 
             if (!TRVirtualMachine.currentCallStack.LocalJump(TRSelectWindow.Instance.result))
                 ErrorLogger.Log("No Jump target:" + TRSelectWindow.Instance.result);
         }
-    }
+#endif
+	}
 }

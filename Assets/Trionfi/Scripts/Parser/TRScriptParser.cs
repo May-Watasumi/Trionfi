@@ -4,13 +4,17 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
-using Trionfi;
+
 using TRVariable = Jace.Operations.VariableCalcurator;
 using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
-    enum TRParserError
+#if TR_PARSEONLY
+	using TRVariableDictionary = System.Collections.Generic.Dictionary<string, TRVariable>;
+#endif
+
+	enum TRParserError
     {
         EOF,
         UnmatchType,

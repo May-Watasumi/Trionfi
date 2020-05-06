@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-//using ExpressionParser;
-using UnityEngine;
-using UnityEngine.SceneManagement;
+
+#if !TR_PARSEONLY
+ using UnityEngine;
+ using UnityEngine.SceneManagement;
+#endif
+
 using Jace.Operations;
 
 namespace Trionfi {
@@ -22,6 +25,7 @@ namespace Trionfi {
         {
         }
     }
+
     //エイリアスを定義する。実行はUnknownTag任せでパーサーでは変換しない（独立性）
     public class AliasComponent : AbstractComponent
     {
@@ -34,7 +38,8 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            string className = "Trionfi." + TRParserBase.tf.ToTitleCase(tagParam["tag"].Literal()) + "Component";
+#if !TR_PARSEONLY
+			string className = "Trionfi." + TRParserBase.tf.ToTitleCase(tagParam["tag"].Literal()) + "Component";
 
             // リフレクションで動的型付け
             Type masterType = Type.GetType(className);
@@ -49,7 +54,8 @@ namespace Trionfi {
                 _component.tagParam = tagParam;
                 TRVirtualMachine.aliasTagInstance[tagParam["name"].Literal()] = _component;
             }
-        }
+#endif
+		}
     }
 
     public class InitsceneComponent : AbstractComponent
@@ -62,9 +68,11 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            int mesID = tagParam["mes", 0];
+#if !TR_PARSEONLY
+			int mesID = tagParam["mes", 0];
             Trionfi.Instance.ResetCanvas(mesID);
-        }
+#endif
+		}
     }
 
     public class EndsceneComponent : AbstractComponent
@@ -77,8 +85,10 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            Trionfi.Instance.HideCanvas();
-        }
+#if !TR_PARSEONLY
+			Trionfi.Instance.HideCanvas();
+#endif
+		}
     }
 
     public class LabelComponent : AbstractComponent
@@ -109,8 +119,10 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            TRVirtualMachine.Serialize(tagParam["file"].Literal());
-        }
+#if !TR_PARSEONLY
+			TRVirtualMachine.Serialize(tagParam["file"].Literal());
+#endif
+		}
     }
 
     //ジャンプ＝コールスタックを変えない。いわゆるgoto
@@ -126,7 +138,8 @@ namespace Trionfi {
 
         protected override void TagFunction() {  }
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             string target = tagParam["target"].Literal();
             string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
@@ -155,6 +168,7 @@ namespace Trionfi {
 
             ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.currentCallStack.currentPos + "\"");
         }
+#endif
 	}
 
 	//コールスタックに保存されるジャンプ。いわゆるサブルーチン
@@ -177,7 +191,8 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
-            string target = tagParam["target"].Literal();
+#if !TR_PARSEONLY
+			string target = tagParam["target"].Literal();
 
             string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
 
@@ -185,11 +200,12 @@ namespace Trionfi {
 
 			ErrorLogger.Log("Call : file=\"" + file + "\" " + "index = \"" + index.ToString()+ "\"");
 
-//            TRVirtualMachine.callStack.Push(new CallStackObject(TRVirtualMachine.currentCallStack.currentPos , tagParam));
-            //ToDo:ジャンプ
-            //メインループ側で配列Indexが++されるので
-//			Trionfi.Instance.currentTagInstance.currentComponentIndex--;
-        }
+			//            TRVirtualMachine.callStack.Push(new CallStackObject(TRVirtualMachine.currentCallStack.currentPos , tagParam));
+			//ToDo:ジャンプ
+			//メインループ側で配列Indexが++されるので
+			//			Trionfi.Instance.currentTagInstance.currentComponentIndex--;
+#endif
+		}
 	}
 
     //サブルーチン等の返値を伴うコールスタック復帰処理。
@@ -203,8 +219,10 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction() {
-            TRVirtualMachine.FunctionalObjectInstance callStack = TRVirtualMachine.callStack.Pop();
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			TRVirtualMachine.FunctionalObjectInstance callStack = TRVirtualMachine.callStack.Pop();
 
 			string tag_str = "";
 
@@ -216,11 +234,12 @@ namespace Trionfi {
 
 			Debug.Log("RETURN scn=\"" + callStack.scriptName + "\" " + "index=\"" + callStack.currentPos.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
 
-//ToDo:
+			//ToDo:
 			//タグを実行
-//			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
-//			cmp.Execute();
-        }
+			//			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
+			//			cmp.Execute();
+#endif
+		}
 	}
 
     //Unityシーン追加呼び出し
@@ -234,21 +253,24 @@ namespace Trionfi {
 #endif
         }
 
+#if !TR_PARSEONLY
         AsyncOperation syncState;
-
+#endif
         protected override void TagFunction()
         {
 //			string file = tagParam.Identifier("file");
 //            SceneManager.LoadScene(file, LoadSceneMode.Additive);
         }
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             string file = tagParam["file"].Literal();
             syncState = SceneManager.LoadSceneAsync(file, LoadSceneMode.Additive);
             yield return new WaitUntil(() => syncState.isDone);
         }
-    }
+#endif
+	}
 
     public class EvalComponent : AbstractComponent {
 		public EvalComponent() {
@@ -260,10 +282,13 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction() {
-            string exp = tagParam["exp"].Literal();
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			string exp = tagParam["exp"].Literal();
             VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
-        }
+#endif
+		}
     }
 
     //if
@@ -277,8 +302,10 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction() {
-            string exp = tagParam["exp"].Literal();
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			string exp = tagParam["exp"].Literal();
 
             VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
             TRVirtualMachine.ifStack.Push(result.Bool());
@@ -288,7 +315,8 @@ namespace Trionfi {
                 TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
                 _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
             }
-        }
+#endif
+		}
     }
     
     //elseif
@@ -303,9 +331,10 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction() {
-
-            bool _stack = TRVirtualMachine.ifStack.Pop();
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			bool _stack = TRVirtualMachine.ifStack.Pop();
 
             //直前が真の場合はelseifは実行されない
             if (_stack)
@@ -325,7 +354,8 @@ namespace Trionfi {
                     _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
                 }
             }
-        }
+#endif
+		}
     }
 
     //else
@@ -338,8 +368,10 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction() {
-            bool _stack = TRVirtualMachine.ifStack.Peek();
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			bool _stack = TRVirtualMachine.ifStack.Peek();
 
             //直前が真の場合はelseifは実行されない
             if (_stack)
@@ -347,7 +379,8 @@ namespace Trionfi {
                 TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
                 _cuttentStack.SkipTo<EndifComponent>();
             }
-        }
+#endif
+		}
     }
 
     //endif
@@ -360,10 +393,13 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction() {
-            //ToDo:コールスタックチェック
-            TRVirtualMachine.ifStack.Pop();
-        }
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			//ToDo:コールスタックチェック
+			TRVirtualMachine.ifStack.Pop();
+#endif
+		}
     }
 
     //通行止めタグ。基本的にテスト用。
@@ -415,7 +451,8 @@ namespace Trionfi {
         {
 		}
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             int timeMsec = tagParam["time", 0];
 
@@ -423,7 +460,8 @@ namespace Trionfi {
 
             yield return new WaitForSeconds(_time);
         }
-    }
+#endif
+	}
     
     //title=Webページヘジャンプします。
 	public class WebComponent : AbstractComponent {
@@ -438,10 +476,12 @@ namespace Trionfi {
 
 		protected override void TagFunction()
         {
+#if !TR_PARSEONLY
 			string url = tagParam["url"].Literal();
 			Application.OpenURL(url);
-            //ToDo:
-//            yield return null;
+			//ToDo:
+			//            yield return null;
+#endif
 		}
 	}
 
@@ -456,7 +496,8 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction() {
+		protected override void TagFunction()
+		{
 			//削除
             //ToDo
 //			string name = expressionedParams["name"];

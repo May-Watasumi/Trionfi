@@ -1,7 +1,10 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
-using DG.Tweening;
+﻿#if !TR_PARSEONLY
+ using UnityEngine;
+ using UnityEngine.UI;
+ using UnityEngine.Networking;
+ using DG.Tweening;
+#endif
+
 using System.Collections;
 using System.Collections.Generic;
 #if UNITY_2017_1_OR_NEWER
@@ -29,7 +32,8 @@ namespace Trionfi
             hasSync = true;
         }
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {                                   
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
@@ -138,8 +142,9 @@ namespace Trionfi
                                );
                 yield return new WaitWhile(_tweener.IsPlaying);
             }
-        }    
-    }
+        }
+#endif
+	}
     
 	public class ImagefreeComponent : AbstractComponent {
 		public ImagefreeComponent() {
@@ -152,15 +157,18 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction() {
-            RawImage _image;
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			RawImage _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
             _image = Trionfi.Instance.layerInstance[id].instance;
             _image.enabled = false;
             _image.texture = null;
-        }
+#endif
+		}
     }
 
     public class LaytextComponent : AbstractComponent
@@ -178,11 +186,13 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            RawImage _image;
+#if !TR_PARSEONLY
+			RawImage _image;
 
             string text = tagParam["text", string.Empty];
             Trionfi.Instance.layerText.text = text;
-        }
+#endif
+		}
     }
 
     public class LayoptComponent : AbstractComponent
@@ -200,13 +210,15 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            RawImage _image;
+#if !TR_PARSEONLY
+			RawImage _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
 
-            //ToDo:
-        }
+			//ToDo:
+#endif
+		}
     }
 
     //
@@ -226,7 +238,8 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            RawImage _image;
+#if !TR_PARSEONLY
+			RawImage _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -236,9 +249,10 @@ namespace Trionfi
             TRUtility.GetColorName(ref color, tagParam["color"].Literal());
 
             _image.color = color;
-        }
+#endif
+		}
     }
-    //
+
     public class ImagetweenComponent : AbstractComponent
     {
         public ImagetweenComponent()
@@ -254,7 +268,8 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            RawImage _image;
+#if !TR_PARSEONLY
+			RawImage _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -269,7 +284,8 @@ namespace Trionfi
             seq.Join (_image.rectTransform.DOScale(scale, time));
             seq.Join(_image.rectTransform.DORotate(rotate, time));
             seq.Play();
-        }
+#endif
+		}
     }
 
     public class SnapshotComponent : AbstractComponent
@@ -287,18 +303,22 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            Trionfi.Instance.rawImage.color = Color.white;
+#if !TR_PARSEONLY
+			Trionfi.Instance.rawImage.color = Color.white;
             Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
             Trionfi.Instance.targetCamera.Render();
-        }
+#endif
+		}
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             yield return new WaitForEndOfFrame();
             Trionfi.Instance.targetCamera.targetTexture = null;
             Trionfi.Instance.rawImage.gameObject.SetActive(true);
         }
-    }
+#endif
+	}
 
     public class TransComponent : AbstractComponent
     {
@@ -316,15 +336,17 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            //default is "sync" = true.
-            isSync = tagParam["sync", true];
+#if !TR_PARSEONLY
+			//default is "sync" = true.
+			isSync = tagParam["sync", true];
 
             if(!isSync)
                 Trionfi.Instance.StartCoroutine(FadeFunction());
+#endif
+		}
 
-        }
-
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             if (isSync)
                 yield return (FadeFunction());
@@ -391,7 +413,8 @@ namespace Trionfi
 
             yield return null;
         }
-    }
+#endif
+	}
 
     public class ShakeComponent : AbstractComponent
     {
@@ -413,7 +436,8 @@ namespace Trionfi
 
         }
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             if (isSync)
                 yield return (ShakeFunction());
@@ -441,5 +465,6 @@ namespace Trionfi
 
             yield return new WaitWhile(_tween.IsPlaying);
         }
-    }
+#endif
+	}
 }

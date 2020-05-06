@@ -1,6 +1,8 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.EventSystems;
+﻿#if !TR_PARSEONLY
+ using UnityEngine;
+ using UnityEngine.UI;
+ using UnityEngine.EventSystems;
+#endif
 using System;
 using System.Diagnostics;
 using System.Collections;
@@ -37,25 +39,33 @@ namespace Trionfi
         {
             foreach (string message in errorMessage)
             {
+#if !TR_PARSEONLY
                 UnityEngine.Debug.LogError(message);
+#endif
             }
             foreach (string message in warningMessage)
             {
+#if !TR_PARSEONLY
                 UnityEngine.Debug.LogWarning(message);
+#endif
             }
             return errorMessage.Count > 0 ? true : false;
         }
 
         public static void StopError(string message)
         {
+#if !TR_PARSEONLY
             UnityEngine.Debug.LogError(message);
             throw new UnityException(message);
+#endif
         }
 
         [Conditional("TR_DEBUG")]
         public static void Log(string message, bool autoReturn = true)
         {
+#if !TR_PARSEONLY
             UnityEngine.Debug.Log(message + (autoReturn ? "\n" : ""));
+#endif
         }
     };
 }

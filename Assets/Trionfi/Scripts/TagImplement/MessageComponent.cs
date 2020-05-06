@@ -1,11 +1,14 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-#if UNITY_2017_1_OR_NEWER
-using UnityEngine.U2D;
+﻿#if !TR_PARSEONLY
+ using UnityEngine;
+ using UnityEngine.UI;
+ #if UNITY_2017_1_OR_NEWER
+  using UnityEngine.U2D;
+ #endif
+using DG.Tweening;
 #endif
+
 using System.Collections;
 using System.Collections.Generic;
-using DG.Tweening;
 
 namespace Trionfi
 {
@@ -24,7 +27,8 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            Trionfi.Instance.SetStandLayerTone();
+#if !TR_PARSEONLY
+			Trionfi.Instance.SetStandLayerTone();
 
             string message = tagParam["val"].Literal();
 
@@ -32,16 +36,19 @@ namespace Trionfi
                 Trionfi.Instance.messageWindow.gameObject.SetActive(true);
 
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
-        }
+#endif
+		}
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             yield return new WaitWhile(() => Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None);
 
             if (!TRSystemConfig.Instance.isNovelMode)
                 Trionfi.Instance.messageWindow.ClearMessage();
         }
-    }
+#endif
+	}
 
     //[name val="なまえ" face="表情"]
     public class NameComponent : AbstractComponent
@@ -58,7 +65,8 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            string name = tagParam["val"].Literal();
+#if !TR_PARSEONLY
+			string name = tagParam["val"].Literal();
 
             if (name.Contains("/"))
             {
@@ -71,7 +79,8 @@ namespace Trionfi
                 Trionfi.Instance.messageWindow.ShowName(name);
                 TRLayer.currentSpeaker = name;
             }
-        }
+#endif
+		}
     }  
 
     public class MesspeedComponent : AbstractComponent
@@ -88,9 +97,11 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            float ratio = tagParam["ratio", 1.0f];
+#if !TR_PARSEONLY
+			float ratio = tagParam["ratio", 1.0f];
             Trionfi.Instance.messageWindow.speedRatio = ratio;
-        }
+#endif
+		}
     }
 
     public class MesshakeComponent : AbstractComponent
@@ -108,15 +119,17 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            //振幅
-            int strength = tagParam["strength", 5];
+#if !TR_PARSEONLY
+			//振幅
+			int strength = tagParam["strength", 5];
             //振動頻度
             int vibratio = tagParam["vibrato", 20];
 
             RectTransform _rect = Trionfi.Instance.messageWindow.gameObject.GetComponent<RectTransform>();
 
             Trionfi.Instance.messageWindow.tweener = _rect.GetComponent<RectTransform>().DOShakePosition(1.0f, strength, vibratio, 90.0f, false, false).SetLoops(-1);
-        }
+#endif
+		}
     }
 
     public class MeswindowComponent : AbstractComponent
@@ -135,14 +148,14 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+#if !TR_PARSEONLY
+			Trionfi.Instance.messageWindow.gameObject.SetActive(false);
             Trionfi.Instance.messageWindow = Trionfi.Instance.messageWindowList[tagParam["id"].Int()];
             Trionfi.Instance.messageWindow.ClearMessage();
             Trionfi.Instance.messageWindow.gameObject.SetActive(true);
-
-        }
+#endif
+		}
     }
-
 
     /*
         //改行命令 [r]
@@ -173,7 +186,6 @@ namespace Trionfi
     }
     */
 
-
     //クリック待ち。novelmodeの時はメッセージクリアをしない（のでcmタグを手動で入れなければならない）
     public class PComponent : AbstractComponent
     {
@@ -181,19 +193,23 @@ namespace Trionfi
         {
         }
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             yield return Trionfi.Instance.messageWindow.Wait();
         }
-    }
+#endif
+	}
 
     //メッセージクリア
     public class CmComponent : AbstractComponent
     {
         protected override void TagFunction()
         {
-            Trionfi.Instance.messageWindow.ClearMessage();
-        }
+#if !TR_PARSEONLY
+			Trionfi.Instance.messageWindow.ClearMessage();
+#endif
+		}
     }
 
     //フォント設定    
@@ -210,13 +226,16 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction() {
-            int size = tagParam["size", TRSystemConfig.Instance.fontSize];
+		protected override void TagFunction()
+		{
+#if !TR_PARSEONLY
+			int size = tagParam["size", TRSystemConfig.Instance.fontSize];
             uint colorValue = tagParam["color", 0xFFFFFFFF];
 
             Color color = TRVariableDictionary.ToRGB(colorValue);
             Trionfi.Instance.messageWindow.currentMessage.fontSize = size;
             Trionfi.Instance.messageWindow.currentMessage.color = color;
-        }
+#endif
+		}
 	}
 }

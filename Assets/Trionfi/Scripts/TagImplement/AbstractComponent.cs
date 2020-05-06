@@ -1,13 +1,21 @@
-﻿using UnityEngine;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
+
+#if !TR_PARSEONLY
+ using UnityEngine;
+#endif
+
 using TRVariable = Jace.Operations.VariableCalcurator;
 using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
-    [System.Serializable]
+#if TR_PARSEONLY
+	using TRVariableDictionary = System.Collections.Generic.Dictionary<string, TRVariable>;
+#endif
+
+	[System.Serializable]
     public abstract class AbstractComponent
     {
         const string storageArgumentString = "storage";
@@ -53,7 +61,8 @@ namespace Trionfi
         }
 #endif
 
-        protected TRResourceType GetResourceType()
+#if !TR_PARSEONLY
+		protected TRResourceType GetResourceType()
         {
             if (!tagParam.ContainsKey(resourceTypeArgumentString))
                 return TRResourceLoader.defaultResourceType;
@@ -79,7 +88,7 @@ namespace Trionfi
             else
                 return TRResourceLoader.defaultResourceType;
         }
-
+#endif
 
         //タグ実行本体
         abstract protected void TagFunction();
@@ -90,10 +99,7 @@ namespace Trionfi
         public void Execute()
         {
             TagFunction();
-
-//            if (hasSync)
-//                TRVirtualMachine.Instance.tagSyncFunction += TagSyncFunction;
-        }
+		}
 
         public virtual void Before() { }
         public virtual void After() { }
@@ -115,11 +121,13 @@ namespace Trionfi
         {
         }
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             yield return TRVirtualMachine.Instance.Call(tagParam["name"].Literal(), tagParam);
         }
-    }
+#endif
+	}
 
     //アクタータグ。
     public class ActorComponent : AbstractComponent
@@ -133,9 +141,11 @@ namespace Trionfi
             };
 #endif
         }
-        protected override void TagFunction()
+
+		protected override void TagFunction()
         {
-            string _paramString;
+#if !TR_PARSEONLY
+			string _paramString;
             _paramString = tagParam["param"].Literal();
 
             string[] _params = _paramString.Split(new char[] { ' ', '　' } );
@@ -167,14 +177,17 @@ namespace Trionfi
                 tagParam["layer"] = new TRVariable(id);
                 tagParam["storage"] = new TRVariable(storage);
             }
-        }
+#endif
+		}
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             ImageComponent _tag = new ImageComponent();
             _tag.tagParam = tagParam;
             yield return _tag.TagSyncFunction();
         }
-    }
+#endif
+	}
 }
 

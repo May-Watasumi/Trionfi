@@ -1,6 +1,9 @@
-﻿using UnityEngine;
-using UnityEngine.Networking;
-using DG.Tweening;
+﻿#if !TR_PARSEONLY
+ using UnityEngine;
+ using UnityEngine.Networking;
+ using DG.Tweening;
+#endif
+
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,12 +26,13 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+		protected override void TagFunction()
         {
             hasSync = true;
         }
 
-        public override IEnumerator TagSyncFunction()
+#if !TR_PARSEONLY
+		public override IEnumerator TagSyncFunction()
         {
             TRAudioID id = (TRAudioID)tagParam["buf", 0];
             string storage = tagParam["storage"].Literal();
@@ -84,9 +88,10 @@ namespace Trionfi
 
             yield return null;
         }
-    }
+#endif
+	}
 
-    public class AudiostopComponent : AbstractComponent
+	public class AudiostopComponent : AbstractComponent
     {
         public AudiostopComponent()
         {
@@ -101,7 +106,8 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAudioID id = (TRAudioID)tagParam["buf", 0];
+#if !TR_PARSEONLY
+			TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
 
@@ -109,7 +115,8 @@ namespace Trionfi
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Stop();
-        }
+#endif
+		}
     }
 
     public class AudiopauseComponent : AbstractComponent
@@ -126,7 +133,8 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAudioID id = (TRAudioID)tagParam["buf", 0];
+#if !TR_PARSEONLY
+			TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
 
@@ -134,7 +142,8 @@ namespace Trionfi
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Pause();
-        }
+#endif
+		}
     }
 
     //[audiostop type=bgm delay=0]
@@ -152,14 +161,16 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
-            TRAudioID id = (TRAudioID)tagParam["buf", 0];
+#if !TR_PARSEONLY
+			TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             //            float delay = tagParam.Float("delay");
             //            float fadeTime = tagParam.Float("time");
 
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.UnPause();
-        }
+#endif
+		}
     }
 
 #if TR_USE_CRI
@@ -177,8 +188,10 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+#if !TR_PARSEONLY
             TRAdx.LoadAcf( Path.Combine(TRAdx.basePath, tagParam["storage"].Literal()));
-        }
+#endif
+		}
     }
 
     public class AdxloadacbComponent : AbstractComponent
@@ -198,13 +211,15 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+#if !TR_PARSEONLY
             hasSync = true;
 
             string _path = tagParam["storage", string.Empty];
             acbLoader = CriAtomExAcbLoader.LoadAcbFileAsync(null, Path.Combine(TRAdx.basePath, _path + ".acb"), Path.Combine(_path, ".awb"), false);
-
+#endif
         }
 
+#if !TR_PARSEONLY
         public override IEnumerator TagSyncFunction()
         {
             if (acbLoader != null)
@@ -231,6 +246,7 @@ namespace Trionfi
             }
             yield return null;
         }
+#endif
     }
 
     public class AdxComponent : AbstractComponent
@@ -251,6 +267,7 @@ namespace Trionfi
             hasSync = true;
         }
 
+#if !TR_PARSEONLY
         public override IEnumerator TagSyncFunction()
         {
             int id = tagParam["buf", 0];
@@ -298,6 +315,7 @@ namespace Trionfi
                 yield return null;
             }
         }
+#endif
     }
     
     public class AdxstopComponent : AbstractComponent
@@ -315,6 +333,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+#if !TR_PARSEONLY
             int id = tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
@@ -324,7 +343,8 @@ namespace Trionfi
             CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
             if (_atom != null)
                 _atom.Stop();
-        }
+#endif
+		}
     }
 
     public class AdxpauseComponent : AbstractComponent
@@ -341,6 +361,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+#if !TR_PARSEONLY
             int id = tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
@@ -349,6 +370,7 @@ namespace Trionfi
 
             CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
             _atom.Pause();
+#endif
         }
     }
 
@@ -367,6 +389,7 @@ namespace Trionfi
 
         protected override void TagFunction()
         {
+#if !TR_PARSEONLY
             int id = tagParam["buf", 0];
 
             //            float delay = tagParam.Float("delay");
@@ -374,7 +397,8 @@ namespace Trionfi
 
             CriAtomExPlayer _atom = Trionfi.Instance.adxInstance[id].instance;
             _atom.Resume(CriAtomEx.ResumeMode.PausedPlayback);
-        }
+#endif
+		}
     }
 #endif
 }
