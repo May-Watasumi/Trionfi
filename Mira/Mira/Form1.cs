@@ -26,7 +26,7 @@ namespace Mira
 	{
 //		private string[] fileNameArray;
 
-		private ScriptGemerator scriptGen = new ScriptGemerator();
+		private ScriptGenerator scriptGen = new ScriptGenerator();
 
 		private PDFInfo pdfInfo = new PDFInfo();
 

@@ -45,7 +45,7 @@ namespace Mira
 		public string Author;
 	};
 
-	public class ScriptGemerator
+	public class ScriptGenerator
 	{
 		public string highLightName = "";
 		public float referenceFontSize = 16.0f;
@@ -61,7 +61,7 @@ namespace Mira
 		HPdfPoint textPos;
 		PDFInfo pdfInfo;
 
-		public ScriptGemerator()
+		public ScriptGenerator()
 		{
 			//
 			// TODO: Add constructor logic here
