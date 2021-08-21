@@ -5,9 +5,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using HPdf;
-using Trionfi;
 using TinyCsvParser;
 using TinyCsvParser.Mapping;
+
+using Trionfi;
 
 namespace Mira
 {
@@ -52,6 +53,9 @@ namespace Mira
 		public float highLightFontSize = 19.0f;
 		public float textBeginRatio = 0.20f;
 		public float borderPosY = 0.0f;
+
+		public int textMaxLength;
+		public float lineHeight;
 
 		const float _INCH_ = 25.4f;
 		const float A4_width_point = 297.0f * 72.0f / _INCH_;   //830くらい
@@ -154,18 +158,31 @@ namespace Mira
 
 			foreach (AbstractComponent tag in tagInstance.arrayComponents)
 			{
-				if (tag.tagName == "name")
+				if (tag.tagName == "Name")
 				{
 					nameText = tag.tagParam["val"].Literal(string.Empty);
 				}
-				if (tag.tagName == "message")
+				if (tag.tagName == "Message")
 				{
-					if (textPos.x < pdfInfo.marginH + (referenceFontSize / 2))
-						AddPage(hPdf);
+					string _text = tag.tagParam["val"].Literal(string.Empty);
 
 					float fontSize = referenceFontSize;
 
-					if( nameText == highLightName )
+					float maxLineLength = borderPosY / (referenceFontSize+1) - 1;
+					int lineCount = 0;
+//					uint writtenLength = 0;
+
+					//					hFont2.MeasureText(_text, (uint)_text.Length, borderPosY, referenceFontSize, 0, 0, HPdfDoc.HPDF_TRUE, ref maxLineLength);
+
+					lineCount = (int)(_text.Length / maxLineLength);
+
+					if (_text.Length % (int)maxLineLength != 0)
+						lineCount++;
+
+					if ( textPos.x - referenceFontSize / 2.0f * lineCount * 1.35f < pdfInfo.marginH)
+						AddPage(hPdf);
+
+					if (nameText == highLightName)
 					{
 						fontSize = highLightFontSize;
 						hPage.SetFontAndSize(hFont1, highLightFontSize);
@@ -173,18 +190,66 @@ namespace Mira
 						hPage.Rectangle(textPos.x - fontSize / 2 + 0.3f, textPos.y - fontSize / 2 + 0.3f, fontSize + 0.6f, textWidth + 0.6f);
 						hPage.Stroke();
 					}
-					//					else
-					//						hPage.SetFontAndSize(hFont2, referenceFontSize);
+//					else
+					{
+						hPage.SetFontAndSize(hFont2, referenceFontSize);
+						//float textWidth = hPage.TextWidth(nameText);
+					}
 
 					hPage.BeginText();
 
 					if (!String.IsNullOrEmpty(nameText))
 						hPage.TextOut(textPos.x, textPos.y, nameText);
 
-					string _text = tag.tagParam["val"].Literal(string.Empty);
-
 					if (!String.IsNullOrEmpty(_text))
-						hPage.TextOut(textPos.x, borderPosY - 2.0f, _text);
+					{
+						//						hPage.TextRect( textPos.x - fontSize * 1.4f * lineCount + 400, borderPosY - 2, textPos.x+400, A4_height_point - pdfInfo.marginV, _text, HPdfTextAlignment.HPDF_TALIGN_RIGHT, ref writtenLength);
+						//						hPage.SetTextLeading(fontSize * 1.35f);
+						//						hPage.MoveTextPos(textPos.x, borderPosY - 2.0f);
+						//						hPage.ShowText(_text);
+						int len = 0;
+						while (len < _text.Length)
+						{
+							string tempStr = string.Empty;
+							int bufLen = 0;
+							while (bufLen++ < maxLineLength && _text[len] != 0x0D && _text[len] != 0x0A)
+							{
+								if(_text[len] == '<')
+									tempStr += '〈';
+								else if(_text[len] == '>')
+									tempStr += '〉';
+								else if (_text[len] == '=')
+									tempStr += '＝';
+								else
+									tempStr += _text[len];
+	
+								len++;
+							}
+
+							if (_text[len] == 0x0D || _text[len] == 0x0A)
+								len++;
+							hPage.TextOut(textPos.x, borderPosY - 2.0f, tempStr);
+
+							textPos.x -= fontSize * 1.35f;
+						}
+#if FALSE
+
+						for (int a = 0; a < _text.Length / 20; a++)
+						{
+							string tempStr = _text.Substring(a * 20, 20);
+
+//							hPage.TextOut(textPos.x, borderPosY - 2.0f, tempStr);
+
+							textPos.x -= fontSize * 1.35f;
+						}
+						if (_text.Length % 20 != 0)
+						{
+							string tempStr = _text.Substring(_text.Length / 20 * 20, _text.Length % 20);
+							hPage.TextOut(textPos.x, borderPosY - 2.0f, tempStr);
+							textPos.x -= fontSize * 1.35f;
+						}
+#endif
+					}
 
 					textPos.x -= fontSize * 1.35f;
 					//textPos.y = pdfInfo.marginV;

@@ -12,8 +12,6 @@ using System.Windows.Forms;
 using Microsoft.Win32;
 //using Xamarin.Essentials;
 
-using Trionfi;
-
 namespace Mira
 {
 	enum TextType
@@ -251,8 +249,8 @@ namespace Mira
 
 			for (int a = 0; a < dataGridView2.RowCount; a++)
 			{
-				if((bool)dataGridView2.Rows[a].Cells[1].Value)
-					scriptGen.Output(dataGridView2.Rows[a].Cells[1].Value.ToString(), textBox3.Text, pdfInfo, comboBox1.SelectedText);
+				if(dataGridView2.Rows[a].Cells[1].Value != null)
+					scriptGen.Output(dataGridView2.Rows[a].Cells[1].Value.ToString(), textBox3.Text, pdfInfo, comboBox1.SelectedItem.ToString());
 			}
 		}
 
