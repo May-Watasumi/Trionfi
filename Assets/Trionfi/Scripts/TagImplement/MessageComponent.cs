@@ -7,12 +7,14 @@
 using DG.Tweening;
 #endif
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Trionfi
 {
     //[story val="メッセージ"]
+    [Serializable]
     public class MessageComponent : AbstractComponent
     {
         public MessageComponent()
@@ -51,6 +53,7 @@ namespace Trionfi
 	}
 
     //[name val="なまえ" face="表情"]
+    [Serializable]
     public class NameComponent : AbstractComponent
     {
         public NameComponent()
@@ -81,8 +84,9 @@ namespace Trionfi
             }
 #endif
 		}
-    }  
+    }
 
+    [Serializable]
     public class MesspeedComponent : AbstractComponent
     {
         public MesspeedComponent()
@@ -104,6 +108,7 @@ namespace Trionfi
 		}
     }
 
+    [Serializable]
     public class MesshakeComponent : AbstractComponent
     {
         public MesshakeComponent()
@@ -132,6 +137,7 @@ namespace Trionfi
 		}
     }
 
+    [Serializable]
     public class MeswindowComponent : AbstractComponent
     {
         public MeswindowComponent()
@@ -187,6 +193,7 @@ namespace Trionfi
     */
 
     //クリック待ち。novelmodeの時はメッセージクリアをしない（のでcmタグを手動で入れなければならない）
+    [Serializable]
     public class PComponent : AbstractComponent
     {
         protected override void TagFunction()
@@ -202,6 +209,7 @@ namespace Trionfi
 	}
 
     //メッセージクリア
+    [Serializable]
     public class CmComponent : AbstractComponent
     {
         protected override void TagFunction()
@@ -214,7 +222,8 @@ namespace Trionfi
 
     //フォント設定    
     //[font size=26 color=#FFFFFF80]
-	public class FontComponent : AbstractComponent {
+    [Serializable]
+    public class FontComponent : AbstractComponent {
 		public FontComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目

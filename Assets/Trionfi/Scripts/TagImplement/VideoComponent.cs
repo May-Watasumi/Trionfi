@@ -5,6 +5,7 @@
  using DG.Tweening;
 #endif
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -12,6 +13,7 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
+    [Serializable]
     public class VideoplayComponent : AbstractComponent
     {
         public VideoplayComponent()
@@ -70,8 +72,9 @@ namespace Trionfi
 #endif
 	}
 
-	//[audiostop type=bgm delay=0]
-	public class VideostopComponent : AbstractComponent
+    //[audiostop type=bgm delay=0]
+    [Serializable]
+    public class VideostopComponent : AbstractComponent
     {
         public VideostopComponent()
         {
@@ -93,6 +96,7 @@ namespace Trionfi
     }
 
     //[audiostop type=bgm delay=0]
+    [Serializable]
     public class VideopauseComponent : AbstractComponent
     {
         public VideopauseComponent()
@@ -115,6 +119,7 @@ namespace Trionfi
     }
 
     //[audiostop type=bgm delay=0]
+    [Serializable]
     public class VideoresumeComponent : AbstractComponent
     {
         public VideoresumeComponent()

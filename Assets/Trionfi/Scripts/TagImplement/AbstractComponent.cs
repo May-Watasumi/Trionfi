@@ -1,10 +1,13 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
 #if !TR_PARSEONLY
  using UnityEngine;
 #endif
+
+using Jace.Operations;
 
 using TRVariable = Jace.Operations.VariableCalcurator;
 using TRDataType = Jace.DataType;
@@ -15,7 +18,7 @@ namespace Trionfi
 	using TRVariableDictionary = System.Collections.Generic.Dictionary<string, TRVariable>;
 #endif
 
-	[System.Serializable]
+	[Serializable]
     public abstract class AbstractComponent
     {
         const string storageArgumentString = "storage";
@@ -25,9 +28,24 @@ namespace Trionfi
         const string resourceTypeArgumentString = "type";
         const string bufferArgumentString = "buf";
 
+        public AbstractComponent()
+        {
+           tagName = GetType().Name.Replace("Component", "");
+        }
+
+#if !TR_PARSEONLY
+        [SerializeField]
+#endif
         public TRVariableDictionary tagParam;
+
+#if !TR_PARSEONLY
+        [SerializeField]
+#endif
         public int lineCount;
 
+#if !TR_PARSEONLY
+        [SerializeField]
+#endif
         protected bool hasSync = false;
 
 #if UNITY_EDITOR || TR_DEBUG
@@ -51,14 +69,8 @@ namespace Trionfi
         }
 
         //タグ名を取得（デバッグ用？）
-        public string tagName
-        {
-            get
-            {
-                string _tag = GetType().Name.Replace("Component", "");
-                return _tag;
-            }
-        }
+        [SerializeField]
+        public string tagName;
 #endif
 
 #if !TR_PARSEONLY
@@ -106,6 +118,7 @@ namespace Trionfi
     }
 
     //無名タグ。コンパイル時に生成される。
+    [Serializable]
     public class UnknownComponent : AbstractComponent
     {          
         public UnknownComponent()
@@ -130,6 +143,7 @@ namespace Trionfi
 	}
 
     //アクタータグ。
+    [Serializable]
     public class ActorComponent : AbstractComponent
     {
         public ActorComponent()

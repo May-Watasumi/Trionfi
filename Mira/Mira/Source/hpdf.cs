@@ -471,6 +471,9 @@ public class HPdfDoc: IDisposable {
     private extern static uint HPDF_UseCNTEncodings(IntPtr pdf);
 
     [DllImport("libhpdf.dll")]
+    private extern static uint HPDF_UseUTFEncodings(IntPtr pdf);
+       
+        [DllImport("libhpdf.dll")]
     private extern static IntPtr HPDF_LoadPngImageFromFile(IntPtr pdf,
                     string filename);
 
@@ -717,6 +720,11 @@ public class HPdfDoc: IDisposable {
 
     public uint UseCNTFonts() {
         return HPDF_UseCNTFonts(hpdf);
+    }
+
+    public uint UseUTFEFonts()
+    {
+        return HPDF_UseUTFEncodings(hpdf);
     }
 
     public HPdfOutline CreateOutline(HPdfOutline parent, string title,

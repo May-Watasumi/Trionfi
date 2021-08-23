@@ -87,7 +87,7 @@ namespace Trionfi
 
             public TRTagInstance tagInstance { get { return tagInstances[scriptName]; } }
 
-            public TRVariableDictionary tempParam = new TRVariableDictionary();//仮引数
+            public Dictionary<string, VariableCalcurator> tempParam = new Dictionary<string, VariableCalcurator>();//仮引数
             public FunctionalObjectType type = FunctionalObjectType.Macro;
             public string scriptName;
             public int startPos;
@@ -202,7 +202,7 @@ namespace Trionfi
             }
         }
 
-        public IEnumerator Run(string storage, int index = 0, TRVariableDictionary param = null)
+        public IEnumerator Run(string storage, int index = 0, Dictionary<string, VariableCalcurator> param = null)
         {
             if (tagInstances.ContainsKey(storage))
             {
@@ -216,7 +216,7 @@ namespace Trionfi
                 ErrorLogger.Log("not find script file:" + storage);
         }
 
-        public IEnumerator Call(string name, TRVariableDictionary param)
+        public IEnumerator Call(string name, Dictionary<string, VariableCalcurator> param)
         {
             if (functionalObjects.ContainsKey(name))
             {
@@ -229,7 +229,7 @@ namespace Trionfi
                 ErrorLogger.Log("not find Function:" + name);
         }
 
-        public IEnumerator Execute(FunctionalObjectInstance _func, TRVariableDictionary _param)
+        public IEnumerator Execute(FunctionalObjectInstance _func, Dictionary<string, VariableCalcurator>  _param)
         {
             TRTagInstance _tag = null;
             _func.currentPos = _func.startPos;

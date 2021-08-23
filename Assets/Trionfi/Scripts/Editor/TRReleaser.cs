@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using UnityEngine;
 using UnityEditor;
 
@@ -17,12 +18,13 @@ public class TRManifestInfo
 
 //ToDo
 
-#if false
+#if true
 
 public class TRReleaser : EditorWindow
 {
     string _projectRoot = "Assets/Trionfi/Example/Resources";
     string _outputPath = "Assets/StreamingAssets/";
+    string _scenarioFolder = "Assets/Trionfi/Example/Scenario";
 
     bool enableAdvanced = false;
 
@@ -53,6 +55,77 @@ public class TRReleaser : EditorWindow
 
     void OnGUI()
     {
+        GUILayout.Label("[Scenario]");
+        GUILayout.Space(2.5f);
+        _scenarioFolder = GUILayout.TextField(_scenarioFolder);
+        GUILayout.Space(2.5f);
+
+        if (GUILayout.Button("TargetFolder(full path)", GUILayout.Height(30.0f)))
+        {
+            _scenarioFolder = EditorUtility.OpenFolderPanel("シナリオフォルダ", "Assets", "Template");
+        }
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Serialize", GUILayout.Height(30.0f)))
+        {
+            string[] files = Directory.GetFiles(_scenarioFolder, "*.txt", SearchOption.AllDirectories);
+
+            foreach (string file in files)
+            {
+                StreamReader sr = new StreamReader(file);
+                string text = sr.ReadToEnd();
+                sr.Close();
+
+                if (!string.IsNullOrEmpty(text))
+                {
+                    Trionfi.TRTagInstance tag = new Trionfi.TRTagInstance();
+                    tag.CompileScriptString(text);
+                    
+                    string outputFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + ".bin";
+                    
+                    tag.SerializeBinary(outputFile);
+                }
+                else
+                    Debug.Log("Failed to read \"" + file + "\":");
+            }
+        }
+        if (GUILayout.Button("Voice Numbering", GUILayout.Height(30.0f)))
+        {
+            string[] files = Directory.GetFiles(_scenarioFolder, "*.txt", SearchOption.AllDirectories);
+
+            foreach (string file in files)
+            {
+                StreamReader sr = new StreamReader(file);
+                string text = sr.ReadToEnd();
+                sr.Close();
+
+                if (!string.IsNullOrEmpty(text))
+                {
+                    Trionfi.TRTagInstance tag = new Trionfi.TRTagInstance();
+                    tag.CompileScriptString(text);
+//                    string jsonText = tag.SerializeBinary();
+                    string outputFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + ".json";
+
+                    StreamWriter sw = new StreamWriter(outputFile);
+                    if (sw != null)
+                    {
+//                        sw.Write(jsonText);
+                        sw.Close();
+                    }
+                    else
+                        Debug.Log("Failed to write \"" + outputFile + "\":");
+                }
+                else
+                    Debug.Log("Failed to read \"" + file + "\":");
+            }
+        }
+
+        GUILayout.EndHorizontal();
+
+        GUILayout.Space(10f);
+        GUILayout.Label("[Asset Bundle]");
+
+        GUILayout.Space(2.5f);
+
         GUILayout.Label("Target Platform");
         GUILayout.Space(2.5f);
 

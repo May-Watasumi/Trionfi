@@ -1,13 +1,25 @@
-﻿using UnityEngine;
+﻿using System;
 using System.Collections.Generic;
 using System.Globalization;
-using TRVariable = Jace.Operations.VariableCalcurator;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters.Binary;
+using UnityEngine;
+
+using Jace.Operations;
 
 namespace Trionfi
 {
-    [System.Serializable]
-    public class TRVariableDictionary : SerializableDictionary<string, TRVariable>
+    [Serializable]
+    public class TRVariableDictionary : Dictionary<string, VariableCalcurator>
     {
+        public TRVariableDictionary() { }
+
+        protected TRVariableDictionary(SerializationInfo info, StreamingContext context)
+        {
+
+        }
+
+
         readonly string[] reservedWords = new string[]
         {
             "storage",

@@ -140,14 +140,16 @@ namespace Mira
 			hPdf.SetInfoAttr(HPdfInfoType.HPDF_INFO_AUTHOR, pdfInfo.Author);
 			hPdf.SetInfoAttr(HPdfInfoType.HPDF_INFO_TITLE, pdfInfo.Title);
 			hPdf.UseJPFonts();
-			hPdf.UseJPEncodings();
+			uint sd =  hPdf.UseJPEncodings();
+			uint dsd =  hPdf.UseUTFEFonts();
+
 			//		hPdf.SetPermission(HPdfDoc.HPDF_ENABLE_PRINT);
 
 			HPdfFont hFont1 = hPdf.GetFont("MS-Gothic,Bold", "90ms-RKSJ-V");
 			HPdfFont hFont2 = hPdf.GetFont("MS-Mincho", "90ms-RKSJ-V");
 			HPdfFont hFont3 = hPdf.GetFont("MS-Gothic", "90ms-RKSJ-H");
 
-			//		string FF = hPdf.LoadTTFontFromFile2("Meiryo.ttc", 0, true);
+			//string ddd = hPdf.LoadTTFontFromFile("C:\\Windows\\Fonts\\msgothic.ttc", true);
 
 			AddPage(hPdf);
 			//		HPdfPoint textPos = hPage.GetCurrentTextPos();

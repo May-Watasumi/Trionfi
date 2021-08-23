@@ -11,6 +11,7 @@ using System.Collections.Generic;
 namespace Trionfi
 {
     //マクロを作成して管理する
+    [Serializable]
     public class MacroComponent : AbstractComponent
     {
         public MacroComponent()
@@ -38,6 +39,7 @@ namespace Trionfi
 
 
     //マクロ定義の終了宣言
+    [Serializable]
     public class MacroendComponent : AbstractComponent
     {
         public MacroendComponent() { }
@@ -56,6 +58,7 @@ namespace Trionfi
     }
 
     //マクロを作成して管理する
+    [Serializable]
     public class MacroEraceComponent : AbstractComponent
     {
         public MacroEraceComponent()
@@ -78,6 +81,7 @@ namespace Trionfi
     }
 
     //マクロを作成して管理する
+    [Serializable]
     public class ClearallmacroComponent : AbstractComponent
     {
         public ClearallmacroComponent()

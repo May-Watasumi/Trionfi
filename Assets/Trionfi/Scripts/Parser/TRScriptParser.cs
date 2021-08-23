@@ -4,29 +4,44 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
+using Jace.Operations;
 
 using TRVariable = Jace.Operations.VariableCalcurator;
 using TRDataType = Jace.DataType;
 
-namespace Trionfi
-{
-#if TR_PARSEONLY
-	using TRVariableDictionary = System.Collections.Generic.Dictionary<string, TRVariable>;
+#if !TR_PARSEONLY
+ using UnityEngine;
+#else
+public class TRLabelDict : SerializableDictionary<string, int> { }
 #endif
 
-	enum TRParserError
+
+namespace Trionfi
+{
+
+#if TR_PARSEONLY
+	using TRVariableDictionary = System.Collections.Generic.Dictionary<string, TRVariable>;
+    using TRLabelDict = Dictionary<string, int>;
+#else
+    [Serializable]
+    public class TRLabelDict : SerializableDictionary<string, int> { }
+#endif
+
+    enum TRParserError
     {
         EOF,
         UnmatchType,
         Unknown       
     }
 
+    [Serializable]
     class TRParserExecption : System.Exception
     {
         public TRParserError error = TRParserError.Unknown;
         public TRParserExecption(TRParserError _error) { _error = error; }
     }
 
+    [Serializable]
     public class TRParserBase
     {
         protected const string nameSpace = "Trionfi";
@@ -132,6 +147,7 @@ namespace Trionfi
         }
     }
 
+    [Serializable]
     public class TRTagParser : TRParserBase
     {
         public TRTagParser(string statement) : base(statement) { }
@@ -294,9 +310,13 @@ namespace Trionfi
         }
     }
 
+    [Serializable]
     public class TRTagList : List<AbstractComponent>
     {
-        public Dictionary<string, int> labelPos = new Dictionary<string, int>();
+#if !TR_PARSEONLY
+        [SerializeField]
+#endif
+        public /*TRLabelDict*/Dictionary<string, int> labelPos = new Dictionary<string, int>(); //new TRLabelDict();
     }
 
     public class TRScriptParser : TRParserBase
@@ -306,8 +326,10 @@ namespace Trionfi
 
         public TRScriptParser(string statement) : base(statement) { }
 
-        public TRTagList BeginParse()
+        public TRTagList BeginParse(string splitter)
         {
+            nameSplitter = string.IsNullOrEmpty(splitter) ? "【】" : splitter;
+
             TRTagList result = new TRTagList();
 
             AbstractComponent _tagComponent = null;
