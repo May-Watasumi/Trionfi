@@ -7,17 +7,11 @@ using System.Collections.Generic;
  using UnityEngine;
 #endif
 
-using Jace.Operations;
-
 using TRVariable = Jace.Operations.VariableCalcurator;
 using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
-#if TR_PARSEONLY
-	using TRVariableDictionary = System.Collections.Generic.Dictionary<string, TRVariable>;
-#endif
-
 	[Serializable]
     public abstract class AbstractComponent
     {
@@ -48,6 +42,13 @@ namespace Trionfi
 #endif
         protected bool hasSync = false;
 
+        //タグ名を取得（デバッグ用？）
+#if !TR_PARSEONLY
+        [SerializeField]
+#endif
+        public string tagName;
+
+
 #if UNITY_EDITOR || TR_DEBUG
         string sourceName = "";
 
@@ -67,10 +68,6 @@ namespace Trionfi
                 }
             }
         }
-
-        //タグ名を取得（デバッグ用？）
-        [SerializeField]
-        public string tagName;
 #endif
 
 #if !TR_PARSEONLY

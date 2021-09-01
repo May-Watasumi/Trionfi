@@ -12,24 +12,6 @@ using Trionfi;
 
 namespace Mira
 {
-	public class ActorInfo
-	{
-		public string displayName { get; set; }
-		public string prefix { get; set; }
-		public bool hasVoice { get; set; }
-		public int count = 0;
-	}
-
-	public class CsvActorMapping : CsvMapping<ActorInfo>
-	{
-		public CsvActorMapping()
-		{
-			MapProperty(0, x => x.displayName);
-			MapProperty(1, x => x.prefix);
-			MapProperty(2, x => x.hasVoice);
-		}
-	}
-
 	//using iFont = iTextSharp.text.Font;
 		//using iTextSharp.text;
 		//using iTextSharp.text.pdf;
@@ -72,31 +54,14 @@ namespace Mira
 			//
 		}
 
-		Dictionary<string, ActorInfo> actorInfo = new Dictionary<string, ActorInfo>();
+		Dictionary<string, TRActorInfo> actorInfo = new Dictionary<string, TRActorInfo>();
 
-		public Dictionary<string, ActorInfo> ReadActorCSV(string filePath, string encode)
+		public Dictionary<string, TRActorInfo> ReadActorCSV(string filePath, string encode)
 		{
 			StreamReader sr = new StreamReader(filePath, Encoding.GetEncoding(encode));// "Shift_JIS"));
 			string text = sr.ReadToEnd();
 
-			CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-			CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
-			CsvActorMapping csvMapper = new CsvActorMapping();
-
-			if (text != null)
-            {
-                CsvParser<ActorInfo> csvParser = new CsvParser<ActorInfo>(csvParserOptions, csvMapper);
-
-                var result = csvParser.ReadFromString(csvReaderOptions, text).ToList();
-                foreach (var _info in result)
-                {
-                    actorInfo[_info.Result.displayName] = _info.Result;
-                }
-
-				return actorInfo;
-            }
-
-			return null;
+			return TREnviromentCSVLoader.LoadActorInfo(LocalizeID.JAPAN, text);
 		}
 
 		public void AddPage(HPdfDoc _hPdf)

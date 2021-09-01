@@ -30,11 +30,14 @@ namespace Trionfi {
             logData.logName = name;
             logData.SetLogData(name, voice);
             logData.voice = voice;
+
+            //ToDo:共通キャラアイコン
+            /*
             if (TRStageEnviroment.Instance.actorInfoes != null &&
                 TRStageEnviroment.Instance.actorInfoes.ContainsKey(TRLayer.currentSpeaker) &&
                 TRStageEnviroment.Instance.actorInfoes[TRLayer.currentSpeaker].logIcon != null)
                 logData.characterIcon.sprite = TRStageEnviroment.Instance.actorInfoes[TRLayer.currentSpeaker].logIcon;
-            else
+            else*/
                 logData.characterIcon.gameObject.SetActive(false);
 
             //ToDo:

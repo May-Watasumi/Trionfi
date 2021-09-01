@@ -41,12 +41,16 @@ namespace Trionfi
             {
 #if !TR_PARSEONLY
                 UnityEngine.Debug.LogError(message);
+#else
+                Debug.WriteLine(message);
 #endif
             }
             foreach (string message in warningMessage)
             {
 #if !TR_PARSEONLY
                 UnityEngine.Debug.LogWarning(message);
+#else
+                Debug.WriteLine(message);
 #endif
             }
             return errorMessage.Count > 0 ? true : false;
@@ -57,6 +61,9 @@ namespace Trionfi
 #if !TR_PARSEONLY
             UnityEngine.Debug.LogError(message);
             throw new UnityException(message);
+#else
+            Debug.WriteLine(message);
+            throw new Exception(message);
 #endif
         }
 
@@ -65,6 +72,8 @@ namespace Trionfi
         {
 #if !TR_PARSEONLY
             UnityEngine.Debug.Log(message + (autoReturn ? "\n" : ""));
+#else
+            Debug.WriteLine(message);
 #endif
         }
     };

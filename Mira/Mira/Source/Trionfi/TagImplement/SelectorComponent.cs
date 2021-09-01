@@ -2,11 +2,13 @@
  using UnityEngine;
 #endif
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 
 namespace Trionfi
 {
+	[Serializable]
 	public class SeladdComponent : AbstractComponent {
         public SeladdComponent() {
 #if UNITY_EDITOR && TR_DEBUG
@@ -26,6 +28,7 @@ namespace Trionfi
 		}
     }
 
+	[Serializable]
 	public class SelectComponent : AbstractComponent
 	{
 		public SelectComponent() { }

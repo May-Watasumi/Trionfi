@@ -11,6 +11,8 @@ using System.Windows.Forms;
 
 using Microsoft.Win32;
 //using Xamarin.Essentials;
+using Trionfi;
+
 
 namespace Mira
 {
@@ -209,12 +211,12 @@ namespace Mira
 
 			if (dialog.ShowDialog() == DialogResult.OK)
 			{
-				Dictionary<string, ActorInfo> result = scriptGen.ReadActorCSV(dialog.FileName, comboBox1.SelectedItem.ToString());
+				Dictionary<string,TRActorInfo> result = scriptGen.ReadActorCSV(dialog.FileName, comboBox1.SelectedItem.ToString());
 				if (result != null)
 				{
-					foreach(KeyValuePair<string, ActorInfo> val in result)
+					foreach(KeyValuePair<string, TRActorInfo> val in result)
 					{
-						dataGridView1.Rows.Add(true, val.Value.displayName, val.Value.prefix, val.Value.hasVoice);
+						dataGridView1.Rows.Add(true, val.Value.GetActorName(LocalizeID.JAPAN), val.Value.prefix, val.Value.hasVoice);
 					}
 				}
 			}

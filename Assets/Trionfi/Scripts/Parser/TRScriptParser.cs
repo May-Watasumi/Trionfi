@@ -11,27 +11,16 @@ using TRDataType = Jace.DataType;
 
 #if !TR_PARSEONLY
  using UnityEngine;
-#else
-public class TRLabelDict : SerializableDictionary<string, int> { }
 #endif
 
 
 namespace Trionfi
 {
-
-#if TR_PARSEONLY
-	using TRVariableDictionary = System.Collections.Generic.Dictionary<string, TRVariable>;
-    using TRLabelDict = Dictionary<string, int>;
-#else
-    [Serializable]
-    public class TRLabelDict : SerializableDictionary<string, int> { }
-#endif
-
     enum TRParserError
     {
         EOF,
         UnmatchType,
-        Unknown       
+        Unknown
     }
 
     [Serializable]
@@ -65,7 +54,7 @@ namespace Trionfi
 
         protected bool SkipSpace()
         {
-            while(currentPos < charArray.Length)
+            while (currentPos < charArray.Length)
             {
                 if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
                     lineCount++;
@@ -88,7 +77,7 @@ namespace Trionfi
         {
             while (currentPos < charArray.Length)
             {
-                if(charArray[currentPos] != ' ' || charArray[currentPos] != '\t')
+                if (charArray[currentPos] != ' ' || charArray[currentPos] != '\t')
                     return false;
 
                 ++currentPos;
@@ -162,13 +151,13 @@ namespace Trionfi
 
             tagName = "";
 
-            if(SkipSpace())
+            if (SkipSpace())
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
             if (!IsAlphabet(charArray[currentPos]))
                 throw new TRParserExecption(TRParserError.UnmatchType);
 
-            while(!IsEOF() && IsPartOfVariable(charArray[currentPos]))
+            while (!IsEOF() && IsPartOfVariable(charArray[currentPos]))
                 tagName += charArray[currentPos++];
 
             if (IsEOF() || IsSpace(charArray[currentPos]))
@@ -214,7 +203,7 @@ namespace Trionfi
 
                     isEnd = charArray[currentPos] == '\"' && charArray[currentPos - 1] != '\\';
 
-                    if(!isEnd)
+                    if (!isEnd)
                         rightParam += charArray[currentPos];
 
                 } while (!isEnd);
@@ -226,7 +215,7 @@ namespace Trionfi
             }
             else
             {
-                while(currentPos < charArray.Length && !IsSpace(charArray[currentPos]))
+                while (currentPos < charArray.Length && !IsSpace(charArray[currentPos]))
                 {
                     rightParam += charArray[currentPos++];
                 }
@@ -316,7 +305,7 @@ namespace Trionfi
 #if !TR_PARSEONLY
         [SerializeField]
 #endif
-        public /*TRLabelDict*/Dictionary<string, int> labelPos = new Dictionary<string, int>(); //new TRLabelDict();
+        public Dictionary<string, int> labelPos = new Dictionary<string, int>();
     }
 
     public class TRScriptParser : TRParserBase
@@ -376,14 +365,14 @@ namespace Trionfi
                 else if (charArray[currentPos] == '/' && charArray[currentPos + 1] == '*')
                 {
                     //ToDo:CommentComponent
-                    while(!(charArray[currentPos] == '*' && charArray[currentPos + 1] == '/'))
+                    while (!(charArray[currentPos] == '*' && charArray[currentPos + 1] == '/'))
                         currentPos++;
                 }
                 //label
                 else if (charArray[currentPos] == '*')
                 {
                     string labelBuffer = ReadLine();
-                    result.labelPos[labelBuffer] = result.Count-1;
+                    result.labelPos[labelBuffer] = result.Count - 1;
                 }
                 //tag
                 else if (charArray[currentPos] == '[')
@@ -446,7 +435,7 @@ namespace Trionfi
                 currentPos++;
             }
 
-            if(!string.IsNullOrEmpty(textBuffer))
+            if (!string.IsNullOrEmpty(textBuffer))
             {
                 _tagComponent = new MessageComponent();
                 _tagComponent.tagParam = new TRVariableDictionary();
@@ -456,6 +445,40 @@ namespace Trionfi
             }
 
             return result;
+        }
+
+        public string VoiceNumbering(LocalizeID localizeID,  string splitter, List<TRActorInfo> actorInfo )
+        {
+            Dictionary<string, int> voiceCounter = new Dictionary<string, int>();
+
+            string _result = string.Empty;
+
+            while (currentPos < charArray.Length)
+            {
+                string _temp = ReadLine();
+                string _isName = (_temp.TrimStart()).TrimEnd();
+
+                if (_isName[0] == nameSplitter[0] && _isName[_isName.Length - 1] == nameSplitter[1])
+                {
+//                    string _value = _isName.Remove(0, 1);
+//                    _temp = _value.Remove(_value.Length - 1, 1);
+
+                    foreach (var actor in actorInfo)
+                    {
+                        if (actor.GetActorName(localizeID) == _temp)
+                        {
+                            if (!voiceCounter.ContainsKey(actor.displayNameJP))
+                                voiceCounter[actor.displayNameJP] = 1;
+
+                            _result += "[audio buf="+TRAudioID.VOICE1.ToString() + " storage= " + actor.prefix+ (voiceCounter[actor.GetActorName(localizeID)]++).ToString("D5") + "]\n" + _temp;
+
+                            continue;
+                        }
+                    }
+                }
+            }
+
+            return _result;
         }
     }
 }

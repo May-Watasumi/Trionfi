@@ -5,6 +5,7 @@
  using DG.Tweening;
 #endif
 
+using System;
 using System.Collections;
 using System.Collections.Generic;
 #if UNITY_2017_1_OR_NEWER
@@ -15,6 +16,7 @@ namespace Trionfi
     //  color
     //  visible
 
+    [Serializable]
     public class ImageComponent : AbstractComponent {
         public ImageComponent()
         {
@@ -145,8 +147,9 @@ namespace Trionfi
         }
 #endif
 	}
-    
-	public class ImagefreeComponent : AbstractComponent {
+
+    [Serializable]
+    public class ImagefreeComponent : AbstractComponent {
 		public ImagefreeComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -171,6 +174,7 @@ namespace Trionfi
 		}
     }
 
+    [Serializable]
     public class LaytextComponent : AbstractComponent
     {
         public LaytextComponent()
@@ -195,6 +199,7 @@ namespace Trionfi
 		}
     }
 
+    [Serializable]
     public class LayoptComponent : AbstractComponent
     {
         public LayoptComponent()
@@ -221,7 +226,7 @@ namespace Trionfi
 		}
     }
 
-    //
+    [Serializable]
     public class ImagecolorComponent : AbstractComponent
     {
         public ImagecolorComponent()
@@ -253,6 +258,7 @@ namespace Trionfi
 		}
     }
 
+    [Serializable]
     public class ImagetweenComponent : AbstractComponent
     {
         public ImagetweenComponent()
@@ -288,6 +294,7 @@ namespace Trionfi
 		}
     }
 
+    [Serializable]
     public class SnapshotComponent : AbstractComponent
     {
         public SnapshotComponent()
@@ -320,6 +327,7 @@ namespace Trionfi
 #endif
 	}
 
+    [Serializable]
     public class TransComponent : AbstractComponent
     {
         bool isSync = true;
@@ -416,6 +424,7 @@ namespace Trionfi
 #endif
 	}
 
+    [Serializable]
     public class ShakeComponent : AbstractComponent
     {
         bool isSync = true;

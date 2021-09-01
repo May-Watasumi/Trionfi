@@ -1,18 +1,21 @@
-﻿#if !TR_PARSEONLY
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+
+using Jace.Operations;
+
+#if !TR_PARSEONLY
  using UnityEngine;
- using UnityEngine.Networking;
  using DG.Tweening;
 #endif
 
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 
 //ToDo:フェード、再生しているストレージ情保存
 //クリック待ち、同期
 
 namespace Trionfi
 {
+    [Serializable]
     public class AudioComponent : AbstractComponent
     {
         public AudioComponent()
@@ -91,7 +94,8 @@ namespace Trionfi
 #endif
 	}
 
-	public class AudiostopComponent : AbstractComponent
+    [Serializable]
+    public class AudiostopComponent : AbstractComponent
     {
         public AudiostopComponent()
         {
@@ -119,6 +123,7 @@ namespace Trionfi
 		}
     }
 
+    [Serializable]
     public class AudiopauseComponent : AbstractComponent
     {
         public AudiopauseComponent()
@@ -147,6 +152,7 @@ namespace Trionfi
     }
 
     //[audiostop type=bgm delay=0]
+    [Serializable]
     public class AudioresumeComponent : AbstractComponent
     {
         public AudioresumeComponent()

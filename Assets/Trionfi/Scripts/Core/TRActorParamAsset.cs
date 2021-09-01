@@ -10,6 +10,6 @@ namespace Trionfi
     [CreateAssetMenu(menuName = "Trionfi/ScriptableObject/Createa ActorParamAsset")]
     public class TRActorParamAsset : ScriptableObject
     {
-        public TRStageEnviroment.TRActorInfoes actorInfo = new TRStageEnviroment.TRActorInfoes();
+        public TRActorInfoes actorInfo = new TRActorInfoes();
     }
 }

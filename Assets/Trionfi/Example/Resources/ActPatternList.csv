@@ -1,7 +1,7 @@
-Alias,suffix
-普通,01
-笑い,02
-怒り,03
-驚き,04
-喜び,05
-困惑,06
+suffix,JP,EN
+01,普通,default
+02,笑い,smile,
+03,怒り,angry
+04,驚き,wonder
+05,喜び,pleasure
+06,困惑,embarrassment

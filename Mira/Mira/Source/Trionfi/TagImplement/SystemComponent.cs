@@ -12,6 +12,7 @@ using Jace.Operations;
 namespace Trionfi {
 
     //コメント。何もしない。
+    [Serializable]
     public class CommentComponent : AbstractComponent
     {
         public CommentComponent()
@@ -27,6 +28,7 @@ namespace Trionfi {
     }
 
     //エイリアスを定義する。実行はUnknownTag任せでパーサーでは変換しない（独立性）
+    [Serializable]
     public class AliasComponent : AbstractComponent
     {
         public AliasComponent()
@@ -58,6 +60,7 @@ namespace Trionfi {
 		}
     }
 
+    [Serializable]
     public class InitsceneComponent : AbstractComponent
     {
         public InitsceneComponent()
@@ -75,6 +78,7 @@ namespace Trionfi {
 		}
     }
 
+    [Serializable]
     public class EndsceneComponent : AbstractComponent
     {
         public EndsceneComponent()
@@ -91,6 +95,7 @@ namespace Trionfi {
 		}
     }
 
+    [Serializable]
     public class LabelComponent : AbstractComponent
     {
         public LabelComponent()
@@ -108,6 +113,7 @@ namespace Trionfi {
     }
 
     //ユーザーデータセーブ。
+    [Serializable]
     public class DatasaveComponent : AbstractComponent
     {
         public DatasaveComponent()
@@ -126,7 +132,8 @@ namespace Trionfi {
     }
 
     //ジャンプ＝コールスタックを変えない。いわゆるgoto
-	public class JumpComponent : AbstractComponent {
+    [Serializable]
+    public class JumpComponent : AbstractComponent {
 		public JumpComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -171,8 +178,9 @@ namespace Trionfi {
 #endif
 	}
 
-	//コールスタックに保存されるジャンプ。いわゆるサブルーチン
-	public class CallComponent : AbstractComponent {
+    //コールスタックに保存されるジャンプ。いわゆるサブルーチン
+    [Serializable]
+    public class CallComponent : AbstractComponent {
 		public CallComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -209,7 +217,8 @@ namespace Trionfi {
 	}
 
     //サブルーチン等の返値を伴うコールスタック復帰処理。
-	public class ReturnComponent : AbstractComponent {
+    [Serializable]
+    public class ReturnComponent : AbstractComponent {
 		public ReturnComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -243,6 +252,7 @@ namespace Trionfi {
 	}
 
     //Unityシーン追加呼び出し
+    [Serializable]
     public class SceneComponent : AbstractComponent {
 		public SceneComponent() {
 #if UNITY_EDITOR && TR_DEBUG
@@ -272,6 +282,7 @@ namespace Trionfi {
 #endif
 	}
 
+    [Serializable]
     public class EvalComponent : AbstractComponent {
 		public EvalComponent() {
 #if UNITY_EDITOR && TR_DEBUG
@@ -292,7 +303,8 @@ namespace Trionfi {
     }
 
     //if
-	public class IfComponent : AbstractComponent {
+    [Serializable]
+    public class IfComponent : AbstractComponent {
 		public IfComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -318,9 +330,10 @@ namespace Trionfi {
 #endif
 		}
     }
-    
+
     //elseif
-	public class ElseifComponent : AbstractComponent {
+    [Serializable]
+    public class ElseifComponent : AbstractComponent {
 		public ElseifComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
@@ -359,7 +372,8 @@ namespace Trionfi {
     }
 
     //else
-	public class ElseComponent : AbstractComponent {
+    [Serializable]
+    public class ElseComponent : AbstractComponent {
 		public ElseComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -384,6 +398,7 @@ namespace Trionfi {
     }
 
     //endif
+    [Serializable]
     public class EndifComponent : AbstractComponent {
 		public EndifComponent() {
 #if UNITY_EDITOR && TR_DEBUG
@@ -404,7 +419,8 @@ namespace Trionfi {
 
     //通行止めタグ。基本的にテスト用。
     //ToDo:デバッグ時のみタップに反応するとか。
-	public class SComponent : AbstractComponent {
+    [Serializable]
+    public class SComponent : AbstractComponent {
 		public SComponent() { }
 
 		protected override void TagFunction() {
@@ -413,10 +429,11 @@ namespace Trionfi {
             //その他 enableNextOrder が来るまで進めない
         }
     }
-    
+
     //ToDo:外部コンソールウィンドウへ
     //変数の中身をデバックコンソールで確認することができます。
-	public class TraceComponent : AbstractComponent {
+    [Serializable]
+    public class TraceComponent : AbstractComponent {
 		public TraceComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             essentialParams = new List<string>
@@ -433,8 +450,9 @@ namespace Trionfi {
         }
     }
 
-	//ディレイ
-	public class WaitComponent : AbstractComponent
+    //ディレイ
+    [Serializable]
+    public class WaitComponent : AbstractComponent
 	{
 		public WaitComponent()
 		{
@@ -462,9 +480,10 @@ namespace Trionfi {
         }
 #endif
 	}
-    
+
     //title=Webページヘジャンプします。
-	public class WebComponent : AbstractComponent {
+    [Serializable]
+    public class WebComponent : AbstractComponent {
 		public WebComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -485,8 +504,9 @@ namespace Trionfi {
 		}
 	}
 
-	//変数削除
-	public class ClearvarComponent : AbstractComponent {
+    //変数削除
+    [Serializable]
+    public class ClearvarComponent : AbstractComponent {
 		public ClearvarComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目

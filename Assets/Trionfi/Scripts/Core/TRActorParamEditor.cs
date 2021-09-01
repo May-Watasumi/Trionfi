@@ -34,18 +34,18 @@ namespace Trionfi
 
                     CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
                     CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
-                    TRStageEnviroment.CsvActorMapping csvMapper = new TRStageEnviroment.CsvActorMapping();
+                    CsvActorMapping csvMapper = new CsvActorMapping();
 
                     if (!string.IsNullOrEmpty(fileContent))
                     {
-                        CsvParser<TRStageEnviroment.TRActorInfo> csvParser = new CsvParser<TRStageEnviroment.TRActorInfo>(csvParserOptions, csvMapper);
+                        CsvParser<TRActorInfo> csvParser = new CsvParser<TRActorInfo>(csvParserOptions, csvMapper);
 
                         asset.actorInfo.Clear();
 
                         var result = csvParser.ReadFromString(csvReaderOptions, fileContent).ToList();
                         foreach (var _info in result)
                         {
-                            asset.actorInfo[_info.Result.displayName] = _info.Result;
+                            asset.actorInfo[_info.Result.displayNameJP] = _info.Result;
                         }
                     }
                 }
