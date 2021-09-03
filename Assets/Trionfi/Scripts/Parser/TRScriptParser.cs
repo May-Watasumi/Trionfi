@@ -310,6 +310,10 @@ namespace Trionfi
 
     public class TRScriptParser : TRParserBase
     {
+        public string textIdentifiedScript;
+        public string textDataCSV;
+        int textID = 0;
+
         //名前仕切り文字
         public string nameSplitter = "【】";
 
@@ -317,6 +321,10 @@ namespace Trionfi
 
         public TRTagList BeginParse(string splitter)
         {
+            textIdentifiedScript = string.Empty;
+            textDataCSV = "ID, JP, EN\r";
+            textID = 0;
+
             nameSplitter = string.IsNullOrEmpty(splitter) ? "【】" : splitter;
 
             TRTagList result = new TRTagList();
@@ -334,15 +342,19 @@ namespace Trionfi
                 if (charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
                 {
                     lineCount++;
+
+                    textIdentifiedScript += "\r";
                 }
                 else if (charArray[currentPos] == '#')
                 {
-                    ReadLine();
+                    textIdentifiedScript += ReadLine() + "\r";
                 }
                 //lineobject
                 else if (charArray[currentPos] == '@')
                 {
                     string statement = ReadLine();
+
+                    textIdentifiedScript += statement + "\r";
 
                     TRTagParser tagParser = new TRTagParser(statement);
                     _tagComponent = tagParser.Parse(lineCount);
@@ -354,6 +366,8 @@ namespace Trionfi
                 else if ((charArray[currentPos] == '/' && charArray[currentPos + 1] == '/') || charArray[currentPos] == ';')
                 {
                     string statement = ReadLine();
+
+                    textIdentifiedScript += statement + "\r";
 
                     _tagComponent = new CommentComponent();
                     _tagComponent.tagParam = new TRVariableDictionary();
@@ -367,11 +381,16 @@ namespace Trionfi
                     //ToDo:CommentComponent
                     while (!(charArray[currentPos] == '*' && charArray[currentPos + 1] == '/'))
                         currentPos++;
+
+                    //textIdentifiedScript += statement + "\r";
                 }
                 //label
                 else if (charArray[currentPos] == '*')
                 {
                     string labelBuffer = ReadLine();
+
+                    textIdentifiedScript += labelBuffer + "\r";
+
                     result.labelPos[labelBuffer] = result.Count - 1;
                 }
                 //tag
@@ -379,6 +398,8 @@ namespace Trionfi
                 {
                     currentPos++;
                     string _tagParam = GetString(']');
+
+                    textIdentifiedScript += "[" + _tagParam + "]" + "\r";
 
                     //非ASCIIで始まるときはアクタータグと認識する
                     //ToDo:ASCII（英語対応）
@@ -406,6 +427,8 @@ namespace Trionfi
 
                     if (_isName[0] == nameSplitter[0] && _isName[_isName.Length - 1] == nameSplitter[1])
                     {
+                        textIdentifiedScript += _isName + "\r";
+
                         string _value = _isName.Remove(0, 1);
                         _temp = _value.Remove(_value.Length - 1, 1);
 
@@ -417,6 +440,8 @@ namespace Trionfi
                     }
                     else
                     {
+                        textIdentifiedScript += "//" + _temp + "\r";
+
                         isText = true;
                         textBuffer += _temp + "\n";
                     }
@@ -424,6 +449,15 @@ namespace Trionfi
 
                 if (!isText && !string.IsNullOrEmpty(textBuffer))
                 {
+                    textIdentifiedScript = textIdentifiedScript.Remove(textIdentifiedScript.Length - 1, 1);
+                    textIdentifiedScript += "[message id=" + textID.ToString() + "]" + "\r\r";
+
+                    string csvMessage = textBuffer;
+                    csvMessage = csvMessage.Replace("\r", "\\r");
+                    csvMessage = csvMessage.Replace("\n", "\\n");
+
+                    textDataCSV += (textID++).ToString() + "," + csvMessage +"\r";
+
                     _tagComponent = new MessageComponent();
                     _tagComponent.tagParam = new TRVariableDictionary();
                     _tagComponent.tagParam["val"] = new TRVariable(textBuffer);

@@ -88,6 +88,36 @@ public class TRReleaser : EditorWindow
                     Debug.Log("Failed to read \"" + file + "\":");
             }
         }
+        if (GUILayout.Button("Text numbering", GUILayout.Height(30.0f)))
+        {
+            string[] files = Directory.GetFiles(_scenarioFolder, "*.txt", SearchOption.AllDirectories);
+
+            foreach (string file in files)
+            {
+                StreamReader sr = new StreamReader(file);
+                string text = sr.ReadToEnd();
+                sr.Close();
+
+                if (!string.IsNullOrEmpty(text))
+                {
+                    Trionfi.TRTagInstance tag = new Trionfi.TRTagInstance();
+                    tag.CompileScriptString(text);
+
+                    string outputCSVFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + ".csv";
+                    string outputScriptFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + "_JP"+".dat";
+
+                    StreamWriter sw = new StreamWriter(outputCSVFile);
+                    sw.Write(tag.textDataCSV);
+                    sw.Close();
+
+                    sw = new StreamWriter(outputScriptFile);
+                    sw.Write(tag.textIdentifiedScript);
+                    sw.Close();
+                }
+                else
+                    Debug.Log("Failed to read \"" + file + "\":");
+            }
+        }
         if (GUILayout.Button("Voice Numbering", GUILayout.Height(30.0f)))
         {
             string[] files = Directory.GetFiles(_scenarioFolder, "*.txt", SearchOption.AllDirectories);
