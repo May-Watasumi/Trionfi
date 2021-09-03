@@ -21,8 +21,10 @@ namespace Trionfi
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-                "val"
+            essentialMoreOneParams = new List<string> {
+                // val or id
+                "val",
+                "id"
             };
 #endif
         }
@@ -30,9 +32,16 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			Trionfi.Instance.SetStandLayerTone();
+            Trionfi.Instance.SetStandLayerTone();
 
             string message = tagParam["val"].Literal();
+
+            if (tagParam.ContainsKey("id"))
+            {
+                message = tagParam["val"].Literal();
+                message = message.Replace("\\r", "\r");
+                message = message.Replace("\\n", "\n");
+            }
 
             if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
                 Trionfi.Instance.messageWindow.gameObject.SetActive(true);
