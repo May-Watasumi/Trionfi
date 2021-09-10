@@ -70,6 +70,8 @@ namespace Trionfi
         }
     }
 
+
+    //ToDo:refactoring
     public class TRVirtualMachine : SingletonMonoBehaviour<TRVirtualMachine>
     {
         public enum FunctionalObjectType

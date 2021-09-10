@@ -456,7 +456,8 @@ namespace Trionfi
                     csvMessage = csvMessage.Replace("\r", "\\r");
                     csvMessage = csvMessage.Replace("\n", "\\n");
 
-                    textDataCSV += (textID++).ToString() + "," + csvMessage +"\r";
+                    //TinyCSVParserのデフォルト改行コードはWindowsだった
+                    textDataCSV += (textID++).ToString() + "," + csvMessage +"\r\n";
 
                     _tagComponent = new MessageComponent();
                     _tagComponent.tagParam = new TRVariableDictionary();

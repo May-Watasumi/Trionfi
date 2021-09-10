@@ -103,7 +103,7 @@ public class TRReleaser : EditorWindow
                     Trionfi.TRTagInstance tag = new Trionfi.TRTagInstance();
                     tag.CompileScriptString(text);
 
-                    string outputCSVFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + ".csv";
+                    string outputCSVFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + "_text.csv";
                     string outputScriptFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + "_JP"+".dat";
 
                     StreamWriter sw = new StreamWriter(outputCSVFile);
@@ -111,6 +111,7 @@ public class TRReleaser : EditorWindow
                     sw.Close();
 
                     sw = new StreamWriter(outputScriptFile);
+                    sw.Write("[textdata storage=scenario/" + Path.GetFileNameWithoutExtension(file)+"_text]\r\r");
                     sw.Write(tag.textIdentifiedScript);
                     sw.Close();
                 }

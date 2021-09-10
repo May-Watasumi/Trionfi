@@ -24,7 +24,12 @@ namespace Trionfi
         public string textDataCSV;
 #endif
 
+        public TRMultiLanguageText textData;
 
+        public void ReadTextData(string text)
+		{
+            textData = TREnviromentCSVLoader.LoadTextData(text);
+        }
 
         public void SerializeBinary(string binFile)
 		{

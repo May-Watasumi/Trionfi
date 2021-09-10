@@ -13,6 +13,93 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
+    [Serializable]
+    public class TextdataComponent : AbstractComponent
+    {
+        public TextdataComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+                "storage",
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+            hasSync = true;
+        }
+
+#if !TR_PARSEONLY
+        public override IEnumerator TagSyncFunction()
+        {
+            string storage = tagParam["storage"].Literal();
+
+
+            //            while (TRResourceLoader.Instance.isLoading)
+            //                yield return new WaitForSeconds(1.0f);
+
+            //            if (TRResourceLoader.Instance.isSuceeded)
+
+            if (!string.IsNullOrEmpty(storage))
+            {
+                var coroutine = TRResourceLoader.Instance.LoadText(storage);
+                yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
+                TRVirtualMachine.currentTagInstance.ReadTextData((string)coroutine.Current);
+            }
+
+            yield return null;
+        }
+#endif
+    }
+
+    [Serializable]
+    public class SetlanguageComponent : AbstractComponent
+    {
+        public SetlanguageComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+                "lang",
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+#if !TR_PARSEONLY
+            string id = tagParam["lang"].Literal();
+
+            switch (id.ToUpper())
+            {
+                case "JP":
+                case "JPN":
+                case "JAPAN":
+                default:
+                    TRSystemConfig.Instance.localizeID = LocalizeID.JAPAN;
+                    break;
+                case "EN":
+                case "ENG":
+                case "ENGLISH":
+                    TRSystemConfig.Instance.localizeID = LocalizeID.ENGLISH;
+                    break;
+                case "CN":
+                case "CHN":
+                case "CHINA":
+                    TRSystemConfig.Instance.localizeID = LocalizeID.CHINESE;
+                    break;
+                case "KR":
+                case "KOR":
+                case "KOREA":
+                    TRSystemConfig.Instance.localizeID = LocalizeID.KOREAN;
+                    break;
+            }
+#endif
+        }
+    }
+    
     //[story val="メッセージ"]
     [Serializable]
     public class MessageComponent : AbstractComponent
@@ -34,11 +121,14 @@ namespace Trionfi
 #if !TR_PARSEONLY
             Trionfi.Instance.SetStandLayerTone();
 
-            string message = tagParam["val"].Literal();
+            string message = string.Empty;
+
+            if (tagParam.ContainsKey("val"))
+                message = tagParam["val"].Literal();
 
             if (tagParam.ContainsKey("id"))
             {
-                message = tagParam["val"].Literal();
+                message = TRVirtualMachine.currentTagInstance.textData[tagParam["id"].Int()].GetText(TRSystemConfig.Instance.localizeID);
                 message = message.Replace("\\r", "\r");
                 message = message.Replace("\\n", "\n");
             }
