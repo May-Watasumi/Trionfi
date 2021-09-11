@@ -15,6 +15,8 @@ namespace Trionfi
 {
 #if !TR_PARSEONLY
     [System.Serializable]
+    public class TRMultiLanguageText : SerializableDictionary<int, TRTextData> { }
+    [System.Serializable]
     public class TREnviroment : SerializableDictionary<string, Color> { }
     [System.Serializable]
     public class TRKeyboardEvent : SerializableDictionary<KeyCode, TRKeyboardShortCut> { }
@@ -24,9 +26,11 @@ namespace Trionfi
     public class TRActorInfoes : SerializableDictionary<string, TRActorInfo> { }
     [System.Serializable]
     public class TRLayerAlias : SerializableDictionary<string, int> { }
-//    [System.Serializable]
-//    public class TRLayerID : SerializableDictionary<string, int> { }
+    //    [System.Serializable]
+    //    public class TRLayerID : SerializableDictionary<string, int> { }
 #else
+    [System.Serializable]
+    public class TRMultiLanguageText : Dictionary<int, TRTextData> { }
     [System.Serializable]
     public class TREnviroment : Dictionary<string, int> { }
     [System.Serializable]
@@ -38,6 +42,38 @@ namespace Trionfi
     [System.Serializable]
     public class TRLayerAlias : Dictionary<string, int> { }
 #endif
+
+
+    [Serializable]
+    public class TRTextData
+    {
+        public int id { get; set; }
+        public string textJP { get; set; }
+        public string textEN { get; set; }
+
+        //Localizer
+        public string GetText(LocalizeID id)
+        {
+            switch (id)
+            {
+                case LocalizeID.JAPAN:
+                default:
+                    return textJP;
+                case LocalizeID.ENGLISH:
+                    return textEN;
+            }
+        }
+    }
+
+    public class CsvTextDataMapping : CsvMapping<TRTextData>
+    {
+        public CsvTextDataMapping()
+        {
+            MapProperty(0, x => x.id);
+            MapProperty(1, x => x.textJP);
+            MapProperty(2, x => x.textEN);
+        }
+    }
 
 
     [System.Serializable]
@@ -68,6 +104,17 @@ namespace Trionfi
         }
     }
 
+    public class CsvActorMapping : CsvMapping<TRActorInfo>
+    {
+        public CsvActorMapping()
+        {
+            MapProperty(0, x => x.prefix);
+            MapProperty(1, x => x.hasVoice);
+            MapProperty(2, x => x.displayNameJP);
+            MapProperty(3, x => x.displayNameEN);
+        }
+    }
+
     [Serializable]
     public class TRActPatternInfo
     {
@@ -89,16 +136,6 @@ namespace Trionfi
         }
     }
 
-    public class CsvActorMapping : CsvMapping<TRActorInfo>
-    {
-        public CsvActorMapping()
-        {
-            MapProperty(0, x => x.prefix);
-            MapProperty(1, x => x.hasVoice);
-            MapProperty(2, x => x.displayNameJP);
-            MapProperty(3, x => x.displayNameEN);
-        }
-    }
 
     public class CsvActPatternMapping : CsvMapping<TRActPatternInfo>
     {
@@ -106,17 +143,38 @@ namespace Trionfi
         {
             MapProperty(0, x => x.suffix);
             MapProperty(1, x => x.aliasJP);
-            MapProperty(1, x => x.aliasEN);
+            MapProperty(2, x => x.aliasEN);
         }
     }
 
     public class TREnviromentCSVLoader
     {
+        static CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
+        static CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
+
+        static public TRMultiLanguageText LoadTextData(string text)
+        {
+            CsvTextDataMapping csvMapper = new CsvTextDataMapping();
+
+            TRMultiLanguageText textData = new TRMultiLanguageText();
+
+            if (!string.IsNullOrEmpty(text))
+            {
+                CsvParser<TRTextData> csvParser = new CsvParser<TRTextData>(csvParserOptions, csvMapper);
+
+                var result = csvParser.ReadFromString(csvReaderOptions, text).ToList();
+
+                foreach (var _info in result)
+                {
+                    textData[_info.Result.id] = _info.Result;
+                }
+                return textData;
+            }
+            return null;
+        }
 
         static public TRActorInfoes LoadActorInfo(LocalizeID id, string nameList)
         {
-            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-            CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
             CsvActorMapping csvMapper = new CsvActorMapping();
 
             TRActorInfoes actorInfoes = new TRActorInfoes();

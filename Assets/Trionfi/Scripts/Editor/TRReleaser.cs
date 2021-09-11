@@ -25,7 +25,7 @@ public class TRReleaser : EditorWindow
     string _projectRoot = "Assets/Trionfi/Example/Resources";
     string _outputPath = "Assets/StreamingAssets/";
     string _scenarioFolder = "Assets/Trionfi/Example/Scenario";
-
+    string _actorFile = "Assets/Trionfi/Example/actor.csv";
     bool enableAdvanced = false;
 
     bool target_iOS = false;
@@ -119,27 +119,42 @@ public class TRReleaser : EditorWindow
                     Debug.Log("Failed to read \"" + file + "\":");
             }
         }
+        GUILayout.EndHorizontal();
+        GUILayout.Space(10.0f);
+
+        _actorFile = GUILayout.TextField(_actorFile);
+
+        GUILayout.BeginHorizontal();
+        if (GUILayout.Button("Read Actor CSV", GUILayout.Height(30.0f)))
+        {
+            _actorFile = EditorUtility.OpenFilePanel("Actor CSV", "Assets","csv");
+        }
         if (GUILayout.Button("Voice Numbering", GUILayout.Height(30.0f)))
         {
+            StreamReader sr = new StreamReader(_actorFile, System.Text.Encoding.UTF8);// "Shift_JIS"));
+            string text = sr.ReadToEnd();
+
+            Trionfi.TRActorInfoes info = Trionfi.TREnviromentCSVLoader.LoadActorInfo(Trionfi.LocalizeID.JAPAN, text);
+
             string[] files = Directory.GetFiles(_scenarioFolder, "*.txt", SearchOption.AllDirectories);
 
             foreach (string file in files)
             {
-                StreamReader sr = new StreamReader(file);
-                string text = sr.ReadToEnd();
+                sr = new StreamReader(file);
+                text = sr.ReadToEnd();
                 sr.Close();
 
                 if (!string.IsNullOrEmpty(text))
                 {
-                    Trionfi.TRTagInstance tag = new Trionfi.TRTagInstance();
-                    tag.CompileScriptString(text);
-//                    string jsonText = tag.SerializeBinary();
-                    string outputFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + ".json";
+                    Trionfi.TRScriptParser parser = new Trionfi.TRScriptParser(text);
+                    text = parser.VoiceNumbering(Trionfi.LocalizeID.JAPAN, "【】", info);
+                    //                    string jsonText = tag.SerializeBinary();
+                    string outputFile = _scenarioFolder + "\\" + Path.GetFileNameWithoutExtension(file) + ".dat";
 
                     StreamWriter sw = new StreamWriter(outputFile);
                     if (sw != null)
                     {
-//                        sw.Write(jsonText);
+                        sw.Write(text);
                         sw.Close();
                     }
                     else
@@ -152,14 +167,10 @@ public class TRReleaser : EditorWindow
 
         GUILayout.EndHorizontal();
 
-        GUILayout.Space(10f);
+        GUILayout.Space(20f);
         GUILayout.Label("[Asset Bundle]");
-
         GUILayout.Space(2.5f);
-
         GUILayout.Label("Target Platform");
-        GUILayout.Space(2.5f);
-
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("SelectAll", GUILayout.Height(30.0f)))
         {

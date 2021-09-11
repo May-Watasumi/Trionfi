@@ -482,7 +482,7 @@ namespace Trionfi
             return result;
         }
 
-        public string VoiceNumbering(LocalizeID localizeID,  string splitter, List<TRActorInfo> actorInfo )
+        public string VoiceNumbering(LocalizeID localizeID,  string splitter, TRActorInfoes actorInfo )
         {
             Dictionary<string, int> voiceCounter = new Dictionary<string, int>();
 
@@ -490,6 +490,15 @@ namespace Trionfi
 
             while (currentPos < charArray.Length)
             {
+                if(charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
+				{
+//                    if(currentPos > 0 && charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
+//                        _result += charArray[currentPos];
+                    _result += charArray[currentPos];
+                    currentPos++;
+                    continue;
+                }
+
                 string _temp = ReadLine();
                 string _isName = (_temp.TrimStart()).TrimEnd();
 
@@ -500,17 +509,19 @@ namespace Trionfi
 
                     foreach (var actor in actorInfo)
                     {
-                        if (actor.GetActorName(localizeID) == _temp)
+                        if (nameSplitter[0] + actor.Value.GetActorName(localizeID)+ nameSplitter[1] == _isName)
                         {
-                            if (!voiceCounter.ContainsKey(actor.displayNameJP))
-                                voiceCounter[actor.displayNameJP] = 1;
+                            if (!voiceCounter.ContainsKey(actor.Value.GetActorName(localizeID)))
+                                voiceCounter[actor.Value.GetActorName(localizeID)] = 1;
 
-                            _result += "[audio buf="+TRAudioID.VOICE1.ToString() + " storage= " + actor.prefix+ (voiceCounter[actor.GetActorName(localizeID)]++).ToString("D5") + "]\n" + _temp;
+                            _result += "[audio buf="+((int)TRAudioID.VOICE1).ToString() + " storage= " + actor.Value.prefix + (voiceCounter[actor.Value.GetActorName(localizeID)]++).ToString("D5") + "]\n";
 
                             continue;
                         }
                     }
                 }
+                _result += _temp;
+
             }
 
             return _result;

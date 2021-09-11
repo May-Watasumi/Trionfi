@@ -122,9 +122,15 @@ namespace Mira
 			//		{
 
 			string nameText = string.Empty;
-
+			string voiceID = string.Empty;
 			foreach (AbstractComponent tag in tagInstance.arrayComponents)
 			{
+				if (tag.tagName == "Audio")
+				{
+					if (tag.tagParam["id"].Literal() == TRAudioID.VOICE1.ToString())
+						voiceID = tag.tagParam["storage"].Literal();
+				}
+
 				if (tag.tagName == "Name")
 				{
 					nameText = tag.tagParam["val"].Literal(string.Empty);
@@ -137,17 +143,32 @@ namespace Mira
 
 					float maxLineLength = borderPosY / (referenceFontSize+1) - 1;
 					int lineCount = 0;
-//					uint writtenLength = 0;
 
-					//					hFont2.MeasureText(_text, (uint)_text.Length, borderPosY, referenceFontSize, 0, 0, HPdfDoc.HPDF_TRUE, ref maxLineLength);
+//					uint writtenLength = 0;
+//					hFont2.MeasureText(_text, (uint)_text.Length, borderPosY, referenceFontSize, 0, 0, HPdfDoc.HPDF_TRUE, ref maxLineLength);
 
 					lineCount = (int)(_text.Length / maxLineLength);
+					
+					if(!string.IsNullOrEmpty(voiceID))
+						lineCount++;
 
 					if (_text.Length % (int)maxLineLength != 0)
 						lineCount++;
 
 					if ( textPos.x - referenceFontSize / 2.0f * lineCount * 1.35f < pdfInfo.marginH)
 						AddPage(hPdf);
+
+					if (!string.IsNullOrEmpty(voiceID))
+					{
+						hPage.SetFontAndSize(hFont2, referenceFontSize);
+
+						hPage.BeginText();
+						hPage.TextOut(textPos.x, textPos.y, voiceID);
+						textPos.x -= fontSize * 1.35f;
+						hPage.EndText();
+
+						voiceID = string.Empty;
+					}
 
 					if (nameText == highLightName)
 					{

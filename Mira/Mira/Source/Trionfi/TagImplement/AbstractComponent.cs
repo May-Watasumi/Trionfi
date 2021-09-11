@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -7,6 +8,7 @@ using System.Collections.Generic;
 #endif
 
 using TRVariable = Jace.Operations.VariableCalcurator;
+using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
@@ -51,25 +53,47 @@ namespace Trionfi
         string sourceName = "";
 
         public List<string> essentialParams = new List<string>();
+        public List<string> essentialMoreOneParams = new List<string>();
 
         [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void Validate(bool stopOnError = false)
         {
+            string message = string.Empty;
+
             //タグから必須項目が漏れていないか、デフォルト値が入ってない場合はエラーとして警告を返す
             foreach (string param in essentialParams)
             {
                 if (!tagParam.ContainsKey(param))
                 {
                     //エラーを追加
-                    string message = "必須パラメータ「" + param + "」が不足しています";
+                    message = "必須パラメータ「" + param + "」が不足しています";
                     ErrorLogger.AddLog(message, sourceName, lineCount, false);
                 }
+            }
+
+            string tagParams = string.Empty;
+
+            foreach (string param in essentialMoreOneParams)
+            {
+                tagParams += param + ", ";
+                
+                if (tagParam.ContainsKey(param))
+                {
+                    return;
+                }
+            }
+
+            if (!string.IsNullOrEmpty(tagParams))
+            {
+                //エラーを追加
+                message = "パラメータ「" + tagParams + "」のいずれかが必要です";
+                ErrorLogger.AddLog(message, sourceName, lineCount, false);
             }
         }
 #endif
 
 #if !TR_PARSEONLY
-		protected TRResourceType GetResourceType()
+        protected TRResourceType GetResourceType()
         {
             if (!tagParam.ContainsKey(resourceTypeArgumentString))
                 return TRResourceLoader.defaultResourceType;

@@ -16,7 +16,6 @@ namespace Trionfi
 #if !TR_PARSEONLY
     [System.Serializable]
     public class TRMultiLanguageText : SerializableDictionary<int, TRTextData> { }
-
     [System.Serializable]
     public class TREnviroment : SerializableDictionary<string, Color> { }
     [System.Serializable]
@@ -31,6 +30,7 @@ namespace Trionfi
     //    public class TRLayerID : SerializableDictionary<string, int> { }
 #else
     [System.Serializable]
+    public class TRMultiLanguageText : Dictionary<int, TRTextData> { }
     [System.Serializable]
     public class TREnviroment : Dictionary<string, int> { }
     [System.Serializable]

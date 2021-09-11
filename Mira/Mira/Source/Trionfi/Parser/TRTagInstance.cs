@@ -19,6 +19,18 @@ namespace Trionfi
 #endif
         public TRTagList arrayComponents = new TRTagList();
 
+#if TR_PARSEONLY || UNITY_EDITOR
+        public string textIdentifiedScript;
+        public string textDataCSV;
+#endif
+
+        public TRMultiLanguageText textData;
+
+        public void ReadTextData(string text)
+		{
+            textData = TREnviromentCSVLoader.LoadTextData(text);
+        }
+
         public void SerializeBinary(string binFile)
 		{
             //            string ggg0 = JsonUtility.ToJson(arrayComponents[0]);
@@ -51,7 +63,6 @@ namespace Trionfi
             }
         }
 
-
         public bool CompileScriptString(string text)
         {
             ErrorLogger.Clear();
@@ -62,6 +73,11 @@ namespace Trionfi
             TRScriptParser tagParser = new TRScriptParser(_returnFixText);
 
             arrayComponents = tagParser.BeginParse(string.Empty);
+
+#if TR_PARSEONLY || UNITY_EDITOR
+            textIdentifiedScript = tagParser.textIdentifiedScript;
+            textDataCSV = tagParser.textDataCSV;
+#endif
 
             //エラーがあるときはtrue
             return !ErrorLogger.ShowAll();
