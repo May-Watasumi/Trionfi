@@ -127,7 +127,7 @@ namespace Mira
 			{
 				if (tag.tagName == "Audio")
 				{
-					if (tag.tagParam["id"].Literal() == TRAudioID.VOICE1.ToString())
+					if (tag.tagParam["buf"].Literal() == ((int)TRAudioID.VOICE1).ToString())
 						voiceID = tag.tagParam["storage"].Literal();
 				}
 
@@ -160,12 +160,13 @@ namespace Mira
 
 					if (!string.IsNullOrEmpty(voiceID))
 					{
-						hPage.SetFontAndSize(hFont2, referenceFontSize);
+						hPage.SetFontAndSize(hFont2, referenceFontSize/2.0f);
 
 						hPage.BeginText();
 						hPage.TextOut(textPos.x, textPos.y, voiceID);
-						textPos.x -= fontSize * 1.35f;
 						hPage.EndText();
+
+						textPos.x -= fontSize * 1.35f;
 
 						voiceID = string.Empty;
 					}
