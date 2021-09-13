@@ -145,11 +145,16 @@ namespace Trionfi
         {
             yield return new WaitWhile(() => Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None);
 
-            if (!TRSystemConfig.Instance.isNovelMode)
+            if (TRSystemConfig.Instance.isNovelMode)
+            {
+                Trionfi.Instance.messageWindow.nameString = string.Empty;
+                Trionfi.Instance.messageWindow.currentMessage.text += "\r";
+            }
+            else
                 Trionfi.Instance.messageWindow.ClearMessage();
         }
 #endif
-	}
+    }
 
     //[name val="なまえ" face="表情"]
     [Serializable]

@@ -129,24 +129,33 @@ namespace Trionfi
         {
             float mesWait = mesCurrentWait / speedRatio;
 
-            if (!enableSkip)
-                currentMessage.VisibleLength = 0;
-
-            currentMessage.text = message;
+            if (!enableSkip && !TRSystemConfig.Instance.isNovelMode)
+                currentMessage.VisibleLength = 0;         
 
             if (currentName != null)
                 currentName.text = nameString;
+            else if (!string.IsNullOrEmpty(nameString))
+            {
+                currentMessage.text += nameString + "\r\n";
+
+                if (TRSystemConfig.Instance.isNovelMode)
+                    currentMessage.VisibleLength = currentMessage.MaxIndex-1;
+            }
+
+            currentMessage.text += message;
 
             AudioClip currentVoice = null;
 
             if (Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.isPlaying)
                 currentVoice = Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.clip;
 
-            Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, currentName.text, currentVoice);
+            Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, nameString, currentVoice);
 
             if (!enableSkip && mesWait > 0.0f)
             {
-                for (int i = 0; i < currentMessage.MaxIndex; i++)
+//                int currentMessagePos = TRSystemConfig.Instance.isNovelMode ? currentMessage.text.Length - message.Length : 0;
+
+                for (int i = currentMessage.VisibleLength; i < currentMessage.MaxIndex; i++)
                 {
                     if (state == MessageState.OnShow && !enableSkip)
                         currentMessage.VisibleLength++;
@@ -157,7 +166,7 @@ namespace Trionfi
                 }
             }
 
-            currentMessage.VisibleLength = -1;
+            currentMessage.VisibleLength = TRSystemConfig.Instance.isNovelMode ? currentMessage.text.Length : -1;
 
             yield return Wait();
         }
@@ -183,6 +192,8 @@ namespace Trionfi
 
             if (currentName != null)
                 currentName.text = nameString;
+            else if (!string.IsNullOrEmpty(nameString))
+                currentMessage.text = nameString + "\r";
 
             Trionfi.Instance.messageLogwindow.AddLogData(message, nameString);
 
