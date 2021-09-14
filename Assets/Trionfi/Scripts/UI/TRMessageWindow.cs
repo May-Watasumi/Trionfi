@@ -1,8 +1,9 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections;
-using Trionfi;
-using DG.Tweening;
+using UnityEngine;
 using UnityEngine.UI;
+using DG.Tweening;
 
 namespace Trionfi
 {
@@ -113,8 +114,28 @@ namespace Trionfi
 
         public IEnumerator _waitCoroutine = null;
 
+        static string MatchEvaluatorFunc(Match m)
+        {
+            // Match m にはパターンにマッチした結果が来るので、
+            // その中のデータを取り出して、自由に加工できる。
+            // 関数の戻り値の文字列が、Replaceの置換結果となる。
+
+            //                                  // m.Groups[0].Valueはﾏｯﾁした全体の文字列
+            var Exp = m.Groups[1].Value;   // ([0-9０-９]{3})
+
+            string result = TRVirtualMachine.variableInstance[Exp].Literal();
+
+            return result;
+        }
+
+
         public void ShowMessage(string text, float mesCurrentWait = 0)
         {
+            string emb = "<emb exp=\"(.*)\">";
+
+            var regex = new Regex(emb);
+            string _subText = regex.Replace(text, MatchEvaluatorFunc);
+
             state = MessageState.OnShow;
 
             if (useUguiText)

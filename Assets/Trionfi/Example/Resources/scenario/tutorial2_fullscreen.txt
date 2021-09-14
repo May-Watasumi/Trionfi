@@ -14,29 +14,30 @@
 
 [image layer=0 storage=black]
 [snapshot]
-[image layer=0 storage=sprite/bg/BG481a]
-[こはく 左]
-[ゆうこ 右]
-//[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000]
-//[image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41 time=1000]
-[trans rule=sprite/mask/030  wait = 750]
+[image layer=0 storage=sprite/bg/seitokai_hiru]
 
-//[videoplay url=Trionfi/Resources/TEST.mp4]
+[trans rule=sprite/mask/030  wait = 750]
 
 [audio buf=0 storage=sound/bgm/c3 time=10000]
 
-これは、ビジュアルノベルモード（フルスクリーンメッセージウィンドウ）のサンプルです。
+これは、ビジュアルノベルモード（フルスクリーンメッセージウィンドウ）
+のサンプルです。
 
 【てすと】
 話者名はこのように通常のテキストとして処理されます。
 
 【てすと】
-なお、アドベンチャーゲームモード（ノーマルメッセージウィンドウ）時でも、名前用のテキストエリアを削除している場合でも、同様に通常のテキストとして処理されます。
+なお、アドベンチャーゲームモード（ノーマルメッセージウィンドウ）時、
+名前用のテキストエリアを削除した場合でも、
+同様に通常のテキストとして処理されます。
 
-このモードでは空行がクリック待ち＋改行のみになり、別途ページクリア用のcmタグが必要になります。
+このモードでは空行がクリック待ち＋改行のみになり、
+別途ページクリア用のcmタグが必要になります。
 
 このメッセージの後にページクリアをします。
 
 [cm]
 
 ページクリアをしました。
+
+このサンプルは以上です。

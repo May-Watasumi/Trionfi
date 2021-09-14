@@ -369,11 +369,15 @@ namespace Trionfi
 
                     textIdentifiedScript += statement + "\r";
 
-                    _tagComponent = new CommentComponent();
-                    _tagComponent.tagParam = new TRVariableDictionary();
-                    _tagComponent.tagParam["text"] = new TRVariable(statement);
-                    _tagComponent.lineCount = lineCount;
-                    result.Add(_tagComponent);
+                    //;はコメントタグとして認識する
+                    if(charArray[currentPos] == ';')
+                    {
+                        _tagComponent = new CommentComponent();
+                        _tagComponent.tagParam = new TRVariableDictionary();
+                        _tagComponent.tagParam["text"] = new TRVariable(statement);
+                        _tagComponent.lineCount = lineCount;
+                        result.Add(_tagComponent);
+                    }
                 }
                 //comments
                 else if (charArray[currentPos] == '/' && charArray[currentPos + 1] == '*')
