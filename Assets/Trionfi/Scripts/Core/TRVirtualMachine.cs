@@ -88,12 +88,15 @@ namespace Trionfi
             }
 
             public TRTagInstance tagInstance { get { return tagInstances[scriptName]; } }
-
+            
             public Dictionary<string, VariableCalcurator> tempParam = new Dictionary<string, VariableCalcurator>();//仮引数
             public FunctionalObjectType type = FunctionalObjectType.Macro;
+
             public string scriptName;
             public int startPos;
             public int currentPos;
+            public int endPos { get { return tagInstance.arrayComponents.Count; } }
+
 
             public bool LocalJump(string label)
             {
@@ -239,11 +242,11 @@ namespace Trionfi
 
             callStack.Push(_func);
 
+BEGIN_SCRIPT:
+            _tag = tagInstances[_func.scriptName];
+
             do
             {
-//                _func = callStack.Peek();
-                _tag = tagInstances[_func.scriptName];
-
                 AbstractComponent _tagComponent = _tag.arrayComponents[_func.currentPos];
 
                 _tagComponent.Before();
@@ -270,46 +273,16 @@ namespace Trionfi
 
             } while (_func.currentPos < _tag.arrayComponents.Count);
 
-            callStack.Pop();
-
-            yield return null;
-        }
-    /*
-        public IEnumerator Run(TRTagInstance tag, int index = 0)
-        {
-            tag.currentComponentIndex = index;
-
-            while (tag.currentComponentIndex < tag.arrayComponents.Count)
+            _func = callStack.Pop();
+            
+            if (callStack.Count > 0)
             {
-                AbstractComponent _tagComponent = tag.arrayComponents[tag.currentComponentIndex];
-
-                _tagComponent.Before();
-
-#if UNITY_EDITOR || TR_DEBUG
-                if (TRSystemConfig.Instance.showTag)
-                {
-                    string _params = "";
-
-                    foreach (KeyValuePair<string, KeyValuePair<string, TRDataType>> key in _tagComponent.tagParam)
-                    {
-                        _params += " " + key.Key + "= " + key.Value.Key;
-                    }
-                    ErrorLogger.Log("[" + _tagComponent.tagName + _params + " ]");
-                }
-#endif
-                _tagComponent.Execute();
-
-                _tagComponent.After();
-
-                yield return _tagComponent.TagSyncFunction();
-
-                //ToDo:flag
-                tag.currentComponentIndex++;
+                goto BEGIN_SCRIPT;   
             }
 
-            yield return null;
+    		yield return null;
         }
-*/
+   
         //ToDo:
         public static bool Serialize(string name) { return true; }
         public static bool Deserialize(string name) { return false; }

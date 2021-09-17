@@ -36,12 +36,6 @@ namespace Trionfi
         {
             string storage = tagParam["storage"].Literal();
 
-
-            //            while (TRResourceLoader.Instance.isLoading)
-            //                yield return new WaitForSeconds(1.0f);
-
-            //            if (TRResourceLoader.Instance.isSuceeded)
-
             if (!string.IsNullOrEmpty(storage))
             {
                 var coroutine = TRResourceLoader.Instance.LoadText(storage);

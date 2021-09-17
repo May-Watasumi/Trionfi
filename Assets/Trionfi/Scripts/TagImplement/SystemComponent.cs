@@ -137,8 +137,9 @@ namespace Trionfi {
 		public JumpComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-				"target"
+            essentialMoreOneParams = new List<string> {
+				"target",
+                "file"
 			};
 #endif
         }
@@ -146,34 +147,48 @@ namespace Trionfi {
         protected override void TagFunction() {  }
 
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
-            string target = tagParam["target"].Literal();
-            string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
-
-			//ファイルが異なるものになる場合、シナリオをロードする
-			if(file != TRVirtualMachine.currentCallStack.scriptName)
-			{
-                TRResourceType type = GetResourceType();
-
-                yield return TRVirtualMachine.Instance.LoadScenarioAsset(TRVirtualMachine.currentCallStack.scriptName, type);
-
-                //ToDo:スタックをすべて削除する
-//                TRVirtualMachine.RemoveAllStacks();
-//                TRVirtualMachine.currentScriptName = file;
-            }
-
-            if (string.IsNullOrEmpty(file))
-                file = TRVirtualMachine.currentCallStack.scriptName;
-
-            int index = TRVirtualMachine.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
+            string target = string.Empty;
+            string file = string.Empty;
 
             if (tagParam.ContainsKey("target"))
-                TRVirtualMachine.currentCallStack.LocalJump(tagParam["target"].Literal());
-            else
-                ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
+                target = tagParam["target"].Literal();
+            if (tagParam.ContainsKey("storage"))
+                file = tagParam["storage", TRVirtualMachine.currentCallStack.scriptName];
 
-            ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.currentCallStack.currentPos + "\"");
+            //ファイルが異なるものになる場合、シナリオをロードする
+            if (file != TRVirtualMachine.currentCallStack.scriptName)
+            {
+                TRResourceType type = GetResourceType();
+
+                yield return TRVirtualMachine.Instance.LoadScenarioAsset(file, type);
+
+                //スタックをすべて削除する
+//                TRVirtualMachine.RemoveAllStacks();
+                TRVirtualMachine.FunctionalObjectInstance func = new TRVirtualMachine.FunctionalObjectInstance(TRVirtualMachine.FunctionalObjectType.Script, file, 0);
+
+                if (tagParam.ContainsKey("target"))
+                    func.LocalJump(tagParam["target"].Literal());
+
+                TRVirtualMachine.currentCallStack.currentPos = TRVirtualMachine.currentCallStack.endPos + 1;
+                TRVirtualMachine.callStack.Push(func);
+            }
+            //ローカルジャンプ
+            else
+            {
+                if (string.IsNullOrEmpty(file))
+                    file = TRVirtualMachine.currentCallStack.scriptName;
+
+                int index = TRVirtualMachine.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
+
+                if (tagParam.ContainsKey("target"))
+                    TRVirtualMachine.currentCallStack.LocalJump(tagParam["target"].Literal());
+                else
+                    ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
+
+                ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.currentCallStack.currentPos + "\"");
+            }
         }
 #endif
 	}

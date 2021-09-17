@@ -77,10 +77,10 @@ namespace Trionfi
         {
             while (currentPos < charArray.Length)
             {
-                if (charArray[currentPos] != ' ' || charArray[currentPos] != '\t')
+                if (charArray[currentPos] == ' ' || charArray[currentPos] == '\t')
+                    ++currentPos;
+                else
                     return false;
-
-                ++currentPos;
             }
 
             return true;
@@ -332,6 +332,8 @@ namespace Trionfi
             AbstractComponent _tagComponent = null;
 
             string textBuffer = "";
+
+BeginParse:
 
             while (currentPos < charArray.Length)
             {
