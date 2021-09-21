@@ -120,8 +120,8 @@ namespace Trionfi
             // その中のデータを取り出して、自由に加工できる。
             // 関数の戻り値の文字列が、Replaceの置換結果となる。
 
-            //                                  // m.Groups[0].Valueはﾏｯﾁした全体の文字列
-            var Exp = m.Groups[1].Value;   // ([0-9０-９]{3})
+            // m.Groups[0].Valueはﾏｯﾁした全体の文字列
+            var Exp = m.Groups[1].Value;
 
             string result = TRVirtualMachine.variableInstance[Exp].Literal();
 
@@ -134,7 +134,7 @@ namespace Trionfi
             string emb = "<emb exp=\"(.*)\">";
 
             var regex = new Regex(emb);
-            string _subText = regex.Replace(text, MatchEvaluatorFunc);
+            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
 
             state = MessageState.OnShow;
 

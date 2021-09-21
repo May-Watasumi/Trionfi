@@ -149,14 +149,28 @@ namespace Trionfi
             };
 #endif
         }
-        protected override void TagFunction()
-        {
-        }
+        protected override void TagFunction()  { }
 
 #if !TR_PARSEONLY
 		public override IEnumerator TagSyncFunction()
         {
-            yield return TRVirtualMachine.Instance.Call(tagParam["name"].Literal(), tagParam);
+            if (tagParam.ContainsKey("name"))
+            {
+                string macroName = tagParam["name"].Literal();
+
+                if (TRVirtualMachine.functionalObjects.ContainsKey(macroName))
+                {
+                    TRVirtualMachine.FunctionalObjectInstance func = TRVirtualMachine.functionalObjects[macroName];
+
+                    if (func.type != TRVirtualMachine.FunctionalObjectType.Macro)
+                        ErrorLogger.Log("\"" + macroName + "\"はマクロではありません");
+
+                    TRVirtualMachine.callStack.Push(func);
+                    yield return TRVirtualMachine.Instance.Call(func, tagParam);
+                }
+                else
+                    ErrorLogger.Log("マクロ\"" + macroName + "\"は存在しません");
+            }
         }
 #endif
 	}

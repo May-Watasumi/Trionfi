@@ -425,11 +425,11 @@ namespace Trionfi
 	}
 
     [Serializable]
-    public class ShakeComponent : AbstractComponent
+    public class QuakeComponent : AbstractComponent
     {
         bool isSync = true;
 
-        public ShakeComponent()
+        public QuakeComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目

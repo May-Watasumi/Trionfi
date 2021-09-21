@@ -154,8 +154,9 @@ namespace Trionfi {
 
             if (tagParam.ContainsKey("target"))
                 target = tagParam["target"].Literal();
-            if (tagParam.ContainsKey("storage"))
-                file = tagParam["storage", TRVirtualMachine.currentCallStack.scriptName];
+
+//            if (tagParam.ContainsKey("storage"))
+             file = tagParam["storage", TRVirtualMachine.currentCallStack.scriptName];
 
             //ファイルが異なるものになる場合、シナリオをロードする
             if (file != TRVirtualMachine.currentCallStack.scriptName)
@@ -195,41 +196,72 @@ namespace Trionfi {
 
     //コールスタックに保存されるジャンプ。いわゆるサブルーチン
     [Serializable]
-    public class CallComponent : AbstractComponent {
-		public CallComponent() {
+    public class CallComponent : AbstractComponent
+    {
+        public CallComponent()
+        {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-				//"target"
-			};
-            /*
-                        originalParamDic = new ParamDictionary() {
-                            { "target","" },
-                            { "file","" },
-                            //{ "index",""},
-                        };
-            */
+            essentialMoreOneParams = new List<string> {
+                "target",
+                "file"
+            };
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override void TagFunction() { }
+
+        public override IEnumerator TagSyncFunction()
+        {
 #if !TR_PARSEONLY
-			string target = tagParam["target"].Literal();
+            string target = string.Empty;
+            string file = string.Empty;
 
-            string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
+            if (tagParam.ContainsKey("target"))
+                target = tagParam["target"].Literal();
+            if (tagParam.ContainsKey("storage"))
+                file = tagParam["storage", TRVirtualMachine.currentCallStack.scriptName];
 
-            int index = string.IsNullOrEmpty(file) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
+            //ファイルが異なるものになる場合、シナリオをロードする
+            if (file != TRVirtualMachine.currentCallStack.scriptName)
+            {
+                TRResourceType type = GetResourceType();
 
-			ErrorLogger.Log("Call : file=\"" + file + "\" " + "index = \"" + index.ToString()+ "\"");
+                yield return TRVirtualMachine.Instance.LoadScenarioAsset(file, type);
 
-			//            TRVirtualMachine.callStack.Push(new CallStackObject(TRVirtualMachine.currentCallStack.currentPos , tagParam));
-			//ToDo:ジャンプ
-			//メインループ側で配列Indexが++されるので
-			//			Trionfi.Instance.currentTagInstance.currentComponentIndex--;
+                //スタックをすべて削除する
+                //                TRVirtualMachine.RemoveAllStacks();
+                TRVirtualMachine.FunctionalObjectInstance func = new TRVirtualMachine.FunctionalObjectInstance(TRVirtualMachine.FunctionalObjectType.Script, file, 0);
+
+                if (tagParam.ContainsKey("target"))
+                    func.LocalJump(tagParam["target"].Literal());
+
+                ErrorLogger.Log("call : file=\"" + TRVirtualMachine.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.currentCallStack.currentPos + "\"");
+
+                yield return TRVirtualMachine.Instance.Call(func, tagParam);
+
+            }
+            //Local Call
+            else
+            {
+                if (string.IsNullOrEmpty(file))
+                    file = TRVirtualMachine.currentCallStack.scriptName;
+
+                int index = TRVirtualMachine.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
+
+                TRVirtualMachine.FunctionalObjectInstance func = new TRVirtualMachine.FunctionalObjectInstance(TRVirtualMachine.FunctionalObjectType.Script, file, 0);
+
+                if (tagParam.ContainsKey("target"))
+                    func.LocalJump(tagParam["target"].Literal());
+
+                ErrorLogger.Log("call : file=\"" + TRVirtualMachine.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.currentCallStack.currentPos + "\"");
+
+                yield return TRVirtualMachine.Instance.Call(func, tagParam);
 #endif
-		}
-	}
+            }
+
+        }
+    }
 
     //サブルーチン等の返値を伴うコールスタック復帰処理。
     [Serializable]
@@ -246,22 +278,10 @@ namespace Trionfi {
 		protected override void TagFunction()
 		{
 #if !TR_PARSEONLY
-			TRVirtualMachine.FunctionalObjectInstance callStack = TRVirtualMachine.callStack.Pop();
-
-			string tag_str = "";
-
-			//return 時の戻り場所を指定できます
-			if( string.IsNullOrEmpty(tagParam["file", string.Empty]) && string.IsNullOrEmpty(tagParam["target", string.Empty]) )
-				tag_str = "[jump file='" + tagParam["file"] + "' target='" + tagParam["target"] + "' ]";
-			else
-				tag_str = "[jump file='" + callStack.scriptName + "' index='" + callStack.currentPos + "' ]";
-
-			Debug.Log("RETURN scn=\"" + callStack.scriptName + "\" " + "index=\"" + callStack.currentPos.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
-
-			//ToDo:
-			//タグを実行
-			//			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
-			//			cmp.Execute();
+            if(TRVirtualMachine.callStack.Count <= 1)
+                ErrorLogger.Log("callとreturnの不整合");
+            else
+                TRVirtualMachine.currentCallStack.currentPos = TRVirtualMachine.currentCallStack.endPos + 1;
 #endif
 		}
 	}

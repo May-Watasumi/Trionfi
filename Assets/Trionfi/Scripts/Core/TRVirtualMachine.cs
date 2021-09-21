@@ -207,42 +207,40 @@ namespace Trionfi
             }
         }
 
-        public IEnumerator Run(string storage, int index = 0, Dictionary<string, VariableCalcurator> param = null)
+        public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
         {
             if (tagInstances.ContainsKey(storage))
             {
                 TRTagInstance tag = tagInstances[storage];
-                FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, index);
-//                callStack.Push(_func);
+                FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0);
+                callStack.Push(_func);
 
-                yield return Execute(_func, param);// tag, index);
+                do
+                {
+                    yield return Execute(_func, param);
+
+                    _func = callStack.Pop();
+
+                } while (callStack.Count > 0);
             }
             else
                 ErrorLogger.Log("not find script file:" + storage);
         }
-
-        public IEnumerator Call(string name, Dictionary<string, VariableCalcurator> param)
+  
+ 
+        public IEnumerator Call(FunctionalObjectInstance func, Dictionary<string, VariableCalcurator> param)
         {
-            if (functionalObjects.ContainsKey(name))
-            {
-                FunctionalObjectInstance _func = functionalObjects[name];
-//                callStack.Push(_func);
-
-                yield return Execute(_func, param);// tag, index);
-            }
-            else
-                ErrorLogger.Log("not find Function:" + name);
+            callStack.Push(func);
+            yield return Execute(func, param);// tag, index);
         }
 
-        public IEnumerator Execute(FunctionalObjectInstance _func, Dictionary<string, VariableCalcurator>  _param)
+        protected IEnumerator Execute(FunctionalObjectInstance _func, Dictionary<string, VariableCalcurator>  _param)
         {
             TRTagInstance _tag = null;
+
             _func.currentPos = _func.startPos;
             _func.tempParam = _param;
 
-            callStack.Push(_func);
-
-BEGIN_SCRIPT:
             _tag = tagInstances[_func.scriptName];
 
             do
@@ -272,13 +270,6 @@ BEGIN_SCRIPT:
                 _func.currentPos++;
 
             } while (_func.currentPos < _tag.arrayComponents.Count);
-
-            _func = callStack.Pop();
-            
-            if (callStack.Count > 0)
-            {
-                goto BEGIN_SCRIPT;   
-            }
 
     		yield return null;
         }

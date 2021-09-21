@@ -48,7 +48,7 @@ namespace Trionfi
                 _instance.CompileScriptString(_text.text);
 
                 TRVirtualMachine.tagInstances[storage] = _instance;
-                Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(storage));
+                Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.LoadScenarioAsset(storage, TRResourceType.LocalStatic, true));
             }
         }
 
