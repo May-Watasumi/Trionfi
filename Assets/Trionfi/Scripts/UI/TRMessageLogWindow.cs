@@ -45,6 +45,8 @@ namespace Trionfi {
             logDataList.Add(logData);
             logData.gameObject.transform.SetParent(logDataRoot.transform);
 
+            logData.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
+
             //上限を超えていたら指定分の配列を削除する
             if (TRSystemConfig.Instance.backlogCount > 0 && (TRSystemConfig.Instance.backlogCount + 1) < logDataList.Count)
                 logDataList.RemoveRange(0, 1);
