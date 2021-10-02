@@ -173,12 +173,12 @@ namespace Trionfi
             {
                 string[] nameInfo = name.Split('/');
                 Trionfi.Instance.messageWindow.ShowName(nameInfo[0]);
-                TRLayer.currentSpeaker = nameInfo[1];
+                Trionfi.Instance.messageWindow.currentSpeaker = nameInfo[1];
             }
             else
             {
                 Trionfi.Instance.messageWindow.ShowName(name);
-                TRLayer.currentSpeaker = name;
+                Trionfi.Instance.messageWindow.currentSpeaker = name;
             }
 #endif
 		}

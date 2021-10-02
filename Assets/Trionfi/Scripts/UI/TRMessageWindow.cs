@@ -22,6 +22,9 @@ namespace Trionfi
         public bool enableSkip
         { get { return forceSkip || onSkip; } }
 
+        public string currentSpeaker = string.Empty;
+
+
         public MessageState state = MessageState.None;
 
         public float speedRatio = 1.0f;
@@ -107,7 +110,7 @@ namespace Trionfi
                 faceIcon.enabled = false;
 
             nameString = string.Empty;
-            TRLayer.currentSpeaker = string.Empty;
+            currentSpeaker = string.Empty;
 
             speedRatio = 1.0f;
         }
@@ -131,6 +134,8 @@ namespace Trionfi
 
         public void ShowMessage(string text, float mesCurrentWait = 0)
         {
+            Trionfi.Instance.SetStandLayerTone();
+
             string emb = "<emb exp=\"(.*)\">";
 
             var regex = new Regex(emb);

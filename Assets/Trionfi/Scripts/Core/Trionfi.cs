@@ -45,6 +45,7 @@ namespace Trionfi
     {
         BGM = 0,
         SE1 = 1,
+        SE2 = 2,
         VOICE1 = 11,
         UI = 99
     }
@@ -144,13 +145,11 @@ namespace Trionfi
         {
             instance.volume = faderVolume * mainVolume * TRGameConfig.configData.mastervolume;
         }
-
     }
 
     [Serializable]
     public class TRLayer : TRMediaInstance<RawImage>
     {
-        public static string currentSpeaker;
         public string actor;
     }
 
@@ -493,10 +492,16 @@ namespace Trionfi
 
         public void SetStandLayerTone()
         {
+            if (!TRSystemConfig.Instance.layerFocus)
+                return;
+
             foreach (KeyValuePair<TRLayerID ,TRLayer> instance in layerInstance)
             {
                 //レイヤー1～10が立ち絵として割り振ってある。
-                if ((instance.Key >= TRLayerID.STAND1 && instance.Key > (TRLayerID)10) && ( string.IsNullOrEmpty(TRLayer.currentSpeaker) || instance.Value.actor != TRLayer.currentSpeaker) )
+                if (instance.Value.instance == null || instance.Key < TRLayerID.STAND1 || instance.Key > (TRLayerID)10)
+                    continue;
+
+                if (instance.Value.actor != messageWindow.currentSpeaker )
                     instance.Value.instance.color = Color.gray;
                 else
                     instance.Value.instance.color = Color.white;

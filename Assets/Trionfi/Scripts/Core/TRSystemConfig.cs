@@ -44,6 +44,9 @@ namespace Trionfi
         [SerializeField]
         public LocalizeID localizeID = LocalizeID.JAPAN;
 
+        [SerializeField]
+        public bool layerFocus = false;
+
         //trueの時は自動でクリック待ち（メッセージクリアは手動）falseの時は自動でPタグ（クリック待ち＋メッセージクリア）
         [SerializeField]
         public bool isNovelMode = false;
