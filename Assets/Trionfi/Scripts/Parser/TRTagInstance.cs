@@ -13,7 +13,6 @@ namespace Trionfi
     [Serializable]
 	public class TRTagInstance
     {
-        //        public int currentComponentIndex = -1;
 #if !TR_PARSEONLY
         [SerializeField]
 #endif

@@ -153,6 +153,8 @@ namespace Trionfi
 
         private IEnumerator ShowMessageSub(string message, float mesCurrentWait)
         {
+            currentMessage.Font = TRSystemConfig.Instance.defaultFont;
+
             float mesWait = mesCurrentWait / speedRatio;
 
             if (!enableSkip && !TRSystemConfig.Instance.isNovelMode)

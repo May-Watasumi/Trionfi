@@ -163,7 +163,7 @@ namespace Trionfi {
             {
                 TRResourceType type = GetResourceType();
 
-                yield return TRVirtualMachine.Instance.LoadScenarioAsset(file, type);
+                yield return Trionfi.Instance.LoadScript(file, type);
 
                 //スタックをすべて削除する
 //                TRVirtualMachine.RemoveAllStacks();
@@ -227,7 +227,7 @@ namespace Trionfi {
             {
                 TRResourceType type = GetResourceType();
 
-                yield return TRVirtualMachine.Instance.LoadScenarioAsset(file, type);
+                yield return Trionfi.Instance.LoadScript(file, type);
 
                 //スタックをすべて削除する
                 //                TRVirtualMachine.RemoveAllStacks();

@@ -103,7 +103,8 @@ namespace Trionfi
 #if !TR_PARSEONLY
 
     [Serializable]
-    public class MediaInstanceKey<T> : SerializableDictionary<T, string> { };
+    public class MediaInstanceKey<T> : SerializableDictionary<T, string>
+    { };
 
     [Serializable]
     public class TRMediaInstance<T>
@@ -136,6 +137,9 @@ namespace Trionfi
 #endif
 
     [Serializable]
+    public class TRScript : TRMediaInstance<TRTagInstance> { }
+
+    [Serializable]
     public class TRAudio : TRMediaInstance<AudioSource>
     {
         public float mainVolume = 1.0f;
@@ -151,6 +155,95 @@ namespace Trionfi
     public class TRLayer : TRMediaInstance<RawImage>
     {
         public string actor;
+    }
+
+    [Serializable]
+    public class SerializeInfo
+    {
+        [SerializeField]
+        public string storage;
+        [SerializeField]
+        public TRResourceType type;
+        [SerializeField]
+        public string reservedString;
+        [SerializeField]
+        public int reservedNum;
+    }
+
+    [Serializable]
+    public class SerializeData
+    {
+        [SerializeField]
+        public SerializeInfo[] layer;
+        [SerializeField]
+        public SerializeInfo[] audio;
+        [SerializeField]
+        public SerializeInfo[] script;
+        [SerializeField]
+        public TRVirtualMachine.FunctionalObjectInstance[] callStack;
+
+        public void Serialize()
+        {
+            callStack = TRVirtualMachine.callStack.ToArray();
+
+            audio = new SerializeInfo[Trionfi.Instance.audioInstance.Count];
+            layer = new SerializeInfo[Trionfi.Instance.layerInstance.Count];
+            script = new SerializeInfo[Trionfi.Instance.scriptInstance.Count];
+
+            int count = 0;
+
+            foreach (KeyValuePair<TRLayerID ,TRLayer> instance in Trionfi.Instance.layerInstance)
+            {
+                layer[count] = new SerializeInfo();
+                layer[count].storage = instance.Value.path;
+                layer[count].type = instance.Value.resourceType;
+                layer[count].reservedNum = (int)instance.Key;
+                count++;
+            }
+
+            count = 0;
+            foreach (KeyValuePair<TRAudioID, TRAudio> instance in Trionfi.Instance.audioInstance)
+            {
+                audio[count] = new SerializeInfo();
+                audio[count].storage = instance.Value.path;
+                audio[count].type = instance.Value.resourceType;
+                audio[count].reservedNum = (int)instance.Key;
+                count++;
+            }
+
+            count = 0;
+            foreach (KeyValuePair<string, TRScript> instance in Trionfi.Instance.scriptInstance)
+            {
+                script[count] = new SerializeInfo();
+                script[count].storage = instance.Value.path;
+                script[count].type = instance.Value.resourceType;
+                script[count].reservedString = instance.Key;
+                count++;
+            }
+        }
+
+        public IEnumerator Deserialize()
+        {
+            TRVirtualMachine.callStack.Clear();
+
+            for (int count = 0; count < callStack.Length; count++)
+                TRVirtualMachine.callStack.Push(callStack[count]);
+
+            for (int count = 0; count < layer.Length; count++)
+            {
+                yield return Trionfi.Instance.LoadImage(layer[count].reservedNum, layer[count].storage, layer[count].type);
+            }
+
+            for (int count = 0; count < audio.Length; count++)
+            {
+                yield return Trionfi.Instance.LoadAudio(audio[count].reservedNum, audio[count].storage, audio[count].type);
+            }
+
+            for (int count = 0; count < script.Length; count++)
+            {
+                yield return Trionfi.Instance.LoadScript(layer[count].storage, layer[count].type);
+            }
+        }
     }
 
     [ExecuteInEditMode]
@@ -215,6 +308,8 @@ namespace Trionfi
         [Serializable]
         public class TRImageInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRLayerID, TRLayer> { };
 
+        public class TRScriptInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<string, TRScript> { };
+
 #if TR_USE_CRI
         [Serializable]
         public class TRAdxInstance : SerializableDictionary<int, TRAdx> { }
@@ -232,6 +327,79 @@ namespace Trionfi
         public TRAudioInstance audioInstance = new TRAudioInstance();
         [SerializeField]
         public TRImageInstance layerInstance = new TRImageInstance();
+        [SerializeField]
+        public TRScriptInstance scriptInstance = new TRScriptInstance();
+
+        public IEnumerator LoadScript(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool run = false)
+        {
+            var _coroutine = TRResourceLoader.Instance.LoadText(storage);
+            yield return StartCoroutine(_coroutine);
+
+            if (!string.IsNullOrEmpty((string)_coroutine.Current))
+            {
+                TRTagInstance _instance = new TRTagInstance();
+                _instance.CompileScriptString((string)_coroutine.Current);
+
+                TRScript _script = new TRScript();
+                _script.instance = _instance;
+                _script.path = storage;
+                _script.resourceType = type;
+
+                scriptInstance[storage] = _script;
+            }
+
+            if (run)
+                StartCoroutine(TRVirtualMachine.instance.Run(storage));
+
+            yield return _coroutine.Current;
+        }
+
+        public IEnumerator LoadAudio(int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
+        {
+            var _coroutine = TRResourceLoader.Instance.LoadAudio(storage, type);
+            yield return StartCoroutine(_coroutine);
+
+            if(_coroutine.Current != null)
+            {
+                audioInstance[(TRAudioID)ch].instance.clip = (AudioClip)_coroutine.Current;
+                audioInstance[(TRAudioID)ch].path = storage;
+                audioInstance[(TRAudioID)ch].resourceType = type;
+            }
+            yield return _coroutine.Current;
+        }
+
+        public IEnumerator LoadImage(int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
+        {
+            var _coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
+            yield return StartCoroutine(_coroutine);
+
+            if (_coroutine.Current != null)
+            {
+                layerInstance[(TRLayerID)ch].instance.texture = (Texture2D)_coroutine.Current;
+                layerInstance[(TRLayerID)ch].path = storage;
+                layerInstance[(TRLayerID)ch].resourceType = type;
+            }
+            yield return _coroutine.Current;
+        }
+
+        public void Save(string name)
+        {
+            SerializeData info = new SerializeData();
+            info.Serialize();
+
+            string data = JsonUtility.ToJson(info);
+
+            PlayerPrefs.SetString(name, data);
+        }
+
+        public void Load(string name)
+        {
+            SerializeData info = new SerializeData();
+            string data =  PlayerPrefs.GetString(name);
+            info = JsonUtility.FromJson<SerializeData>(data);
+        }
+
+
 
         public void Init(bool changeLayerOrder = false)
         {
@@ -402,7 +570,7 @@ namespace Trionfi
                         {
                             if (!string.IsNullOrEmpty(scriptName))
                             {
-                                StartCoroutine(TRVirtualMachine.Instance.LoadScenarioAsset(scriptName, type, true));
+                                StartCoroutine(LoadScript(scriptName, type, true));
                             }
                         }
                             );

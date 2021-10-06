@@ -87,7 +87,7 @@ namespace Trionfi
                 startPos = _pos;
             }
 
-            public TRTagInstance tagInstance { get { return tagInstances[scriptName]; } }
+            public TRTagInstance tagInstance { get { return Trionfi.instance.scriptInstance[scriptName].instance; } }
             
             public Dictionary<string, VariableCalcurator> tempParam = new Dictionary<string, VariableCalcurator>();//仮引数
             public FunctionalObjectType type = FunctionalObjectType.Macro;
@@ -152,18 +152,18 @@ namespace Trionfi
             */
         }
 
-        public static TRTagInstance currentTagInstance { get { return tagInstances[callStack.Peek().scriptName]; } }
+        public static TRTagInstance currentTagInstance { get { return Trionfi.instance.scriptInstance[callStack.Peek().scriptName].instance; } }
         public static FunctionalObjectInstance currentCallStack { get { return callStack.Peek(); } }
 
         public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
+
         public static TRVariableDictionary variableInstance = new TRVariableDictionary();
         public static TRCallStack callStack = new TRCallStack();
         public static Stack<bool> ifStack = new Stack<bool>();
 
-        //スクリプトをコンパイルしたタグの集合体
-        public static Dictionary<string, TRTagInstance> tagInstances = new Dictionary<string, TRTagInstance>();
         //マクロ、関数の情報（タグインスタンスの指定とタグ位置）。マクロと関数の実装的な区別はない。
         public static Dictionary<string, FunctionalObjectInstance> functionalObjects = new Dictionary<string, FunctionalObjectInstance>();
+
         //タグのエイリアス（主にKAGとの互換性用途？）
         public static Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
 
@@ -190,28 +190,11 @@ namespace Trionfi
             return result;
         }
 
-        public IEnumerator LoadScenarioAsset(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool execute = false)
-        {
-            var _coroutine = TRResourceLoader.Instance.LoadText(storage);
-            yield return StartCoroutine(_coroutine);
-
-            if (!string.IsNullOrEmpty((string)_coroutine.Current))
-            {
-                TRTagInstance _instance = new TRTagInstance();
-                _instance.CompileScriptString((string)_coroutine.Current);
-
-                tagInstances[storage] = _instance;
-
-                if (execute)
-                    StartCoroutine(Run(storage));
-            }
-        }
-
         public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
         {
-            if (tagInstances.ContainsKey(storage))
+            if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
-                TRTagInstance tag = tagInstances[storage];
+                TRTagInstance tag = Trionfi.instance.scriptInstance[storage].instance;
                 FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0);
                 callStack.Push(_func);
 
@@ -241,7 +224,7 @@ namespace Trionfi
             _func.currentPos = _func.startPos;
             _func.tempParam = _param;
 
-            _tag = tagInstances[_func.scriptName];
+            _tag = Trionfi.instance.scriptInstance[_func.scriptName].instance;
 
             do
             {

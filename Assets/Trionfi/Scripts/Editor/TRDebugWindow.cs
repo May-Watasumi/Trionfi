@@ -47,8 +47,8 @@ namespace Trionfi
                 TRTagInstance _instance = new TRTagInstance();
                 _instance.CompileScriptString(_text.text);
 
-                TRVirtualMachine.tagInstances[storage] = _instance;
-                Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.LoadScenarioAsset(storage, TRResourceType.LocalStatic, true));
+                Trionfi.Instance.scriptInstance[storage].instance = _instance;
+                Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(storage));
             }
         }
 
@@ -117,7 +117,7 @@ namespace Trionfi
 
                 if (_tagInstance.CompileScriptString(scriptText))
                 {
-                    TRVirtualMachine.tagInstances[_TEMPSCRIPTNAME_] = _tagInstance;
+                    Trionfi.Instance.scriptInstance[_TEMPSCRIPTNAME_].instance = _tagInstance;
                     Trionfi.Instance.StartCoroutine(TRVirtualMachine.Instance.Run(_TEMPSCRIPTNAME_));
                 }
                 else

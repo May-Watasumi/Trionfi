@@ -83,7 +83,7 @@ namespace Trionfi
         public int standObjectCount = 3;
 
         [SerializeField]
-        Font defaultFont = null;
+        public Font defaultFont = null;
 
         [SerializeField]
         public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);

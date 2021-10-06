@@ -95,7 +95,8 @@ namespace Trionfi
             {
 #endif
                 TRResourceType type = GetResourceType();
-
+                yield return Trionfi.Instance.LoadImage((int)id, storage, type);
+/*
                 var coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
 
                 yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
@@ -107,6 +108,7 @@ namespace Trionfi
                     Trionfi.Instance.layerInstance[id].path = storage;
                     _image.texture = _texture;
                 }
+*/
             }
 
             if (updatePos)
