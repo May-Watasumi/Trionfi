@@ -85,7 +85,7 @@ namespace Trionfi
             expressionText = EditorGUILayout.TextField("", expressionText);
             if (GUILayout.Button("実行"))
             {
-                VariableCalcurator _var = TRVirtualMachine.Calc(expressionText, TRVirtualMachine.variableInstance);
+                VariableCalcurator _var = Trionfi.Instance.Calc(expressionText, Trionfi.Instance.variableInstance);
                 UnityEngine.Debug.Log(_var.paramString);
             }
 

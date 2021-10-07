@@ -23,6 +23,11 @@ namespace Trionfi
             Trionfi.Instance.Save("SaveData");
         }
 
+        public void OnLoadButton()
+        {
+            Trionfi.Instance.Load("SaveData");
+        }
+
         public void OnAutoButton()
         {
             Trionfi.Instance.messageWindow.onAuto = !Trionfi.Instance.messageWindow.onAuto;

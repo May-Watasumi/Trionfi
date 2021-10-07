@@ -15,47 +15,6 @@ using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
-    [Serializable]
-    public class UserSaveDataInfo
-    {
-        public string currentFile = "";
-        public int currentIndex = -1;
-
-        public string name = "";
-        public string title = "";
-        public string description = "";
-        public string date = "";
-        public string currentMessage = "";
-
-        //画面のキャプチャ情報
-        public string screenCaptureFile = "";
-
-        //ToDo:レイヤ、音等の状態保存
-    }
-    /*
-        public enum TRSTACKTYPES
-        {
-            MACRO,
-            FUNCTION,
-            IF
-        }
-
-        //コールスタック。関数とマクロ共用。（返値を保存する以外の実装に違いはない）。
-        [Serializable]
-        public class CallStackObject
-        {
-            public TRVariable tempParam = new TRVariable();//仮引数
-            public string scenarioNname;
-            public int index;
-
-            public CallStackObject(string scenario_name, int _index, TRVariable _param)
-            {
-                scenarioNname = scenario_name;
-                index = _index;
-                tempParam = _param;
-            }
-        }
-    */
     //if文の入れ子などを管理するスタック
     [Serializable]
     public class IfStack
@@ -155,9 +114,6 @@ namespace Trionfi
         public static TRTagInstance currentTagInstance { get { return Trionfi.instance.scriptInstance[callStack.Peek().scriptName].instance; } }
         public static FunctionalObjectInstance currentCallStack { get { return callStack.Peek(); } }
 
-        public static UserSaveDataInfo saveDataInfo = new UserSaveDataInfo();
-
-        public static TRVariableDictionary variableInstance = new TRVariableDictionary();
         public static TRCallStack callStack = new TRCallStack();
         public static Stack<bool> ifStack = new Stack<bool>();
 
@@ -174,23 +130,7 @@ namespace Trionfi
             ifStack.Clear();
         }
 
-        public static VariableCalcurator Calc(string formula, TRVariableDictionary _variable = null)
-        {
-            Jace.Tokenizer.TokenReader reader = new Jace.Tokenizer.TokenReader(System.Globalization.CultureInfo.InvariantCulture);
-            List<Jace.Tokenizer.Token> tokens = reader.Read(formula);
-
-            Jace.Execution.IFunctionRegistry functionRegistry = new Jace.Execution.FunctionRegistry(false);
-
-            Jace.AstBuilder astBuilder = new Jace.AstBuilder(functionRegistry, false);
-            Operation operation = astBuilder.Build(tokens);
-            Jace.Execution.Interpreter executor = new Jace.Execution.Interpreter();
-
-            VariableCalcurator result = executor.Execute(operation, null, variableInstance);
-
-            return result;
-        }
-
-        public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
+         public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
         {
             if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
@@ -224,7 +164,7 @@ namespace Trionfi
             _func.currentPos = _func.startPos;
             _func.tempParam = _param;
 
-            _tag = Trionfi.instance.scriptInstance[_func.scriptName].instance;
+            _tag = Trionfi.instance.scriptInstance[_func.scriptName].instance ;
 
             do
             {

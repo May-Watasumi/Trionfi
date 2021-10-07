@@ -332,7 +332,7 @@ namespace Trionfi {
 		{
 #if !TR_PARSEONLY
 			string exp = tagParam["exp"].Literal();
-            VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
+            VariableCalcurator result = Trionfi.Instance.Calc(exp, tagParam);
 #endif
 		}
     }
@@ -354,7 +354,7 @@ namespace Trionfi {
 #if !TR_PARSEONLY
 			string exp = tagParam["exp"].Literal();
 
-            VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
+            VariableCalcurator result = Trionfi.Instance.Calc(exp, tagParam);
             TRVirtualMachine.ifStack.Push(result.Bool());
 
             if (!result.Bool())
@@ -393,7 +393,7 @@ namespace Trionfi {
             else
             {
                 string exp = tagParam["exp"].Literal();
-                VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
+                VariableCalcurator result = Trionfi.Instance.Calc(exp, tagParam);
                 TRVirtualMachine.ifStack.Push(result.Bool());
 
                 if (!result.Bool())
