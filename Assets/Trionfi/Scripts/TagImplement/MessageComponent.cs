@@ -128,7 +128,9 @@ namespace Trionfi
             }
 
             if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
-                Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+            {
+                Trionfi.Instance.messageWindow.OpenWindow();
+            }
 
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
 #endif

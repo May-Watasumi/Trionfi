@@ -24,6 +24,8 @@ namespace Trionfi
         public RenderTexture captureBuffer;
         [System.NonSerialized]
         public RenderTexture movieBuffer;
+        [System.NonSerialized]
+        public RenderTexture[] subRenderBuffer = new RenderTexture[1];
 
         [SerializeField]
         public string titleName = "Example";
@@ -43,6 +45,8 @@ namespace Trionfi
         public Text layerText;
         [SerializeField]
         public Camera targetCamera;
+        [SerializeField]
+        public Camera subCamera;
         [SerializeField]
         public Canvas layerCanvas;
         [SerializeField]
@@ -101,6 +105,44 @@ namespace Trionfi
         public TRImageInstance layerInstance = new TRImageInstance();
         [SerializeField]
         public TRScriptInstance scriptInstance = new TRScriptInstance();
+        [SerializeField]
+        public bool enableEndCallback = true;
+
+        protected TRTagParser tagParser = new TRTagParser(string.Empty);
+
+        //コールバック。
+        public delegate void SystemEvent();
+        public SystemEvent AwakeTrionfi;
+        public SystemEvent SleepTrionfi;
+
+        public void DefaultEndScriptCallBack()
+        {
+            uiCanvas.gameObject.SetActive(false);
+        }
+
+        public void DefaultBeginScriptCallBack()
+        {
+            uiCanvas.gameObject.SetActive(true);
+        }
+
+        public AbstractComponent GetTagComponent(string tagString)
+        {
+            return tagParser.Parse(tagString);
+        }
+
+        //スタック等を使わない簡易実行。
+        public IEnumerator ExecuteTagArray(AbstractComponent[] tagComponent)
+        {
+            AwakeTrionfi();
+
+            foreach(AbstractComponent tag in  tagComponent)
+			{
+                yield return tag.Execute();
+			}
+
+            if (enableEndCallback)
+                SleepTrionfi();
+        }
 
         public IEnumerator LoadScript(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool run = false)
         {
@@ -169,6 +211,7 @@ namespace Trionfi
 
             return result;
         }
+
         public void Save(string name)
         {
             SerializeData info = new SerializeData();
@@ -187,9 +230,7 @@ namespace Trionfi
             info.Deserialize();
         }
 
-
-
-        public void Init(bool changeLayerOrder = false)
+        public void Init(int subRenderCount = 0, bool changeLayerOrder = false)
         {
             audioInstance[TRAudioID.BGM].mainVolume = TRGameConfig.configData.bgmvolume * TRGameConfig.configData.mastervolume;
             audioInstance[TRAudioID.SE1].mainVolume = TRGameConfig.configData.sevolume * TRGameConfig.configData.mastervolume;
@@ -198,6 +239,12 @@ namespace Trionfi
             //Create Screen Cahpure Buffer;
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
             movieBuffer = new RenderTexture(Screen.width, Screen.height, 32);
+
+            if (subCamera != null)
+            {
+                subRenderBuffer[0] = new RenderTexture(Screen.width, Screen.height, 32);
+                subCamera.targetTexture = subRenderBuffer[0];
+            }
 
             rawImage.texture = captureBuffer;
 
@@ -297,9 +344,10 @@ namespace Trionfi
         public void CloseAllUI(GameObject ui = null)
         {
             messageWindow.Pause();
-            HideObject(configWindow.gameObject);//   TRGameConfigWindow.Instance.gameObject);
+
+            HideObject(configWindow.gameObject);
             HideObject(messageWindow.gameObject);
-            HideObject(systemMenuWindow.gameObject);// TRSystemMenuWindow.Instance.gameObject);
+            HideObject(systemMenuWindow.gameObject);
             HideObject(messageLogwindow.gameObject);
 
             ClickEvent += PopWindow;
@@ -307,15 +355,8 @@ namespace Trionfi
 
         public void OpenAllUI()
         {
-            if (videoPlayer.isPlaying)
-                videoPlayer.Stop();
-
             PopWindow();
-            //messageWindow.Restart();
-            //messageWindow.gameObject.SetActive(true);
-            systemMenuWindow.gameObject.gameObject.SetActive(true);
-
-            //ClickEvent -= PopWindow;
+            ClickEvent -= PopWindow;
         }
 
         public static bool IsPointerOverGameObject()
@@ -340,15 +381,10 @@ namespace Trionfi
             uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(0.0f, 1.0f).OnComplete
                 (() =>
                     {
-                        if (messageWindow.currentName != null)
-                            messageWindow.currentName.text = string.Empty;
-                        if (messageWindow.currentUguiMessage != null)
-                            messageWindow.currentUguiMessage.text = string.Empty;
-                        if (messageWindow.currentMessage != null)
-                            messageWindow.currentMessage.text = string.Empty;
-
-                        messageWindow.gameObject.SetActive(true);
-                        systemMenuWindow.gameObject.SetActive(true);
+                        messageWindow.ClearMessage();
+                        messageWindow.CloseWindow();
+                       
+                        uiCanvas.gameObject.SetActive(false);
 
                         if (titleWindow != null)
                             titleWindow.gameObject.SetActive(false);
@@ -358,6 +394,9 @@ namespace Trionfi
                         {
                             if (!string.IsNullOrEmpty(scriptName))
                             {
+                                messageWindow.OpenWindow();
+
+                                uiCanvas.gameObject.SetActive(true);
                                 StartCoroutine(LoadScript(scriptName, type, true));
                             }
                         }
@@ -434,7 +473,7 @@ namespace Trionfi
 
         public void HideCanvas()
         {
-            messageWindow.gameObject.SetActive(false);
+//            messageWindow.gameObject.SetActive(false);
 
             layerCanvas.gameObject.SetActive(false);
             uiCanvas.gameObject.SetActive(false);
@@ -479,13 +518,16 @@ namespace Trionfi
                 _pair.Value.instance = new CriAtomExPlayer();
             }
 #endif
+            AwakeTrionfi += DefaultBeginScriptCallBack;
+            SleepTrionfi += DefaultEndScriptCallBack;
+
             Vector2 canvasSize = uiCanvas.GetComponent<CanvasScaler>().referenceResolution;
 
             if(globalTap != null)
                 globalTap.GetComponent<RectTransform>().sizeDelta = canvasSize;
             if (messageLogwindow != null)
                 messageLogwindow.gameObject.SetActive(false);
-            if(messageWindow != null)
+            if (messageWindow != null)
                 messageWindow.gameObject.SetActive(false);
             if(selectWindow != null)
                 selectWindow.gameObject.SetActive(false);
@@ -497,6 +539,9 @@ namespace Trionfi
                 dialogWindow.gameObject.SetActive(false);
             if(nowLoading != null)
                 nowLoading.gameObject.SetActive(false);
+
+            if (!TRSystemConfig.Instance.isNovelMode)
+                messageWindow.systemWindow = systemMenuWindow.gameObject;
 
             Init();
         }

@@ -12,18 +12,15 @@ namespace Trionfi
         public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait, OnClose }
         public enum WaitIcon { None, Alpha, Rotate }
 
-        public bool enableLogWindow = true;
-
         public bool forceSkip = false;
 
         public bool onSkip = false;
         public bool onAuto = false;
 
-        public bool enableSkip
-        { get { return forceSkip || onSkip; } }
+        public bool enableSkip 
+            { get { return forceSkip || onSkip; } }
 
         public string currentSpeaker = string.Empty;
-
 
         public MessageState state = MessageState.None;
 
@@ -51,6 +48,9 @@ namespace Trionfi
         [SerializeField]
         public Image waitCursor;
 
+        public GameObject systemWindow;
+        TRMessageLogWindow logWindow;
+
         public string nameString = string.Empty;
 
         public void Start()
@@ -63,6 +63,8 @@ namespace Trionfi
                 currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
                 currentMessage.color = TRSystemConfig.Instance.fontColor;
             }
+
+            logWindow = Trionfi.Instance.messageLogwindow;
 
             Trionfi.Instance.ClickEvent += OnClick;
         }
@@ -113,6 +115,22 @@ namespace Trionfi
             currentSpeaker = string.Empty;
 
             speedRatio = 1.0f;
+        }
+
+        public void OpenWindow()
+		{
+            gameObject.SetActive(true);
+
+            if (systemWindow != null)
+                systemWindow.SetActive(true);
+		}
+
+        public void CloseWindow()
+        {
+            gameObject.SetActive(false);
+
+            if (systemWindow != null)
+                systemWindow.SetActive(false);
         }
 
         public IEnumerator _waitCoroutine = null;
@@ -177,7 +195,8 @@ namespace Trionfi
             if (Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.isPlaying)
                 currentVoice = Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.clip;
 
-            Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, nameString, currentVoice);
+            if(logWindow != null)
+                logWindow.AddLogData(currentMessage.text, nameString, currentVoice);
 
             if (!enableSkip && mesWait > 0.0f)
             {
@@ -223,7 +242,7 @@ namespace Trionfi
             else if (!string.IsNullOrEmpty(nameString))
                 currentMessage.text = nameString + "\r";
 
-            Trionfi.Instance.messageLogwindow.AddLogData(message, nameString);
+            logWindow.AddLogData(message, nameString);
 
             if (!enableSkip && mesWait > 0.0f)
             {
@@ -263,24 +282,9 @@ namespace Trionfi
                     yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip);
             }
 
-            /*
-            if(TRMessageLogWindow.Instance != null && enableLogWindow)
-            {
-                TRMessageLogWindow.Instance.AddLogData(currentName.text, currentMessage.text);
-            }
-            */
-
             state = MessageState.None;
 
             yield return new WaitForEndOfFrame();
-
-            //if (!TRSystemConfig.Instance.isNovelMode)
-            //    ClearMessage();
-
-            //            if (!onSkip && !onAuto)
-            //            Trionfi.Instance.ClickEvent -= onClickEvent;
-
-            yield return null;
         }
 
         public void WaitCursor(WaitIcon icon)

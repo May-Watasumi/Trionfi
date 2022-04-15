@@ -66,14 +66,12 @@ namespace Trionfi
             statementText = EditorGUILayout.TextField("", statementText);
             if (GUILayout.Button("実行"))
             {
-                TRTagParser tagParser = new TRTagParser(statementText);
-                AbstractComponent tagComponent = tagParser.Parse(0);
+                AbstractComponent tagComponent = Trionfi.Instance.GetTagComponent(statementText);
+
                 if (tagComponent != null)
                 {
                     consoleLog += ("Tag: " + tagComponent.tagName + "\n");
-
-                    tagComponent.Execute();
-                    Trionfi.Instance.StartCoroutine(tagComponent.TagSyncFunction());
+                    Trionfi.Instance.StartCoroutine(tagComponent.Execute());
                 }
                 else
                     consoleLog += ("Invalid Tag!\n");

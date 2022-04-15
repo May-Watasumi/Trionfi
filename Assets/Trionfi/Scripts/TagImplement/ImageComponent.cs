@@ -94,8 +94,18 @@ namespace Trionfi
             else
             {
 #endif
-                TRResourceType type = GetResourceType();
-                yield return Trionfi.Instance.LoadImage((int)id, storage, type);
+                if (tagParam.ContainsKey("renderbuf"))
+                {
+                    Trionfi.Instance.layerInstance[(TRLayerID)id].instance.texture = Trionfi.Instance.subRenderBuffer[0];
+                    Trionfi.Instance.layerInstance[(TRLayerID)id].path = storage;
+                    Trionfi.Instance.layerInstance[(TRLayerID)id].resourceType = GetResourceType();
+                }
+				else
+                {
+
+                    TRResourceType type = GetResourceType();
+                    yield return Trionfi.Instance.LoadImage((int)id, storage, type);
+                }
 /*
                 var coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
 

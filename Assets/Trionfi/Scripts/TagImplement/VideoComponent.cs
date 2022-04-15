@@ -56,6 +56,17 @@ namespace Trionfi
             RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
             Trionfi.Instance.videoPlayer.url = url;
             Trionfi.Instance.videoPlayer.isLooping = loop;
+
+            if (Trionfi.Instance.nowLoading != null)
+                Trionfi.Instance.nowLoading.gameObject.SetActive(true);
+
+            Trionfi.Instance.videoPlayer.Prepare();
+
+            yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.isPrepared);
+
+            if (Trionfi.Instance.nowLoading != null)
+                Trionfi.Instance.nowLoading.gameObject.SetActive(false);
+
             Trionfi.Instance.videoPlayer.Play();
             _image.enabled = true;
 

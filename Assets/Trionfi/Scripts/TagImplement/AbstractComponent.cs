@@ -56,6 +56,23 @@ namespace Trionfi
         public List<string> essentialMoreOneParams = new List<string>();
 
         [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
+        public void Log()
+        {
+#if UNITY_EDITOR || TR_DEBUG
+            if (TRSystemConfig.Instance.showTag)
+            {
+                string _params = "";
+
+                foreach (KeyValuePair<string, TRVariable> key in tagParam)
+                {
+                    _params += " " + key.Key + "=" + key.Value.paramString;
+                }
+                ErrorLogger.Log("[" + tagName + _params + " ]");
+            }
+#endif
+        }
+
+        [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void Validate(bool stopOnError = false)
         {
             string message = string.Empty;
@@ -125,15 +142,21 @@ namespace Trionfi
         abstract protected void TagFunction();
         public virtual IEnumerator TagSyncFunction() { yield return null; }
         public virtual void TagSyncFinished() {  }
-
-        //タグの実行
-        public void Execute()
-        {
-            TagFunction();
-		}
-
         public virtual void Before() { }
         public virtual void After() { }
+
+        public IEnumerator Execute()
+        {
+            Log();
+
+            Before();
+
+            TagFunction();
+
+            After();
+
+            yield return TagSyncFunction();
+        }
     }
 
     //無名タグ。コンパイル時に生成される。

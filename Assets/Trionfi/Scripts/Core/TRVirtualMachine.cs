@@ -134,6 +134,8 @@ namespace Trionfi
         {
             if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
+                Trionfi.instance.AwakeTrionfi();
+
                 TRTagInstance tag = Trionfi.instance.scriptInstance[storage].instance;
                 FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0);
                 callStack.Push(_func);
@@ -145,6 +147,11 @@ namespace Trionfi
                     _func = callStack.Pop();
 
                 } while (callStack.Count > 0);
+
+                ErrorLogger.Log("End of Script");
+
+                if (Trionfi.instance.enableEndCallback)
+                    Trionfi.instance.SleepTrionfi();
             }
             else
                 ErrorLogger.Log("not find script file:" + storage);
@@ -164,31 +171,13 @@ namespace Trionfi
             _func.currentPos = _func.startPos;
             _func.tempParam = _param;
 
-            _tag = Trionfi.instance.scriptInstance[_func.scriptName].instance ;
+            _tag = Trionfi.instance.scriptInstance[_func.scriptName].instance;
 
             do
             {
                 AbstractComponent _tagComponent = _tag.arrayComponents[_func.currentPos];
 
-                _tagComponent.Before();
-
-#if UNITY_EDITOR || TR_DEBUG
-                if (TRSystemConfig.Instance.showTag)
-                {
-                    string _params = "";
-
-                    foreach (KeyValuePair<string, TRVariable> key in _tagComponent.tagParam)
-                    {
-                        _params += " " + key.Key + "= " + key.Value.paramString;
-                    }
-                    ErrorLogger.Log("[" + _tagComponent.tagName + _params + " ]");
-                }
-#endif
-                _tagComponent.Execute();
-
-                _tagComponent.After();
-
-                yield return _tagComponent.TagSyncFunction();
+                yield return _tagComponent.Execute();
 
                 _func.currentPos++;
 

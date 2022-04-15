@@ -16,15 +16,8 @@
 [snapshot]
 [image layer=0 storage=sprite/bg/schoolroomhibig130901]
 
-//[こはく 左]
-//[ゆうこ 右]
-//[videoplay url=Trionfi/Resources/TEST.mp4]
-//[shake layer=message time=1000]
-//[fadeout]
-
-
-;[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000]
-;[image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41 time=1000]
+[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000 actor=こはく]
+[image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41 time=1000 actor=ゆうこ]
 [trans rule=sprite/mask/030  wait = 750]
 
 [audio buf=0 storage=sound/bgm/c3 time=10000]
@@ -38,6 +31,9 @@
 【こはく】
 ＰＣゲームによく使われる吉里吉里／ＫＡＧ（ＫＡＧＥＸ）に
 互換性のあるフォーマット、命令体系を持っています。
+
+//コメント１
+;コメント２
 
 【こはく】
 ；（半角）や／／（半角）で始まる行はコメントとして無視されます。
@@ -61,7 +57,7 @@
 空行があると、そこでクリック（タップ）待ちになります。
 
 【こはく】
-リッチテキストはUnity標準のをになるので、
+リッチテキストはUnity（uGUI）のタグ任せになるので、
 ＜＞がタグになります（ややこしくてすみません……）。
 
 【こはく】
@@ -72,11 +68,6 @@
 <i>斜体</i>と<b>太字</b>に加えて、
 Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 <s>打ち消し線</s>もあります。
-
-【ゆうこ】
-コマンドタグについては付属の簡易リファレンスや
-公式サイトのオンラインリファレンスを
-参照してください。
 
 【こはく】
 次は選択肢のサンプルです。
@@ -119,7 +110,7 @@ Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 
 【こはく】
 ・半角英数、アンダーバーが使用可能（全角は不可です）
-・ただし、先頭に角の数字が来ることはできない
+・ただし、先頭に半角の数字が来ることはできない
 であれば、自由に名前をつけることが出来ます。
 
 【こはく】
@@ -145,4 +136,3 @@ Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 次のメッセージから別ファイルになります。
 
 [jump storage=scenario/tutorial1_2]
-

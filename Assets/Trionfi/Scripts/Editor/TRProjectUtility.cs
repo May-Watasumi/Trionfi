@@ -79,19 +79,16 @@ namespace Trionfi
             }
 
             //これはひどい。
-            GameObject.DestroyImmediate(trionfiInstandce.dialogWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.configWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.globalTap.gameObject);
-
-//            GameObject.DestroyImmediate(trionfiInstandce.messageWindow.gameObject);
+            GameObject.DestroyImmediate(trionfiInstandce.titleWindow.gameObject);
             GameObject.DestroyImmediate(trionfiInstandce.messageWindowList[0].gameObject);
             GameObject.DestroyImmediate(trionfiInstandce.messageWindowList[1].gameObject);
-
             GameObject.DestroyImmediate(trionfiInstandce.messageLogwindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.nowLoading.gameObject);
+            GameObject.DestroyImmediate(trionfiInstandce.globalTap.gameObject);
             GameObject.DestroyImmediate(trionfiInstandce.selectWindow.gameObject);
+            GameObject.DestroyImmediate(trionfiInstandce.configWindow.gameObject);
             GameObject.DestroyImmediate(trionfiInstandce.systemMenuWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.titleWindow.gameObject);
+            GameObject.DestroyImmediate(trionfiInstandce.dialogWindow.gameObject);
+            GameObject.DestroyImmediate(trionfiInstandce.nowLoading.gameObject);
 
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/TitleBase.prefab", typeof(GameObject)) as GameObject);                //0
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);        //1

@@ -138,8 +138,8 @@ namespace Trionfi {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
             essentialMoreOneParams = new List<string> {
-				"target",
-                "file"
+				"storage",
+                "target"
 			};
 #endif
         }
@@ -156,7 +156,7 @@ namespace Trionfi {
                 target = tagParam["target"].Literal();
 
 //            if (tagParam.ContainsKey("storage"))
-             file = tagParam["storage", TRVirtualMachine.currentCallStack.scriptName];
+            file = tagParam["storage", TRVirtualMachine.currentCallStack.scriptName];
 
             //ファイルが異なるものになる場合、シナリオをロードする
             if (file != TRVirtualMachine.currentCallStack.scriptName)

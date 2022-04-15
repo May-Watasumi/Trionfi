@@ -6,9 +6,6 @@ using System.Text;
 using System.Reflection;
 using Jace.Operations;
 
-using TRVariable = Jace.Operations.VariableCalcurator;
-using TRDataType = Jace.DataType;
-
 #if !TR_PARSEONLY
  using UnityEngine;
 #endif
@@ -16,6 +13,9 @@ using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
+    using TRVariable = Jace.Operations.VariableCalcurator;
+    using TRDataType = Jace.DataType;
+
     enum TRParserError
     {
         EOF,
@@ -147,7 +147,7 @@ namespace Trionfi
         //you must check statement is not empty. 
         public bool GetFirstToken()
         {
-            paramList.Clear();
+            paramList = new TRVariableDictionary();
 
             tagName = "";
 
@@ -242,7 +242,17 @@ namespace Trionfi
             }
         }
 
-        public AbstractComponent Parse(int line)
+        public AbstractComponent Parse(string tagString)
+        {
+            currentPos = 0;
+            startPos = 0;
+            endPos = 0;
+
+            charArray = tagString.ToCharArray();
+            return  Parse();
+        }
+
+        public AbstractComponent Parse()
         {
             try
             {
@@ -277,7 +287,7 @@ namespace Trionfi
 #if UNITY_EDITOR && TR_DEBUG
                     _component.Validate();
 #endif
-                    _component.lineCount = line;
+                    _component.lineCount = lineCount;
 
                     return _component;
                 }
@@ -310,6 +320,8 @@ namespace Trionfi
 
     public class TRScriptParser : TRParserBase
     {
+        public TRScriptParser(string statement) : base(statement) { }
+
         public string textIdentifiedScript;
         public string textDataCSV;
         int textID = 0;
@@ -317,10 +329,10 @@ namespace Trionfi
         //名前仕切り文字
         public string nameSplitter = "【】";
 
-        public TRScriptParser(string statement) : base(statement) { }
-
         public TRTagList BeginParse(string splitter)
         {
+            lineCount = 0;
+
             textIdentifiedScript = string.Empty;
             textDataCSV = "ID, JP, EN\r";
             textID = 0;
@@ -333,7 +345,7 @@ namespace Trionfi
 
             string textBuffer = "";
 
-BeginParse:
+            TRTagParser tagParser = new TRTagParser(string.Empty);
 
             while (currentPos < charArray.Length)
             {
@@ -358,8 +370,7 @@ BeginParse:
 
                     textIdentifiedScript += statement + "\r";
 
-                    TRTagParser tagParser = new TRTagParser(statement);
-                    _tagComponent = tagParser.Parse(lineCount);
+                    _tagComponent = tagParser.Parse(statement);
 
                     if (_tagComponent != null)
                         result.Add(_tagComponent);
@@ -418,8 +429,7 @@ BeginParse:
                     }
                     else
                     {
-                        TRTagParser tagParser = new TRTagParser(_tagParam);
-                        _tagComponent = tagParser.Parse(lineCount);
+                        _tagComponent = tagParser.Parse(_tagParam);
                     }
 
                     if (_tagComponent != null)
