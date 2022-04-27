@@ -60,7 +60,11 @@ namespace Trionfi
 
             yield return request.SendWebRequest();
 
+#if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
+#else
+            if (!request.isNetworkError)
+#endif
                 Debug.Log(request.error);
             else
                 instance = request.downloadHandler.text;
@@ -89,7 +93,11 @@ namespace Trionfi
 
             yield return request.SendWebRequest();
 
+#if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
+#else
+            if (!request.isNetworkError)
+#endif
                 Debug.Log(request.error);
             else
                 instance = DownloadHandlerAudioClip.GetContent(request);
@@ -106,7 +114,11 @@ namespace Trionfi
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(storage);
             yield return request.SendWebRequest();
 
+#if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
+#else
+            if (!request.isNetworkError)
+#endif
                 Debug.Log(request.error);
             else
                 instance = DownloadHandlerTexture.GetContent(request);
@@ -123,7 +135,11 @@ namespace Trionfi
 
             UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(storage);
 
+#if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
+#else
+            if (!request.isNetworkError)
+#endif
                 Debug.Log(request.error);
             else
                 instance = DownloadHandlerAssetBundle.GetContent(request);
