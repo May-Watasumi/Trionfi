@@ -40,7 +40,7 @@ namespace Trionfi
             {
                 var coroutine = TRResourceLoader.Instance.LoadText(storage);
                 yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
-                TRVirtualMachine.currentTagInstance.ReadTextData((string)coroutine.Current);
+                TRVirtualMachine.Instance.currentTagInstance.ReadTextData((string)coroutine.Current);
             }
 
             yield return null;
@@ -122,7 +122,7 @@ namespace Trionfi
 
             if (tagParam.ContainsKey("id"))
             {
-                message = TRVirtualMachine.currentTagInstance.textData[tagParam["id"].Int()].GetText(TRSystemConfig.Instance.localizeID);
+                message = TRVirtualMachine.Instance.currentTagInstance.textData[tagParam["id"].Int()].GetText(TRSystemConfig.Instance.localizeID);
                 message = message.Replace("\\r", "\r");
                 message = message.Replace("\\n", "\n");
             }

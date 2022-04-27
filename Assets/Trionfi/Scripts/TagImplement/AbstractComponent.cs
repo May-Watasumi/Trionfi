@@ -181,15 +181,15 @@ namespace Trionfi
             {
                 string macroName = tagParam["name"].Literal();
 
-                if (TRVirtualMachine.functionalObjects.ContainsKey(macroName))
+                if (TRVirtualMachine.Instance.functionalObjects.ContainsKey(macroName))
                 {
-                    TRVirtualMachine.FunctionalObjectInstance func = TRVirtualMachine.functionalObjects[macroName];
+                    FunctionalObjectInstance func = TRVirtualMachine.Instance.functionalObjects[macroName];
 
-                    if (func.type != TRVirtualMachine.FunctionalObjectType.Macro)
+                    if (func.type != FunctionalObjectType.Macro)
                         ErrorLogger.Log("\"" + macroName + "\"はマクロではありません");
-
-                    TRVirtualMachine.callStack.Push(func);
-                    yield return TRVirtualMachine.Instance.Call(func, tagParam);
+                    else
+                        yield return TRVirtualMachine.Instance.Execute(func, tagParam);
+                    //                    TRVirtualMachine.callStack.Push(func);
                 }
                 else
                     ErrorLogger.Log("マクロ\"" + macroName + "\"は存在しません");

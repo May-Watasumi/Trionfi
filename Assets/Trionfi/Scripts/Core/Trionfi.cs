@@ -76,9 +76,6 @@ namespace Trionfi
         [SerializeField]
         public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
 
-        [SerializeField]
-        public TRVariableDictionary variableInstance = new TRVariableDictionary();
-
         [Serializable]
         public class TRAudioInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRAudioID, TRAudio> { };
         [Serializable]
@@ -117,12 +114,12 @@ namespace Trionfi
 
         public void DefaultEndScriptCallBack()
         {
-            uiCanvas.gameObject.SetActive(false);
+            messageWindow.CloseWindow();               
         }
 
         public void DefaultBeginScriptCallBack()
         {
-            uiCanvas.gameObject.SetActive(true);
+            messageWindow.OpenWindow();
         }
 
         public AbstractComponent GetTagComponent(string tagString)
@@ -133,15 +130,10 @@ namespace Trionfi
         //スタック等を使わない簡易実行。
         public IEnumerator ExecuteTagArray(AbstractComponent[] tagComponent)
         {
-            AwakeTrionfi();
-
             foreach(AbstractComponent tag in  tagComponent)
 			{
                 yield return tag.Execute();
 			}
-
-            if (enableEndCallback)
-                SleepTrionfi();
         }
 
         public IEnumerator LoadScript(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool run = false)
@@ -194,22 +186,6 @@ namespace Trionfi
                 layerInstance[(TRLayerID)ch].resourceType = type;
             }
             yield return _coroutine.Current;
-        }
-
-        public  VariableCalcurator Calc(string formula, TRVariableDictionary _variable = null)
-        {
-            Jace.Tokenizer.TokenReader reader = new Jace.Tokenizer.TokenReader(System.Globalization.CultureInfo.InvariantCulture);
-            List<Jace.Tokenizer.Token> tokens = reader.Read(formula);
-
-            Jace.Execution.IFunctionRegistry functionRegistry = new Jace.Execution.FunctionRegistry(false);
-
-            Jace.AstBuilder astBuilder = new Jace.AstBuilder(functionRegistry, false);
-            Operation operation = astBuilder.Build(tokens);
-            Jace.Execution.Interpreter executor = new Jace.Execution.Interpreter();
-
-            VariableCalcurator result = executor.Execute(operation, null, variableInstance);
-
-            return result;
         }
 
         public void Save(string name)
@@ -378,31 +354,11 @@ namespace Trionfi
 
         public void Begin(string scriptName, TRResourceType type = TRResourceLoader.defaultResourceType)
         {
-            uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(0.0f, 1.0f).OnComplete
-                (() =>
-                    {
-                        messageWindow.ClearMessage();
-                        messageWindow.CloseWindow();
-                       
-                        uiCanvas.gameObject.SetActive(false);
+            if (titleWindow != null)
+                titleWindow.gameObject.SetActive(false);
 
-                        if (titleWindow != null)
-                            titleWindow.gameObject.SetActive(false);
-
-                        uiCanvas.gameObject.GetComponent<CanvasGroup>().DOFade(1.0f, 1.0f).OnComplete
-                        (() =>
-                        {
-                            if (!string.IsNullOrEmpty(scriptName))
-                            {
-                                messageWindow.OpenWindow();
-
-                                uiCanvas.gameObject.SetActive(true);
-                                StartCoroutine(LoadScript(scriptName, type, true));
-                            }
-                        }
-                            );
-                    }
-                );
+            if (!string.IsNullOrEmpty(scriptName))
+                StartCoroutine(LoadScript(scriptName, type, true));
         }
 
         public void InitKAGAlias()
@@ -412,39 +368,39 @@ namespace Trionfi
 
             TRVariableDictionary _temp = new TRVariableDictionary();
             _temp["buf"] = new TRVariable((int)TRAudioID.BGM);
-            TRVirtualMachine.aliasTagInstance["playbgm"] = new AudioComponent();
-            TRVirtualMachine.aliasTagInstance["playbgm"].tagParam = _temp;
-            TRVirtualMachine.aliasTagInstance["pausebgm"] = new AudiopauseComponent();
-            TRVirtualMachine.aliasTagInstance["pausebgm"].tagParam = _temp;
-            TRVirtualMachine.aliasTagInstance["resumebgm"] = new AudioresumeComponent();
-            TRVirtualMachine.aliasTagInstance["resumebgm"].tagParam = _temp;
-            TRVirtualMachine.aliasTagInstance["stopbgm"] = new AudiostopComponent();
-            TRVirtualMachine.aliasTagInstance["stopbgm"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["playbgm"] = new AudioComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["playbgm"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["pausebgm"] = new AudiopauseComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["pausebgm"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["resumebgm"] = new AudioresumeComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["resumebgm"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["stopbgm"] = new AudiostopComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["stopbgm"].tagParam = _temp;
 
             _temp["buf"] = new TRVariable((int)TRAudioID.SE1);
-            TRVirtualMachine.aliasTagInstance["playse"] = new AudioComponent();
-            TRVirtualMachine.aliasTagInstance["playse"].tagParam = _temp;
-            TRVirtualMachine.aliasTagInstance["pausese"] = new AudiopauseComponent();
-            TRVirtualMachine.aliasTagInstance["pausese"].tagParam = _temp;
-            TRVirtualMachine.aliasTagInstance["stopse"] = new AudiostopComponent();
-            TRVirtualMachine.aliasTagInstance["stopse"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["playse"] = new AudioComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["playse"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["pausese"] = new AudiopauseComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["pausese"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["stopse"] = new AudiostopComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["stopse"].tagParam = _temp;
 
             _temp["buf"] = new TRVariable((int)TRAudioID.VOICE1);
-            TRVirtualMachine.aliasTagInstance["playvoice"] = new AudioComponent();
-            TRVirtualMachine.aliasTagInstance["playvoice"].tagParam = _temp;
-            TRVirtualMachine.aliasTagInstance["pausevoice"] = new AudiopauseComponent();
-            TRVirtualMachine.aliasTagInstance["pausevoice"].tagParam = _temp;
-            TRVirtualMachine.aliasTagInstance["stopvoice"] = new AudiostopComponent();
-            TRVirtualMachine.aliasTagInstance["stopvoice"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["playvoice"] = new AudioComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["playvoice"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["pausevoice"] = new AudiopauseComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["pausevoice"].tagParam = _temp;
+            TRVirtualMachine.Instance.aliasTagInstance["stopvoice"] = new AudiostopComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["stopvoice"].tagParam = _temp;
              
-            TRVirtualMachine.aliasTagInstance["playvideo"] = new VideoplayComponent();
-            TRVirtualMachine.aliasTagInstance["pausevideo"] = new VideopauseComponent();
-            TRVirtualMachine.aliasTagInstance["resumevideo"] = new VideoresumeComponent();
-            TRVirtualMachine.aliasTagInstance["stopvideo"] = new VideostopComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["playvideo"] = new VideoplayComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["pausevideo"] = new VideopauseComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["resumevideo"] = new VideoresumeComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["stopvideo"] = new VideostopComponent();
 
-            TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
-            TRVirtualMachine.aliasTagInstance["copylay"] = new SnapshotComponent();
-            TRVirtualMachine.aliasTagInstance["freeimage"] = new ImagefreeComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["freeimage"] = new ImagefreeComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["copylay"] = new SnapshotComponent();
+            TRVirtualMachine.Instance.aliasTagInstance["freeimage"] = new ImagefreeComponent();
         }
 
         public void ResetCanvas(int mesWindowID = 0)
@@ -473,8 +429,6 @@ namespace Trionfi
 
         public void HideCanvas()
         {
-//            messageWindow.gameObject.SetActive(false);
-
             layerCanvas.gameObject.SetActive(false);
             uiCanvas.gameObject.SetActive(false);
 
@@ -492,7 +446,7 @@ namespace Trionfi
 
             foreach (KeyValuePair<TRLayerID ,TRLayer> instance in layerInstance)
             {
-                //レイヤー1～10が立ち絵として割り振ってある。
+                //レイヤー1～9が立ち絵として割り振ってある。
                 if (instance.Value.instance == null || instance.Key < TRLayerID.STAND1 || instance.Key > (TRLayerID)10)
                     continue;
 
@@ -556,6 +510,8 @@ namespace Trionfi
                 captureBuffer.Release();
             if(movieBuffer != null)
                 movieBuffer.Release();
+            if (subRenderBuffer[0] != null)
+                subRenderBuffer[0].Release();
         }
     }
 }

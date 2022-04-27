@@ -5,6 +5,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TRVariable = Jace.Operations.VariableCalcurator;
 
 namespace Trionfi
 {
@@ -31,7 +32,7 @@ namespace Trionfi
 	[Serializable]
 	public class SelectComponent : AbstractComponent
 	{
-		public SelectComponent() { }
+		public SelectComponent() {	}
 
 		protected override void TagFunction()
 		{
@@ -45,8 +46,14 @@ namespace Trionfi
         {
             yield return new WaitWhile(() => Trionfi.Instance.selectWindow.onWait);
 
-            if (!TRVirtualMachine.currentCallStack.LocalJump(TRSelectWindow.Instance.result))
-                ErrorLogger.Log("No Jump target:" + TRSelectWindow.Instance.result);
+			if (tagParam.ContainsKey("var"))
+			{
+				TRVirtualMachine.Instance.globalVariableInstance[tagParam["var"].Literal()] = new TRVariable(TRSelectWindow.Instance.resutNum);
+			}
+			else if (!TRVirtualMachine.Instance.currentCallStack.LocalJump(TRSelectWindow.Instance.result))
+			{
+				ErrorLogger.Log("No Jump target:" + TRSelectWindow.Instance.result);
+			}
         }
 #endif
 	}

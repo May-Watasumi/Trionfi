@@ -144,7 +144,7 @@ namespace Trionfi
             // m.Groups[0].Valueはﾏｯﾁした全体の文字列
             var Exp = m.Groups[1].Value;
 
-            string result = Trionfi.Instance.variableInstance[Exp].Literal();
+            string result = TRVirtualMachine.Instance.vstack.GetInstance(Exp).Literal();
 
             return result;
         }

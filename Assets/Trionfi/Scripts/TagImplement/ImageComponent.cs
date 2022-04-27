@@ -326,11 +326,24 @@ namespace Trionfi
 			Trionfi.Instance.rawImage.color = Color.white;
             Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
             Trionfi.Instance.targetCamera.Render();
+            /*
+            Texture2D tex = new Texture2D(Trionfi.Instance.targetCamera.targetTexture.width, Trionfi.Instance.targetCamera.targetTexture.height, TextureFormat.RGB24, false);
+            RenderTexture.active = Trionfi.Instance.targetCamera.targetTexture;
+            tex.ReadPixels(new Rect(0, 0, Trionfi.Instance.targetCamera.targetTexture.width, Trionfi.Instance.targetCamera.targetTexture.height), 0, 0);
+            tex.Apply();
+
+            // Encode texture into PNG
+            byte[] bytes = tex.EncodeToPNG();
+            UnityEngine.Object.Destroy(tex);
+
+            //Write to a file in the project folder
+            File.WriteAllBytes(Application.dataPath + "/../SavedScreen.png", bytes);
+            */
 #endif
-		}
+        }
 
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             yield return new WaitForEndOfFrame();
             Trionfi.Instance.targetCamera.targetTexture = null;

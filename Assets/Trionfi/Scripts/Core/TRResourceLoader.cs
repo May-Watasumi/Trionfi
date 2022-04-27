@@ -58,12 +58,9 @@ namespace Trionfi
 
             UnityWebRequest request = UnityWebRequest.Get(storage);
 
-#if UNITY_2017_2_OR_NEWER
             yield return request.SendWebRequest();
-#else
-            yield return request.Send();
-#endif
-            if (request.isNetworkError || request.isHttpError)
+
+            if (request.result != UnityWebRequest.Result.Success)
                 Debug.Log(request.error);
             else
                 instance = request.downloadHandler.text;
@@ -88,21 +85,14 @@ namespace Trionfi
 
             AudioType _type = audioType[(System.IO.Path.GetExtension(storage)).ToLower()];
 
-#if UNITY_2017_1_OR_NEWER
             UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(storage, _type);
- #if UNITY_2017_2_OR_NEWER
+
             yield return request.SendWebRequest();
- #else
-            yield return request.Send();
- #endif
-            if (request.isNetworkError || request.isHttpError)
+
+            if (request.result != UnityWebRequest.Result.Success)
                 Debug.Log(request.error);
             else
                 instance = DownloadHandlerAudioClip.GetContent(request);
-#else
-            UnityWebRequest request = UnityWebRequest.GetAudioClip(storage, _type);
-            yield return request.Send();
-#endif
             yield return instance;
         }
     }
@@ -113,22 +103,14 @@ namespace Trionfi
         {
             instance = null;
 
-#if UNITY_2017_1_OR_NEWER
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(storage);
- #if UNITY_2017_2_OR_NEWER
             yield return request.SendWebRequest();
- #else
-            yield return request.Send();
- #endif
 
-            if (request.isNetworkError || request.isHttpError)
+            if (request.result != UnityWebRequest.Result.Success)
                 Debug.Log(request.error);
             else
                 instance = DownloadHandlerTexture.GetContent(request);
-#else
-            request = UnityWebRequestTexture.GetTexture(storage);
-            yield return request.Send();
-#endif
+
             yield return instance;
         }
     }
@@ -139,21 +121,13 @@ namespace Trionfi
         {
             instance = null;
 
-#if UNITY_2018_1_OR_NEWER
             UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(storage);
-#else
-            UnityWebRequest request = UnityWebRequest.GetAssetBundle(storage);
-#if UNITY_2017_2_OR_NEWER
-            yield return request.SendWebRequest();
-#else
-            yield return request.Send();
-#endif
 
-            if (request.isNetworkError || request.isHttpError)
+            if (request.result != UnityWebRequest.Result.Success)
                 Debug.Log(request.error);
             else
                 instance = DownloadHandlerAssetBundle.GetContent(request);
-#endif
+
             yield return instance;
         }
     }
@@ -177,7 +151,7 @@ namespace Trionfi
         }
     }
 
-    public class TRResourceLoader : SingletonMonoBehaviour<TRResourceLoader>
+    public class TRResourceLoader  : SingletonMonoBehaviour<TRResourceLoader>
 	{
         /*
                 public string MakeStoragePath(string file, TRAssetType dataType)
@@ -263,9 +237,16 @@ namespace Trionfi
             yield return assetBundleList[bundle].LoadAsset<Texture2D>(storage);
         }
 
-        private void Start()
+        new protected void Awake()
+        {
+            base.Awake();
+            Initialize();
+        }
+/*
+		private void Start()
         {
             Initialize();
         }
+*/
     }
 }

@@ -171,13 +171,13 @@ namespace Trionfi
         [SerializeField]
         public SerializeInfo[] script;
         [SerializeField]
-        public TRVirtualMachine.FunctionalObjectInstance[] callStack;
+        public FunctionalObjectInstance[] callStack;
         [SerializeField]
         TRVariableDictionary variable;
 
         public void Serialize()
         {
-            callStack = TRVirtualMachine.callStack.ToArray();
+            callStack = TRVirtualMachine.Instance.callStack.ToArray();
 
             audio = new SerializeInfo[Trionfi.Instance.audioInstance.Count];
             layer = new SerializeInfo[Trionfi.Instance.layerInstance.Count];
@@ -214,15 +214,15 @@ namespace Trionfi
                 count++;
             }
 
-            variable = Trionfi.Instance.variableInstance;
+            variable = TRVirtualMachine.Instance.globalVariableInstance;
         }
 
         public IEnumerator Deserialize()
         {
-            TRVirtualMachine.callStack.Clear();
+            TRVirtualMachine.Instance.callStack.Clear();
 
             for (int count = 0; count < callStack.Length; count++)
-                TRVirtualMachine.callStack.Push(callStack[count]);
+                TRVirtualMachine.Instance.callStack.Push(callStack[count]);
 
             for (int count = 0; count < layer.Length; count++)
             {
@@ -239,7 +239,7 @@ namespace Trionfi
                 yield return Trionfi.Instance.LoadScript(layer[count].storage, layer[count].type);
             }
 
-            Trionfi.Instance.variableInstance = variable;
+            TRVirtualMachine.Instance.globalVariableInstance = variable;
         }
     }
 #endif

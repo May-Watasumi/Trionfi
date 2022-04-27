@@ -27,16 +27,16 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			string name = tagParam["name"].Literal();
-            TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+            string name = tagParam["name"].Literal();
+            FunctionalObjectInstance _cuttentStack = TRVirtualMachine.Instance.currentCallStack;
 
-            TRVirtualMachine.FunctionalObjectInstance function = new TRVirtualMachine.FunctionalObjectInstance(TRVirtualMachine.FunctionalObjectType.Macro, _cuttentStack.scriptName, _cuttentStack.currentPos+1);
-            TRVirtualMachine.functionalObjects[name] = function;
+            FunctionalObjectInstance function = new FunctionalObjectInstance(FunctionalObjectType.Macro, _cuttentStack.scriptName, _cuttentStack.currentPos + 1);
             _cuttentStack.SkipTo<MacroendComponent>();
+//            function.endPos = _cuttentStack.currentPos;
+            TRVirtualMachine.Instance.functionalObjects[name] = function;
 #endif
-		}
+        }
     }
-
 
     //マクロ定義の終了宣言
     [Serializable]
@@ -47,12 +47,15 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
+            /*
 			TRVirtualMachine.FunctionalObjectInstance _func = TRVirtualMachine.callStack.Peek();
 
             if (_func.type == TRVirtualMachine.FunctionalObjectType.Macro)
             {
+
                 _func.currentPos += 999999;
             }
+            */
 #endif
 		}
     }
@@ -75,7 +78,7 @@ namespace Trionfi
         {
 #if !TR_PARSEONLY
 			string name = tagParam["name"].Literal();
-            TRVirtualMachine.functionalObjects.Remove(name);
+            TRVirtualMachine.Instance.functionalObjects.Remove(name);
 #endif
 		}
     }
@@ -91,7 +94,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			TRVirtualMachine.functionalObjects.Clear();
+			TRVirtualMachine.Instance.functionalObjects.Clear();
 #endif
 		}
     }

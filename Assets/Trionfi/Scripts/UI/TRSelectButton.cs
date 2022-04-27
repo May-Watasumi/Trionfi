@@ -7,7 +7,8 @@ namespace Trionfi
 {
     public class TRSelectButton : MonoBehaviour {
         //ジャンプ先ラベル@KAG仕様
-        public string targetLabel; 
+        public string targetLabel;
+        public int resultNum;
 
         [SerializeField]
         public AudioSource decisionSound;
@@ -15,11 +16,12 @@ namespace Trionfi
         public void OnSelected()
         {
             TRSelectWindow.Instance.result = targetLabel;
+            TRSelectWindow.Instance.resutNum = resultNum;
 
             AudioSource audio = null;
             if (decisionSound != null && decisionSound.clip != null)
                 audio = decisionSound;
-            else if (TRSelectWindow.Instance.decisionSound.clip != null)
+            else if (TRSelectWindow.Instance.decisionSound != null && TRSelectWindow.Instance.decisionSound.clip != null)
                 audio = TRSelectWindow.Instance.decisionSound;
 
             StartCoroutine(EndSelector(audio));
@@ -45,12 +47,14 @@ namespace Trionfi
 
         public Text contentText;
 
-        public void Set(string content, string result)
+        public void Set(string content, string label, int result)
         {
             if(contentText != null)
                 contentText.text = content;
 
-            targetLabel = result;
+            targetLabel = label;
+
+            resultNum = result;
         }
     }
 }

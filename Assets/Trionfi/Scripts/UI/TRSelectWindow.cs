@@ -7,6 +7,8 @@ namespace Trionfi
     public class TRSelectWindow : SingletonMonoBehaviour<TRSelectWindow>
     {
         public string result;
+        public int resutNum;
+
         int activeSelector = 0;
 
         public bool onWait = false;
@@ -23,9 +25,10 @@ namespace Trionfi
         [SerializeField]
         float AreaHeight = 560.0f;
 
-        public void Add(string content, string result)
+        public void Add(string content, string label)
         {
-            selectorList[activeSelector++].Set(content, result);
+            selectorList[activeSelector].Set(content, label, activeSelector);
+            activeSelector++;
         }
 
         public void Begin()

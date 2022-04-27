@@ -19,7 +19,6 @@ Trionfi repository (github)  https://github.com/May-ClearBlue/Trionfi
 
 ■ToDo
 ・セーブロード機能
-・台本ツール（ボイスナンバリング、PDF吐き出し）開発中：50％
 ・Live2D、E-mote対応
 ・”宴”エクスポーター（スクリプトコンバータ）もしくはダイレクトな命令置換実行（需要により）
 
