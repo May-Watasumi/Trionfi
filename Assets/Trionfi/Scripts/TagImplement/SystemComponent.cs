@@ -168,7 +168,7 @@ namespace Trionfi {
 
                 //スタックをすべて削除する
 //                TRVirtualMachine.RemoveAllStacks();
-                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0);
+                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
 
                 if (tagParam.ContainsKey("target"))
                     func.LocalJump(tagParam["target"].Literal());
@@ -232,7 +232,7 @@ namespace Trionfi {
 
                 //スタックをすべて削除する
                 //                TRVirtualMachine.RemoveAllStacks();
-                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0);
+                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
 
                 if (tagParam.ContainsKey("target"))
                     func.LocalJump(tagParam["target"].Literal());
@@ -250,7 +250,7 @@ namespace Trionfi {
 
                 int index = TRVirtualMachine.Instance.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.Instance.currentTagInstance.arrayComponents.labelPos[target];
 
-                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0);
+                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
 
                 if (tagParam.ContainsKey("target"))
                     func.LocalJump(tagParam["target"].Literal());

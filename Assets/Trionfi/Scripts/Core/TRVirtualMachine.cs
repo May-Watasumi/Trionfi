@@ -15,11 +15,16 @@ namespace Trionfi
     [Serializable]
     public class FunctionalObjectInstance
     {
-        public FunctionalObjectInstance(FunctionalObjectType _type, string _scriptName, int _pos)
+        public FunctionalObjectInstance(FunctionalObjectType _type, string _scriptName, int _pos, int _endPos)
         {
             type = _type;
             scriptName = _scriptName;
             startPos = _pos;
+
+            if (_type == FunctionalObjectType.Script)
+                _endPos = tagInstance.arrayComponents.Count;
+
+            endPos = _endPos;
         }
 
         public TRTagInstance tagInstance { get { return Trionfi.Instance.scriptInstance[scriptName].instance; } }
@@ -28,9 +33,10 @@ namespace Trionfi
 
         public string scriptName;
         public int startPos;
+        public int endPos;// { get { return tagInstance.arrayComponents.Count; } }
+
         public int currentPos;
 
-        public int endPos { get { return tagInstance.arrayComponents.Count; } }
 
         public bool LocalJump(string label)
         {
@@ -91,7 +97,7 @@ namespace Trionfi
 //                Trionfi.instance.AwakeTrionfi();
 
                 TRTagInstance tag = Trionfi.instance.scriptInstance[storage].instance;
-                FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0);
+                FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0, 0);
 
                 do
                 {
@@ -115,7 +121,8 @@ namespace Trionfi
             //if(_func.type != FunctionalObjectType.Macro)
                 callStack.Push(_func);
 
-            vstack.Push(_param);
+            if (_param != null)
+                vstack.Push(_param);
 
             TRTagInstance _tag  = Trionfi.instance.scriptInstance[_func.scriptName].instance;
 
@@ -135,7 +142,8 @@ namespace Trionfi
             } while (_func.currentPos < _tag.arrayComponents.Count);
 
 Macro_End:
-            vstack.Pop();
+            if (_param != null)
+                vstack.Pop();
 
             //if (_func.type != FunctionalObjectType.Macro)
                 yield return callStack.Pop();

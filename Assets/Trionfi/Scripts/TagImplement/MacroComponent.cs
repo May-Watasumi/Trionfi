@@ -30,9 +30,11 @@ namespace Trionfi
             string name = tagParam["name"].Literal();
             FunctionalObjectInstance _cuttentStack = TRVirtualMachine.Instance.currentCallStack;
 
-            FunctionalObjectInstance function = new FunctionalObjectInstance(FunctionalObjectType.Macro, _cuttentStack.scriptName, _cuttentStack.currentPos + 1);
+            int beginPos = _cuttentStack.currentPos + 1;
             _cuttentStack.SkipTo<MacroendComponent>();
-//            function.endPos = _cuttentStack.currentPos;
+            int endPos = _cuttentStack.currentPos;
+
+            FunctionalObjectInstance function = new FunctionalObjectInstance(FunctionalObjectType.Macro, _cuttentStack.scriptName, beginPos, endPos);
             TRVirtualMachine.Instance.functionalObjects[name] = function;
 #endif
         }

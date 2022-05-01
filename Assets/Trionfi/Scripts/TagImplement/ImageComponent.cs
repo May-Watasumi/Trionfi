@@ -203,7 +203,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			RawImage _image;
+//			RawImage _image;
 
             string text = tagParam["text", string.Empty];
             Trionfi.Instance.layerText.text = text;
@@ -481,7 +481,7 @@ namespace Trionfi
         {
             RectTransform _rect = null;
 
-            int id = -1;
+//            int id = -1;
             string name = string.Empty;
 
             int strength = tagParam["strength", 5];

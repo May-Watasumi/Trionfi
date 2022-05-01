@@ -85,7 +85,6 @@ namespace Trionfi
         [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void GetTagInfo()
         {
-
             for (int a = 0; a < arrayComponents.Count; a++)
             {
                 AbstractComponent _tagComponent = arrayComponents[a];

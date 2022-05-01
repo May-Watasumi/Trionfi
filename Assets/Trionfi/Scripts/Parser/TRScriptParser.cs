@@ -299,6 +299,8 @@ namespace Trionfi
             }
             catch (TRParserExecption error)
             {
+                ErrorLogger.Log(error.Message);
+
                 if (currentPos >= charArray.Length)
                     ErrorLogger.Log("Statement is aborted");
                 else

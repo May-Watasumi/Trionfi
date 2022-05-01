@@ -14,7 +14,7 @@ namespace Trionfi
     public class TRActorParamEditor : Editor
     {
         TRActorParamAsset asset;
-        static bool showTileEditor = false;
+//        static bool showTileEditor = false;
 
         public void OnEnable()
         {
