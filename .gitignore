@@ -2,13 +2,16 @@
 Library/
 Temp/
 obj/Debug/
+obj/Release/
+Mira/Mira/obj/
+Mira/Mira/obj/Debug/
+Mira/Mira/obj/Release/
 Assets/Game/AssetBundlesAndroid/
 Assets/Game/AssetBundlesIOS/
 Assets/Game/AssetBundlesStandalone/
 
 
 #拡張子
-*.csproj
 *.userprefs
 *.suo
 *.sln

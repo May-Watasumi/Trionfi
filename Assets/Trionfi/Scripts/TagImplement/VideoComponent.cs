@@ -81,7 +81,6 @@ namespace Trionfi
 
             yield return null;
         }
-#endif
 
         static public void StopFunc()
 		{
@@ -93,7 +92,8 @@ namespace Trionfi
             RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
             _image.enabled = false;
         }
-	}
+#endif
+    }
 
     //[audiostop type=bgm delay=0]
     [Serializable]

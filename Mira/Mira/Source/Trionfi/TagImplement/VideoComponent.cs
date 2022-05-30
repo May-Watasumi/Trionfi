@@ -9,8 +9,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-//VideoPlayerのローカルのURLに'files:///'は2017.3から不要になったらしい。ややこしい。
-
 namespace Trionfi
 {
     [Serializable]
@@ -41,11 +39,8 @@ namespace Trionfi
             if (storage.IndexOf("https://") >= 0 || storage.IndexOf("http://") >= 0)
                 url = storage;
             else
-#if UNITY_2017_3_OR_NEWER
                 url += "/" + storage;
-#else
-                url = "files:///" + Application.dataPath + " / " + storage;
-#endif
+
             bool loop = tagParam["loop", false];
 
             if (!loop)
@@ -56,21 +51,49 @@ namespace Trionfi
             RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
             Trionfi.Instance.videoPlayer.url = url;
             Trionfi.Instance.videoPlayer.isLooping = loop;
+
+            if (Trionfi.Instance.nowLoading != null)
+                Trionfi.Instance.nowLoading.gameObject.SetActive(true);
+
+            Trionfi.Instance.videoPlayer.Prepare();
+
+            yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.isPrepared);
+
+            if (Trionfi.Instance.nowLoading != null)
+                Trionfi.Instance.nowLoading.gameObject.SetActive(false);
+
             Trionfi.Instance.videoPlayer.Play();
             _image.enabled = true;
 
+            if (tagParam["skip"].Bool())
+            {
+                hasSync = true;
+                Trionfi.Instance.ClickEvent += StopFunc;
+            }
+
             if (hasSync)
             {
-                Trionfi.Instance.CloseAllUI();
+                //Trionfi.Instance.CloseAllUI();
                 yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.isPlaying);
                 _image.enabled = false;
-                Trionfi.Instance.OpenAllUI();
+                //Trionfi.Instance.OpenAllUI();
             }
 
             yield return null;
         }
+
+        static public void StopFunc()
+		{
+            Trionfi.Instance.ClickEvent -= StopFunc;
+
+            if (Trionfi.Instance.videoPlayer.isPlaying || Trionfi.Instance.videoPlayer.isPaused)
+                Trionfi.Instance.videoPlayer.Stop();
+
+            RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
+            _image.enabled = false;
+        }
 #endif
-	}
+    }
 
     //[audiostop type=bgm delay=0]
     [Serializable]
@@ -87,10 +110,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			//            float delay = tagParam.Float("delay");
-			Trionfi.Instance.videoPlayer.Stop();
-            RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
-            _image.enabled = false;
+            VideoplayComponent.StopFunc();
 #endif
 		}
     }

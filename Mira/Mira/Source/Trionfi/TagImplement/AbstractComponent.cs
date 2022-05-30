@@ -49,11 +49,28 @@ namespace Trionfi
         public string tagName;
 
 
-#if UNITY_EDITOR || TR_DEBUG
         string sourceName = "";
 
         public List<string> essentialParams = new List<string>();
         public List<string> essentialMoreOneParams = new List<string>();
+#if UNITY_EDITOR || TR_DEBUG
+        [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
+#endif
+        public void Log()
+        {
+#if !TR_PARSEONLY
+            if (TRSystemConfig.Instance.showTag)
+#endif
+            {
+                string _params = "";
+
+                foreach (KeyValuePair<string, TRVariable> key in tagParam)
+                {
+                    _params += " " + key.Key + "=" + key.Value.paramString;
+                }
+                ErrorLogger.Log("[" + tagName + _params + " ]");
+            }
+        }
 
         [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
         public void Validate(bool stopOnError = false)
@@ -90,7 +107,6 @@ namespace Trionfi
                 ErrorLogger.AddLog(message, sourceName, lineCount, false);
             }
         }
-#endif
 
 #if !TR_PARSEONLY
         protected TRResourceType GetResourceType()
@@ -121,19 +137,25 @@ namespace Trionfi
         }
 #endif
 
-        //タグ実行本体
+            //タグ実行本体
         abstract protected void TagFunction();
         public virtual IEnumerator TagSyncFunction() { yield return null; }
         public virtual void TagSyncFinished() {  }
-
-        //タグの実行
-        public void Execute()
-        {
-            TagFunction();
-		}
-
         public virtual void Before() { }
         public virtual void After() { }
+
+        public IEnumerator Execute()
+        {
+            Log();
+
+            Before();
+
+            TagFunction();
+
+            After();
+
+            yield return TagSyncFunction();
+        }
     }
 
     //無名タグ。コンパイル時に生成される。
@@ -149,14 +171,28 @@ namespace Trionfi
             };
 #endif
         }
-        protected override void TagFunction()
-        {
-        }
+        protected override void TagFunction()  { }
 
 #if !TR_PARSEONLY
 		public override IEnumerator TagSyncFunction()
         {
-            yield return TRVirtualMachine.Instance.Call(tagParam["name"].Literal(), tagParam);
+            if (tagParam.ContainsKey("name"))
+            {
+                string macroName = tagParam["name"].Literal();
+
+                if (TRVirtualMachine.Instance.functionalObjects.ContainsKey(macroName))
+                {
+                    FunctionalObjectInstance func = TRVirtualMachine.Instance.functionalObjects[macroName];
+
+                    if (func.type != FunctionalObjectType.Macro)
+                        ErrorLogger.Log("\"" + macroName + "\"はマクロではありません");
+                    else
+                        yield return TRVirtualMachine.Instance.Execute(func, tagParam);
+                    //                    TRVirtualMachine.callStack.Push(func);
+                }
+                else
+                    ErrorLogger.Log("マクロ\"" + macroName + "\"は存在しません");
+            }
         }
 #endif
 	}

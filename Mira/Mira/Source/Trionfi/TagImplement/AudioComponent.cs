@@ -48,16 +48,11 @@ namespace Trionfi
 
             yield return TRResourceLoader.Instance.LoadAudio(storage);
 
-            //            while (TRResourceLoader.Instance.isLoading)
-            //                yield return new WaitForSeconds(1.0f);
-
-            //            if (TRResourceLoader.Instance.isSuceeded)
-
             if (!string.IsNullOrEmpty(storage))
             {
                 TRResourceType type = GetResourceType();
 
-                var coroutine = TRResourceLoader.Instance.LoadAudio(storage, type);
+                var coroutine = Trionfi.Instance.LoadAudio((int)id, storage, type);
 
                 yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
 

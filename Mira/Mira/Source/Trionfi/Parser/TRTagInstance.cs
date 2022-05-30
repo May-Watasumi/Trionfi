@@ -1,6 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
-using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
 
@@ -13,7 +13,6 @@ namespace Trionfi
     [Serializable]
 	public class TRTagInstance
     {
-        //        public int currentComponentIndex = -1;
 #if !TR_PARSEONLY
         [SerializeField]
 #endif
@@ -81,6 +80,21 @@ namespace Trionfi
 
             //エラーがあるときはtrue
             return !ErrorLogger.ShowAll();
+        }
+
+        [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
+        public void GetTagInfo()
+        {
+            for (int a = 0; a < arrayComponents.Count; a++)
+            {
+                AbstractComponent _tagComponent = arrayComponents[a];
+                ErrorLogger.Log("tag:" + _tagComponent.tagName);
+
+                foreach (KeyValuePair<string, Jace.Operations.VariableCalcurator> pair in _tagComponent.tagParam)
+                {
+                    ErrorLogger.Log(pair.Key + "=" + pair.Value.paramString);
+                }
+            }
         }
     }
 }

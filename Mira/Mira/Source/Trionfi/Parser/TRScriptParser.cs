@@ -6,9 +6,6 @@ using System.Text;
 using System.Reflection;
 using Jace.Operations;
 
-using TRVariable = Jace.Operations.VariableCalcurator;
-using TRDataType = Jace.DataType;
-
 #if !TR_PARSEONLY
  using UnityEngine;
 #endif
@@ -16,6 +13,9 @@ using TRDataType = Jace.DataType;
 
 namespace Trionfi
 {
+    using TRVariable = Jace.Operations.VariableCalcurator;
+    using TRDataType = Jace.DataType;
+
     enum TRParserError
     {
         EOF,
@@ -77,10 +77,10 @@ namespace Trionfi
         {
             while (currentPos < charArray.Length)
             {
-                if (charArray[currentPos] != ' ' || charArray[currentPos] != '\t')
+                if (charArray[currentPos] == ' ' || charArray[currentPos] == '\t')
+                    ++currentPos;
+                else
                     return false;
-
-                ++currentPos;
             }
 
             return true;
@@ -147,7 +147,7 @@ namespace Trionfi
         //you must check statement is not empty. 
         public bool GetFirstToken()
         {
-            paramList.Clear();
+            paramList = new TRVariableDictionary();
 
             tagName = "";
 
@@ -242,7 +242,17 @@ namespace Trionfi
             }
         }
 
-        public AbstractComponent Parse(int line)
+        public AbstractComponent Parse(string tagString)
+        {
+            currentPos = 0;
+            startPos = 0;
+            endPos = 0;
+
+            charArray = tagString.ToCharArray();
+            return  Parse();
+        }
+
+        public AbstractComponent Parse()
         {
             try
             {
@@ -277,7 +287,7 @@ namespace Trionfi
 #if UNITY_EDITOR && TR_DEBUG
                     _component.Validate();
 #endif
-                    _component.lineCount = line;
+                    _component.lineCount = lineCount;
 
                     return _component;
                 }
@@ -289,6 +299,8 @@ namespace Trionfi
             }
             catch (TRParserExecption error)
             {
+                ErrorLogger.Log(error.Message);
+
                 if (currentPos >= charArray.Length)
                     ErrorLogger.Log("Statement is aborted");
                 else
@@ -310,6 +322,8 @@ namespace Trionfi
 
     public class TRScriptParser : TRParserBase
     {
+        public TRScriptParser(string statement) : base(statement) { }
+
         public string textIdentifiedScript;
         public string textDataCSV;
         int textID = 0;
@@ -317,10 +331,10 @@ namespace Trionfi
         //名前仕切り文字
         public string nameSplitter = "【】";
 
-        public TRScriptParser(string statement) : base(statement) { }
-
         public TRTagList BeginParse(string splitter)
         {
+            lineCount = 0;
+
             textIdentifiedScript = string.Empty;
             textDataCSV = "ID, JP, EN\r";
             textID = 0;
@@ -332,6 +346,8 @@ namespace Trionfi
             AbstractComponent _tagComponent = null;
 
             string textBuffer = "";
+
+            TRTagParser tagParser = new TRTagParser(string.Empty);
 
             while (currentPos < charArray.Length)
             {
@@ -356,8 +372,7 @@ namespace Trionfi
 
                     textIdentifiedScript += statement + "\r";
 
-                    TRTagParser tagParser = new TRTagParser(statement);
-                    _tagComponent = tagParser.Parse(lineCount);
+                    _tagComponent = tagParser.Parse(statement);
 
                     if (_tagComponent != null)
                         result.Add(_tagComponent);
@@ -369,11 +384,15 @@ namespace Trionfi
 
                     textIdentifiedScript += statement + "\r";
 
-                    _tagComponent = new CommentComponent();
-                    _tagComponent.tagParam = new TRVariableDictionary();
-                    _tagComponent.tagParam["text"] = new TRVariable(statement);
-                    _tagComponent.lineCount = lineCount;
-                    result.Add(_tagComponent);
+                    //;はコメントタグとして認識する
+                    if(charArray[currentPos] == ';')
+                    {
+                        _tagComponent = new CommentComponent();
+                        _tagComponent.tagParam = new TRVariableDictionary();
+                        _tagComponent.tagParam["text"] = new TRVariable(statement);
+                        _tagComponent.lineCount = lineCount;
+                        result.Add(_tagComponent);
+                    }
                 }
                 //comments
                 else if (charArray[currentPos] == '/' && charArray[currentPos + 1] == '*')
@@ -412,8 +431,7 @@ namespace Trionfi
                     }
                     else
                     {
-                        TRTagParser tagParser = new TRTagParser(_tagParam);
-                        _tagComponent = tagParser.Parse(lineCount);
+                        _tagComponent = tagParser.Parse(_tagParam);
                     }
 
                     if (_tagComponent != null)
@@ -482,7 +500,7 @@ namespace Trionfi
             return result;
         }
 
-        public string VoiceNumbering(LocalizeID localizeID,  string splitter, List<TRActorInfo> actorInfo )
+        public string VoiceNumbering(LocalizeID localizeID,  string splitter, TRActorInfoes actorInfo )
         {
             Dictionary<string, int> voiceCounter = new Dictionary<string, int>();
 
@@ -490,6 +508,15 @@ namespace Trionfi
 
             while (currentPos < charArray.Length)
             {
+                if(charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
+				{
+//                    if(currentPos > 0 && charArray[currentPos] == '\r' || charArray[currentPos] == '\n')
+//                        _result += charArray[currentPos];
+                    _result += charArray[currentPos];
+                    currentPos++;
+                    continue;
+                }
+
                 string _temp = ReadLine();
                 string _isName = (_temp.TrimStart()).TrimEnd();
 
@@ -500,17 +527,19 @@ namespace Trionfi
 
                     foreach (var actor in actorInfo)
                     {
-                        if (actor.GetActorName(localizeID) == _temp)
+                        if (nameSplitter[0] + actor.Value.GetActorName(localizeID)+ nameSplitter[1] == _isName)
                         {
-                            if (!voiceCounter.ContainsKey(actor.displayNameJP))
-                                voiceCounter[actor.displayNameJP] = 1;
+                            if (!voiceCounter.ContainsKey(actor.Value.GetActorName(localizeID)))
+                                voiceCounter[actor.Value.GetActorName(localizeID)] = 1;
 
-                            _result += "[audio buf="+TRAudioID.VOICE1.ToString() + " storage= " + actor.prefix+ (voiceCounter[actor.GetActorName(localizeID)]++).ToString("D5") + "]\n" + _temp;
+                            _result += "[audio buf="+((int)TRAudioID.VOICE1).ToString() + " storage= " + actor.Value.prefix + (voiceCounter[actor.Value.GetActorName(localizeID)]++).ToString("D5") + "]\n";
 
                             continue;
                         }
                     }
                 }
+                _result += _temp;
+
             }
 
             return _result;

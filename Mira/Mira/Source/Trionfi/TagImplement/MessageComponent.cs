@@ -36,17 +36,11 @@ namespace Trionfi
         {
             string storage = tagParam["storage"].Literal();
 
-
-            //            while (TRResourceLoader.Instance.isLoading)
-            //                yield return new WaitForSeconds(1.0f);
-
-            //            if (TRResourceLoader.Instance.isSuceeded)
-
             if (!string.IsNullOrEmpty(storage))
             {
                 var coroutine = TRResourceLoader.Instance.LoadText(storage);
                 yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
-                TRVirtualMachine.currentTagInstance.ReadTextData((string)coroutine.Current);
+                TRVirtualMachine.Instance.currentTagInstance.ReadTextData((string)coroutine.Current);
             }
 
             yield return null;
@@ -128,13 +122,15 @@ namespace Trionfi
 
             if (tagParam.ContainsKey("id"))
             {
-                message = TRVirtualMachine.currentTagInstance.textData[tagParam["id"].Int()].GetText(TRSystemConfig.Instance.localizeID);
+                message = TRVirtualMachine.Instance.currentTagInstance.textData[tagParam["id"].Int()].GetText(TRSystemConfig.Instance.localizeID);
                 message = message.Replace("\\r", "\r");
                 message = message.Replace("\\n", "\n");
             }
 
             if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
-                Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+            {
+                Trionfi.Instance.messageWindow.OpenWindow();
+            }
 
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
 #endif
@@ -145,11 +141,16 @@ namespace Trionfi
         {
             yield return new WaitWhile(() => Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None);
 
-            if (!TRSystemConfig.Instance.isNovelMode)
+            if (TRSystemConfig.Instance.isNovelMode)
+            {
+                Trionfi.Instance.messageWindow.nameString = string.Empty;
+                Trionfi.Instance.messageWindow.currentMessage.text += "\r";
+            }
+            else
                 Trionfi.Instance.messageWindow.ClearMessage();
         }
 #endif
-	}
+    }
 
     //[name val="なまえ" face="表情"]
     [Serializable]
@@ -174,12 +175,12 @@ namespace Trionfi
             {
                 string[] nameInfo = name.Split('/');
                 Trionfi.Instance.messageWindow.ShowName(nameInfo[0]);
-                TRLayer.currentSpeaker = nameInfo[1];
+                Trionfi.Instance.messageWindow.currentSpeaker = nameInfo[1];
             }
             else
             {
                 Trionfi.Instance.messageWindow.ShowName(name);
-                TRLayer.currentSpeaker = name;
+                Trionfi.Instance.messageWindow.currentSpeaker = name;
             }
 #endif
 		}

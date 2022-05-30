@@ -94,8 +94,19 @@ namespace Trionfi
             else
             {
 #endif
-                TRResourceType type = GetResourceType();
+                if (tagParam.ContainsKey("renderbuf"))
+                {
+                    Trionfi.Instance.layerInstance[(TRLayerID)id].instance.texture = Trionfi.Instance.subRenderBuffer[0];
+                    Trionfi.Instance.layerInstance[(TRLayerID)id].path = storage;
+                    Trionfi.Instance.layerInstance[(TRLayerID)id].resourceType = GetResourceType();
+                }
+				else
+                {
 
+                    TRResourceType type = GetResourceType();
+                    yield return Trionfi.Instance.LoadImage((int)id, storage, type);
+                }
+/*
                 var coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
 
                 yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
@@ -107,6 +118,7 @@ namespace Trionfi
                     Trionfi.Instance.layerInstance[id].path = storage;
                     _image.texture = _texture;
                 }
+*/
             }
 
             if (updatePos)
@@ -191,7 +203,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			RawImage _image;
+//			RawImage _image;
 
             string text = tagParam["text", string.Empty];
             Trionfi.Instance.layerText.text = text;
@@ -314,11 +326,24 @@ namespace Trionfi
 			Trionfi.Instance.rawImage.color = Color.white;
             Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
             Trionfi.Instance.targetCamera.Render();
+            /*
+            Texture2D tex = new Texture2D(Trionfi.Instance.targetCamera.targetTexture.width, Trionfi.Instance.targetCamera.targetTexture.height, TextureFormat.RGB24, false);
+            RenderTexture.active = Trionfi.Instance.targetCamera.targetTexture;
+            tex.ReadPixels(new Rect(0, 0, Trionfi.Instance.targetCamera.targetTexture.width, Trionfi.Instance.targetCamera.targetTexture.height), 0, 0);
+            tex.Apply();
+
+            // Encode texture into PNG
+            byte[] bytes = tex.EncodeToPNG();
+            UnityEngine.Object.Destroy(tex);
+
+            //Write to a file in the project folder
+            File.WriteAllBytes(Application.dataPath + "/../SavedScreen.png", bytes);
+            */
 #endif
-		}
+        }
 
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
             yield return new WaitForEndOfFrame();
             Trionfi.Instance.targetCamera.targetTexture = null;
@@ -425,11 +450,11 @@ namespace Trionfi
 	}
 
     [Serializable]
-    public class ShakeComponent : AbstractComponent
+    public class QuakeComponent : AbstractComponent
     {
         bool isSync = true;
 
-        public ShakeComponent()
+        public QuakeComponent()
         {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
@@ -456,7 +481,7 @@ namespace Trionfi
         {
             RectTransform _rect = null;
 
-            int id = -1;
+//            int id = -1;
             string name = string.Empty;
 
             int strength = tagParam["strength", 5];

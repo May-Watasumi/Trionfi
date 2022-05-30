@@ -24,6 +24,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
+            System.Diagnostics.Debug.WriteLine(tagParam["text"].Literal());
         }
     }
 
@@ -54,7 +55,7 @@ namespace Trionfi {
             else
             {
                 _component.tagParam = tagParam;
-                TRVirtualMachine.aliasTagInstance[tagParam["name"].Literal()] = _component;
+                TRVirtualMachine.Instance.aliasTagInstance[tagParam["name"].Literal()] = _component;
             }
 #endif
 		}
@@ -108,7 +109,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            //ToDo
+            ErrorLogger.Log("Label:"+tagParam["name"].Literal());
         }
     }
 
@@ -126,7 +127,7 @@ namespace Trionfi {
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			TRVirtualMachine.Serialize(tagParam["file"].Literal());
+			TRVirtualMachine.Instance.Serialize(tagParam["file"].Literal());
 #endif
 		}
     }
@@ -137,8 +138,9 @@ namespace Trionfi {
 		public JumpComponent() {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-				"target"
+            essentialMoreOneParams = new List<string> {
+				"storage",
+                "target"
 			};
 #endif
         }
@@ -146,75 +148,120 @@ namespace Trionfi {
         protected override void TagFunction() {  }
 
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        public override IEnumerator TagSyncFunction()
         {
-            string target = tagParam["target"].Literal();
-            string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
-
-			//ファイルが異なるものになる場合、シナリオをロードする
-			if(file != TRVirtualMachine.currentCallStack.scriptName)
-			{
-                TRResourceType type = GetResourceType();
-
-                yield return TRVirtualMachine.Instance.LoadScenarioAsset(TRVirtualMachine.currentCallStack.scriptName, type);
-
-                //ToDo:スタックをすべて削除する
-//                TRVirtualMachine.RemoveAllStacks();
-//                TRVirtualMachine.currentScriptName = file;
-            }
-
-            if (string.IsNullOrEmpty(file))
-                file = TRVirtualMachine.currentCallStack.scriptName;
-
-            int index = TRVirtualMachine.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
+            string target = string.Empty;
+            string file = string.Empty;
 
             if (tagParam.ContainsKey("target"))
-                TRVirtualMachine.currentCallStack.LocalJump(tagParam["target"].Literal());
-            else
-                ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
+                target = tagParam["target"].Literal();
 
-            ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.currentCallStack.currentPos + "\"");
+//            if (tagParam.ContainsKey("storage"))
+            file = tagParam["storage", TRVirtualMachine.Instance.currentCallStack.scriptName];
+
+            //ファイルが異なるものになる場合、シナリオをロードする
+            if (file != TRVirtualMachine.Instance.currentCallStack.scriptName)
+            {
+                TRResourceType type = GetResourceType();
+
+                yield return Trionfi.Instance.LoadScript(file, type);
+
+                //スタックをすべて削除する
+//                TRVirtualMachine.RemoveAllStacks();
+                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
+
+                if (tagParam.ContainsKey("target"))
+                    func.LocalJump(tagParam["target"].Literal());
+
+                TRVirtualMachine.Instance.currentCallStack.currentPos = TRVirtualMachine.Instance.currentCallStack.endPos + 1;
+                TRVirtualMachine.Instance.callStack.Push(func);
+            }
+            //ローカルジャンプ
+            else
+            {
+                if (string.IsNullOrEmpty(file))
+                    file = TRVirtualMachine.Instance.currentCallStack.scriptName;
+
+                int index = TRVirtualMachine.Instance.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.Instance.currentTagInstance.arrayComponents.labelPos[target];
+
+                if (tagParam.ContainsKey("target"))
+                    TRVirtualMachine.Instance.currentCallStack.LocalJump(tagParam["target"].Literal());
+                else
+                    ErrorLogger.StopError("にラベル「" + target + "」が見つかりません。");
+
+                ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.Instance.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.Instance.currentCallStack.currentPos + "\"");
+            }
         }
 #endif
 	}
 
     //コールスタックに保存されるジャンプ。いわゆるサブルーチン
     [Serializable]
-    public class CallComponent : AbstractComponent {
-		public CallComponent() {
+    public class CallComponent : AbstractComponent
+    {
+        public CallComponent()
+        {
 #if UNITY_EDITOR && TR_DEBUG
             //必須項目
-            essentialParams = new List<string> {
-				//"target"
-			};
-            /*
-                        originalParamDic = new ParamDictionary() {
-                            { "target","" },
-                            { "file","" },
-                            //{ "index",""},
-                        };
-            */
+            essentialMoreOneParams = new List<string> {
+                "target",
+                "file"
+            };
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override void TagFunction() { }
+
+        public override IEnumerator TagSyncFunction()
+        {
 #if !TR_PARSEONLY
-			string target = tagParam["target"].Literal();
+            string target = string.Empty;
+            string file = string.Empty;
 
-            string file = tagParam["file", TRVirtualMachine.currentCallStack.scriptName];
+            if (tagParam.ContainsKey("target"))
+                target = tagParam["target"].Literal();
+            if (tagParam.ContainsKey("storage"))
+                file = tagParam["storage", TRVirtualMachine.Instance.currentCallStack.scriptName];
 
-            int index = string.IsNullOrEmpty(file) ? -1 : TRVirtualMachine.currentTagInstance.arrayComponents.labelPos[target];
+            //ファイルが異なるものになる場合、シナリオをロードする
+            if (file != TRVirtualMachine.Instance.currentCallStack.scriptName)
+            {
+                TRResourceType type = GetResourceType();
 
-			ErrorLogger.Log("Call : file=\"" + file + "\" " + "index = \"" + index.ToString()+ "\"");
+                yield return Trionfi.Instance.LoadScript(file, type);
 
-			//            TRVirtualMachine.callStack.Push(new CallStackObject(TRVirtualMachine.currentCallStack.currentPos , tagParam));
-			//ToDo:ジャンプ
-			//メインループ側で配列Indexが++されるので
-			//			Trionfi.Instance.currentTagInstance.currentComponentIndex--;
+                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
+
+                if (tagParam.ContainsKey("target"))
+                    func.LocalJump(tagParam["target"].Literal());
+
+                ErrorLogger.Log("call : file=\"" + TRVirtualMachine.Instance.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.Instance.currentCallStack.currentPos + "\"");
+
+                yield return TRVirtualMachine.Instance.Execute(func, tagParam);
+
+            }
+            //Local Call
+            else
+            {
+                if (string.IsNullOrEmpty(file))
+                    file = TRVirtualMachine.Instance.currentCallStack.scriptName;
+
+                int index = TRVirtualMachine.Instance.currentTagInstance.arrayComponents.labelPos.ContainsKey(target) ? -1 : TRVirtualMachine.Instance.currentTagInstance.arrayComponents.labelPos[target];
+
+                FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
+
+                if (tagParam.ContainsKey("target"))
+                    func.LocalJump(tagParam["target"].Literal());
+
+                ErrorLogger.Log("call : file=\"" + TRVirtualMachine.Instance.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.Instance.currentCallStack.currentPos + "\"");
+
+                yield return TRVirtualMachine.Instance.Execute(func, tagParam);
+            }
+#else
+            yield return null;
 #endif
-		}
-	}
+        }
+    }
 
     //サブルーチン等の返値を伴うコールスタック復帰処理。
     [Serializable]
@@ -231,22 +278,10 @@ namespace Trionfi {
 		protected override void TagFunction()
 		{
 #if !TR_PARSEONLY
-			TRVirtualMachine.FunctionalObjectInstance callStack = TRVirtualMachine.callStack.Pop();
-
-			string tag_str = "";
-
-			//return 時の戻り場所を指定できます
-			if( string.IsNullOrEmpty(tagParam["file", string.Empty]) && string.IsNullOrEmpty(tagParam["target", string.Empty]) )
-				tag_str = "[jump file='" + tagParam["file"] + "' target='" + tagParam["target"] + "' ]";
-			else
-				tag_str = "[jump file='" + callStack.scriptName + "' index='" + callStack.currentPos + "' ]";
-
-			Debug.Log("RETURN scn=\"" + callStack.scriptName + "\" " + "index=\"" + callStack.currentPos.ToString()+ "\"");// + " param=\"" + this.expressionedParams.ToStringFull());
-
-			//ToDo:
-			//タグを実行
-			//			AbstractComponent cmp = TRScriptParser.Instance.MakeTag(tag_str);
-			//			cmp.Execute();
+            if(TRVirtualMachine.Instance.callStack.Count <= 1)
+                ErrorLogger.Log("callとreturnの不整合");
+            else
+                TRVirtualMachine.Instance.currentCallStack.currentPos = TRVirtualMachine.Instance.currentCallStack.endPos + 1;
 #endif
 		}
 	}
@@ -297,7 +332,7 @@ namespace Trionfi {
 		{
 #if !TR_PARSEONLY
 			string exp = tagParam["exp"].Literal();
-            VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
+            VariableCalcurator result = TRVirtualMachine.Instance.Evaluation(exp);
 #endif
 		}
     }
@@ -319,13 +354,15 @@ namespace Trionfi {
 #if !TR_PARSEONLY
 			string exp = tagParam["exp"].Literal();
 
-            VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
-            TRVirtualMachine.ifStack.Push(result.Bool());
+            VariableCalcurator result = TRVirtualMachine.Instance.Evaluation(exp);
+
+            TRVirtualMachine.Instance.ifStack.Push(result.Bool());
 
             if (!result.Bool())
             {
-                TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+                FunctionalObjectInstance _cuttentStack = TRVirtualMachine.Instance.currentCallStack;
                 _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
+                _cuttentStack.currentPos--;
             }
 #endif
 		}
@@ -347,24 +384,30 @@ namespace Trionfi {
 		protected override void TagFunction()
 		{
 #if !TR_PARSEONLY
-			bool _stack = TRVirtualMachine.ifStack.Pop();
+			bool _stack = TRVirtualMachine.Instance.ifStack.Pop();
 
             //直前が真の場合はelseifは実行されない
             if (_stack)
             {
-                TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
-                _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
+                //スタック数合わせ
+                TRVirtualMachine.Instance.ifStack.Push(true);
+
+                FunctionalObjectInstance _cuttentStack = TRVirtualMachine.Instance.currentCallStack;
+                _cuttentStack.SkipTo</*ElseComponent, ElseifComponent,*/ EndifComponent>();
+                _cuttentStack.currentPos--;
             }
             else
             {
                 string exp = tagParam["exp"].Literal();
-                VariableCalcurator result = TRVirtualMachine.Calc(exp, tagParam);
-                TRVirtualMachine.ifStack.Push(result.Bool());
+                VariableCalcurator result = TRVirtualMachine.Instance.Evaluation(exp);
+                TRVirtualMachine.Instance.ifStack.Push(result.Bool());
 
                 if (!result.Bool())
                 {
-                    TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+                    FunctionalObjectInstance _cuttentStack = TRVirtualMachine.Instance.currentCallStack;
+                    _cuttentStack.currentPos++;
                     _cuttentStack.SkipTo<ElseComponent, ElseifComponent, EndifComponent>();
+                    _cuttentStack.currentPos--;
                 }
             }
 #endif
@@ -385,12 +428,12 @@ namespace Trionfi {
 		protected override void TagFunction()
 		{
 #if !TR_PARSEONLY
-			bool _stack = TRVirtualMachine.ifStack.Peek();
+			bool _stack = TRVirtualMachine.Instance.ifStack.Peek();
 
-            //直前が真の場合はelseifは実行されない
+            //直前が真の場合はelseは実行されない
             if (_stack)
             {
-                TRVirtualMachine.FunctionalObjectInstance _cuttentStack = TRVirtualMachine.currentCallStack;
+                FunctionalObjectInstance _cuttentStack = TRVirtualMachine.Instance.currentCallStack;
                 _cuttentStack.SkipTo<EndifComponent>();
             }
 #endif
@@ -411,8 +454,11 @@ namespace Trionfi {
 		protected override void TagFunction()
 		{
 #if !TR_PARSEONLY
-			//ToDo:コールスタックチェック
-			TRVirtualMachine.ifStack.Pop();
+            //ToDo:コールスタックチェック
+            if (TRVirtualMachine.Instance.ifStack.Count == 0)
+                ErrorLogger.Log("Invalid endif");
+            else
+    			TRVirtualMachine.Instance.ifStack.Pop();
 #endif
 		}
     }
@@ -430,7 +476,6 @@ namespace Trionfi {
         }
     }
 
-    //ToDo:外部コンソールウィンドウへ
     //変数の中身をデバックコンソールで確認することができます。
     [Serializable]
     public class TraceComponent : AbstractComponent {
@@ -443,10 +488,11 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction() {
-            //ToDo:
-//            string exp = expressionedParams ["exp"];
-//			Trionfi.Instance.currentTagInstance.variable.Trace(exp);
+        protected override void TagFunction()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            System.Diagnostics.Debug.WriteLine(TRVirtualMachine.Instance.globalVariableInstance[tagParam["exp"].Literal()]);
+#endif
         }
     }
 
@@ -498,8 +544,6 @@ namespace Trionfi {
 #if !TR_PARSEONLY
 			string url = tagParam["url"].Literal();
 			Application.OpenURL(url);
-			//ToDo:
-			//            yield return null;
 #endif
 		}
 	}
@@ -518,10 +562,9 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
-			//削除
-            //ToDo
-//			string name = expressionedParams["name"];
-//            Trionfi.Instance.currentTagInstance.variable.Remove(name);
+#if UNITY_EDITOR && TR_DEBUG
+            TRVirtualMachine.Instance.globalVariableInstance.Clear();
+#endif
         }
     }   
 }

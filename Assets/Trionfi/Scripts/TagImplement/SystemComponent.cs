@@ -256,8 +256,10 @@ namespace Trionfi {
                 ErrorLogger.Log("call : file=\"" + TRVirtualMachine.Instance.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.Instance.currentCallStack.currentPos + "\"");
 
                 yield return TRVirtualMachine.Instance.Execute(func, tagParam);
-#endif
             }
+#else
+            yield return null;
+#endif
         }
     }
 
@@ -488,7 +490,9 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
+#if UNITY_EDITOR && TR_DEBUG
             System.Diagnostics.Debug.WriteLine(TRVirtualMachine.Instance.globalVariableInstance[tagParam["exp"].Literal()]);
+#endif
         }
     }
 
@@ -558,7 +562,9 @@ namespace Trionfi {
 
 		protected override void TagFunction()
 		{
+#if UNITY_EDITOR && TR_DEBUG
             TRVirtualMachine.Instance.globalVariableInstance.Clear();
+#endif
         }
     }   
 }
