@@ -91,7 +91,6 @@ Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 
 [jump target=*合流]
 
-
 *答３
 【こはく】
 選択肢３。
@@ -117,7 +116,7 @@ Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 変数の表示はembタグを＜＞で括ることで行います。
 次の文章がそのサンプルです。
 
-[eval exp="myohji='大鳥'"]
+[eval exp=myohji='大鳥']
 
 【こはく】
 わたしの名前は<emb exp="myohji">こはくだよ。
