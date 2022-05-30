@@ -86,6 +86,7 @@ namespace Trionfi
         public VariableStack vstack = new VariableStack();
 //
         //マクロ、関数の情報（タグインスタンスの指定とタグ位置）。マクロと関数の実装的な区別はない。
+       //スクリプトコンパイルの副産物なのでSerializeの必要はないはず。
         public Dictionary<string, FunctionalObjectInstance> functionalObjects = new Dictionary<string, FunctionalObjectInstance>();
         //タグのエイリアス（主にKAGとの互換性用途？）
         public  Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
@@ -96,7 +97,6 @@ namespace Trionfi
             {
 //                Trionfi.instance.AwakeTrionfi();
 
-                TRTagInstance tag = Trionfi.instance.scriptInstance[storage].instance;
                 FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0, 0);
 
                 do

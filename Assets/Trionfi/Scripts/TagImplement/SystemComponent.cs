@@ -24,7 +24,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            System.Diagnostics.Debug.WriteLine(TRVirtualMachine.Instance.globalVariableInstance[tagParam["text"].Literal()]);
+            System.Diagnostics.Debug.WriteLine(tagParam["text"].Literal());
         }
     }
 
@@ -109,7 +109,7 @@ namespace Trionfi {
 
         protected override void TagFunction()
         {
-            //ToDo
+            ErrorLogger.Log("Label:"+tagParam["name"].Literal());
         }
     }
 
@@ -230,8 +230,6 @@ namespace Trionfi {
 
                 yield return Trionfi.Instance.LoadScript(file, type);
 
-                //スタックをすべて削除する
-                //                TRVirtualMachine.RemoveAllStacks();
                 FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
 
                 if (tagParam.ContainsKey("target"))
@@ -260,7 +258,6 @@ namespace Trionfi {
                 yield return TRVirtualMachine.Instance.Execute(func, tagParam);
 #endif
             }
-
         }
     }
 
@@ -455,8 +452,11 @@ namespace Trionfi {
 		protected override void TagFunction()
 		{
 #if !TR_PARSEONLY
-			//ToDo:コールスタックチェック
-			TRVirtualMachine.Instance.ifStack.Pop();
+            //ToDo:コールスタックチェック
+            if (TRVirtualMachine.Instance.ifStack.Count == 0)
+                ErrorLogger.Log("Invalid endif");
+            else
+    			TRVirtualMachine.Instance.ifStack.Pop();
 #endif
 		}
     }
