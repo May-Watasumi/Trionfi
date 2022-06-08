@@ -63,6 +63,11 @@ namespace Trionfi
                 Trionfi.Instance.nowLoading.gameObject.SetActive(false);
 
             Trionfi.Instance.videoPlayer.Play();
+
+            // ２回目以後の動画を再生する時、実際再生開始するまでは直前の最後のフレームが表示されるので、
+            // 実際動画が再生するのを確認したら動画表示を開始する
+            yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.frame < 1);
+
             _image.enabled = true;
 
             if (tagParam["skip"].Bool())
