@@ -19,6 +19,7 @@ namespace Trionfi
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
         public static readonly string assetPath = "Assets/Trionfi/";
+        public static readonly string readFlagData = "ReadFlags";
 
         [System.NonSerialized]
         public RenderTexture captureBuffer;
@@ -111,6 +112,39 @@ namespace Trionfi
         public delegate void SystemEvent();
         public SystemEvent AwakeTrionfi;
         public SystemEvent SleepTrionfi;
+
+        public void SaveReadFlag()
+        {
+            Dictionary<string, string> flagDatas = new Dictionary<string, string>();
+
+            foreach (KeyValuePair<string, TRScript> script in scriptInstance)
+            {
+                string flags =  script.Value.instance.GetReadFlagJsonData();
+                flagDatas[script.Key] = flags;           
+            }
+            
+            string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(flagDatas);//, Formatting.Indented);
+
+            PlayerPrefs.SetString(readFlagData, jsonData);
+        }
+
+        public void LoadReadFlag()
+        {
+            string jsonData =  PlayerPrefs.GetString(readFlagData);
+
+            if (string.IsNullOrEmpty(jsonData))
+                return;
+
+            Dictionary<string, string> flagDatas =  Newtonsoft.Json.JsonConvert.DeserializeObject< Dictionary<string, string>>(jsonData);
+
+            if(flagDatas != null)
+
+            foreach (KeyValuePair<string, string> script in flagDatas)
+            {
+                scriptInstance[script.Key].instance.SetReadFlagJsonData(script.Value);
+            }
+        }
+
 
         public void DefaultEndScriptCallBack()
         {
@@ -512,6 +546,8 @@ namespace Trionfi
                 movieBuffer.Release();
             if (subRenderBuffer[0] != null)
                 subRenderBuffer[0].Release();
+
+            SaveReadFlag();
         }
     }
 }
