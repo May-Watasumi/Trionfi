@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Jace.Operations;
@@ -19,7 +20,7 @@ namespace Trionfi
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
         public static readonly string assetPath = "Assets/Trionfi/";
-        public static readonly string readFlagData = "ReadFlags";
+        public static readonly string readFlagData = "ReadFlags.dat";
 
         [System.NonSerialized]
         public RenderTexture captureBuffer;
@@ -113,38 +114,95 @@ namespace Trionfi
         public SystemEvent AwakeTrionfi;
         public SystemEvent SleepTrionfi;
 
+        //public Dictionary<string, string> flagDatas = new Dictionary<string, string>();
+        public Dictionary<string, List<bool>> flagDatas;
+
         public void SaveReadFlag()
         {
-            Dictionary<string, string> flagDatas = new Dictionary<string, string>();
+#if UNITY_EDITOR
+            string path = Directory.GetCurrentDirectory();
+#else
+                string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');
+#endif
+            path += ("\\" + readFlagData);
 
-            foreach (KeyValuePair<string, TRScript> script in scriptInstance)
-            {
-                string flags =  script.Value.instance.GetReadFlagJsonData();
-                flagDatas[script.Key] = flags;           
-            }
-            
+#if true
             string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(flagDatas);//, Formatting.Indented);
 
-            PlayerPrefs.SetString(readFlagData, jsonData);
+            File.WriteAllText(path, jsonData);
+
+#else            
+            System.Runtime.Serialization.DataContractSerializer dataSerializer = new System.Runtime.Serialization.DataContractSerializer(typeof(Dictionary<string, List<bool>>));
+
+            MemoryStream dataStream = new MemoryStream();
+            using (var binWriter = System.Xml.XmlDictionaryWriter.CreateBinaryWriter(dataStream))
+            {
+                dataSerializer.WriteObject(binWriter, flagDatas);
+
+                byte[] binArray = dataStream.ToArray();
+
+                BinaryWriter writer = new BinaryWriter(File.OpenWrite(path));
+                writer.Write(binArray);
+            }
+#endif
         }
 
         public void LoadReadFlag()
         {
-            string jsonData =  PlayerPrefs.GetString(readFlagData);
+#if UNITY_EDITOR
+            string path = Directory.GetCurrentDirectory();
+#else
+                string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');
+#endif
+            path += ("\\" + readFlagData);
+
+#if true
+            //            string jsonData =  PlayerPrefs.GetString(readFlagData);
+            string jsonData = File.ReadAllText(path);
 
             if (string.IsNullOrEmpty(jsonData))
                 return;
+    
+            flagDatas =  Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, List<bool>>>(jsonData);
 
-            Dictionary<string, string> flagDatas =  Newtonsoft.Json.JsonConvert.DeserializeObject< Dictionary<string, string>>(jsonData);
+            if (flagDatas == null)
+                flagDatas = new Dictionary<string, List<bool>>();
 
+            /*
             if(flagDatas != null)
+                    foreach (KeyValuePair<string, string> script in flagDatas)
+                    {
+                        scriptInstance[script.Key].instance.SetReadFlagJsonData(script.Value);
+                    }
+            */
+#else
+#if UNITY_EDITOR
+            string path = Directory.GetCurrentDirectory();
+#else
+            string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');
+#endif
+            path += ("/" + readFlagData);
 
-            foreach (KeyValuePair<string, string> script in flagDatas)
+            //            BinaryReader reader = new BinaryReader(File.OpenRead(path));
+
+            using (FileStream fileStream = new FileStream(path, FileMode.Open))//, FileAccess.Read);
             {
-                scriptInstance[script.Key].instance.SetReadFlagJsonData(script.Value);
-            }
-        }
+                //            MemoryStream dataStream = new MemoryStream();
 
+                if (fileStream != null)
+                {
+                    using (var binReader = System.Xml.XmlDictionaryReader.CreateBinaryReader(fileStream, System.Xml.XmlDictionaryReaderQuotas.Max))
+                    {
+                        System.Runtime.Serialization.DataContractSerializer dataSerializer = new System.Runtime.Serialization.DataContractSerializer(typeof(Dictionary<string, List<bool>>));
+                        flagDatas = (Dictionary<string, List<bool>>)dataSerializer.ReadObject(binReader);
+
+                        if (flagDatas == null)
+                            flagDatas = new Dictionary<string, List<bool>>();
+                    }
+                }
+            }
+#endif
+        }
 
         public void DefaultEndScriptCallBack()
         {
@@ -178,7 +236,21 @@ namespace Trionfi
             if (!string.IsNullOrEmpty((string)_coroutine.Current))
             {
                 TRTagInstance _instance = new TRTagInstance();
+
                 _instance.CompileScriptString((string)_coroutine.Current);
+
+                if (!flagDatas.ContainsKey(storage))
+                {
+                    flagDatas[storage] = new List<bool>();
+
+                    foreach (AbstractComponent tag in _instance.arrayComponents)
+                    {
+                        if (tag.GetType() == typeof(MessageComponent))
+                            flagDatas[storage].Add(false);
+                    }
+                }
+
+                _instance.isJMessageReadFlags = flagDatas[storage];
 
                 TRScript _script = new TRScript();
                 _script.instance = _instance;
@@ -294,6 +366,8 @@ namespace Trionfi
 
             if (TRSystemConfig.instance.KAGCompatibility)
                 InitKAGAlias();
+
+            LoadReadFlag();
 
             if(!string.IsNullOrEmpty(bootScriptName))
             {
