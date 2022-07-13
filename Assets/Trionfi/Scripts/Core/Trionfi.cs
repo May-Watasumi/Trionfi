@@ -16,7 +16,6 @@ using TRVariable = Jace.Operations.VariableCalcurator;
 
 namespace Trionfi
 {
-    [ExecuteInEditMode]
     public class Trionfi : SingletonMonoBehaviour<Trionfi>
     {
         public static readonly string assetPath = "Assets/Trionfi/";

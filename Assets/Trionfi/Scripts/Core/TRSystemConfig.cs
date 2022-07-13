@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    [ExecuteInEditMode]
+//    [ExecuteInEditMode]
 	public class TRSystemConfig : SingletonMonoBehaviour<TRSystemConfig>
     {
         [System.Serializable]
@@ -133,6 +133,11 @@ namespace Trionfi
 		void OnGUI() {
 			if(showFPS) 
 				GUI.Label(new Rect(25, 25, 160, 20), "FPS : " + frameRate.ToString());
+		}
+
+		private void OnDestroy()
+		{
+            Debug.Log("rglsjopghsejgopiejsg");
 		}
 	}
 }
