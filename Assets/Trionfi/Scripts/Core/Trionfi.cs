@@ -157,12 +157,14 @@ namespace Trionfi
 
 #if true
             //            string jsonData =  PlayerPrefs.GetString(readFlagData);
-            string jsonData = File.ReadAllText(path);
 
-            if (string.IsNullOrEmpty(jsonData))
-                return;
-    
-            flagDatas =  Newtonsoft.Json.JsonConvert.DeserializeObject<Dictionary<string, List<bool>>>(jsonData);
+            if (File.Exists(path))
+            {
+                string jsonData = File.ReadAllText(path);
+
+                if(!string.IsNullOrEmpty(jsonData))
+                    flagDatas = Newtonsoft.Json.JsonConvert.DeserializeObject< Dictionary<string, List<bool>> >(jsonData);
+            }
 
             if (flagDatas == null)
                 flagDatas = new Dictionary<string, List<bool>>();
