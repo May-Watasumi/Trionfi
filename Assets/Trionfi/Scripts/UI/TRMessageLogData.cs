@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TRMessageLogData : MonoBehaviour {
+public class TRMessageLogData : MonoBehaviour
+{
     public string logName;
 
     [SerializeField]
@@ -23,14 +24,16 @@ public class TRMessageLogData : MonoBehaviour {
     public AudioClip voice;
 
     // Use this for initialization
-    void Start () {
-		
-	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    void Start()
+    {
+
+    }
+
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
 
     public void SetLogData(string name, AudioClip _voice)
     {
@@ -54,8 +57,11 @@ public class TRMessageLogData : MonoBehaviour {
     {
         if (voice != null)
         {
-            audioSource.clip = voice;
-            audioSource.Play();
+            Trionfi.Trionfi.Instance.audioInstance[Trionfi.TRAudioID.VOICE1].instance.clip = voice;
+            Trionfi.Trionfi.Instance.audioInstance[Trionfi.TRAudioID.VOICE1].instance.Play();
+
+            // audioSource.clip = voice;
+            // audioSource.Play();
         }
     }
 }

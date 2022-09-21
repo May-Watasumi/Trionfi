@@ -70,16 +70,44 @@ namespace Trionfi
                     if (playDelay > 0.0f)
                         yield return new WaitForSeconds(playDelay);
 
+                    float volume = 0.0f;
+
+                    switch (id)
+                    {
+                        case TRAudioID.BGM:
+                            volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.bgmvolume;
+                            break;
+
+                        case TRAudioID.SE1:
+                            volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.sevolume;
+                            break;
+
+                        case TRAudioID.SE2:
+                            volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.sevolume;
+                            break;
+
+                        case TRAudioID.UI:
+                            //volume = TRGameConfig.configData.bgmvolume;
+                            break;
+
+                        case TRAudioID.VOICE1:
+                            volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.voicevolume;
+                            break;
+                    }
+
                     if (fadeTime > 0.09f)
                     {
-                        _source.Play();
-                        float _vol = TRGameConfig.configData.mastervolume * TRGameConfig.configData.bgmvolume;
-                        _source.DOFade(_vol, fadeTime);
+                        if (!(Trionfi.Instance.messageWindow.onSkip && id == TRAudioID.VOICE1))
+                            _source.Play();
+
+                        _source.DOFade(volume, fadeTime);
                     }
                     else
                     {
-                        _source.volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.bgmvolume;
-                        _source.Play();
+                        _source.volume = volume;
+
+                        if (!(Trionfi.Instance.messageWindow.onSkip && id == TRAudioID.VOICE1))
+                            _source.Play();
                     }
                 }
             }

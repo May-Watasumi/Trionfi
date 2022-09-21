@@ -36,6 +36,10 @@ namespace Trionfi
         public void OnSkipButton()
         {
             Trionfi.Instance.messageWindow.onSkip = !Trionfi.Instance.messageWindow.onSkip;
+
+            // onSkipがtrueの場合、もしプレイ中のボイスがあれば停止する
+            if (Trionfi.Instance.messageWindow.onSkip && Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.isPlaying)
+                Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.Stop();
         }
 
         public void OnMessageLogButton()

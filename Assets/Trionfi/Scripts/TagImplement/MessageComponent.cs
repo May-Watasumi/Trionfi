@@ -160,8 +160,9 @@ namespace Trionfi
                 Trionfi.Instance.messageWindow.nameString = string.Empty;
                 Trionfi.Instance.messageWindow.currentMessage.text += "\r";
             }
-            else
-                Trionfi.Instance.messageWindow.ClearMessage();
+            // メッセージの初期化は新しいメッセージを表示する直前にするのでここではしない\\
+            //            else
+            //                Trionfi.Instance.messageWindow.ClearMessage();
         }
 #endif
     }

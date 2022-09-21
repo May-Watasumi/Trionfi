@@ -80,6 +80,8 @@ namespace Trionfi
                 return;
             else if (onSkip)
                 onSkip = false;
+            else if (onAuto)
+                onAuto = false;
             else if (state == MessageState.OnShow)
                 state = MessageState.OnWait;
             else if (state == MessageState.OnWait)
@@ -188,7 +190,19 @@ namespace Trionfi
                     currentMessage.VisibleLength = currentMessage.MaxIndex-1;
             }
 
-            currentMessage.text += message;
+
+            // ClearMessage()を呼び出すと１フレーム間何もないのを表示するので、
+            // 名前とメッセージの初期化はここで実行する                        
+            else
+                currentName.text = "";
+
+            nameString = ""; //ClearMessageを呼ばないと直前の名前が残っているのでここで初期化
+
+
+            if (TRSystemConfig.Instance.isNovelMode)
+                currentMessage.text += message;
+            else
+                currentMessage.text = message;
 
             AudioClip currentVoice = null;
 
@@ -265,10 +279,15 @@ namespace Trionfi
 
         Tweener _sequence = null;
 
-        public IEnumerator Wait(WaitIcon icon = WaitIcon.Alpha, float autoWait = 1.0f)
+        // autoWaitの入力がない場合はTRGameConfigの数値を使う
+        // これのためautoWaitの基本値を1.0fから-1.0fのマイナス数値に修正
+        public IEnumerator Wait(WaitIcon icon = WaitIcon.Alpha, float autoWait = -1.0f)
         {
             if (tweener != null)
                 tweener.Kill();
+
+            if (autoWait < 0.0f)
+                autoWait = TRGameConfig.configData.autotextWait;
 
             if (!enableSkip)
             {
@@ -276,15 +295,31 @@ namespace Trionfi
 
                 WaitCursor(icon);
 
+                // オート待機中オートを解除した場合の処理追加
                 if (onAuto)
                     yield return new WaitForSeconds(autoWait);
                 else
                     yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip);
+                {
+                    // yield return new WaitForSeconds(autoWait);
+
+                    while (autoWait > 0.0f && onAuto)
+                    {
+                        // テキスト表示、ボイス再生共に終わった後からautoWaitの減算実施
+                        if (!Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.isPlaying)
+                            autoWait -= Time.deltaTime;
+
+                        yield return null;
+                    }
+                }
+
+                // else
+                //    yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip);
+
+                // オートじゃない時と、オート待機途中オートを解除した時両方ユーザー入力を待つ必要があるので、条件修正
+                if (!onAuto)
+                    yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip && !onAuto);
             }
-
-            state = MessageState.None;
-
-            yield return new WaitForEndOfFrame();
         }
 
         public void WaitCursor(WaitIcon icon)
@@ -344,6 +379,10 @@ namespace Trionfi
                 forceSkip = true;
             else
                 forceSkip = false;
+
+            if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.KeypadEnter))
+                OnClick();
+
         }
 
     }
