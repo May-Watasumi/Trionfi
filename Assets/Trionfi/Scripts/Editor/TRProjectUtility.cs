@@ -16,7 +16,7 @@ namespace Trionfi
 
         int width = 1280;
         int height = 720;
-        string _input = "Assets/NewProject";
+        string _input = "NewProject";
         string _trionfiPath = "Assets/Trionfi";
         string _x = 1280.ToString();
         string _y = 720.ToString();
@@ -29,7 +29,7 @@ namespace Trionfi
 
         private void SetupProject()
         {
-            string _newPath = _input;// "Assets/" + name;
+            string _newPath = "Assets/" + _input;
             string _templatePath = _trionfiPath + "/Template";
 
             AssetDatabase.CopyAsset(_templatePath, _newPath);
@@ -122,6 +122,7 @@ namespace Trionfi
                 }
             }
 
+            trionfiInstandce.titleName = _input;
             trionfiInstandce.titleWindow = instanceList[0].GetComponent<TRTitle>() ?? prefabList[0].GetComponent<TRTitle>();
             trionfiInstandce.messageWindowList = new List<TRMessageWindow>();
             trionfiInstandce.messageWindowList.Add(instanceList[1].GetComponent<TRMessageWindow>() ?? prefabList[1].GetComponent<TRMessageWindow>());
