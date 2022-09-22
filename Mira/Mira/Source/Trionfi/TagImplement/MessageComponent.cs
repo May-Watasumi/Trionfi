@@ -127,6 +127,20 @@ namespace Trionfi
                 message = message.Replace("\\n", "\n");
             }
 
+            //既読フラグ
+            if (tagParam.ContainsKey("flagid"))
+            {
+                int flagid = tagParam["flagid"].Int();
+
+                //未読スキップをしない＆未読のときはスキップ解除
+                if (Trionfi.Instance.messageWindow.onSkip  && !TRGameConfig.configData.readtextSkip && !TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid])
+                {
+                    Trionfi.Instance.messageWindow.onSkip = false;
+                }
+
+                TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid] = true;
+            }
+
             if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
             {
                 Trionfi.Instance.messageWindow.OpenWindow();

@@ -214,7 +214,7 @@ namespace Trionfi
 
             if (!enableSkip && mesWait > 0.0f)
             {
-//                int currentMessagePos = TRSystemConfig.Instance.isNovelMode ? currentMessage.text.Length - message.Length : 0;
+                //                int currentMessagePos = TRSystemConfig.Instance.isNovelMode ? currentMessage.text.Length - message.Length : 0;
 
                 for (int i = currentMessage.VisibleLength; i < currentMessage.MaxIndex; i++)
                 {
@@ -226,6 +226,8 @@ namespace Trionfi
                     yield return new WaitForSeconds(mesWait);
                 }
             }
+            else
+              state = MessageState.None;
 
             currentMessage.VisibleLength = TRSystemConfig.Instance.isNovelMode ? currentMessage.text.Length : -1;
 
@@ -320,6 +322,9 @@ namespace Trionfi
                 if (!onAuto)
                     yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip && !onAuto);
             }
+            else
+                state = MessageState.None;
+
         }
 
         public void WaitCursor(WaitIcon icon)
