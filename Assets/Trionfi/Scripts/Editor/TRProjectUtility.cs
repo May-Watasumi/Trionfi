@@ -76,6 +76,7 @@ namespace Trionfi
             {
                 trionfiInstandce.gameObject.GetComponent<TRStageEnviroment>().CharacterNameListCSV = AssetDatabase.LoadAssetAtPath<TextAsset>(_newPath + "/Resources/ActorList.csv");
                 trionfiInstandce.gameObject.GetComponent<TRStageEnviroment>().CharacterEmotionPatternListCSV = AssetDatabase.LoadAssetAtPath<TextAsset>(_newPath + "/Resources/ActPatternList.csv");
+                trionfiInstandce.gameObject.GetComponent<TRSystemConfig>().screenSize = new Vector2(width, height);
             }
 
             //これはひどい。
@@ -136,10 +137,10 @@ namespace Trionfi
             trionfiInstandce.systemMenuWindow = instanceList[7].GetComponent<TRSystemMenuWindow>() ?? prefabList[7].GetComponent<TRSystemMenuWindow>();
             trionfiInstandce.dialogWindow = instanceList[8].GetComponent<TRCustomDialog>() ?? prefabList[8].GetComponent<TRCustomDialog>();
             trionfiInstandce.nowLoading = instanceList[9] ?? prefabList[9];
+
             /*
                         AssetDatabase.Refresh();
                         AssetDatabase.SaveAssets();
-
             */
 
             EditorSceneManager.SaveScene(scene);
