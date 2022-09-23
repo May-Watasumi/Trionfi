@@ -1,5 +1,4 @@
-﻿using System;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -137,7 +136,7 @@ namespace Trionfi
 
         public IEnumerator _waitCoroutine = null;
 
-        static string MatchEvaluatorFunc(Match m)
+        public static string MatchEvaluatorFunc(Match m)
         {
             // Match m にはパターンにマッチした結果が来るので、
             // その中のデータを取り出して、自由に加工できる。
@@ -156,10 +155,14 @@ namespace Trionfi
         {
             Trionfi.Instance.SetStandLayerTone();
 
-            string emb = "<emb exp=\"(.*)\">";
+//            string emb = "<emb exp=\"(.*)\">";
+//            var regex = new Regex(emb);
 
-            var regex = new Regex(emb);
-            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
+            string emb2 = "#(.*)#";
+            var regex2 = new Regex(emb2);
+
+//            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
+            text = /*_subText*/ regex2.Replace(text, MatchEvaluatorFunc);
 
             state = MessageState.OnShow;
 

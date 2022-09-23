@@ -1,5 +1,6 @@
-﻿#if !TR_PARSEONLY
- using UnityEngine;
+﻿
+#if !TR_PARSEONLY
+using UnityEngine;
  using UnityEngine.UI;
  #if UNITY_2017_1_OR_NEWER
   using UnityEngine.U2D;
@@ -10,6 +11,7 @@ using DG.Tweening;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Trionfi
 {
@@ -186,14 +188,23 @@ namespace Trionfi
 #if !TR_PARSEONLY
 			string name = tagParam["val"].Literal();
 
+            string emb2 = "#(.*)#";
+            var regex2 = new Regex(emb2);
+
             if (name.Contains("/"))
             {
                 string[] nameInfo = name.Split('/');
+
+                //            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
+                nameInfo[0] = regex2.Replace(nameInfo[0], TRMessageWindow.MatchEvaluatorFunc);
+
                 Trionfi.Instance.messageWindow.ShowName(nameInfo[0]);
                 Trionfi.Instance.messageWindow.currentSpeaker = nameInfo[1];
             }
             else
             {
+                name = regex2.Replace(name, TRMessageWindow.MatchEvaluatorFunc);
+
                 Trionfi.Instance.messageWindow.ShowName(name);
                 Trionfi.Instance.messageWindow.currentSpeaker = name;
             }

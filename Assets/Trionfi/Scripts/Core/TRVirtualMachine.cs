@@ -79,14 +79,15 @@ namespace Trionfi
     {
         public TRTagInstance currentTagInstance { get { return Trionfi.instance.scriptInstance[callStack.Peek().scriptName].instance; } }
         public FunctionalObjectInstance currentCallStack { get { return callStack.Peek(); } }
-//
+        //
         public TRVariableDictionary globalVariableInstance = new TRVariableDictionary();
+        public Queue<FunctionalObjectInstance> nextTempFunc = new Queue<FunctionalObjectInstance>();
         public Stack<FunctionalObjectInstance> callStack = new Stack<FunctionalObjectInstance>();
         public Stack<bool> ifStack = new Stack<bool>();
         public VariableStack vstack = new VariableStack();
-//
+ 
         //マクロ、関数の情報（タグインスタンスの指定とタグ位置）。マクロと関数の実装的な区別はない。
-       //スクリプトコンパイルの副産物なのでSerializeの必要はないはず。
+        //スクリプトコンパイルの副産物なのでSerializeの必要はないはず。
         public Dictionary<string, FunctionalObjectInstance> functionalObjects = new Dictionary<string, FunctionalObjectInstance>();
         //タグのエイリアス（主にKAGとの互換性用途？）
         public  Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
@@ -96,9 +97,8 @@ namespace Trionfi
             if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
 //                Trionfi.instance.AwakeTrionfi();
-
                 FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0, 0);
-
+BEGINLOOP:
                 do
                 {
                     var coroutine = Execute(_func, param);
@@ -108,6 +108,13 @@ namespace Trionfi
                 } while (callStack.Count > 0);
 
                 ErrorLogger.Log("End of Script");
+
+                //LocalJump。きれいじゃ無い……。
+                if (nextTempFunc.Count != 0)
+                {
+                    _func = (nextTempFunc.Dequeue());
+                    goto BEGINLOOP;
+                }
 
                 if (Trionfi.instance.enableEndCallback)
                     Trionfi.instance.SleepTrionfi();

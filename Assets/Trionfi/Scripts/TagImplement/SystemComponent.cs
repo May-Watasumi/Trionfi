@@ -174,7 +174,8 @@ namespace Trionfi {
                     func.LocalJump(tagParam["target"].Literal());
 
                 TRVirtualMachine.Instance.currentCallStack.currentPos = TRVirtualMachine.Instance.currentCallStack.endPos + 1;
-                TRVirtualMachine.Instance.callStack.Push(func);
+ 
+                TRVirtualMachine.Instance.nextTempFunc.Enqueue(func);
             }
             //ローカルジャンプ
             else
