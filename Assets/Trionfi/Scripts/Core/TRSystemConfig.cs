@@ -136,8 +136,8 @@ namespace Trionfi
 		}
 
 		private void OnDestroy()
-		{
-            Debug.Log("rglsjopghsejgopiejsg");
+		{ 
+
 		}
 	}
 }
