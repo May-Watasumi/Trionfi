@@ -11,26 +11,25 @@ It has compatibility with Kirikiri,  major Novel game tool in Japan.
 GETTING STARTED
 -------------------------------------------------------------
 -Open"File >BuildSetting>PlayerSetting" and change "Script Runtime Version"  to  ".Net4.x Equivalent", and reboot Unity(if you have already set it, you can skip it）.
--Open "Tools/ Trionfi/New Project", and custom project setting(project name(path), reference resolution).
+-Open "Tools/ Trionfi/New Project", and you can generato new project if you custom project setting and press 'OK' button.
 - You can edit  'project name'/Resources/scenario/start.txt. (It's boot script file).  And you can create  other scenario file if you need.
 
 LINKS
 -------------------------------------------------------------
-Twitter  https://twitter.com/Trionfi_Unity
 Trionfi website(documentation, tutorial, etc)  http://cybernetic-cute.sakura.ne.jp/trionfi
 Trionfi repository (github)  https://github.com/May-ClearBlue/Trionfi
-May-ClearBlue twitter　https://twitter.com/mahiru_hiroba
+Author twitter　https://twitter.com/mahiru_hiroba
 
 FUTURE 
--Releaser(create assetbundle)
 -Serialize UserGameData
--Output PDF Script with voice number(automatic)
 -Live2D and E-mote
 -"Utage" converter
 
 EXTERNAL LIBRARY (ALL MIT LICENSE) customized for Trionfi
--Jace
--TinyCSVParser
--LetterWriter
--ClosedXML
+・Jace
+・TinyCSVParser
+・LetterWriter
+・JsonDotNet
+・ExcelDataReader
+
 
