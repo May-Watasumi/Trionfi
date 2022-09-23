@@ -50,9 +50,6 @@ public class TRCustomDialog : ICustomDialog {
         notice.text = text;
         buttonYes.gameObject.SetActive(true);
         buttonNo.gameObject.SetActive(true);
-
-        // 一度クリックが発生したらresultがNONEじゃないので、ここで初期化
-        result = TRDialogResult.NONE;
-        //        yield return Wait();
-    }
+//        yield return Wait();
+	}
 }
