@@ -428,7 +428,7 @@ namespace Trionfi
 
                 float timeCount = 0.0f;
 
-                while(timeCount < time)
+                while (timeCount < time && !TRGameConfig.configData.effectSkip)
                 {
                     maskFader.Range = timeCount / time;
                     yield return new WaitForEndOfFrame();

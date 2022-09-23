@@ -467,6 +467,7 @@ namespace Trionfi
 
                 if (!isText && !string.IsNullOrEmpty(textBuffer))
                 {
+                    /*
                     textIdentifiedScript = textIdentifiedScript.Remove(textIdentifiedScript.Length - 1, 1);
                     textIdentifiedScript += "[message id=" + textID.ToString() + "]" + "\r\r";
 
@@ -475,13 +476,18 @@ namespace Trionfi
                     csvMessage = csvMessage.Replace("\n", "\\n");
 
                     //TinyCSVParserのデフォルト改行コードはWindowsだった
-                    textDataCSV += (textID++).ToString() + "," + csvMessage +"\r\n";
+                    textDataCSV += (textID).ToString() + "," + csvMessage +"\r\n";
 
                     _tagComponent = new MessageComponent();
                     _tagComponent.tagParam = new TRVariableDictionary();
                     _tagComponent.tagParam["val"] = new TRVariable(textBuffer);
+                    _tagComponent.tagParam["flagid"] = new TRVariable(textID++);
                     _tagComponent.lineCount = lineCount;
                     result.Add(_tagComponent);
+                    */
+
+                    result.Add(AddMessage(ref textID, textBuffer));
+
                     textBuffer = string.Empty;
                 }
 
@@ -490,14 +496,37 @@ namespace Trionfi
 
             if (!string.IsNullOrEmpty(textBuffer))
             {
+                AddMessage(ref textID, textBuffer);
+                /*
                 _tagComponent = new MessageComponent();
                 _tagComponent.tagParam = new TRVariableDictionary();
                 _tagComponent.tagParam["val"] = new TRVariable(textBuffer);
                 _tagComponent.lineCount = lineCount;
                 result.Add(_tagComponent);
+                */
             }
 
             return result;
+        }
+
+        public MessageComponent AddMessage(ref int textID, string text)
+        {
+            textIdentifiedScript = textIdentifiedScript.Remove(textIdentifiedScript.Length - 1, 1);
+            textIdentifiedScript += "[message id=" + textID.ToString() + "]" + "\r\r";
+
+            string csvMessage = text;
+            csvMessage = csvMessage.Replace("\r", "\\r");
+            csvMessage = csvMessage.Replace("\n", "\\n");
+
+            //TinyCSVParserのデフォルト改行コードはWindowsだった
+            textDataCSV += (textID).ToString() + "," + csvMessage + "\r\n";
+
+            MessageComponent _tagComponent = new MessageComponent();
+            _tagComponent.tagParam = new TRVariableDictionary();
+            _tagComponent.tagParam["val"] = new TRVariable(text);
+            _tagComponent.tagParam["flagid"] = new TRVariable(textID++);
+            _tagComponent.lineCount = lineCount;
+            return _tagComponent;
         }
 
         public string VoiceNumbering(LocalizeID localizeID,  string splitter, TRActorInfoes actorInfo )

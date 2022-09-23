@@ -375,6 +375,8 @@ namespace Trionfi
                 Begin(bootScriptName);
             }
 
+//            TRVirtualMachine.instance.functionRegistry.RegisterFunction("intrandom", (Func<int, int, int>)((a, b) => UnityEngine.Random.Range(a, b)));
+
             return;
         }
 

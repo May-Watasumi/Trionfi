@@ -152,7 +152,7 @@ Macro_End:
         }
 
         readonly TokenReader tokenReader = new TokenReader(System.Globalization.CultureInfo.InvariantCulture);
-        IFunctionRegistry functionRegistry = new FunctionRegistry(false);
+        public IFunctionRegistry functionRegistry = new FunctionRegistry(false);
         AstBuilder astBuilder;// = new Jace.AstBuilder(functionRegistry, false);
         readonly Interpreter interpreter = new Interpreter();
 

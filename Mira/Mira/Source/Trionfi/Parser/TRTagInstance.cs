@@ -22,6 +22,8 @@ namespace Trionfi
         public string textIdentifiedScript;
         public string textDataCSV;
 #endif
+        //        [SerializeField]
+        public List<bool> isJMessageReadFlags;// = new List<bool>();
 
         public TRMultiLanguageText textData;
 
@@ -77,9 +79,24 @@ namespace Trionfi
             textIdentifiedScript = tagParser.textIdentifiedScript;
             textDataCSV = tagParser.textDataCSV;
 #endif
-
             //エラーがあるときはtrue
             return !ErrorLogger.ShowAll();
+        }
+        
+        public string GetReadFlagJsonData()
+        {
+#if !TR_PARSEONLY || UNITY_EDITOR
+            return Newtonsoft.Json.JsonConvert.SerializeObject(isJMessageReadFlags);
+#else
+            return string.Empty;
+#endif
+        }
+
+        public void SetReadFlagJsonData(string jsonString)
+        {
+#if !TR_PARSEONLY || UNITY_EDITOR
+            isJMessageReadFlags = Newtonsoft.Json.JsonConvert.DeserializeObject<List<bool>>(jsonString);
+#endif
         }
 
         [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
