@@ -162,7 +162,7 @@ Macro_End:
 
             Operation operation = astBuilder.Build(tokens);
 
-            TRVariable result = interpreter.Execute(operation, null, vstack);
+            TRVariable result = interpreter.Execute(operation, functionRegistry, vstack);
 
             return result;
         }

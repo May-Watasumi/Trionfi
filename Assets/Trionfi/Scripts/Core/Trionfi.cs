@@ -370,12 +370,16 @@ namespace Trionfi
 
             LoadReadFlag();
 
-            if(!string.IsNullOrEmpty(bootScriptName))
+            UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
+
+            TRVirtualMachine.instance.functionRegistry.RegisterFunction("intrandom", (Func<VariableCalcurator, VariableCalcurator, VariableCalcurator>)((a, b) => new VariableCalcurator(UnityEngine.Random.Range(a.Int(), b.Int()))));
+            TRVirtualMachine.instance.functionRegistry.RegisterFunction("floatrandom", (Func<VariableCalcurator, VariableCalcurator, VariableCalcurator>)((a, b) => new VariableCalcurator(UnityEngine.Random.Range(a.Float(), b.Float()))));
+            TRVirtualMachine.instance.functionRegistry.RegisterFunction("random", (Func<VariableCalcurator>)(() => new VariableCalcurator(UnityEngine.Random.value)));
+
+            if (!string.IsNullOrEmpty(bootScriptName))
             {
                 Begin(bootScriptName);
             }
-
-//            TRVirtualMachine.instance.functionRegistry.RegisterFunction("intrandom", (Func<int, int, int>)((a, b) => UnityEngine.Random.Range(a, b)));
 
             return;
         }
