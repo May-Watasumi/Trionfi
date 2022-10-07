@@ -57,10 +57,11 @@ public class TRReleaser : EditorWindow
     {
         GUILayout.Label("[Scenario]");
         GUILayout.Space(2.5f);
+        GUILayout.Label("-TargetFodler");
         _scenarioFolder = GUILayout.TextField(_scenarioFolder);
         GUILayout.Space(2.5f);
 
-        if (GUILayout.Button("TargetFolder(full path)", GUILayout.Height(30.0f)))
+        if (GUILayout.Button("SelectFolder(full path)", GUILayout.Height(30.0f)))
         {
             _scenarioFolder = EditorUtility.OpenFolderPanel("シナリオフォルダ", "Assets", "Template");
         }
@@ -88,7 +89,7 @@ public class TRReleaser : EditorWindow
                     Debug.Log("Failed to read \"" + file + "\":");
             }
         }
-        if (GUILayout.Button("Text numbering", GUILayout.Height(30.0f)))
+        if (GUILayout.Button("Text numbering(for localizing)", GUILayout.Height(30.0f)))
         {
             string[] files = Directory.GetFiles(_scenarioFolder, "*.txt", SearchOption.AllDirectories);
 
@@ -121,11 +122,13 @@ public class TRReleaser : EditorWindow
         }
         GUILayout.EndHorizontal();
         GUILayout.Space(10.0f);
+        GUILayout.Label("-Actor CSV");
+        GUILayout.Space(2.5f);
 
         _actorFile = GUILayout.TextField(_actorFile);
 
         GUILayout.BeginHorizontal();
-        if (GUILayout.Button("Read Actor CSV", GUILayout.Height(30.0f)))
+        if (GUILayout.Button("Select Actor CSV", GUILayout.Height(30.0f)))
         {
             _actorFile = EditorUtility.OpenFilePanel("Actor CSV", "Assets","csv");
         }
@@ -170,7 +173,7 @@ public class TRReleaser : EditorWindow
         GUILayout.Space(20f);
         GUILayout.Label("[Asset Bundle]");
         GUILayout.Space(2.5f);
-        GUILayout.Label("Target Platform");
+        GUILayout.Label("-Target Platform");
         GUILayout.BeginHorizontal();
         if (GUILayout.Button("SelectAll", GUILayout.Height(30.0f)))
         {
@@ -199,7 +202,7 @@ public class TRReleaser : EditorWindow
 
         GUILayout.Space(5.0f);
 
-        GUILayout.Label("Output Foloder");
+        GUILayout.Label("-Output Foloder");
         _outputPath = GUILayout.TextField(_outputPath);
         GUILayout.BeginHorizontal();
             if (GUILayout.Button("SelectFolder", GUILayout.Height(30.0f)))

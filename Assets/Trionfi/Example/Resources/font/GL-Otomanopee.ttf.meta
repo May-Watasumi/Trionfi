@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f7a0c17d99c220a45b61182768d1b6b6
+guid: df3bb093036f04d42bdd53450552d4c0
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Sawarabi Gothic
+  fontName: GL-Otomanopee
   fontNames:
-  - Sawarabi Gothic
+  - GL-Otomanopee
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
