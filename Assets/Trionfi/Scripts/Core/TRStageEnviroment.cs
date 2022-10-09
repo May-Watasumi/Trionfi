@@ -13,6 +13,28 @@ using TinyCsvParser.Tokenizer.RFC4180;
 
 namespace Trionfi
 {
+    public enum TR_UITEXTID
+    {
+        TITLE_TEXT,
+        TITLE_TAPSCREEN,
+        MESSAGEWINDOW_LOG,
+        MESSAGEWINDOW_AUTO,
+        MESSAGEWINDOW_SKIP,
+        MESSAGEWINDOW_LOAD,
+        MESSAGEWINDOW_SAVE,
+        MESSAGEWINDOW_CONFIG,
+        MESSAGEWINDOW_CLOSE,
+        CONFIG_MASTERVOLUME,
+        CONFIG_BGMVOLUME,
+        CONFIG_SEVOLUME,
+        CONFIG_VOICEVOLUME,
+        CONFIG_TEXTSPEED,
+        CONFIG_AUTOWAIT,
+        CONFIG_EFFECTSKIP,
+        CONFIG_READSKIP,
+        CONFIG_INITIALIZE,
+    }
+
 #if !TR_PARSEONLY
     [System.Serializable]
     public class TRMultiLanguageText : SerializableDictionary<int, TRTextData> { }
@@ -258,6 +280,9 @@ namespace Trionfi
         };
 
         [SerializeField]
+        public TextAsset UITextCSV;
+
+        [SerializeField]
         public TextAsset CharacterNameListCSV;
 
         [SerializeField]
@@ -266,14 +291,24 @@ namespace Trionfi
         [SerializeField]
         TRActorParamAsset actorInfoInstance;
 
+        public TRMultiLanguageText uiText;
+
         public TRActPatternAlias actPatternAlias = new TRActPatternAlias();
         public TRActorInfoes actorInfoes = new TRActorInfoes();
+
+
+        public string GetUIText(TR_UITEXTID id)
+        {
+            return uiText[(int)id].GetText(TRSystemConfig.instance.localizeID);       
+        }
 
         // Use this for initialization
         void Start()
         {
             if (actorInfoInstance != null)
                 actorInfoes = actorInfoInstance.actorInfo;
+            if (UITextCSV != null)
+                uiText = TREnviromentCSVLoader.LoadTextData(UITextCSV.text);
         }
 
         // Update is called once per frame

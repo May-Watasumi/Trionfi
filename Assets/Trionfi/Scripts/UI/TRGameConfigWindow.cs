@@ -25,7 +25,26 @@ namespace Trionfi
         Toggle effectSkipToggle;
         [SerializeField]
         Toggle readTextSkipToggle;
-  
+
+        [SerializeField]
+        Text mastervolumeSliderText;
+        [SerializeField]
+        Text bgmvolumeSliderText;
+        [SerializeField]
+        Text sevolumeSliderText;
+        [SerializeField]
+        Text voicevolumeSliderText;
+        [SerializeField]
+        Text textspeedSliderText;
+        [SerializeField]
+        Text autotextwaitSliderText;
+        [SerializeField]
+        Text effectSkipToggleText;
+        [SerializeField]
+        Text readTextSkipToggleText;
+        [SerializeField]
+        Text InitializeButtonText;
+
         public void OnChangeSlider(int type)
         {
             switch (type)

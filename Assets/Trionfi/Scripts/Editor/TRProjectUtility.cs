@@ -66,6 +66,11 @@ namespace Trionfi
             if (!int.TryParse(_y, out height))
                 height = 720;
 
+            PlayerSettings.defaultScreenWidth = width;
+            PlayerSettings.defaultScreenHeight = height;
+
+            PlayerSettings.productName = _input;
+
             if (uiCanvas != null)
                 uiCanvas.referenceResolution = new Vector2(width, height);
 

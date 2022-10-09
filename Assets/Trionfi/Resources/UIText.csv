@@ -1,0 +1,19 @@
+ID,JP,EN,CH,KR
+0,タイトル,TITLE
+1,TAP SCREEN,TAP SCREEN
+2,Log,Log
+3,Auto,Auto
+4,Skip,Skip
+5,Load,Load
+6,Save,Save
+7,Config,Config
+8,Close,Close
+9,マスター音量,MasterVolume
+10,BGM音量,BGMVolume
+11,SE音量,SEVolume
+12,ボイス音量,VoiceVolume
+13,テキスト表示速度,TextSpeed
+14,オート待機時間,AutoWait
+15,エフェクトスキップ,EffectSkip
+16,未読スキップ,ReadSkip
+17,初期化,Initialize

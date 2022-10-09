@@ -1,15 +1,35 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
+using UnityEngine.UI;
 
 namespace Trionfi
 {
     public class TRSystemMenuWindow : SingletonMonoBehaviour<TRSystemMenuWindow>
     {
+        [SerializeField]
+        Text closeButtonText;
+        [SerializeField]
+        Text saveButtonText;
+        [SerializeField]
+        Text loadButtonText;
+        [SerializeField]
+        Text skipButtonText;
+        [SerializeField]
+        Text autoButtonText;
+        [SerializeField]
+        Text logButtonText;
+        [SerializeField]
+        Text configButtonText;
+
         // Use this for initialization
         void Start()
         {
-
+            closeButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_CLOSE);
+            saveButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_SAVE);
+            loadButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_LOAD);
+            skipButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_SKIP);
+            autoButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_AUTO);
+            logButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_LOG);
+            configButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_CONFIG);
         }
 
         // Update is called once per frame

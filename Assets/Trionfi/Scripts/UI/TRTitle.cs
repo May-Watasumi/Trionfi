@@ -9,6 +9,8 @@ namespace Trionfi
     public class TRTitle : SingletonMonoBehaviour<TRTitle>
     {
         [SerializeField]
+        Text logoText;
+        [SerializeField]
         Text buttonText;
         [SerializeField]
         string scriptName;
@@ -18,6 +20,9 @@ namespace Trionfi
         // Use this for initialization
         void Start()
         {
+            buttonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.TITLE_TAPSCREEN);
+            logoText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.TITLE_TEXT);
+
             Trionfi.Instance.ClickEvent += TapEvent;
 
             DOTween.ToAlpha(
