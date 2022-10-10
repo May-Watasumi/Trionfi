@@ -1,16 +1,16 @@
 ﻿#if !TR_PARSEONLY
  using UnityEngine;
  using UnityEngine.UI;
- using UnityEngine.Networking;
- using DG.Tweening;
+using UnityEngine.U2D;
+using UnityEngine.Networking;
+using SpriteDicing;
+using DG.Tweening;
 #endif
 
 using System;
 using System.Collections;
 using System.Collections.Generic;
-#if UNITY_2017_1_OR_NEWER
-using UnityEngine.U2D;
-#endif
+
 namespace Trionfi
 {
     //  color
@@ -84,16 +84,21 @@ namespace Trionfi
 
             _image.color = tempColor;
 
-#if UNITY_2017_1_OR_NEWER
             if (tagParam.ContainsKey("atlas"))
             {
                 SpriteAtlas atlas = Resources.Load<SpriteAtlas>(tagParam["atlas"].Literal());
                 Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
                 _image.texture = sprite.texture;
             }
+            if (tagParam.ContainsKey("dicedatlas"))
+            {
+                DicedSpriteAtlas atlas = Resources.Load<DicedSpriteAtlas>(tagParam["dicedatlas"].Literal());
+                Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
+                _image.texture = sprite.texture;
+            }
+
             else
             {
-#endif
                 if (tagParam.ContainsKey("renderbuf"))
                 {
                     Trionfi.Instance.layerInstance[(TRLayerID)id].instance.texture = Trionfi.Instance.subRenderBuffer[0];

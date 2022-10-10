@@ -161,7 +161,7 @@ namespace Trionfi
             GUILayout.Label("Trionfi Path");
             _trionfiPath = GUILayout.TextField(_trionfiPath);
 
-            GUILayout.Label("解像度");
+            GUILayout.Label("Resolution");
 
             GUILayout.BeginHorizontal();
 

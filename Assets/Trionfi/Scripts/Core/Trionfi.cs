@@ -319,7 +319,7 @@ namespace Trionfi
             audioInstance[TRAudioID.SE1].mainVolume = TRGameConfig.configData.sevolume * TRGameConfig.configData.mastervolume;
             audioInstance[TRAudioID.VOICE1].mainVolume = TRGameConfig.configData.voicevolume * TRGameConfig.configData.mastervolume;
 
-            //Create Screen Cahpure Buffer;
+            //Create Screen Cahpure Buffer; 
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
             movieBuffer = new RenderTexture(Screen.width, Screen.height, 32);
 
