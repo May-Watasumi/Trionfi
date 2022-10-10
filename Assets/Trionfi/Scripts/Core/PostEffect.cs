@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class PostEffect : MonoBehaviour
+public class PostEffect : SingletonMonoBehaviour<PostEffect>
 {
     [SerializeField]
     public Material effect;

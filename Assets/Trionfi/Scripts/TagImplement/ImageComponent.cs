@@ -307,6 +307,63 @@ namespace Trionfi
     }
 
     [Serializable]
+    public class ImageeffectComponent : AbstractComponent
+    {
+        public ImageeffectComponent()
+        {
+
+
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialMoreOneParams = new List<string>
+            {
+                "layer",
+                "type"
+            };
+#endif
+        }
+
+        protected override void TagFunction()
+        {
+#if !TR_PARSEONLY
+            Material mat = null;
+
+            if (tagParam.ContainsKey("type"))
+            {
+                switch (tagParam["type"].Literal().ToLower())
+                {
+                    case "sepia":
+                        mat = Resources.Load<Material>("Materials/Sepia");
+                        break;
+                    case "mosaic":
+                        mat = Resources.Load<Material>("Materials/Mosaic");
+                        break;
+                    case "mono":
+                        mat = Resources.Load<Material>("Materials/MonoTone");
+                        break;
+                    case "blur":
+                        mat = Resources.Load<Material>("Materials/Blur");
+                        break;
+                }
+            }
+
+            if (tagParam.ContainsKey("layer"))
+            {
+                RawImage _image;
+                TRLayerID id = (TRLayerID)tagParam["layer", 0];
+                _image = Trionfi.Instance.layerInstance[id].instance;
+                _image.material = mat;
+            }
+            else
+			{
+                PostEffect.Instance.effect = mat;
+			}
+
+#endif
+        }
+    }
+
+    [Serializable]
     public class SnapshotComponent : AbstractComponent
     {
         public SnapshotComponent()
