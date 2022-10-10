@@ -76,6 +76,15 @@ namespace Mira
 				textBox1.Text = rKey.GetValue("Title") != null ? (string)rKey.GetValue("Title") : "Title";
 				textBox2.Text = rKey.GetValue("Author") != null ? (string)rKey.GetValue("Author") : "Author";
 				textBox3.Text = rKey.GetValue("OutputPath") != null ? (string)rKey.GetValue("OutputPath") : Application.ExecutablePath;
+				label12.Text = rKey.GetValue("ActorCSVPath") != null ? (string)rKey.GetValue("ActorCSVPath") : string.Empty;
+
+				if(!string.IsNullOrEmpty(label12.Text))
+				{
+					LoadActorCSV(label12.Text);
+				}
+
+				object[,] dataGridViewObjectsArray = new object[dataGridView1.Rows.Count, dataGridView1.Columns.Count];
+
 				/*
 				if (rKey.GetValue("SelectedFiles") != null)
 				{
@@ -111,6 +120,8 @@ namespace Mira
 				rKey.SetValue("Title", textBox1.Text);
 				rKey.SetValue("Author", textBox2.Text);
 				rKey.SetValue("OutputPath", textBox3.Text);
+				rKey.SetValue("ActorCSVPath", label12.Text);
+
 				/*
 				string[] allFileName = new string[checkedListBox1.Items.Count];
 				int count = 0;
@@ -179,7 +190,6 @@ namespace Mira
 		{
 			//FolderBrowserDialogクラスのインスタンスを作成
 			FolderBrowserDialog fbd = new FolderBrowserDialog();
-
 			//上部に表示する説明テキストを指定する
 			fbd.Description = "フォルダ選択";
 			//ルートフォルダを指定する
@@ -200,6 +210,21 @@ namespace Mira
 			}
 		}
 
+		private void LoadActorCSV(string path)
+		{
+			Dictionary<string, TRActorInfo> result = scriptGen.ReadActorCSV(path, comboBox1.SelectedItem.ToString());
+			if (result != null)
+			{
+				label12.Text = path;
+
+				foreach (KeyValuePair<string, TRActorInfo> val in result)
+				{
+					dataGridView1.Rows.Add(true, val.Value.GetActorName(LocalizeID.JAPAN), val.Value.prefix, val.Value.hasVoice);
+				}
+			}
+		}
+
+
 		//CSVファイル
 		private void button3_Click(object sender, EventArgs e)
 		{
@@ -211,14 +236,7 @@ namespace Mira
 
 			if (dialog.ShowDialog() == DialogResult.OK)
 			{
-				Dictionary<string,TRActorInfo> result = scriptGen.ReadActorCSV(dialog.FileName, comboBox1.SelectedItem.ToString());
-				if (result != null)
-				{
-					foreach(KeyValuePair<string, TRActorInfo> val in result)
-					{
-						dataGridView1.Rows.Add(true, val.Value.GetActorName(LocalizeID.JAPAN), val.Value.prefix, val.Value.hasVoice);
-					}
-				}
+				LoadActorCSV(dialog.FileName);
 			}
 		}
 
@@ -230,7 +248,24 @@ namespace Mira
 			dialog.Filter = "プレーンテキスト(*.txt)|*.txt";
 			dialog.Title = "シナリオファイルを開く";
 			dialog.Multiselect = true;
+			/*
+			FolderBrowserDialog fbd = new FolderBrowserDialog();
+			fbd.Description = "フォルダ選択";
+			fbd.RootFolder = Environment.SpecialFolder.Desktop;
+			fbd.SelectedPath = @"C:\Windows";
+			fbd.ShowNewFolderButton = false;
 
+			if (fbd.ShowDialog() == DialogResult.OK)
+			{
+				label13.Text = fbd.SelectedPath;
+				string[] files = System.IO.Directory.GetFiles(fbd.SelectedPath, "*.txt", System.IO.SearchOption.AllDirectories);
+
+				foreach (string file in files)
+				{
+					dataGridView2.Rows.Add(true, file, dataGridView2.ColumnCount.ToString("f2"));
+				}
+			}
+			*/
 			if (dialog.ShowDialog() == DialogResult.OK)
 			{
 				foreach (string file in dialog.FileNames)

@@ -62,6 +62,9 @@
 			this.comboBox2 = new System.Windows.Forms.ComboBox();
 			this.label10 = new System.Windows.Forms.Label();
 			this.checkBox1 = new System.Windows.Forms.CheckBox();
+			this.label11 = new System.Windows.Forms.Label();
+			this.label12 = new System.Windows.Forms.Label();
+			this.label13 = new System.Windows.Forms.Label();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown1)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.numericUpDown2)).BeginInit();
 			((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
@@ -226,7 +229,7 @@
 			// 
 			this.label8.AutoSize = true;
 			this.label8.Font = new System.Drawing.Font("MS UI Gothic", 18F);
-			this.label8.Location = new System.Drawing.Point(375, 17);
+			this.label8.Location = new System.Drawing.Point(369, 13);
 			this.label8.Name = "label8";
 			this.label8.Size = new System.Drawing.Size(82, 24);
 			this.label8.TabIndex = 17;
@@ -269,7 +272,7 @@
 			// 
 			this.label9.AutoSize = true;
 			this.label9.Font = new System.Drawing.Font("メイリオ", 15.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.label9.Location = new System.Drawing.Point(868, 14);
+			this.label9.Location = new System.Drawing.Point(807, 12);
 			this.label9.Name = "label9";
 			this.label9.Size = new System.Drawing.Size(103, 31);
 			this.label9.TabIndex = 22;
@@ -278,7 +281,7 @@
 			// button3
 			// 
 			this.button3.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.button3.Location = new System.Drawing.Point(1124, 9);
+			this.button3.Location = new System.Drawing.Point(1131, 9);
 			this.button3.Name = "button3";
 			this.button3.Size = new System.Drawing.Size(121, 33);
 			this.button3.TabIndex = 23;
@@ -297,7 +300,7 @@
 			this.dataGridView1.Location = new System.Drawing.Point(803, 51);
 			this.dataGridView1.Name = "dataGridView1";
 			this.dataGridView1.RowTemplate.Height = 21;
-			this.dataGridView1.Size = new System.Drawing.Size(449, 412);
+			this.dataGridView1.Size = new System.Drawing.Size(449, 565);
 			this.dataGridView1.TabIndex = 24;
 			// 
 			// 変換
@@ -340,7 +343,7 @@
 			// button5
 			// 
 			this.button5.Font = new System.Drawing.Font("メイリオ", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
-			this.button5.Location = new System.Drawing.Point(475, 12);
+			this.button5.Location = new System.Drawing.Point(489, 13);
 			this.button5.Name = "button5";
 			this.button5.Size = new System.Drawing.Size(105, 32);
 			this.button5.TabIndex = 27;
@@ -358,7 +361,7 @@
 			this.dataGridView2.Location = new System.Drawing.Point(360, 51);
 			this.dataGridView2.Name = "dataGridView2";
 			this.dataGridView2.RowTemplate.Height = 21;
-			this.dataGridView2.Size = new System.Drawing.Size(419, 412);
+			this.dataGridView2.Size = new System.Drawing.Size(419, 565);
 			this.dataGridView2.TabIndex = 28;
 			// 
 			// Column1
@@ -417,12 +420,43 @@
 			this.checkBox1.Text = "Contain descript";
 			this.checkBox1.UseVisualStyleBackColor = true;
 			// 
+			// label11
+			// 
+			this.label11.AutoSize = true;
+			this.label11.Location = new System.Drawing.Point(0, 0);
+			this.label11.Name = "label11";
+			this.label11.Size = new System.Drawing.Size(41, 12);
+			this.label11.TabIndex = 32;
+			this.label11.Text = "label11";
+			// 
+			// label12
+			// 
+			this.label12.AutoSize = true;
+			this.label12.Font = new System.Drawing.Font("MS UI Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(128)));
+			this.label12.Location = new System.Drawing.Point(800, 640);
+			this.label12.Name = "label12";
+			this.label12.Size = new System.Drawing.Size(58, 13);
+			this.label12.TabIndex = 33;
+			this.label12.Text = "targetfile";
+			// 
+			// label13
+			// 
+			this.label13.AutoSize = true;
+			this.label13.Location = new System.Drawing.Point(358, 640);
+			this.label13.Name = "label13";
+			this.label13.Size = new System.Drawing.Size(41, 12);
+			this.label13.TabIndex = 34;
+			this.label13.Text = "label13";
+			// 
 			// Form1
 			// 
 			this.AllowDrop = true;
 			this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
 			this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-			this.ClientSize = new System.Drawing.Size(1264, 481);
+			this.ClientSize = new System.Drawing.Size(1264, 681);
+			this.Controls.Add(this.label13);
+			this.Controls.Add(this.label12);
+			this.Controls.Add(this.label11);
 			this.Controls.Add(this.checkBox1);
 			this.Controls.Add(this.label10);
 			this.Controls.Add(this.comboBox2);
@@ -500,6 +534,9 @@
 		private System.Windows.Forms.ComboBox comboBox2;
 		private System.Windows.Forms.Label label10;
 		private System.Windows.Forms.CheckBox checkBox1;
+		private System.Windows.Forms.Label label11;
+		private System.Windows.Forms.Label label12;
+		private System.Windows.Forms.Label label13;
 	}
 }
 

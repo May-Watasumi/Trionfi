@@ -78,6 +78,9 @@
     <Compile Include="Source\Trionfi\TagImplement\SelectorComponent.cs" />
     <Compile Include="Source\Trionfi\TagImplement\SystemComponent.cs" />
     <Compile Include="Source\Trionfi\TagImplement\VideoComponent.cs" />
+    <EmbeddedResource Include="Form1.resx">
+      <DependentUpon>Form1.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
@@ -101,10 +104,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Source\DLL\itextsharp.dll" />
-    <Content Include="Source\DLL\itextsharp.pdfa.dll" />
-    <Content Include="Source\DLL\iTextSharp.xml" />
-    <Content Include="Source\DLL\itextsharp.xtra.dll" />
     <Content Include="Source\DLL\libhpdf.dll" />
     <Content Include="Source\DLL\libhpdfd.dll" />
   </ItemGroup>

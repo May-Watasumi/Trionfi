@@ -2,7 +2,6 @@
 using System.Text;
 using System.IO;
 using System.Collections.Generic;
-using System.Linq;
 
 using HPdf;
 using TinyCsvParser;
@@ -12,10 +11,6 @@ using Trionfi;
 
 namespace Mira
 {
-	//using iFont = iTextSharp.text.Font;
-		//using iTextSharp.text;
-		//using iTextSharp.text.pdf;
-
 	/// <summary>
 	/// Summary description for Class1
 	/// </summary>
@@ -130,7 +125,6 @@ namespace Mira
 					if (tag.tagParam["buf"].Literal() == ((int)TRAudioID.VOICE1).ToString())
 						voiceID = tag.tagParam["storage"].Literal();
 				}
-
 				if (tag.tagName == "Name")
 				{
 					nameText = tag.tagParam["val"].Literal(string.Empty);
@@ -160,17 +154,21 @@ namespace Mira
 
 					if (!string.IsNullOrEmpty(voiceID))
 					{
-						hPage.SetFontAndSize(hFont2, referenceFontSize/2.0f);
+						hPage.SetFontAndSize(hFont3, referenceFontSize/1.65f);
+
+						// Get the radian value
+						float fRad = 270.0f * 3.141592f / 180.0f;
 
 						hPage.BeginText();
-						hPage.TextOut(textPos.x, textPos.y, voiceID);
+						hPage.SetTextMatrix((float)Math.Cos(fRad), (float)Math.Sin(fRad), -(float)Math.Sin(fRad), (float)Math.Cos(fRad),textPos.x, textPos.y );
+						//hPage.TextOut(textPos.x, textPos.y, voiceID);
+						hPage.ShowText(voiceID);			
 						hPage.EndText();
 
 						textPos.x -= fontSize * 1.35f;
 
 						voiceID = string.Empty;
 					}
-
 					if (nameText == highLightName)
 					{
 						fontSize = highLightFontSize;
