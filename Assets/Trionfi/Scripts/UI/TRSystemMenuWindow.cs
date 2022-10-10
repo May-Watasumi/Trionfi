@@ -23,13 +23,20 @@ namespace Trionfi
         // Use this for initialization
         void Start()
         {
-            closeButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_CLOSE);
-            saveButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_SAVE);
-            loadButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_LOAD);
-            skipButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_SKIP);
-            autoButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_AUTO);
-            logButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_LOG);
-            configButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_CONFIG);
+            if (closeButtonText != null)
+                closeButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_CLOSE);
+            if (saveButtonText != null)
+                saveButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_SAVE);
+            if (loadButtonText != null)
+                loadButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_LOAD);
+            if (skipButtonText != null)
+                skipButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_SKIP);
+            if (autoButtonText != null)
+                autoButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_AUTO);
+            if (logButtonText != null)
+                logButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_LOG);
+            if (configButtonText != null)
+                configButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.MESSAGEWINDOW_CONFIG);
         }
 
         // Update is called once per frame

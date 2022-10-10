@@ -193,17 +193,20 @@ namespace Trionfi
                     currentMessage.VisibleLength = currentMessage.MaxIndex-1;
             }
 
-
             // ClearMessage()を呼び出すと１フレーム間何もないのを表示するので、
             // 名前とメッセージの初期化はここで実行する                        
             else
-                currentName.text = "";
+                currentName.text = string.Empty;
 
             nameString = ""; //ClearMessageを呼ばないと直前の名前が残っているのでここで初期化
 
-
             if (TRSystemConfig.Instance.isNovelMode)
-                currentMessage.text += message;
+            {
+                if(!string.IsNullOrEmpty(currentName.text))
+                   currentMessage.text += "【" + currentName.text + "】";
+                currentMessage.text +=  message;
+
+            }
             else
                 currentMessage.text = message;
 
@@ -260,6 +263,9 @@ namespace Trionfi
                 currentName.text = nameString;
             else if (!string.IsNullOrEmpty(nameString))
                 currentMessage.text = nameString + "\r";
+
+            if (TRSystemConfig.Instance.isNovelMode)
+                message = "【" + nameString + "】" + message;
 
             logWindow.AddLogData(message, nameString);
 

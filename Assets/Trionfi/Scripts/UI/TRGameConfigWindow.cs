@@ -125,6 +125,16 @@ namespace Trionfi
 
         void Start()
         {
+            mastervolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_MASTERVOLUME);
+            bgmvolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_BGMVOLUME);
+            sevolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_SEVOLUME);
+            voicevolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_VOICEVOLUME);
+            textspeedSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_TEXTSPEED);
+            autotextwaitSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_AUTOWAIT);
+            effectSkipToggleText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_EFFECTSKIP);
+            readTextSkipToggleText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_READSKIP);
+            InitializeButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_INITIALIZE);
+
             UpdateAll(false);
         }
     }

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: df3bb093036f04d42bdd53450552d4c0
+guid: a459bd554ab6cdd43af3b53cf94d7035
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -8,9 +8,9 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: GL-Otomanopee
+  fontName: HoriMin
   fontNames:
-  - GL-Otomanopee
+  - HoriMin
   fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
