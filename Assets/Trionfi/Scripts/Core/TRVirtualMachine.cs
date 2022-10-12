@@ -37,7 +37,6 @@ namespace Trionfi
 
         public int currentPos;
 
-
         public bool LocalJump(string label)
         {
             TRTagList arrayComponents = tagInstance.arrayComponents;
@@ -74,14 +73,31 @@ namespace Trionfi
         }
     }
 
+    public enum ResumeTaskType
+    { 
+        JUMP,
+        RELOAD,
+        LOAD
+    }
+
+    public class ResumeTask
+    {
+        public ResumeTaskType type;
+        public FunctionalObjectInstance instance;
+    }
+
     //ToDo:refactoring
     public class TRVirtualMachine : SingletonMonoBehaviour<TRVirtualMachine>
     {
+        public enum State { Sleep, Run, Reboot, Load }
+
+        public State state = State.Sleep;
+
         public TRTagInstance currentTagInstance { get { return Trionfi.instance.scriptInstance[callStack.Peek().scriptName].instance; } }
         public FunctionalObjectInstance currentCallStack { get { return callStack.Peek(); } }
         //
         public TRVariableDictionary globalVariableInstance = new TRVariableDictionary();
-        public Queue<FunctionalObjectInstance> nextTempFunc = new Queue<FunctionalObjectInstance>();
+        public Queue<ResumeTask> nextTempFunc = new Queue<ResumeTask>();
         public Stack<FunctionalObjectInstance> callStack = new Stack<FunctionalObjectInstance>();
         public Stack<bool> ifStack = new Stack<bool>();
         public VariableStack vstack = new VariableStack();
@@ -96,8 +112,9 @@ namespace Trionfi
         {
             if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
-//                Trionfi.instance.AwakeTrionfi();
+            //                Trionfi.instance.AwakeTrionfi();
                 FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0, 0);
+
 BEGINLOOP:
                 do
                 {
@@ -109,10 +126,22 @@ BEGINLOOP:
 
                 ErrorLogger.Log("End of Script");
 
-                //LocalJump。きれいじゃ無い……。
                 if (nextTempFunc.Count != 0)
                 {
-                    _func = (nextTempFunc.Dequeue());
+                    ResumeTask resumeTask = (nextTempFunc.Dequeue());
+                    switch (resumeTask.type)
+                    {
+                        case ResumeTaskType.JUMP:
+                            _func = resumeTask.instance;
+                            break;
+                        case ResumeTaskType.RELOAD:
+                            Trionfi.instance.scriptInstance.Remove(resumeTask.instance.scriptName);
+                            yield return Trionfi.instance.LoadScript(resumeTask.instance.scriptName);
+                            _func = new FunctionalObjectInstance(FunctionalObjectType.Script, resumeTask.instance.scriptName, 0, 0);
+                            break;
+//                        case ResumeTaskType.LOAD:                   
+                    }
+
                     goto BEGINLOOP;
                 }
 
@@ -134,6 +163,8 @@ BEGINLOOP:
             TRTagInstance _tag  = Trionfi.instance.scriptInstance[_func.scriptName].instance;
 
             _func.currentPos = _func.startPos;
+
+            state = State.Run;
 
             do
             {
@@ -183,5 +214,22 @@ Macro_End:
             astBuilder = new Jace.AstBuilder(functionRegistry, false);
             vstack.Push(globalVariableInstance);
         }
-    }
+
+		public void Update()
+		{
+            if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.F5) && state == State.Run)
+            {
+                currentCallStack.currentPos = TRVirtualMachine.Instance.currentCallStack.endPos + 1;
+                ResumeTask task = new ResumeTask();
+                task.instance = new FunctionalObjectInstance(FunctionalObjectType.Script, callStack.Peek().scriptName, 0, 0);
+                task.type = ResumeTaskType.RELOAD;
+
+                nextTempFunc.Enqueue(task);
+
+                state = State.Reboot;
+            }
+
+        }
+
+	}
 }

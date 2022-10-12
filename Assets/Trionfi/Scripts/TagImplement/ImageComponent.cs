@@ -64,7 +64,7 @@ namespace Trionfi
             if (tagParam.ContainsKey("yoff"))
             {
                 offsetY = tagParam["yoff"].Int();
-                pos.y += offsetY;
+                pos.y = offsetY;
                 updatePos = true;
             }
 

@@ -224,6 +224,9 @@ namespace Trionfi
 
                 for (int i = currentMessage.VisibleLength; i < currentMessage.MaxIndex; i++)
                 {
+                    if (TRVirtualMachine.Instance.state != TRVirtualMachine.State.Run)
+                        yield break;
+
                     if (state == MessageState.OnShow && !enableSkip)
                         currentMessage.VisibleLength++;
                     else
@@ -316,6 +319,9 @@ namespace Trionfi
 
                     while (autoWait > 0.0f && onAuto)
                     {
+                        if (TRVirtualMachine.Instance.state != TRVirtualMachine.State.Run)
+                            yield break;
+
                         // テキスト表示、ボイス再生共に終わった後からautoWaitの減算実施
                         if (!Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.isPlaying)
                             autoWait -= Time.deltaTime;

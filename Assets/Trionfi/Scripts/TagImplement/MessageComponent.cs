@@ -155,7 +155,7 @@ namespace Trionfi
 #if !TR_PARSEONLY
 		public override IEnumerator TagSyncFunction()
         {
-            yield return new WaitWhile(() => Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None);
+            yield return new WaitWhile(() => (Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None) && (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run));
 
             if (TRSystemConfig.Instance.isNovelMode)
             {
