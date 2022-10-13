@@ -31,6 +31,28 @@ namespace Trionfi
             "buf"
         };
 
+        public TRResourceType GetResouceType()
+        {
+            if (!this.ContainsKey("type"))
+                return TRResourceType.Unknown;
+            switch(this["type"].Literal().ToLower())
+            {
+                case "local":
+                    return TRResourceType.LocalStatic;
+                case "streaming":
+                    return TRResourceType.LocalStreaming;
+                case "www":
+                case "url":
+                    return TRResourceType.WWW;
+                case "bundle":
+                case "assetbundle":
+                    return TRResourceType.AssetBundle;
+                default:
+                    return TRResourceType.Unknown;
+            }        
+        }
+
+
 #if !TR_PARSEONLY
         public static Color ToARGB(uint val)
         {

@@ -85,6 +85,13 @@ namespace Trionfi
             consoleLog = EditorGUILayout.TextArea(consoleLog, GUILayout.Height(200));
             EditorGUILayout.EndScrollView();
 
+
+            if (GUILayout.Button("HotLoad"))
+            {
+                if (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run)
+                    TRVirtualMachine.Instance.BeginReboot();
+            }
+
         }
     }
 }

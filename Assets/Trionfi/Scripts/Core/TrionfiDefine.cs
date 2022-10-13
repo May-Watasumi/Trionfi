@@ -79,6 +79,7 @@ namespace Trionfi
         LocalStreaming = 1,
         WWW = 2,
         AssetBundle = 3,
+        Unknown = 99
     }
 
     [Serializable]

@@ -226,19 +226,24 @@ Macro_End:
 //            Trionfi.instance.ActivateAllCanvas(true);
         }
 
+        public void BeginReboot()
+        {
+            currentCallStack.currentPos = currentCallStack.endPos + 1;
+
+            ResumeTask task = new ResumeTask();
+            task.instance = new FunctionalObjectInstance(FunctionalObjectType.Script, callStack.Peek().scriptName, 0, 0);
+            task.type = ResumeTaskType.RELOAD;
+
+            nextTempFunc.Enqueue(task);
+
+            state = State.Reboot;
+        }
+
         public void Update()
 		{
             if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.F5) && state == State.Run)
             {
-                currentCallStack.currentPos = currentCallStack.endPos + 1;
-                
-                ResumeTask task = new ResumeTask();
-                task.instance = new FunctionalObjectInstance(FunctionalObjectType.Script, callStack.Peek().scriptName, 0, 0);
-                task.type = ResumeTaskType.RELOAD;
-
-                nextTempFunc.Enqueue(task);
-
-                state = State.Reboot;
+                BeginReboot();
             }
         }
 #endif

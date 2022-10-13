@@ -348,13 +348,11 @@ namespace Trionfi
             {
                 audioInstance[id].instance.clip = (AudioClip)_coroutine.Current;
                 audioInstance[id].tagParam = tagParam;
-//                audioInstance[id].path = storage;
-//                audioInstance[id].resourceType = type;
             }
             yield return _coroutine.Current;
         }
 
-        public IEnumerator LoadImage(TRVariableDictionary tagParam, TRResourceType type)//int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
+        public IEnumerator LoadImage(TRVariableDictionary tagParam, TRResourceType type)
         {
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             string storage = tagParam["storage", string.Empty];

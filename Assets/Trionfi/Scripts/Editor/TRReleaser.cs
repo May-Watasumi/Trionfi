@@ -37,7 +37,7 @@ public class TRReleaser : EditorWindow
     class TRAssetBundleInfo
     {
         [SerializeField]
-        public int ID;
+        public int ID = 0;
         [SerializeField]
         public string sourcePath;
         [SerializeField]
