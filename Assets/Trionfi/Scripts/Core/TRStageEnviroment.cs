@@ -302,8 +302,7 @@ namespace Trionfi
             return uiText[(int)id].GetText(TRSystemConfig.instance.localizeID);       
         }
 
-		// Use this for initialization
-		void Start()
+        public void Initialize()
         {
             if (actorInfoInstance != null)
                 actorInfoes = actorInfoInstance.actorInfo;

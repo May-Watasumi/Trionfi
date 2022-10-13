@@ -17,8 +17,7 @@ namespace Trionfi
         [SerializeField]
         Image fader;
 
-        // Use this for initialization
-        void Start()
+		public void Initialize()
         {
             buttonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.TITLE_TAPSCREEN);
             logoText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.TITLE_TEXT);
@@ -32,11 +31,6 @@ namespace Trionfi
             1.0f                                // time
             )
             .SetLoops(-1, LoopType.Yoyo);
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
 
         }
 

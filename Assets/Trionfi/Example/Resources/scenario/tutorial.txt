@@ -20,6 +20,8 @@
 [image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41 time=1000 actor=ゆうこ]
 [trans rule=rule/030  wait = 750]
 
+[initscene]
+
 [audio buf=0 storage=sound/bgm/c3 time=1000]
 
 【こはく】

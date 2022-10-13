@@ -450,7 +450,13 @@ namespace Trionfi
             TRVirtualMachine.instance.functionRegistry.RegisterFunction("floatrandom", (Func<VariableCalcurator, VariableCalcurator, VariableCalcurator>)((a, b) => new VariableCalcurator(UnityEngine.Random.Range(a.Float(), b.Float()))));
             TRVirtualMachine.instance.functionRegistry.RegisterFunction("random", (Func<VariableCalcurator>)(() => new VariableCalcurator(UnityEngine.Random.value)));
 
-            if (!string.IsNullOrEmpty(bootScriptName))
+            TRStageEnviroment.instance.Initialize();
+
+            if (TRTitle.instance != null)
+            {
+                TRTitle.instance.Initialize();
+            }
+            else if (!string.IsNullOrEmpty(bootScriptName))
             {
                 Begin(bootScriptName);
             }
@@ -667,7 +673,6 @@ namespace Trionfi
 
             Init();
         }
-
 
 //        public void Update() { }
 

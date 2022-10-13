@@ -44,9 +44,14 @@ namespace Trionfi
 #if !TR_PARSEONLY
 		public override IEnumerator TagSyncFunction()
         {
-            yield return new WaitWhile(() => Trionfi.Instance.selectWindow.onWait);
+            yield return new WaitWhile(() => Trionfi.Instance.selectWindow.onWait && TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run);
 
-			if (tagParam.ContainsKey("var"))
+			if (TRVirtualMachine.Instance.state != TRVirtualMachine.State.Run)
+			{
+				Trionfi.Instance.selectWindow.gameObject.SetActive(false);
+				Trionfi.Instance.PopWindow(); 
+			}
+			else if (tagParam.ContainsKey("var"))
 			{
 				TRVirtualMachine.Instance.globalVariableInstance[tagParam["var"].Literal()] = new TRVariable(TRSelectWindow.Instance.resutNum);
 			}
