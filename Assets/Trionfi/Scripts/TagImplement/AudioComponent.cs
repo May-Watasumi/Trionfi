@@ -46,13 +46,13 @@ namespace Trionfi
             float fadeTime = (float)fadeTimemsec / 1000.0f;
             bool loop = tagParam["loop", false];
 
-            yield return TRResourceLoader.Instance.LoadAudio(storage);
+//            yield return TRResourceLoader.Instance.LoadAudio(storage);
 
             if (!string.IsNullOrEmpty(storage))
             {
                 TRResourceType type = GetResourceType();
 
-                var coroutine = Trionfi.Instance.LoadAudio((int)id, storage, type);
+                var coroutine = Trionfi.Instance.LoadAudio(tagParam, type);
 
                 yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
 
@@ -60,7 +60,6 @@ namespace Trionfi
 
                 if (_clip != null)
                 {
-                    Trionfi.Instance.audioInstance[id].path = storage;
                     AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
 
                     _source.clip = _clip;

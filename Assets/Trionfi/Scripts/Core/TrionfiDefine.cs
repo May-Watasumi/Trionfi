@@ -94,16 +94,17 @@ namespace Trionfi
 
 #if !TR_PARSEONLY
     [Serializable]
-    public class MediaInstanceKey<T> : SerializableDictionary<T, string>
-    { };
-
-    [Serializable]
     public class TRMediaInstance<T>
     {
         [SerializeField]
         public TRResourceType resourceType;
+
         [SerializeField]
-        public string path;
+        public TRVariableDictionary tagParam;
+        /*
+                [SerializeField]
+                public string path;
+        */
         [SerializeField]
         public T instance;
     }
@@ -151,6 +152,8 @@ namespace Trionfi
     [Serializable]
     public class SerializeInfo
     {
+        SerializableDictionary<int, TRVariableDictionary> tagParam = new SerializableDictionary<int, TRVariableDictionary>();
+/*
         [SerializeField]
         public string storage;
         [SerializeField]
@@ -159,17 +162,27 @@ namespace Trionfi
         public string reservedString;
         [SerializeField]
         public int reservedNum;
+*/
     }
 
     [Serializable]
     public class SerializeData
     {
         [SerializeField]
-        public SerializeInfo[] layer;
+        SerializableDictionary<int, TRVariableDictionary> layerParam = new SerializableDictionary<int, TRVariableDictionary>();
         [SerializeField]
-        public SerializeInfo[] audio;
+        SerializableDictionary<int, TRVariableDictionary> audioParam = new SerializableDictionary<int, TRVariableDictionary>();
         [SerializeField]
-        public SerializeInfo[] script;
+        SerializableDictionary<int, TRVariableDictionary> scriptParam = new SerializableDictionary<int, TRVariableDictionary>();
+
+        /*
+         *      [SerializeField]
+                public SerializeInfo[] layer;
+                [SerializeField]
+                public SerializeInfo[] audio;
+                [SerializeField]
+                public SerializeInfo[] script;
+        */
         [SerializeField]
         public FunctionalObjectInstance[] callStack;
         [SerializeField]
@@ -179,38 +192,40 @@ namespace Trionfi
         {
             callStack = TRVirtualMachine.Instance.callStack.ToArray();
 
-            audio = new SerializeInfo[Trionfi.Instance.audioInstance.Count];
-            layer = new SerializeInfo[Trionfi.Instance.layerInstance.Count];
-            script = new SerializeInfo[Trionfi.Instance.scriptInstance.Count];
-
             int count = 0;
 
             foreach (KeyValuePair<TRLayerID, TRLayer> instance in Trionfi.Instance.layerInstance)
             {
-                layer[count] = new SerializeInfo();
-                layer[count].storage = instance.Value.path;
-                layer[count].type = instance.Value.resourceType;
-                layer[count].reservedNum = (int)instance.Key;
+                //                layer[(int)count] = new SerializeInfo();
+                layerParam[(int)count] = instance.Value.tagParam;
+//                layer[count].type = instance.Value.resourceType;
+//                layer[count].reservedNum = (int)instance.Key;
                 count++;
             }
 
             count = 0;
             foreach (KeyValuePair<TRAudioID, TRAudio> instance in Trionfi.Instance.audioInstance)
             {
+                audioParam[(int)count] = instance.Value.tagParam;
+/*
                 audio[count] = new SerializeInfo();
                 audio[count].storage = instance.Value.path;
                 audio[count].type = instance.Value.resourceType;
                 audio[count].reservedNum = (int)instance.Key;
+*/
                 count++;
             }
 
             count = 0;
             foreach (KeyValuePair<string, TRScript> instance in Trionfi.Instance.scriptInstance)
             {
+                scriptParam[(int)count] = instance.Value.tagParam;
+                /*
                 script[count] = new SerializeInfo();
                 script[count].storage = instance.Value.path;
                 script[count].type = instance.Value.resourceType;
                 script[count].reservedString = instance.Key;
+                */
                 count++;
             }
 
@@ -224,21 +239,21 @@ namespace Trionfi
             for (int count = 0; count < callStack.Length; count++)
                 TRVirtualMachine.Instance.callStack.Push(callStack[count]);
 
-            for (int count = 0; count < layer.Length; count++)
+            foreach (KeyValuePair <int, TRVariableDictionary> instance in layerParam)
             {
-                yield return Trionfi.Instance.LoadImage(layer[count].reservedNum, layer[count].storage, layer[count].type);
+                yield return Trionfi.Instance.LoadImage(instance.Value, TRResourceType.LocalStatic);//].reservedNum, layer[count].storage, layer[count].type);
             }
 
-            for (int count = 0; count < audio.Length; count++)
+            foreach (KeyValuePair<int, TRVariableDictionary> instance in audioParam)
             {
-                yield return Trionfi.Instance.LoadAudio(audio[count].reservedNum, audio[count].storage, audio[count].type);
+                yield return Trionfi.Instance.LoadAudio(instance.Value, TRResourceType.LocalStatic);// (audio[count].reservedNum, audio[count].storage, audio[count].type);
             }
-
-            for (int count = 0; count < script.Length; count++)
+            /*
+            foreach (KeyValuePair<int, TRVariableDictionary> instance in audioParam)
             {
                 yield return Trionfi.Instance.LoadScript(layer[count].storage, layer[count].type);
             }
-
+            */
             TRVirtualMachine.Instance.globalVariableInstance = variable;
         }
     }

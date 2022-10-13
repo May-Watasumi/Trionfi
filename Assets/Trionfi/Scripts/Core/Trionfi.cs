@@ -3,9 +3,10 @@ using System.IO;
 using System.Collections;
 using System.Collections.Generic;
 using Jace.Operations;
+using Newtonsoft.Json;
 
 #if !TR_PARSEONLY
- using UnityEngine;
+using UnityEngine;
  using UnityEngine.UI;
  using UnityEngine.EventSystems;
  using DG.Tweening;
@@ -78,16 +79,81 @@ namespace Trionfi
         public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
 
         [Serializable]
-        public class TRAudioInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRAudioID, TRAudio> { };
-        [Serializable]
-        public class TRImageInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRLayerID, TRLayer> { };
+        public class TRAudioInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRAudioID, TRAudio>
+        {
+            public void Reset()
+            {
+                foreach (KeyValuePair<TRAudioID, TRAudio> pair in this)
+                {
+                    pair.Value.instance.Stop();
+                    //                    pair.Value.instance.volume;
+                    pair.Value.instance.clip = null;
+                    pair.Value.faderVolume = 1.0f;
+                    //                    pair.Value.mainVolume = 1.0f;
+                    pair.Value.tagParam.Clear();
+                }
+            }
 
-        public class TRScriptInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<string, TRScript> { };
+            public string Serialize()
+            {
+                SerializableDictionary<int, TRVariableDictionary> tagParams = new SerializableDictionary<int, TRVariableDictionary>();
+                {
+                    foreach (KeyValuePair<TRAudioID, TRAudio> pair in this)
+                    {
+                        tagParams[(int)pair.Key] = pair.Value.tagParam;
+                    }
+
+                    string res = JsonConvert.SerializeObject(tagParams);
+                    return res;
+                }
+            }
+        }
+
+        [Serializable]
+        public class TRImageInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRLayerID, TRLayer>
+        {
+            public void Reset()
+            {
+                foreach (KeyValuePair<TRLayerID, TRLayer> pair in this)
+                {
+                    pair.Value.instance.rectTransform.anchoredPosition = new Vector2(pair.Value.instance.rectTransform.anchoredPosition.x, 0.0f);
+                    pair.Value.instance.texture = null;
+                    pair.Value.actor = string.Empty;
+                    pair.Value.instance.color = Color.white;
+                    pair.Value.tagParam.Clear();
+                }
+            }
+
+            public string Serialize()
+            {
+                SerializableDictionary<int, TRVariableDictionary> tagParams = new SerializableDictionary<int, TRVariableDictionary>();
+                {
+                    foreach (KeyValuePair<TRLayerID, TRLayer> pair in this)
+                    {
+                        tagParams[(int)pair.Key] = pair.Value.tagParam;
+                    }
+
+                    string res = JsonConvert.SerializeObject(tagParams);
+                    return res;
+                }
+            }
+        }   
+
+        public class TRScriptInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<string, TRScript>
+        {
+            /*
+            public void Reset()
+            {
+                foreach (KeyValuePair<string, TRScript> pair in this)
+                { }
+            } 
+            */
+        };
 
 #if TR_USE_CRI
         [Serializable]
         public class TRAdxInstance : SerializableDictionary<int, TRAdx> { }
-
+ 
         [SerializeField]
         public TRAdxInstance adxInstance = new TRAdxInstance()
         {
@@ -97,6 +163,7 @@ namespace Trionfi
 
         };
 #endif
+
         [SerializeField]
         public TRAudioInstance audioInstance = new TRAudioInstance();
         [SerializeField]
@@ -126,7 +193,7 @@ namespace Trionfi
             path += ("\\" + readFlagData);
 
 #if true
-            string jsonData = Newtonsoft.Json.JsonConvert.SerializeObject(flagDatas);//, Formatting.Indented);
+            string jsonData = JsonConvert.SerializeObject(flagDatas);//, Formatting.Indented);
 
             File.WriteAllText(path, jsonData);
 
@@ -254,8 +321,10 @@ namespace Trionfi
                 _instance.isJMessageReadFlags = flagDatas[storage];
 
                 TRScript _script = new TRScript();
+
+                _script.tagParam = new TRVariableDictionary();
+                _script.tagParam[storage] = new TRVariable(storage);
                 _script.instance = _instance;
-                _script.path = storage;
                 _script.resourceType = type;
 
                 scriptInstance[storage] = _script;
@@ -267,31 +336,38 @@ namespace Trionfi
             yield return _coroutine.Current;
         }
 
-        public IEnumerator LoadAudio(int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
+        public IEnumerator LoadAudio(TRVariableDictionary tagParam, TRResourceType type )//int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
         {
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
+            string storage = tagParam["storage"].Literal();
+
             var _coroutine = TRResourceLoader.Instance.LoadAudio(storage, type);
             yield return StartCoroutine(_coroutine);
 
             if(_coroutine.Current != null)
             {
-                audioInstance[(TRAudioID)ch].instance.clip = (AudioClip)_coroutine.Current;
-                audioInstance[(TRAudioID)ch].path = storage;
-                audioInstance[(TRAudioID)ch].resourceType = type;
+                audioInstance[id].instance.clip = (AudioClip)_coroutine.Current;
+                audioInstance[id].tagParam = tagParam;
+//                audioInstance[id].path = storage;
+//                audioInstance[id].resourceType = type;
             }
             yield return _coroutine.Current;
         }
 
-        public IEnumerator LoadImage(int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
+        public IEnumerator LoadImage(TRVariableDictionary tagParam, TRResourceType type)//int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
         {
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
+            string storage = tagParam["storage", string.Empty];
+
             var _coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
             yield return StartCoroutine(_coroutine);
 
             if (_coroutine.Current != null)
             {
-                layerInstance[(TRLayerID)ch].instance.texture = (Texture2D)_coroutine.Current;
-                layerInstance[(TRLayerID)ch].path = storage;
-                layerInstance[(TRLayerID)ch].resourceType = type;
+                layerInstance[id].instance.texture = (Texture2D)_coroutine.Current;
+                layerInstance[id].tagParam = tagParam;
             }
+ 
             yield return _coroutine.Current;
         }
 
@@ -518,40 +594,19 @@ namespace Trionfi
             TRVirtualMachine.Instance.aliasTagInstance["freeimage"] = new ImagefreeComponent();
         }
 
-        public void ResetCanvas(int mesWindowID = 0)
+        public void ResetInstance(int mesWindowID = 0)
         {
             messageWindow = messageWindowList[mesWindowID];
             messageWindow.ClearMessage();
 
-            foreach (KeyValuePair<TRLayerID ,TRLayer> instance in layerInstance)
-            {
-                instance.Value.instance.enabled = false;
-                instance.Value.instance.texture = null;
-                instance.Value.path = string.Empty;
-                instance.Value.actor = string.Empty;
-            }
-
-            foreach (KeyValuePair<TRAudioID, TRAudio> instance in audioInstance)
-            {
-                instance.Value.instance.Stop();
-                instance.Value.path = string.Empty;
-            }
-
-            layerCanvas.gameObject.SetActive(true);
-            uiCanvas.gameObject.SetActive(true);
-
+            layerInstance.Reset();
+            audioInstance.Reset();
         }
 
-        public void HideCanvas()
+        public void ActivateAllCanvas(bool state)
         {
-            layerCanvas.gameObject.SetActive(false);
-            uiCanvas.gameObject.SetActive(false);
-
-            foreach (KeyValuePair<TRAudioID, TRAudio> instance in audioInstance)
-            {
-                instance.Value.instance.Stop();
-                instance.Value.path = string.Empty;
-            }
+            layerCanvas.gameObject.SetActive(state);
+            uiCanvas.gameObject.SetActive(state);
         }
 
         public void SetStandLayerTone()
@@ -615,9 +670,8 @@ namespace Trionfi
             Init();
         }
 
-        public void Update()
-        {
-        }
+
+//        public void Update() { }
 
         public void OnDestroy()
         {

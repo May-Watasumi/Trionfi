@@ -73,10 +73,9 @@ namespace Trionfi {
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			int mesID = tagParam["mes", 0];
-            Trionfi.Instance.ResetCanvas(mesID);
+            Trionfi.Instance.ActivateAllCanvas(true);
 #endif
-		}
+        }
     }
 
     [Serializable]
@@ -91,7 +90,7 @@ namespace Trionfi {
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			Trionfi.Instance.HideCanvas();
+			Trionfi.Instance.ActivateAllCanvas(false);
 #endif
 		}
     }

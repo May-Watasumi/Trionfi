@@ -35,8 +35,8 @@ namespace Trionfi
         }
 
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
-        {                                   
+        public override IEnumerator TagSyncFunction()
+        {
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
             RawImage _image;
@@ -64,7 +64,7 @@ namespace Trionfi
             if (tagParam.ContainsKey("yoff"))
             {
                 offsetY = tagParam["yoff"].Int();
-                pos.y = offsetY;
+                pos.y += offsetY;
                 updatePos = true;
             }
 
@@ -90,27 +90,23 @@ namespace Trionfi
                 Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
                 _image.texture = sprite.texture;
             }
-            if (tagParam.ContainsKey("dicedatlas"))
+            else if (tagParam.ContainsKey("dicedatlas"))
             {
                 DicedSpriteAtlas atlas = Resources.Load<DicedSpriteAtlas>(tagParam["dicedatlas"].Literal());
                 Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
                 _image.texture = sprite.texture;
             }
-
+            else if (tagParam.ContainsKey("renderbuf"))
+            {
+                Trionfi.Instance.layerInstance[(TRLayerID)id].instance.texture = Trionfi.Instance.subRenderBuffer[0];
+                Trionfi.Instance.layerInstance[(TRLayerID)id].tagParam = tagParam;
+                Trionfi.Instance.layerInstance[(TRLayerID)id].resourceType = GetResourceType();
+            }
             else
             {
-                if (tagParam.ContainsKey("renderbuf"))
-                {
-                    Trionfi.Instance.layerInstance[(TRLayerID)id].instance.texture = Trionfi.Instance.subRenderBuffer[0];
-                    Trionfi.Instance.layerInstance[(TRLayerID)id].path = storage;
-                    Trionfi.Instance.layerInstance[(TRLayerID)id].resourceType = GetResourceType();
-                }
-				else
-                {
-
-                    TRResourceType type = GetResourceType();
-                    yield return Trionfi.Instance.LoadImage((int)id, storage, type);
-                }
+                TRResourceType type = GetResourceType();
+                yield return Trionfi.Instance.LoadImage(tagParam, type);
+            }
 /*
                 var coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
 
@@ -124,7 +120,7 @@ namespace Trionfi
                     _image.texture = _texture;
                 }
 */
-            }
+            
 
             if (updatePos)
                 _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;

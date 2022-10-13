@@ -135,6 +135,7 @@ BEGINLOOP:
                             _func = resumeTask.instance;
                             break;
                         case ResumeTaskType.RELOAD:
+                            PrepareReboot();
                             Trionfi.instance.scriptInstance.Remove(resumeTask.instance.scriptName);
                             yield return Trionfi.instance.LoadScript(resumeTask.instance.scriptName);
                             _func = new FunctionalObjectInstance(FunctionalObjectType.Script, resumeTask.instance.scriptName, 0, 0);
@@ -215,11 +216,22 @@ Macro_End:
             vstack.Push(globalVariableInstance);
         }
 
-		public void Update()
+#if UNITY_EDITOR
+
+        public void PrepareReboot()
+        {
+            Trionfi.instance.ActivateAllCanvas(false);
+            Trionfi.instance.layerInstance.Reset();
+            Trionfi.instance.audioInstance.Reset();
+//            Trionfi.instance.ActivateAllCanvas(true);
+        }
+
+        public void Update()
 		{
             if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.F5) && state == State.Run)
             {
-                currentCallStack.currentPos = TRVirtualMachine.Instance.currentCallStack.endPos + 1;
+                currentCallStack.currentPos = currentCallStack.endPos + 1;
+                
                 ResumeTask task = new ResumeTask();
                 task.instance = new FunctionalObjectInstance(FunctionalObjectType.Script, callStack.Peek().scriptName, 0, 0);
                 task.type = ResumeTaskType.RELOAD;
@@ -228,8 +240,7 @@ Macro_End:
 
                 state = State.Reboot;
             }
-
         }
-
-	}
+#endif
+    }
 }
