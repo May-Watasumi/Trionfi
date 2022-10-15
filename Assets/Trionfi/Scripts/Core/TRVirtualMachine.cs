@@ -15,6 +15,8 @@ namespace Trionfi
     [Serializable]
     public class FunctionalObjectInstance
     {
+        public FunctionalObjectInstance(){;}
+
         public FunctionalObjectInstance(FunctionalObjectType _type, string _scriptName, int _pos, int _endPos)
         {
             type = _type;
@@ -22,12 +24,12 @@ namespace Trionfi
             startPos = _pos;
 
             if (_type == FunctionalObjectType.Script)
-                _endPos = tagInstance.arrayComponents.Count;
+                _endPos = tagInstance().arrayComponents.Count;
 
             endPos = _endPos;
         }
 
-        public TRTagInstance tagInstance { get { return Trionfi.Instance.scriptInstance[scriptName].instance; } }
+        public TRTagInstance tagInstance() { return Trionfi.Instance.scriptInstance[scriptName].instance; }
 
         public FunctionalObjectType type = FunctionalObjectType.Macro;
 
@@ -39,7 +41,7 @@ namespace Trionfi
 
         public bool LocalJump(string label)
         {
-            TRTagList arrayComponents = tagInstance.arrayComponents;
+            TRTagList arrayComponents = tagInstance().arrayComponents;
 
             if (!arrayComponents.labelPos.ContainsKey(label))
                 return false;
@@ -50,7 +52,7 @@ namespace Trionfi
 
         public void SkipTo<T>()
         {
-            TRTagList arrayComponents = tagInstance.arrayComponents;
+            TRTagList arrayComponents = tagInstance().arrayComponents;
 
             while (arrayComponents[currentPos].GetType() != typeof(T))
                 currentPos++;
@@ -58,7 +60,7 @@ namespace Trionfi
 
         public void SkipTo<T, Y>()
         {
-            TRTagList arrayComponents = tagInstance.arrayComponents;
+            TRTagList arrayComponents = tagInstance().arrayComponents;
 
             while (arrayComponents[currentPos].GetType() != typeof(T) && arrayComponents[currentPos].GetType() != typeof(Y))
                 currentPos++;
@@ -66,7 +68,7 @@ namespace Trionfi
 
         public void SkipTo<X, Y, Z>()
         {
-            TRTagList arrayComponents = tagInstance.arrayComponents;
+            TRTagList arrayComponents = tagInstance().arrayComponents;
 
             while (arrayComponents[currentPos].GetType() != typeof(X) && arrayComponents[currentPos].GetType() != typeof(Y) && arrayComponents[currentPos].GetType() != typeof(Z))
                 currentPos++;
@@ -108,7 +110,7 @@ namespace Trionfi
         //タグのエイリアス（主にKAGとの互換性用途？）
         public  Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
 
-         public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
+        public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
         {
             if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
@@ -129,6 +131,7 @@ BEGINLOOP:
                 if (nextTempFunc.Count != 0)
                 {
                     ResumeTask resumeTask = (nextTempFunc.Dequeue());
+
                     switch (resumeTask.type)
                     {
                         case ResumeTaskType.JUMP:
@@ -145,12 +148,9 @@ BEGINLOOP:
                     if (resumeTask.type >= ResumeTaskType.LOAD_DATA0)
                     {
                         PrepareReboot();
-                        //                        Trionfi.instance.scriptInstance.Remove(resumeTask.instance.scriptName);
-                        //                        yield return Trionfi.instance.LoadScript(resumeTask.instance.scriptName);
-                        //                       _func = new FunctionalObjectInstance(FunctionalObjectType.Script, resumeTask.instance.scriptName, 0, 0);
-
-                        Trionfi.instance.DeserializeFromFile("");
-
+                        TRSerializeData info =  Trionfi.instance.DeserializeFromFile(resumeTask.type - ResumeTaskType.LOAD_DATA0);
+                        yield return info.Deserialize();
+                        _func = callStack.Peek();   
                     }
 
                     goto BEGINLOOP;
@@ -239,17 +239,28 @@ Macro_End:
             ResumeTask task = new ResumeTask();
             task.instance = new FunctionalObjectInstance(FunctionalObjectType.Script, callStack.Peek().scriptName, 0, 0);
             task.type = ResumeTaskType.RELOAD;
-
             nextTempFunc.Enqueue(task);
 
             state = State.Reboot;
+        }
+
+        public void BeginLoad(int num)
+        {
+            currentCallStack.currentPos = currentCallStack.endPos + 1;
+
+            ResumeTask task = new ResumeTask();
+            //task.instance = new FunctionalObjectInstance(FunctionalObjectType.Script, callStack.Peek().scriptName, 0, 0);
+            task.type = ResumeTaskType.LOAD_DATA0 + num;
+            nextTempFunc.Enqueue(task);
+
+            state = State.Load;
         }
 
         public void Update()
 		{
             if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.F5) && state == State.Run)
             {
-                BeginReboot();
+               BeginReboot();
             }
         }
 #endif

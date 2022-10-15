@@ -413,7 +413,9 @@ namespace Trionfi
             yield return _coroutine.Current;
         }
 
-        public void SerializeToFile(string name)
+        const string SaveDataNameBase = "SawveData";
+
+        public void SerializeToFile(int num)
         {
             TRSerializeData info = new TRSerializeData();
             string jsonData = info.Serialize();
@@ -423,13 +425,18 @@ namespace Trionfi
 
             byte[] binData = crypter.Encrypt(jsonData);
 
-            File.WriteAllBytes(Application.persistentDataPath + "/" + name, binData);
+            File.WriteAllBytes(Application.persistentDataPath + "/" + SaveDataNameBase + num.ToString("D3") + ".bin", binData);
 //            PlayerPrefs.SetString(name, data);
         }
 
-        public void DeserializeFromFile (string name)
+        public void BeginDeserialize(int num)
         {
-            byte[] binData = File.ReadAllBytes(Application.persistentDataPath + "/" + name);
+            TRVirtualMachine.instance.BeginLoad(num);
+        }
+
+        public TRSerializeData DeserializeFromFile (int num)
+        {
+            byte[] binData = File.ReadAllBytes(Application.persistentDataPath+ "/" + SaveDataNameBase + num.ToString("D3") + ".bin");
 
             if (crypter == null)
                 crypter = new GZCrypter();
@@ -440,9 +447,11 @@ namespace Trionfi
             //string data =  PlayerPrefs.GetString(name);
 
             info = JsonConvert.DeserializeObject<TRSerializeData>(jsonData);
-            info.Deserialize();
 
 
+            return info;
+
+//            info.Deserialize();
         }
 
         public void Init(int subRenderCount = 0, bool changeLayerOrder = false)

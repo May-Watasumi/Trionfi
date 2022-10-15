@@ -47,12 +47,12 @@ namespace Trionfi
 
         public void OnSaveButton()
         {
-            Trionfi.Instance.SerializeToFile("SaveData.bin");
+            Trionfi.Instance.SerializeToFile(0);
         }
 
         public void OnLoadButton()
         {
-            Trionfi.Instance.DeserializeFromFile("SaveData.bin");
+            Trionfi.Instance.BeginDeserialize(0);// .DeserializeFromFile(0);
         }
 
         public void OnAutoButton()
