@@ -94,7 +94,7 @@ namespace Trionfi
                 }
             }
 
-            public string Serialize()
+            public SerializableDictionary<int, TRVariableDictionary> Serialize()
             {
                 SerializableDictionary<int, TRVariableDictionary> tagParams = new SerializableDictionary<int, TRVariableDictionary>();
                 {
@@ -103,8 +103,17 @@ namespace Trionfi
                         tagParams[(int)pair.Key] = pair.Value.tagParam;
                     }
 
-                    string res = JsonConvert.SerializeObject(tagParams);
-                    return res;
+                    return tagParams;
+                }
+            }
+
+            public void Deserialize(SerializableDictionary<int, TRVariableDictionary> tagParams)
+            {
+                Reset();
+
+                foreach (KeyValuePair<TRAudioID, TRAudio> pair in this)
+                {
+                    pair.Value.tagParam = tagParams[(int)pair.Key];
                 }
             }
         }
@@ -124,20 +133,30 @@ namespace Trionfi
                 }
             }
 
-            public string Serialize()
+            public SerializableDictionary<int, TRVariableDictionary> Serialize()
             {
                 SerializableDictionary<int, TRVariableDictionary> tagParams = new SerializableDictionary<int, TRVariableDictionary>();
+   
                 {
                     foreach (KeyValuePair<TRLayerID, TRLayer> pair in this)
                     {
                         tagParams[(int)pair.Key] = pair.Value.tagParam;
                     }
+                }
 
-                    string res = JsonConvert.SerializeObject(tagParams);
-                    return res;
+                return tagParams;
+            }
+
+            public void Deserialize(SerializableDictionary<int, TRVariableDictionary> tagParams)
+            {
+                Reset();
+
+                foreach (KeyValuePair<TRLayerID, TRLayer> pair in this)
+                {
+                    pair.Value.tagParam = tagParams[(int)pair.Key];
                 }
             }
-        }   
+        }
 
         public class TRScriptInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<string, TRScript>
         {
@@ -148,6 +167,29 @@ namespace Trionfi
                 { }
             } 
             */
+            public SerializableDictionary<string, TRVariableDictionary> Serialize()
+            {
+                SerializableDictionary<string, TRVariableDictionary> tagParams = new SerializableDictionary<string, TRVariableDictionary>();
+                {
+                    foreach (KeyValuePair<string, TRScript> pair in this)
+                    {
+                        tagParams[pair.Key] = pair.Value.tagParam;
+                    }
+                }
+
+                return tagParams;
+            }
+
+            public void Deserialize(SerializableDictionary<string, TRVariableDictionary> tagParams)
+            {
+//                Reset();
+
+                foreach (KeyValuePair<string, TRScript> pair in this)
+                {
+                    pair.Value.tagParam = tagParams[pair.Key];
+                }
+            }
+
         };
 
 #if TR_USE_CRI
@@ -174,6 +216,8 @@ namespace Trionfi
         public bool enableEndCallback = true;
 
         protected TRTagParser tagParser = new TRTagParser(string.Empty);
+
+        protected TRCrypterBase crypter = null;
 
         //コールバック。
         public delegate void SystemEvent();
@@ -369,22 +413,36 @@ namespace Trionfi
             yield return _coroutine.Current;
         }
 
-        public void Save(string name)
+        public void SerializeToFile(string name)
         {
-            SerializeData info = new SerializeData();
-            info.Serialize();
+            TRSerializeData info = new TRSerializeData();
+            string jsonData = info.Serialize();
 
-            string data = JsonUtility.ToJson(info);
+            if (crypter == null)
+                crypter = new GZCrypter();
 
-            PlayerPrefs.SetString(name, data);
+            byte[] binData = crypter.Encrypt(jsonData);
+
+            File.WriteAllBytes(Application.persistentDataPath + "/" + name, binData);
+//            PlayerPrefs.SetString(name, data);
         }
 
-        public void Load(string name)
+        public void DeserializeFromFile (string name)
         {
-            SerializeData info = new SerializeData();
-            string data =  PlayerPrefs.GetString(name);
-            info = JsonUtility.FromJson<SerializeData>(data);
+            byte[] binData = File.ReadAllBytes(Application.persistentDataPath + "/" + name);
+
+            if (crypter == null)
+                crypter = new GZCrypter();
+
+            string jsonData =  crypter.Decrypt(binData);
+
+            TRSerializeData info = new TRSerializeData();
+            //string data =  PlayerPrefs.GetString(name);
+
+            info = JsonConvert.DeserializeObject<TRSerializeData>(jsonData);
             info.Deserialize();
+
+
         }
 
         public void Init(int subRenderCount = 0, bool changeLayerOrder = false)

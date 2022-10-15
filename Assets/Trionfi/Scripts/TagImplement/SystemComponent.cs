@@ -126,7 +126,7 @@ namespace Trionfi {
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			TRVirtualMachine.Instance.Serialize(tagParam["file"].Literal());
+	        Trionfi.Instance.SerializeToFile(tagParam["file"].Literal());
 #endif
 		}
     }

@@ -33,7 +33,7 @@ namespace Trionfi
 
         public string scriptName;
         public int startPos;
-        public int endPos;// { get { return tagInstance.arrayComponents.Count; } }
+        public int endPos;
 
         public int currentPos;
 
@@ -77,7 +77,7 @@ namespace Trionfi
     { 
         JUMP,
         RELOAD,
-        LOAD
+        LOAD_DATA0
     }
 
     public class ResumeTask
@@ -140,7 +140,17 @@ BEGINLOOP:
                             yield return Trionfi.instance.LoadScript(resumeTask.instance.scriptName);
                             _func = new FunctionalObjectInstance(FunctionalObjectType.Script, resumeTask.instance.scriptName, 0, 0);
                             break;
-//                        case ResumeTaskType.LOAD:                   
+                    }
+
+                    if (resumeTask.type >= ResumeTaskType.LOAD_DATA0)
+                    {
+                        PrepareReboot();
+                        //                        Trionfi.instance.scriptInstance.Remove(resumeTask.instance.scriptName);
+                        //                        yield return Trionfi.instance.LoadScript(resumeTask.instance.scriptName);
+                        //                       _func = new FunctionalObjectInstance(FunctionalObjectType.Script, resumeTask.instance.scriptName, 0, 0);
+
+                        Trionfi.instance.DeserializeFromFile("");
+
                     }
 
                     goto BEGINLOOP;
@@ -205,10 +215,6 @@ Macro_End:
 
             return result;
         }
-
-        //ToDo:
-        public bool Serialize(string name) { return true; }
-        public bool Deserialize(string name) { return false; }
 
 		private void Start()
 		{

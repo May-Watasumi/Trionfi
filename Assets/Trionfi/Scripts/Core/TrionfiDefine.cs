@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 #if !TR_PARSEONLY
 using UnityEngine;
@@ -151,30 +152,14 @@ namespace Trionfi
     }
 
     [Serializable]
-    public class SerializeInfo
-    {
-        SerializableDictionary<int, TRVariableDictionary> tagParam = new SerializableDictionary<int, TRVariableDictionary>();
-/*
-        [SerializeField]
-        public string storage;
-        [SerializeField]
-        public TRResourceType type;
-        [SerializeField]
-        public string reservedString;
-        [SerializeField]
-        public int reservedNum;
-*/
-    }
-
-    [Serializable]
-    public class SerializeData
+    public class TRSerializeData
     {
         [SerializeField]
         SerializableDictionary<int, TRVariableDictionary> layerParam = new SerializableDictionary<int, TRVariableDictionary>();
         [SerializeField]
         SerializableDictionary<int, TRVariableDictionary> audioParam = new SerializableDictionary<int, TRVariableDictionary>();
         [SerializeField]
-        SerializableDictionary<int, TRVariableDictionary> scriptParam = new SerializableDictionary<int, TRVariableDictionary>();
+        SerializableDictionary<string, TRVariableDictionary> scriptParam = new SerializableDictionary<string, TRVariableDictionary>();
 
         /*
          *      [SerializeField]
@@ -189,48 +174,48 @@ namespace Trionfi
         [SerializeField]
         TRVariableDictionary variable;
 
-        public void Serialize()
+        public string Serialize()
         {
             callStack = TRVirtualMachine.Instance.callStack.ToArray();
-
-            int count = 0;
 
             foreach (KeyValuePair<TRLayerID, TRLayer> instance in Trionfi.Instance.layerInstance)
             {
                 //                layer[(int)count] = new SerializeInfo();
-                layerParam[(int)count] = instance.Value.tagParam;
+                layerParam[instance.Key] = instance.Value.tagParam;
 //                layer[count].type = instance.Value.resourceType;
 //                layer[count].reservedNum = (int)instance.Key;
-                count++;
             }
 
-            count = 0;
             foreach (KeyValuePair<TRAudioID, TRAudio> instance in Trionfi.Instance.audioInstance)
             {
-                audioParam[(int)count] = instance.Value.tagParam;
+                audioParam[instance.Key] = instance.Value.tagParam;
 /*
                 audio[count] = new SerializeInfo();
                 audio[count].storage = instance.Value.path;
                 audio[count].type = instance.Value.resourceType;
                 audio[count].reservedNum = (int)instance.Key;
 */
-                count++;
             }
 
-            count = 0;
-            foreach (KeyValuePair<string, TRScript> instance in Trionfi.Instance.scriptInstance)
+           foreach (KeyValuePair<string, TRScript> instance in Trionfi.Instance.scriptInstance)
             {
-                scriptParam[(int)count] = instance.Value.tagParam;
+                scriptParam[instance.Key] = instance.Value.tagParam;
                 /*
                 script[count] = new SerializeInfo();
                 script[count].storage = instance.Value.path;
                 script[count].type = instance.Value.resourceType;
                 script[count].reservedString = instance.Key;
                 */
-                count++;
             }
 
+            callStack = TRVirtualMachine.Instance.callStack.ToArray();
             variable = TRVirtualMachine.Instance.globalVariableInstance;
+
+            string test1 = JsonConvert.SerializeObject(layerParam);
+            string test2 = JsonConvert.SerializeObject(audioParam);
+            string test3 = JsonConvert.SerializeObject(scriptParam);
+
+            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
         }
 
         public IEnumerator Deserialize()
@@ -256,6 +241,11 @@ namespace Trionfi
             }
             */
             TRVirtualMachine.Instance.globalVariableInstance = variable;
+
+            foreach (FunctionalObjectInstance func in callStack)
+            {
+                TRVirtualMachine.Instance.callStack.Push(func);
+            }
         }
     }
 #endif
