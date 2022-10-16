@@ -446,12 +446,11 @@ namespace Trionfi
             TRSerializeData info = new TRSerializeData();
             //string data =  PlayerPrefs.GetString(name);
 
-            info = JsonConvert.DeserializeObject<TRSerializeData>(jsonData);
 
+            info = JsonConvert.DeserializeObject<TRSerializeData>(jsonData);
+            //info = JsonUtility.FromJson<TRSerializeData>(jsonData);
 
             return info;
-
-//            info.Deserialize();
         }
 
         public void Init(int subRenderCount = 0, bool changeLayerOrder = false)

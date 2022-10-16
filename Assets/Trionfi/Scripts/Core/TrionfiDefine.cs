@@ -161,27 +161,24 @@ namespace Trionfi
         [SerializeField]
         SerializableDictionary<string, TRVariableDictionary> scriptParam = new SerializableDictionary<string, TRVariableDictionary>();
 
-        /*
-         *      [SerializeField]
-                public SerializeInfo[] layer;
-                [SerializeField]
-                public SerializeInfo[] audio;
-                [SerializeField]
-                public SerializeInfo[] script;
-        */
+        [SerializeField]
+        public string layerJson;
+        [SerializeField]
+        public string audioJson;
+        [SerializeField]
+        public string scriptJson;
+
         [SerializeField]
         public FunctionalObjectInstance[] callStack;
         [SerializeField]
-        TRVariableDictionary variable;
+        public TRVariableDictionary variable;
 
         public string Serialize()
         {
-            callStack = TRVirtualMachine.Instance.callStack.ToArray();
-
             foreach (KeyValuePair<TRLayerID, TRLayer> instance in Trionfi.Instance.layerInstance)
             {
                 //                layer[(int)count] = new SerializeInfo();
-                layerParam[instance.Key] = instance.Value.tagParam;
+                layerParam[(int)instance.Key] = instance.Value.tagParam;
 //                layer[count].type = instance.Value.resourceType;
 //                layer[count].reservedNum = (int)instance.Key;
             }
@@ -210,16 +207,21 @@ namespace Trionfi
 
             callStack = TRVirtualMachine.Instance.callStack.ToArray();
             variable = TRVirtualMachine.Instance.globalVariableInstance;
+            
+            layerJson = JsonConvert.SerializeObject(layerParam);
+            audioJson = JsonConvert.SerializeObject(audioParam);
+            scriptJson = JsonConvert.SerializeObject(scriptParam);           
 
-            string test1 = JsonConvert.SerializeObject(layerParam);
-            string test2 = JsonConvert.SerializeObject(audioParam);
-            string test3 = JsonConvert.SerializeObject(scriptParam);
-
-            return Newtonsoft.Json.JsonConvert.SerializeObject(this);
+//            return JsonUtility.ToJson(this);
+            return JsonConvert.SerializeObject(this);
         }
 
         public IEnumerator Deserialize()
         {
+            layerParam = JsonConvert.DeserializeObject<SerializableDictionary<int, TRVariableDictionary>>(layerJson);
+            audioParam = JsonConvert.DeserializeObject<SerializableDictionary<int, TRVariableDictionary>>(audioJson);
+            scriptParam = JsonConvert.DeserializeObject<SerializableDictionary<string, TRVariableDictionary>>(scriptJson);
+
             TRVirtualMachine.Instance.callStack.Clear();
 
             for (int count = 0; count < callStack.Length; count++)
@@ -227,25 +229,23 @@ namespace Trionfi
 
             foreach (KeyValuePair <int, TRVariableDictionary> instance in layerParam)
             {
-                yield return Trionfi.Instance.LoadImage(instance.Value, TRResourceType.LocalStatic);//].reservedNum, layer[count].storage, layer[count].type);
+                if(instance.Value.Count != 0)
+                    yield return Trionfi.Instance.LoadImage(instance.Value, TRResourceType.LocalStatic);//].reservedNum, layer[count].storage, layer[count].type);
             }
 
             foreach (KeyValuePair<int, TRVariableDictionary> instance in audioParam)
             {
-                yield return Trionfi.Instance.LoadAudio(instance.Value, TRResourceType.LocalStatic);// (audio[count].reservedNum, audio[count].storage, audio[count].type);
+                if (instance.Value.Count != 0)
+                    yield return Trionfi.Instance.LoadAudio(instance.Value, TRResourceType.LocalStatic);// (audio[count].reservedNum, audio[count].storage, audio[count].type);
             }
-            /*
-            foreach (KeyValuePair<int, TRVariableDictionary> instance in audioParam)
+            
+            foreach (KeyValuePair<string, TRVariableDictionary> instance in scriptParam)
             {
-                yield return Trionfi.Instance.LoadScript(layer[count].storage, layer[count].type);
+                if (instance.Value.Count != 0)
+                    yield return Trionfi.Instance.LoadScript(instance.Key);
             }
-            */
+            
             TRVirtualMachine.Instance.globalVariableInstance = variable;
-
-            foreach (FunctionalObjectInstance func in callStack)
-            {
-                TRVirtualMachine.Instance.callStack.Push(func);
-            }
         }
     }
 #endif

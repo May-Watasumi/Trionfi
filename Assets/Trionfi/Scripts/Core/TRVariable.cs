@@ -20,7 +20,6 @@ namespace Trionfi
 
         }
 
-
         readonly string[] reservedWords = new string[]
         {
             "storage",
