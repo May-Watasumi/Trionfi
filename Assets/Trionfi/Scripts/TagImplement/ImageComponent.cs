@@ -120,8 +120,6 @@ namespace Trionfi
                     _image.texture = _texture;
                 }
 */
-            
-
             if (updatePos)
                 _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
 

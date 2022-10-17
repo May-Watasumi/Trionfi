@@ -34,9 +34,9 @@ namespace Trionfi
         public FunctionalObjectType type = FunctionalObjectType.Macro;
 
         public string scriptName;
+
         public int startPos;
         public int endPos;
-
         public int currentPos;
 
         public bool LocalJump(string label)
@@ -97,7 +97,7 @@ namespace Trionfi
 
         public TRTagInstance currentTagInstance { get { return Trionfi.instance.scriptInstance[callStack.Peek().scriptName].instance; } }
         public FunctionalObjectInstance currentCallStack { get { return callStack.Peek(); } }
-        //
+
         public TRVariableDictionary globalVariableInstance = new TRVariableDictionary();
         public Queue<ResumeTask> nextTempFunc = new Queue<ResumeTask>();
         public Stack<FunctionalObjectInstance> callStack = new Stack<FunctionalObjectInstance>();
@@ -107,15 +107,15 @@ namespace Trionfi
         //マクロ、関数の情報（タグインスタンスの指定とタグ位置）。マクロと関数の実装的な区別はない。
         //スクリプトコンパイルの副産物なのでSerializeの必要はないはず。
         public Dictionary<string, FunctionalObjectInstance> functionalObjects = new Dictionary<string, FunctionalObjectInstance>();
-        //タグのエイリアス（主にKAGとの互換性用途？）
+
         public  Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
 
         public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
         {
             if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
-            //                Trionfi.instance.AwakeTrionfi();
                 FunctionalObjectInstance _func = new FunctionalObjectInstance(FunctionalObjectType.Script, storage, 0, 0);
+                _func.currentPos = _func.startPos;
 
 BEGINLOOP:
                 do
@@ -150,7 +150,7 @@ BEGINLOOP:
                         PrepareReboot();
                         TRSerializeData info =  Trionfi.instance.DeserializeFromFile(resumeTask.type - ResumeTaskType.LOAD_DATA0);
                         yield return info.Deserialize();
-                        _func = callStack.Peek();   
+                        _func = info.callStack[0];//   callStack.Peek();   
                     }
 
                     goto BEGINLOOP;
@@ -165,15 +165,12 @@ BEGINLOOP:
 
         public IEnumerator Execute(FunctionalObjectInstance _func, Dictionary<string, VariableCalcurator>  _param)
         {
-            //if(_func.type != FunctionalObjectType.Macro)
-                callStack.Push(_func);
+            callStack.Push(_func);
 
             if (_param != null)
                 vstack.Push(_param);
 
             TRTagInstance _tag  = Trionfi.instance.scriptInstance[_func.scriptName].instance;
-
-            _func.currentPos = _func.startPos;
 
             state = State.Run;
 
@@ -182,7 +179,7 @@ BEGINLOOP:
                 AbstractComponent _tagComponent = _tag.arrayComponents[_func.currentPos];
 
                 if (_func.type == FunctionalObjectType.Macro && _tagComponent is MacroendComponent)
-                    goto Macro_End;
+                    break;
 
                 yield return _tagComponent.Execute();
 
@@ -190,14 +187,10 @@ BEGINLOOP:
 
             } while (_func.currentPos < _tag.arrayComponents.Count);
 
-Macro_End:
             if (_param != null)
                 vstack.Pop();
 
-            //if (_func.type != FunctionalObjectType.Macro)
-                yield return callStack.Pop();
-            //else
-            //    yield return null;
+            yield return callStack.Pop();
         }
 
         readonly TokenReader tokenReader = new TokenReader(System.Globalization.CultureInfo.InvariantCulture);
@@ -216,16 +209,10 @@ Macro_End:
             return result;
         }
 
-		private void Start()
-		{
-            astBuilder = new Jace.AstBuilder(functionRegistry, false);
-            vstack.Push(globalVariableInstance);
-        }
-
-#if UNITY_EDITOR
-
         public void PrepareReboot()
         {
+            Trionfi.instance.messageWindow.ClearMessage();
+            Trionfi.instance.messageWindow.CloseWindow();
             Trionfi.instance.ActivateAllCanvas(false);
             Trionfi.instance.layerInstance.Reset();
             Trionfi.instance.audioInstance.Reset();
@@ -256,6 +243,12 @@ Macro_End:
             state = State.Load;
         }
 
+        private void Start()
+        {
+            astBuilder = new Jace.AstBuilder(functionRegistry, false);
+            vstack.Push(globalVariableInstance);
+        }
+
         public void Update()
 		{
             if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.F5) && state == State.Run)
@@ -263,6 +256,5 @@ Macro_End:
                BeginReboot();
             }
         }
-#endif
     }
 }

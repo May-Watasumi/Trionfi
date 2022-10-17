@@ -130,6 +130,7 @@ namespace Trionfi
                     pair.Value.actor = string.Empty;
                     pair.Value.instance.color = Color.white;
                     pair.Value.tagParam.Clear();
+                    pair.Value.instance.enabled = false;
                 }
             }
 
@@ -383,7 +384,7 @@ namespace Trionfi
         public IEnumerator LoadAudio(TRVariableDictionary tagParam, TRResourceType type )//int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
         {
             TRAudioID id = (TRAudioID)tagParam["buf", 0];
-            string storage = tagParam["storage"].Literal();
+            string storage = tagParam["storage", string.Empty];
 
             var _coroutine = TRResourceLoader.Instance.LoadAudio(storage, type);
             yield return StartCoroutine(_coroutine);
@@ -413,7 +414,7 @@ namespace Trionfi
             yield return _coroutine.Current;
         }
 
-        const string SaveDataNameBase = "SawveData";
+        const string SaveDataNameBase = "SaveData";
 
         public void SerializeToFile(int num)
         {
@@ -675,7 +676,8 @@ namespace Trionfi
 
         public void ActivateAllCanvas(bool state)
         {
-            layerCanvas.gameObject.SetActive(state);
+            layerCanvas.gameObject.GetComponent<CanvasGroup>().alpha = state ? 1.0f : 0.0f;
+//            layerCanvas.gameObject.SetActive(state);
             uiCanvas.gameObject.SetActive(state);
         }
 

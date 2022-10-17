@@ -143,11 +143,13 @@ namespace Trionfi
                 TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid] = true;
             }
 
+            Trionfi.Instance.ActivateAllCanvas(true);
+
             if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
             {
                 Trionfi.Instance.messageWindow.OpenWindow();
             }
-
+            
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
 #endif
 		}

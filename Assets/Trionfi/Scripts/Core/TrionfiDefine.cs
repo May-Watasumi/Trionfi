@@ -103,10 +103,7 @@ namespace Trionfi
 
         [SerializeField]
         public TRVariableDictionary tagParam;
-        /*
-                [SerializeField]
-                public string path;
-        */
+
         [SerializeField]
         public T instance;
     }
@@ -148,6 +145,7 @@ namespace Trionfi
     [Serializable]
     public class TRLayer : TRMediaInstance<RawImage>
     {
+        [SerializeField]
         public string actor;
     }
 
@@ -210,9 +208,13 @@ namespace Trionfi
             
             layerJson = JsonConvert.SerializeObject(layerParam);
             audioJson = JsonConvert.SerializeObject(audioParam);
-            scriptJson = JsonConvert.SerializeObject(scriptParam);           
+            scriptJson = JsonConvert.SerializeObject(scriptParam);
 
-//            return JsonUtility.ToJson(this);
+            Debug.Log(layerJson);
+            Debug.Log(audioJson);
+            Debug.Log(scriptJson);
+
+            //            return JsonUtility.ToJson(this);
             return JsonConvert.SerializeObject(this);
         }
 
@@ -224,28 +226,39 @@ namespace Trionfi
 
             TRVirtualMachine.Instance.callStack.Clear();
 
-            for (int count = 0; count < callStack.Length; count++)
+            //トップスタックは本体側で入る
+            for (int count = 0; count < callStack.Length-1; count++)
                 TRVirtualMachine.Instance.callStack.Push(callStack[count]);
 
             foreach (KeyValuePair <int, TRVariableDictionary> instance in layerParam)
             {
-                if(instance.Value.Count != 0)
-                    yield return Trionfi.Instance.LoadImage(instance.Value, TRResourceType.LocalStatic);//].reservedNum, layer[count].storage, layer[count].type);
+                if (instance.Value.Count != 0)
+                {
+                    ImageComponent executer = new ImageComponent();
+                    executer.tagParam = instance.Value;
+                    yield return executer.TagSyncFunction();//     Trionfi.Instance.LoadImage(instance.Value, TRResourceType.LocalStatic);//].reservedNum, layer[count].storage, layer[count].type);
+                }
+
             }
 
             foreach (KeyValuePair<int, TRVariableDictionary> instance in audioParam)
             {
                 if (instance.Value.Count != 0)
-                    yield return Trionfi.Instance.LoadAudio(instance.Value, TRResourceType.LocalStatic);// (audio[count].reservedNum, audio[count].storage, audio[count].type);
+                {
+                    AudioComponent executer = new AudioComponent();
+                    executer.tagParam = instance.Value;
+                    yield return executer.TagSyncFunction();
+                }
             }
-            
+ 
             foreach (KeyValuePair<string, TRVariableDictionary> instance in scriptParam)
             {
                 if (instance.Value.Count != 0)
                     yield return Trionfi.Instance.LoadScript(instance.Key);
             }
             
-            TRVirtualMachine.Instance.globalVariableInstance = variable;
+            if(variable != null)
+               TRVirtualMachine.Instance.globalVariableInstance = variable;
         }
     }
 #endif
