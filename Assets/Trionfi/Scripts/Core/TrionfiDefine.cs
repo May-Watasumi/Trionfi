@@ -175,32 +175,17 @@ namespace Trionfi
         {
             foreach (KeyValuePair<TRLayerID, TRLayer> instance in Trionfi.Instance.layerInstance)
             {
-                //                layer[(int)count] = new SerializeInfo();
-                layerParam[(int)instance.Key] = instance.Value.tagParam;
-//                layer[count].type = instance.Value.resourceType;
-//                layer[count].reservedNum = (int)instance.Key;
+                layerParam[instance.Key] = instance.Value.tagParam;
             }
 
             foreach (KeyValuePair<TRAudioID, TRAudio> instance in Trionfi.Instance.audioInstance)
             {
                 audioParam[instance.Key] = instance.Value.tagParam;
-/*
-                audio[count] = new SerializeInfo();
-                audio[count].storage = instance.Value.path;
-                audio[count].type = instance.Value.resourceType;
-                audio[count].reservedNum = (int)instance.Key;
-*/
             }
 
            foreach (KeyValuePair<string, TRScript> instance in Trionfi.Instance.scriptInstance)
             {
                 scriptParam[instance.Key] = instance.Value.tagParam;
-                /*
-                script[count] = new SerializeInfo();
-                script[count].storage = instance.Value.path;
-                script[count].type = instance.Value.resourceType;
-                script[count].reservedString = instance.Key;
-                */
             }
 
             callStack = TRVirtualMachine.Instance.callStack.ToArray();
@@ -209,10 +194,6 @@ namespace Trionfi
             layerJson = JsonConvert.SerializeObject(layerParam);
             audioJson = JsonConvert.SerializeObject(audioParam);
             scriptJson = JsonConvert.SerializeObject(scriptParam);
-
-            Debug.Log(layerJson);
-            Debug.Log(audioJson);
-            Debug.Log(scriptJson);
 
             //            return JsonUtility.ToJson(this);
             return JsonConvert.SerializeObject(this);
@@ -236,7 +217,7 @@ namespace Trionfi
                 {
                     ImageComponent executer = new ImageComponent();
                     executer.tagParam = instance.Value;
-                    yield return executer.TagSyncFunction();//     Trionfi.Instance.LoadImage(instance.Value, TRResourceType.LocalStatic);//].reservedNum, layer[count].storage, layer[count].type);
+                    yield return executer.TagSyncFunction();
                 }
 
             }
