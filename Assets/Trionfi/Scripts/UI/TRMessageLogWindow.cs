@@ -72,13 +72,23 @@ namespace Trionfi {
         
         public void Exit()
         {
-            Trionfi.Instance.PopWindow();
+            gameObject.SetActive(false);
+            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+            Trionfi.Instance.systemMenuWindow.gameObject.SetActive(true);
+            Trionfi.Instance.messageWindow.Restart();
         }
 
         public void OnDestroy()
         {
             DeleteLogObject();
+        }
 
+		public void Start()
+		{
+            if (UnityEngine.Input.GetKeyDown(UnityEngine.KeyCode.Escape))
+            {
+                Exit();
+            }
         }
     }
 }

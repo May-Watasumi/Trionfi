@@ -52,7 +52,7 @@ namespace Trionfi
 
         public void OnLoadButton()
         {
-            Trionfi.Instance.BeginDeserialize(0);// .DeserializeFromFile(0);
+            Trionfi.Instance.BeginDeserialize(0);
         }
 
         public void OnAutoButton()
@@ -72,10 +72,10 @@ namespace Trionfi
         public void OnMessageLogButton()
         {
             Trionfi.Instance.messageWindow.Pause();
-            Trionfi.Instance.HideObject(Trionfi.Instance.messageWindow.gameObject);
-            Trionfi.Instance.HideObject(gameObject);
-
-            Trionfi.Instance.OpenUI(Trionfi.Instance.messageLogwindow.gameObject);
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.Instance.messageLogwindow.gameObject.SetActive(true);
+            gameObject.SetActive(false);
+            //            Trionfi.Instance.OpenUI(Trionfi.Instance.messageLogwindow.gameObject);
         }
 
         public void OnOptionButton()

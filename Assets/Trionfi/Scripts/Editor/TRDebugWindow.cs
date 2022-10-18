@@ -69,6 +69,13 @@ namespace Trionfi
             }
 
             GUILayout.Space(20);
+            if (GUILayout.Button("Reload"))
+            {
+                if (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run)
+                    TRVirtualMachine.Instance.BeginReboot();
+            }
+            GUILayout.Space(20);
+
             GUILayout.Label("<Debug Log>");
 
             GUILayout.BeginHorizontal(GUI.skin.box);
@@ -84,14 +91,6 @@ namespace Trionfi
             logScroll = EditorGUILayout.BeginScrollView(logScroll);
             consoleLog = EditorGUILayout.TextArea(consoleLog, GUILayout.Height(200));
             EditorGUILayout.EndScrollView();
-
-
-            if (GUILayout.Button("HotLoad"))
-            {
-                if (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run)
-                    TRVirtualMachine.Instance.BeginReboot();
-            }
-
         }
     }
 }

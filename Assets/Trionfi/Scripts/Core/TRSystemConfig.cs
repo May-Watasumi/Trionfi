@@ -57,11 +57,10 @@ namespace Trionfi
         [SerializeField]
         public bool useUnityAudioMixer = false;
 
-        [SerializeField]
-        public LayerPos layerPos = new LayerPos()
+        public readonly LayerPos layerPos = new LayerPos()
         {
-            { TRStandPosition.LEFT, -0.5f },//-360 },
             { TRStandPosition.CENTER, 0.0f },
+            { TRStandPosition.LEFT, -0.5f },//-360 },
             { TRStandPosition.RIGHT, 0.5f },//360 },
             { TRStandPosition.LEFT_CENTER, -0.6f },// -420 },
             { TRStandPosition.RIGHT_CENTER, 0.6f },//420 },
