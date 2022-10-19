@@ -110,27 +110,19 @@ namespace Trionfi
         public string subject;
     }
 
-    public class TRSaveDataUIIPage
-	{
-
-        public void SetInfo(int num)
-        {
-        
-        }
-    }
-
     [Serializable]
     public class TRSerializeManager : SingletonMonoBehaviour<TRSerializeManager>
     {
-        public string subjectText = "SaveData";
-
         public enum Mode { Save, Load }
 
 		const string SaveDataNameBase = "SaveData";
         const string fileName = "saveinfo.bin";
-//        string fullPath;
+        //        string fullPath;
 
-        GZCrypter crypter = new GZCrypter();
+        public string subjectText = "SaveData";
+
+        GZCrypter gzCrypter = new GZCrypter();
+        TRCrypterBase crypter = null;
 
         int currentPage = 0;
         Mode currentMode = Mode.Load;
@@ -210,7 +202,7 @@ namespace Trionfi
 
             if (binData != null)
             {
-                string jsonData = crypter.Decrypt(binData);
+                string jsonData = gzCrypter.Decrypt(binData);
 
                 dataDict = new SerializableDictionary<int, TRSaveDataInfo>();
                 dataDict = JsonConvert.DeserializeObject<SerializableDictionary<int, TRSaveDataInfo>>(jsonData);
@@ -227,7 +219,7 @@ namespace Trionfi
 
             if (!string.IsNullOrEmpty(jsonData))
             {
-                byte[] binData = crypter.Encrypt(jsonData);
+                byte[] binData = gzCrypter.Encrypt(jsonData);
                 FileStream fs =  File.Create(path);
                 fs.Write(binData,0,binData.Length);
                 fs.Close();

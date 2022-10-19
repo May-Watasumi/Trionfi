@@ -233,20 +233,10 @@ namespace Trionfi
         public void SaveReadFlag()
         {
             string path = Application.persistentDataPath + "/" + readFlagData;
-
-            /*
-            #if UNITY_EDITOR
-                        string path = Directory.GetCurrentDirectory();
-            #else
-                            string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');
-            #endif
-                        path += ("\\" + readFlagData);
-            */
 #if true
             string jsonData = JsonConvert.SerializeObject(flagDatas);//, Formatting.Indented);
 
             File.WriteAllText(path, jsonData);
-
 #else            
             System.Runtime.Serialization.DataContractSerializer dataSerializer = new System.Runtime.Serialization.DataContractSerializer(typeof(Dictionary<string, List<bool>>));
 
@@ -266,14 +256,6 @@ namespace Trionfi
         public void LoadReadFlag()
         {
             string path = Application.persistentDataPath + "/" + readFlagData;
-/*
-#if UNITY_EDITOR
-            string path = Directory.GetCurrentDirectory();
-#else
-                string path = AppDomain.CurrentDomain.BaseDirectory.TrimEnd('\\');
-#endif
-            path += ("\\" + readFlagData);
-*/
 #if true
             //            string jsonData =  PlayerPrefs.GetString(readFlagData);
 
