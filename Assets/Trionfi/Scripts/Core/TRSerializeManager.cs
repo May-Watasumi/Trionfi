@@ -127,7 +127,7 @@ namespace Trionfi
         public enum Mode { Save, Load }
 
 		const string SaveDataNameBase = "SaveData";
-        const string fileName = "saveinfo.dat";
+        const string fileName = "saveinfo.bin";
 //        string fullPath;
 
         GZCrypter crypter = new GZCrypter();
@@ -187,6 +187,7 @@ namespace Trionfi
             }
         }
 
+        [SerializeField]
         public SerializableDictionary<int, TRSaveDataInfo> dataDict = new SerializableDictionary<int, TRSaveDataInfo>();
 
         public TRSaveDataInfo GetSaveDataInfo(int num)
@@ -214,6 +215,8 @@ namespace Trionfi
 
         public void SaveInfo()
         {
+            Directory.CreateDirectory(Application.persistentDataPath + "/" + Trionfi.instance.titleName);
+
             string path = Application.persistentDataPath + "/" + Trionfi.instance.titleName + "/" + fileName;
 
             string jsonData = JsonConvert.SerializeObject(dataDict);
@@ -221,7 +224,9 @@ namespace Trionfi
             if (!string.IsNullOrEmpty(jsonData))
             {
                 byte[] binData = crypter.Encrypt(jsonData);
-                File.WriteAllBytes(path, binData);
+                FileStream fs =  File.Create(path);
+                fs.Write(binData,0,binData.Length);
+                fs.Close();
             }
         }
 
@@ -237,7 +242,9 @@ namespace Trionfi
             {
                 byte[] binData = crypter.Encrypt(jsonData);
 
-                File.WriteAllBytes(Application.persistentDataPath + "/" + SaveDataNameBase + num.ToString("D3") + ".bin", binData);
+                Directory.CreateDirectory(Application.persistentDataPath + "/" + Trionfi.instance.titleName);
+
+                File.WriteAllBytes(Application.persistentDataPath + "/" + Trionfi.instance.titleName + "/" + SaveDataNameBase + num.ToString("D3") + ".bin", binData);
                 //            PlayerPrefs.SetString(name, data);
 
                 //Info
@@ -259,7 +266,7 @@ namespace Trionfi
 
         public TRSerializeData DeserializeFromFile(int num)
         {
-            byte[] binData = File.ReadAllBytes(Application.persistentDataPath + "/" + SaveDataNameBase + num.ToString("D3") + ".bin");
+            byte[] binData = File.ReadAllBytes(Application.persistentDataPath + "/" + Trionfi.instance.titleName + "/" + SaveDataNameBase + num.ToString("D3") + ".bin");
 
             if (crypter == null)
                 crypter = new GZCrypter();
