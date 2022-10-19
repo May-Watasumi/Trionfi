@@ -13,6 +13,10 @@ namespace Trionfi {
         [SerializeField]
         public GameObject logDataRoot;
 
+        [SerializeField]
+        [Range(-1, 50)]
+        public int backlogCount = -1;
+
         public event Action OnApplyLog;
 
 		public List<TRMessageLogData> logDataList = new List<TRMessageLogData>();
@@ -48,7 +52,7 @@ namespace Trionfi {
             logData.gameObject.GetComponent<RectTransform>().localScale = Vector3.one;
 
             //上限を超えていたら指定分の配列を削除する
-            if (TRSystemConfig.Instance.backlogCount > 0 && (TRSystemConfig.Instance.backlogCount + 1) < logDataList.Count)
+            if (backlogCount > 0 && (backlogCount + 1) < logDataList.Count)
                 logDataList.RemoveRange(0, 1);
         }
 

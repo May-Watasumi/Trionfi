@@ -70,14 +70,6 @@ namespace Trionfi
         public int characterPosdescent = 30;
 
         [SerializeField]
-        [Range(-1, 50)]
-        public int backlogCount = -1;
-
-        [SerializeField]
-        [Range(5, 30)]
-        public int saveSlotCount = 5;
-
-        [SerializeField]
         [Range(3, 10)]
         public int standObjectCount = 3;
 

@@ -140,6 +140,8 @@ namespace Trionfi
         [SerializeField]
         int pageCount = 1;
         [SerializeField]
+        Text pageText;// = new Text[dataCount];
+        [SerializeField]
         Text modeText;// = new Text[dataCount];
         [SerializeField]
         Text[] dateText;// = new Text[dataCount];
@@ -168,7 +170,7 @@ namespace Trionfi
             {
                 int num = currentPage  * dataCount + a;
 
-                TRSaveDataInfo info = TRSerializeManager.Instance.GetSaveDataInfo(num);
+                TRSaveDataInfo info = GetSaveDataInfo(num);
                 //                DateTime date = DateTime.TryParse(info.date);
                 if (info != null)
                 {
@@ -185,6 +187,8 @@ namespace Trionfi
                         infoButton[a].enabled = false;
                 }
             }
+
+            pageText.text = "Page " + (currentPage + 1).ToString() + "/" + pageCount.ToString();
         }
 
         [SerializeField]
@@ -300,6 +304,26 @@ namespace Trionfi
 			{
                 SaveData(num);
 			}
+        }
+
+        public void PageDown()
+        {
+            if (currentPage <= 0)
+                return;
+
+            currentPage++;
+
+            UpdatePage();
+        }
+
+        public void PageUp()
+        {
+            if (currentPage + 1 >= pageCount)
+                return;
+
+            currentPage--;
+
+            UpdatePage();      
         }
 
         public void Start()
