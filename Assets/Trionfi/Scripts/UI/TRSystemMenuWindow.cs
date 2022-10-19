@@ -47,12 +47,20 @@ namespace Trionfi
 
         public void OnSaveButton()
         {
-            Trionfi.Instance.SerializeToFile(0);
+            Trionfi.Instance.messageWindow.Pause();
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.instance.serializer.gameObject.SetActive(true);
+            TRSerializeManager.instance.Begin(TRSerializeManager.Mode.Save);
+            gameObject.SetActive(false);
         }
 
         public void OnLoadButton()
         {
-            Trionfi.Instance.BeginDeserialize(0);
+            Trionfi.Instance.messageWindow.Pause();
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.instance.serializer.gameObject.SetActive(true);
+            TRSerializeManager.instance.Begin(TRSerializeManager.Mode.Load);
+            gameObject.SetActive(false);
         }
 
         public void OnAutoButton()

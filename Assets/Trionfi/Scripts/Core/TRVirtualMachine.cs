@@ -148,7 +148,7 @@ BEGINLOOP:
                     if (resumeTask.type >= ResumeTaskType.LOAD_DATA0)
                     {
                         PrepareReboot();
-                        TRSerializeData info =  Trionfi.instance.DeserializeFromFile(resumeTask.type - ResumeTaskType.LOAD_DATA0);
+                        TRSerializeData info =  TRSerializeManager.instance.DeserializeFromFile(resumeTask.type - ResumeTaskType.LOAD_DATA0);
                         yield return info.Deserialize();
                         _func = info.callStack[0];//   callStack.Peek();   
                     }

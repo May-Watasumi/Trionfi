@@ -74,6 +74,8 @@ namespace Trionfi
         public TRCustomDialog dialogWindow;
         [SerializeField]
         public GameObject nowLoading;
+        [SerializeField]
+        public TRSerializeManager serializer;
 
         [SerializeField]
         public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
@@ -412,46 +414,6 @@ namespace Trionfi
             }
  
             yield return _coroutine.Current;
-        }
-
-        const string SaveDataNameBase = "SaveData";
-
-        public void SerializeToFile(int num)
-        {
-            TRSerializeData info = new TRSerializeData();
-            string jsonData = info.Serialize();
-
-            if (crypter == null)
-                crypter = new GZCrypter();
-
-            byte[] binData = crypter.Encrypt(jsonData);
-
-            File.WriteAllBytes(Application.persistentDataPath + "/" + SaveDataNameBase + num.ToString("D3") + ".bin", binData);
-//            PlayerPrefs.SetString(name, data);
-        }
-
-        public void BeginDeserialize(int num)
-        {
-            TRVirtualMachine.instance.BeginLoad(num);
-        }
-
-        public TRSerializeData DeserializeFromFile (int num)
-        {
-            byte[] binData = File.ReadAllBytes(Application.persistentDataPath+ "/" + SaveDataNameBase + num.ToString("D3") + ".bin");
-
-            if (crypter == null)
-                crypter = new GZCrypter();
-
-            string jsonData =  crypter.Decrypt(binData);
-
-            TRSerializeData info = new TRSerializeData();
-            //string data =  PlayerPrefs.GetString(name);
-
-
-            info = JsonConvert.DeserializeObject<TRSerializeData>(jsonData);
-            //info = JsonUtility.FromJson<TRSerializeData>(jsonData);
-
-            return info;
         }
 
         public void Init(int subRenderCount = 0, bool changeLayerOrder = false)

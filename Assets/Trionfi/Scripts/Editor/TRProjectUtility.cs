@@ -84,16 +84,17 @@ namespace Trionfi
             }
 
             //これはひどい。
-            GameObject.DestroyImmediate(trionfiInstandce.titleWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.messageWindowList[0].gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.messageWindowList[1].gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.messageLogwindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.globalTap.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.selectWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.configWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.systemMenuWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.dialogWindow.gameObject);
-            GameObject.DestroyImmediate(trionfiInstandce.nowLoading.gameObject);
+            GameObject.DestroyImmediate(trionfiInstandce.titleWindow.gameObject);           //0
+            GameObject.DestroyImmediate(trionfiInstandce.messageWindowList[0].gameObject);  //1
+            GameObject.DestroyImmediate(trionfiInstandce.messageWindowList[1].gameObject);  //2
+            GameObject.DestroyImmediate(trionfiInstandce.messageLogwindow.gameObject);      //3
+            GameObject.DestroyImmediate(trionfiInstandce.globalTap.gameObject);             //4
+            GameObject.DestroyImmediate(trionfiInstandce.selectWindow.gameObject);          //5
+            GameObject.DestroyImmediate(trionfiInstandce.configWindow.gameObject);          //6
+            GameObject.DestroyImmediate(trionfiInstandce.systemMenuWindow.gameObject);      //7
+            GameObject.DestroyImmediate(trionfiInstandce.serializer.gameObject); ;          //8
+            GameObject.DestroyImmediate(trionfiInstandce.dialogWindow.gameObject);          //9
+            GameObject.DestroyImmediate(trionfiInstandce.nowLoading.gameObject);            //10
 
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/TitleBase.prefab", typeof(GameObject)) as GameObject);                //0
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);        //1
@@ -103,8 +104,9 @@ namespace Trionfi
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SelectWindowBase.prefab", typeof(GameObject)) as GameObject);         //5
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GameConfigBase.prefab", typeof(GameObject)) as GameObject);           //6
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SystemMenuBase.prefab", typeof(GameObject)) as GameObject);           //7
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);               //8
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);           //9
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/Serializer.prefab", typeof(GameObject)) as GameObject);               //8
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);               //9
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);           //10
 
             int count = 0;
             foreach (GameObject _object in prefabList)
@@ -139,14 +141,14 @@ namespace Trionfi
             trionfiInstandce.selectWindow = instanceList[5].GetComponent<TRSelectWindow>() ?? prefabList[5].GetComponent<TRSelectWindow>();
             trionfiInstandce.configWindow = instanceList[6].GetComponent<TRGameConfigWindow>() ?? prefabList[6].GetComponent<TRGameConfigWindow>();
             trionfiInstandce.systemMenuWindow = instanceList[7].GetComponent<TRSystemMenuWindow>() ?? prefabList[7].GetComponent<TRSystemMenuWindow>();
-            trionfiInstandce.dialogWindow = instanceList[8].GetComponent<TRCustomDialog>() ?? prefabList[8].GetComponent<TRCustomDialog>();
-            trionfiInstandce.nowLoading = instanceList[9] ?? prefabList[9];
+            trionfiInstandce.serializer = instanceList[8].GetComponent<TRSerializeManager>() ?? prefabList[7].GetComponent<TRSerializeManager>();
+            trionfiInstandce.dialogWindow = instanceList[9].GetComponent<TRCustomDialog>() ?? prefabList[8].GetComponent<TRCustomDialog>();
+            trionfiInstandce.nowLoading = instanceList[10] ?? prefabList[9];
             /*
                         AssetDatabase.Refresh();
                         AssetDatabase.SaveAssets();
 
             */
-
             EditorSceneManager.SaveScene(scene);
         }
 
