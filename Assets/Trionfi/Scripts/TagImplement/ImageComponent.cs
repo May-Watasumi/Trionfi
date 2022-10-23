@@ -39,7 +39,7 @@ namespace Trionfi
         {
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
-            RawImage _image;
+            Image _image;
             _image = Trionfi.Instance.layerInstance[id].instance;
 
             //話者セット
@@ -69,7 +69,7 @@ namespace Trionfi
             }
 
             string storage = tagParam["storage", string.Empty];
-            _image.texture = null;
+            _image.sprite = null;
 
             int mtime = tagParam["time", 0];
             float time = (float)mtime / 1000.0f;
@@ -88,38 +88,28 @@ namespace Trionfi
             {
                 SpriteAtlas atlas = Resources.Load<SpriteAtlas>(tagParam["atlas"].Literal());
                 Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
-                _image.texture = sprite.texture;
+                _image.sprite = sprite;
             }
             else if (tagParam.ContainsKey("dicedatlas"))
             {
                 DicedSpriteAtlas atlas = Resources.Load<DicedSpriteAtlas>(tagParam["dicedatlas"].Literal());
                 Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
-                _image.texture = sprite.texture;
+                _image.sprite = sprite;
             }
+            /*
             else if (tagParam.ContainsKey("renderbuf"))
             {
                 Trionfi.Instance.layerInstance[(TRLayerID)id].instance.texture = Trionfi.Instance.subRenderBuffer[0];
                 Trionfi.Instance.layerInstance[(TRLayerID)id].tagParam = tagParam;
                 Trionfi.Instance.layerInstance[(TRLayerID)id].resourceType = GetResourceType();
             }
+            */
             else
             {
                 TRResourceType type = GetResourceType();
                 yield return Trionfi.Instance.LoadImage(tagParam, type);
             }
-/*
-                var coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
 
-                yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
-
-                Texture2D _texture = (Texture2D)coroutine.Current;
-
-                if (_texture != null)
-                {
-                    Trionfi.Instance.layerInstance[id].path = storage;
-                    _image.texture = _texture;
-                }
-*/
             if (updatePos)
                 _image.gameObject.GetComponent<RectTransform>().anchoredPosition = pos;
 
@@ -174,38 +164,13 @@ namespace Trionfi
 		protected override void TagFunction()
 		{
 #if !TR_PARSEONLY
-			RawImage _image;
+			Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
             _image = Trionfi.Instance.layerInstance[id].instance;
             _image.enabled = false;
-            _image.texture = null;
-#endif
-		}
-    }
-
-    [Serializable]
-    public class LaytextComponent : AbstractComponent
-    {
-        public LaytextComponent()
-        {
-#if UNITY_EDITOR && TR_DEBUG
-            //必須項目
-            essentialParams = new List<string>
-            {
-//                "string"
-            };
-#endif
-        }
-
-        protected override void TagFunction()
-        {
-#if !TR_PARSEONLY
-//			RawImage _image;
-
-            string text = tagParam["text", string.Empty];
-            Trionfi.Instance.layerText.text = text;
+            _image.sprite = null;
 #endif
 		}
     }
@@ -227,7 +192,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			RawImage _image;
+			Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -255,7 +220,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			RawImage _image;
+			Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -286,7 +251,7 @@ namespace Trionfi
         protected override void TagFunction()
         {
 #if !TR_PARSEONLY
-			RawImage _image;
+			Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -348,7 +313,7 @@ namespace Trionfi
 
             if (tagParam.ContainsKey("layer"))
             {
-                RawImage _image;
+                Image _image;
                 TRLayerID id = (TRLayerID)tagParam["layer", 0];
                 _image = Trionfi.Instance.layerInstance[id].instance;
                 _image.material = mat;

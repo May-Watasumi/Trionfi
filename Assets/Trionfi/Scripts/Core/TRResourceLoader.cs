@@ -40,6 +40,17 @@ namespace Trionfi
         }
     }
 
+    public class TRDefaultSpriteLoader : IAssetLoader<Sprite>
+    {
+        public override IEnumerator Load(string storage)
+        {
+            instance = Resources.Load<Sprite>(storage);
+            yield return instance;
+        }
+    }
+
+
+
     public class TRDefaultAssetBundleLoader : IAssetLoader<AssetBundle>
     {
         public override IEnumerator Load(string storage)
@@ -188,6 +199,7 @@ namespace Trionfi
 
         public Dictionary<TRResourceType, IAssetLoader<AudioClip>> audioLoader = new Dictionary<TRResourceType, IAssetLoader<AudioClip>>();
         public Dictionary<TRResourceType, IAssetLoader<Texture2D>> textureLoader = new Dictionary<TRResourceType, IAssetLoader<Texture2D>>();
+        public Dictionary<TRResourceType, IAssetLoader<Sprite>> spriteLoader = new Dictionary<TRResourceType, IAssetLoader<Sprite>>();
         public Dictionary<TRResourceType, IAssetLoader<string>> textLoader = new Dictionary<TRResourceType, IAssetLoader<string>>();
         public Dictionary<TRResourceType, IAssetLoader<AssetBundle>> assetBundleLoader = new Dictionary<TRResourceType, IAssetLoader<AssetBundle>>();
 
@@ -198,6 +210,8 @@ namespace Trionfi
 
             textureLoader[TRResourceType.LocalStatic] = new TRDefaultTextureLoader();
             textureLoader[TRResourceType.WWW] = new TRWebTextureLoader();
+
+            spriteLoader[TRResourceType.LocalStatic] = new TRDefaultSpriteLoader();
 
             textLoader[TRResourceType.LocalStatic] = new TRDefaultTextLoader();
             textLoader[TRResourceType.WWW] = new TRWebTextLoader();
@@ -231,6 +245,22 @@ namespace Trionfi
             yield return StartCoroutine(coroutine);
             yield return coroutine.Current;
         }
+
+        public IEnumerator LoadSprite(string storage, TRResourceType type = defaultResourceType)
+        {
+            if (type == TRResourceType.LocalStatic)
+                yield return Resources.Load<Sprite>(storage);
+            else
+            {
+                var coroutine = textureLoader[type].Load(storage);
+                yield return StartCoroutine(coroutine);
+                Texture2D texture = (Texture2D)coroutine.Current;
+                Sprite sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
+                yield return sprite;
+            }
+        }
+
+
         public IEnumerator LoadAssetBundle(string storage, TRResourceType type = defaultResourceType)
         {
             var coroutine = assetBundleLoader[type].Load(storage);

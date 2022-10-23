@@ -48,7 +48,7 @@ namespace Trionfi
             else
                 hasSync = false;
 
-            RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
+            RawImage _image = Trionfi.Instance.movieTexture;
             Trionfi.Instance.videoPlayer.url = url;
             Trionfi.Instance.videoPlayer.isLooping = loop;
 
@@ -94,7 +94,7 @@ namespace Trionfi
             if (Trionfi.Instance.videoPlayer.isPlaying || Trionfi.Instance.videoPlayer.isPaused)
                 Trionfi.Instance.videoPlayer.Stop();
 
-            RawImage _image = Trionfi.Instance.layerInstance[TRLayerID.MOVIE].instance;
+            RawImage _image = Trionfi.Instance.movieTexture;
             _image.enabled = false;
         }
 #endif

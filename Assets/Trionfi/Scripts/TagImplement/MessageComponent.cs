@@ -1,10 +1,8 @@
 ﻿
 #if !TR_PARSEONLY
 using UnityEngine;
- using UnityEngine.UI;
- #if UNITY_2017_1_OR_NEWER
-  using UnityEngine.U2D;
- #endif
+using UnityEngine.UI;
+using UnityEngine.U2D;
 using DG.Tweening;
 #endif
 

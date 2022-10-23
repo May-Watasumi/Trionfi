@@ -22,11 +22,11 @@ namespace Trionfi
         public static readonly string assetPath = "Assets/Trionfi/";
         public static readonly string readFlagData = "ReadFlags.dat";
 
-        [System.NonSerialized]
+        [NonSerialized]
         public RenderTexture captureBuffer;
-        [System.NonSerialized]
+        [NonSerialized]
         public RenderTexture movieBuffer;
-        [System.NonSerialized]
+        [NonSerialized]
         public RenderTexture[] subRenderBuffer = new RenderTexture[1];
 
         [SerializeField]
@@ -34,6 +34,8 @@ namespace Trionfi
 
         [SerializeField]
         string bootScriptName;
+        [SerializeField]
+        public RawImage movieTexture;
         [SerializeField]
         public UnityEngine.Video.VideoPlayer videoPlayer;
         [SerializeField]
@@ -43,8 +45,6 @@ namespace Trionfi
 
         [SerializeField]
         public RawImage rawImage;
-        [SerializeField]
-        public Text layerText;
         [SerializeField]
         public Camera targetCamera;
         [SerializeField]
@@ -128,7 +128,7 @@ namespace Trionfi
                 foreach (KeyValuePair<TRLayerID, TRLayer> pair in this)
                 {
                     pair.Value.instance.rectTransform.anchoredPosition = new Vector2(pair.Value.instance.rectTransform.anchoredPosition.x, 0.0f);
-                    pair.Value.instance.texture = null;
+                    pair.Value.instance = null;
                     pair.Value.actor = string.Empty;
                     pair.Value.instance.color = Color.white;
                     pair.Value.tagParam.Clear();
@@ -391,12 +391,12 @@ namespace Trionfi
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             string storage = tagParam["storage", string.Empty];
 
-            var _coroutine = TRResourceLoader.Instance.LoadTexture(storage, type);
+            var _coroutine = TRResourceLoader.Instance.LoadSprite(storage, type);
             yield return StartCoroutine(_coroutine);
 
             if (_coroutine.Current != null)
             {
-                layerInstance[id].instance.texture = (Texture2D)_coroutine.Current;
+                layerInstance[id].instance.sprite = (Sprite)_coroutine.Current;
                 layerInstance[id].tagParam = tagParam;
             }
  
@@ -422,7 +422,7 @@ namespace Trionfi
             rawImage.texture = captureBuffer;
 
             videoPlayer.targetTexture = movieBuffer;
-            layerInstance[TRLayerID.MOVIE].instance.texture = movieBuffer;
+            movieTexture.texture = movieBuffer;
 
             float screenAspect = (float)Screen.width / (float)Screen.height;
             float canvasAspect = TRSystemConfig.Instance.screenSize.x / TRSystemConfig.Instance.screenSize.y;

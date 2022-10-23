@@ -144,7 +144,7 @@ namespace Trionfi
     }
 
     [Serializable]
-    public class TRLayer : TRMediaInstance<RawImage>
+    public class TRLayer : TRMediaInstance<Image>
     {
         [SerializeField]
         public string actor;
