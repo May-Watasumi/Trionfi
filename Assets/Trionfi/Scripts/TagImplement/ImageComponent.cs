@@ -70,6 +70,7 @@ namespace Trionfi
 
             string storage = tagParam["storage", string.Empty];
             _image.sprite = null;
+            _image.useSpriteMesh = false;
 
             int mtime = tagParam["time", 0];
             float time = (float)mtime / 1000.0f;
@@ -95,6 +96,7 @@ namespace Trionfi
                 DicedSpriteAtlas atlas = Resources.Load<DicedSpriteAtlas>(tagParam["dicedatlas"].Literal());
                 Sprite sprite = atlas.GetSprite(tagParam["storage", string.Empty]);
                 _image.sprite = sprite;
+                _image.useSpriteMesh = true;
             }
             /*
             else if (tagParam.ContainsKey("renderbuf"))

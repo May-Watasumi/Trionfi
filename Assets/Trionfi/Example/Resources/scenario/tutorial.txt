@@ -17,7 +17,7 @@
 [image layer=0 storage=sprite/bg/schoolroomhibig130901]
 
 [image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000 actor=こはく]
-[image layer=2 storage=sprite/character/portrait_yuko_01 pos=right yoff =-41 time=1000 actor=ゆうこ]
+[image layer=2 storage=portrait_yuko_01 dicedatlas=sprite/character/yuko pos=right yoff =-41 time=1000 actor=ゆうこ]
 [trans rule=rule/030  wait = 750]
 
 [initscene]
