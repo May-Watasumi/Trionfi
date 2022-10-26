@@ -2,6 +2,14 @@
  using UnityEngine;
  using UnityEngine.SceneManagement;
  using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
+
 #endif
 
 using System;
@@ -24,7 +32,7 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             string name = tagParam["name"].Literal();
@@ -37,6 +45,7 @@ namespace Trionfi
             FunctionalObjectInstance function = new FunctionalObjectInstance(FunctionalObjectType.Macro, _cuttentStack.scriptName, beginPos, endPos);
             TRVirtualMachine.Instance.functionalObjects[name] = function;
 #endif
+            return string.Empty;
         }
     }
 
@@ -46,7 +55,7 @@ namespace Trionfi
     {
         public MacroendComponent() { }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             /*
@@ -59,7 +68,8 @@ namespace Trionfi
             }
             */
 #endif
-		}
+            return string.Empty;
+        }
     }
 
     //マクロを作成して管理する
@@ -76,12 +86,13 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			string name = tagParam["name"].Literal();
+            string name = tagParam["name"].Literal();
             TRVirtualMachine.Instance.functionalObjects.Remove(name);
 #endif
+            return string.Empty;
 		}
     }
 
@@ -93,11 +104,12 @@ namespace Trionfi
         {
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			TRVirtualMachine.Instance.functionalObjects.Clear();
+            TRVirtualMachine.Instance.functionalObjects.Clear();
 #endif
+            return string.Empty;
 		}
     }
 }

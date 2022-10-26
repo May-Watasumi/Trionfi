@@ -1,10 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Collections;
 using System.Collections.Generic;
 
+
 #if !TR_PARSEONLY
- using UnityEngine;
+using UnityEngine;
+using Cysharp.Threading.Tasks;
+
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
 #endif
 
 using TRVariable = Jace.Operations.VariableCalcurator;
@@ -53,6 +61,7 @@ namespace Trionfi
 
         public List<string> essentialParams = new List<string>();
         public List<string> essentialMoreOneParams = new List<string>();
+
 #if UNITY_EDITOR || TR_DEBUG
         [Conditional("UNITY_EDITOR"), Conditional("TR_DEBUG"), Conditional("DEVELOPMENT_BUILD")]
 #endif
@@ -136,25 +145,27 @@ namespace Trionfi
                 return TRResourceLoader.defaultResourceType;
         }
 #endif
+        protected virtual async TRTaskString TagFunction() { return string.Empty; }
 
-            //タグ実行本体
+        /*
+        //タグ実行本体
         abstract protected void TagFunction();
         public virtual IEnumerator TagSyncFunction() { yield return null; }
         public virtual void TagSyncFinished() {  }
         public virtual void Before() { }
         public virtual void After() { }
+        */
 
-        public IEnumerator Execute()
+        public async TRTask Execute()
         {
+            Validate();
+
             Log();
 
-            Before();
+            string mes = await TagFunction();
 
-            TagFunction();
-
-            After();
-
-            yield return TagSyncFunction();
+            if (string.IsNullOrEmpty(mes))
+                ErrorLogger.Log(mes);
         }
     }
 
@@ -171,10 +182,9 @@ namespace Trionfi
             };
 #endif
         }
-        protected override void TagFunction()  { }
 
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        protected override async TRTaskString TagFunction()
         {
             if (tagParam.ContainsKey("name"))
             {
@@ -185,17 +195,18 @@ namespace Trionfi
                     FunctionalObjectInstance func = TRVirtualMachine.Instance.functionalObjects[macroName];
 
                     if (func.type != FunctionalObjectType.Macro)
-                        ErrorLogger.Log("\"" + macroName + "\"はマクロではありません");
+                        return("\"" + macroName + "\"はマクロではありません");
                     else
-                        yield return TRVirtualMachine.Instance.Execute(func, tagParam);
-                    //                    TRVirtualMachine.callStack.Push(func);
+                        await TRVirtualMachine.Instance.Execute(func, tagParam);
                 }
                 else
-                    ErrorLogger.Log("マクロ\"" + macroName + "\"は存在しません");
+                    return( "マクロ\"" + macroName + "\"は存在しません");
             }
+ 
+            return ("必須パラメータnameが存在しません");
         }
 #endif
-	}
+    }
 
     //アクタータグ。
     [Serializable]
@@ -211,10 +222,10 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			string _paramString;
+            string _paramString;
             _paramString = tagParam["param"].Literal();
 
             string[] _params = _paramString.Split(new char[] { ' ', '　' } );
@@ -246,17 +257,15 @@ namespace Trionfi
                 tagParam["layer"] = new TRVariable(id);
                 tagParam["storage"] = new TRVariable(storage);
             }
-#endif
-		}
 
-#if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
-        {
             ImageComponent _tag = new ImageComponent();
             _tag.tagParam = tagParam;
-            yield return _tag.TagSyncFunction();
-        }
+            await _tag.Execute();
+
+            return string.Empty;
 #endif
-	}
+    }
+
+}
 }
 

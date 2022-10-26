@@ -1,75 +1,104 @@
-﻿using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.Networking;
-using System.IO;
+﻿using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+
+#if !TR_PARSEONLY
+using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Networking;
+using Cysharp.Threading.Tasks;
+
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+
+//using TRTaskTextAsset = Cysharp.Threading.Tasks.UniTask<UnityEngine.TextAsset>;
+using TRTaskAudio = Cysharp.Threading.Tasks.UniTask<UnityEngine.AudioClip>;
+using TRTaskTexture = Cysharp.Threading.Tasks.UniTask<UnityEngine.Texture2D>;
+using TRTaskSprite = Cysharp.Threading.Tasks.UniTask<UnityEngine.Sprite>;
+using TRTaskAssetBundle = Cysharp.Threading.Tasks.UniTask<UnityEngine.AssetBundle>;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+#else
+using System.Threading.Tasks;
+
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskTextAsset = System.Threading.Tasks.Task<UnityEngine.TextAsset>;
+using TRTaskAudio = System.Threading.Tasks.Task<UnityEngine.AudioClip>;
+using TRTaskTexture = System.Threading.Tasks.Task<UnityEngine.Texture2D>;
+using TRTaskSprite = System.Threading.Tasks.Task<UnityEngine.Sprite>;
+using TRTaskAssetBundle = System.Threading.Tasks.Task<UnityEngine.AssetBundle>;
+using TRTaskString = System.Threading.Tasks.Task<string>;
+#endif
 
 namespace Trionfi
 {
     public abstract class IAssetLoader<T>
     {
         public T instance;
-        public abstract IEnumerator Load(string storage);
+        public virtual async Cysharp.Threading.Tasks.UniTask<T> Load(string storage) { return instance; }
     }
 
     public class TRDefaultTextLoader : IAssetLoader<string>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskString Load(string storage)
         {
-            instance = Resources.Load<TextAsset>(storage).text;
-            yield return instance;
+            TextAsset text = await Resources.LoadAsync<TextAsset>(storage) as TextAsset ;
+
+            instance = text.text;
+
+            return instance;
+            /*
+            if (text != null)
+                return text.text;
+            else
+                return string.Empty;
+            */
         }
     }
 
     public class TRDefaultAudioLoader : IAssetLoader<AudioClip>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskAudio Load(string storage)
         {
-            instance = Resources.Load<AudioClip>(storage);
-            yield return instance;
+            instance = await Resources.LoadAsync<AudioClip>(storage) as AudioClip;
+            return instance;
         }
     }
 
     public class TRDefaultTextureLoader : IAssetLoader<Texture2D>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskTexture Load(string storage)
         {
-            instance = Resources.Load<Texture2D>(storage);
-            yield return instance;
+            instance = await Resources.LoadAsync<Texture2D>(storage) as Texture2D;
+            return instance;
         }
     }
 
     public class TRDefaultSpriteLoader : IAssetLoader<Sprite>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskSprite Load(string storage)
         {
-            instance = Resources.Load<Sprite>(storage);
-            yield return instance;
+            instance = await Resources.LoadAsync<Sprite>(storage) as Sprite;
+            return instance;
         }
     }
 
-
-
     public class TRDefaultAssetBundleLoader : IAssetLoader<AssetBundle>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskAssetBundle Load(string storage)
         {
-            instance = Resources.Load<AssetBundle>(storage);
-            yield return instance;
-
+            instance = await Resources.LoadAsync<AssetBundle>(storage) as AssetBundle;
+            return instance;
         }
     }
 
     public class TRWebTextLoader : IAssetLoader<string>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskString Load(string storage)
         {
             instance = null;
 
             UnityWebRequest request = UnityWebRequest.Get(storage);
 
-            yield return request.SendWebRequest();
+            await request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
@@ -80,7 +109,7 @@ namespace Trionfi
             else
                 instance = request.downloadHandler.text;
 
-            yield return instance;
+            return instance;
 
         }
     }
@@ -94,15 +123,15 @@ namespace Trionfi
             { "ogg", AudioType.OGGVORBIS },
         };
 
-        public override IEnumerator Load(string storage)
+        public override async TRTaskAudio Load(string storage)
         {
-            instance = null;
+           instance = null;
 
             AudioType _type = audioType[(System.IO.Path.GetExtension(storage)).ToLower()];
 
             UnityWebRequest request = UnityWebRequestMultimedia.GetAudioClip(storage, _type);
 
-            yield return request.SendWebRequest();
+            await request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
@@ -112,18 +141,19 @@ namespace Trionfi
                 Debug.Log(request.error);
             else
                 instance = DownloadHandlerAudioClip.GetContent(request);
-            yield return instance;
+            
+            return instance;
         }
     }
 
     public class TRWebTextureLoader : IAssetLoader<Texture2D>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskTexture Load(string storage)
         {
             instance = null;
 
             UnityWebRequest request = UnityWebRequestTexture.GetTexture(storage);
-            yield return request.SendWebRequest();
+            await request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
@@ -134,17 +164,19 @@ namespace Trionfi
             else
                 instance = DownloadHandlerTexture.GetContent(request);
 
-            yield return instance;
+            return instance;
         }
     }
 
     public class TRWebAssetBundleLoader : IAssetLoader<AssetBundle>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskAssetBundle Load(string storage)
         {
             instance = null;
 
             UnityWebRequest request = UnityWebRequestAssetBundle.GetAssetBundle(storage);
+
+            await request.SendWebRequest();
 
 #if UNITY_2020_1_OR_NEWER
             if (request.result != UnityWebRequest.Result.Success)
@@ -155,26 +187,26 @@ namespace Trionfi
             else
                 instance = DownloadHandlerAssetBundle.GetContent(request);
 
-            yield return instance;
+            return instance;
         }
     }
 
     public class TRStreamTextLoader : IAssetLoader<string>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskString Load(string storage)
         {
             string fullPath = Application.streamingAssetsPath + storage;
             instance = File.ReadAllText(fullPath);
-            yield return instance;
+            return instance;
         }
     }
 
     public class TRStreamAssetBundleLoader : IAssetLoader<AssetBundle>
     {
-        public override IEnumerator Load(string storage)
+        public override async TRTaskAssetBundle Load(string storage)
         {
             instance = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, storage));
-            yield return instance;
+            return instance;
         }
     }
 
@@ -225,52 +257,50 @@ namespace Trionfi
             assetBundleLoader[TRResourceType.LocalStreaming] = new TRStreamAssetBundleLoader();
         }
 
-        public IEnumerator LoadAudio(string storage, TRResourceType type = defaultResourceType)
+        public async TRTaskAudio LoadAudio(string storage, TRResourceType type = defaultResourceType)
         {
-            var coroutine = audioLoader[type].Load(storage);
-            yield return StartCoroutine(coroutine);
-            yield return coroutine.Current;           
+            await audioLoader[type].Load(storage);
+            return audioLoader[type].instance;
         }
 
-        public IEnumerator LoadText(string storage, TRResourceType type = defaultResourceType)
+        public async TRTaskString LoadText(string storage, TRResourceType type = defaultResourceType)
         {
-            var coroutine =  textLoader[type].Load(storage);
-            yield return StartCoroutine(coroutine);
-            yield return coroutine.Current;
+            await textLoader[type].Load(storage);
+            return textLoader[type].instance;
         }
 
-        public IEnumerator LoadTexture(string storage, TRResourceType type = defaultResourceType)
+        public async TRTaskTexture LoadTexture(string storage, TRResourceType type = defaultResourceType)
         {
-            var coroutine = textureLoader[type].Load(storage); ;
-            yield return StartCoroutine(coroutine);
-            yield return coroutine.Current;
+            await textureLoader[type].Load(storage); ;
+            return textureLoader[type].instance;
         }
 
-        public IEnumerator LoadSprite(string storage, TRResourceType type = defaultResourceType)
+        public async TRTaskSprite LoadSprite(string storage, TRResourceType type = defaultResourceType)
         {
+            Sprite instance = null;
             if (type == TRResourceType.LocalStatic)
-                yield return Resources.Load<Sprite>(storage);
+            {
+                instance = await Resources.LoadAsync<Sprite>(storage) as Sprite;
+            }
             else
             {
-                var coroutine = textureLoader[type].Load(storage);
-                yield return StartCoroutine(coroutine);
-                Texture2D texture = (Texture2D)coroutine.Current;
-                Sprite sprite = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
-                yield return sprite;
+                Texture2D texture =  await textureLoader[type].Load(storage);
+                instance = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
             }
+
+            return instance;
         }
 
-
-        public IEnumerator LoadAssetBundle(string storage, TRResourceType type = defaultResourceType)
+        public async TRTaskAssetBundle LoadAssetBundle(string storage, TRResourceType type = defaultResourceType)
         {
-            var coroutine = assetBundleLoader[type].Load(storage);
-            yield return StartCoroutine(coroutine);
-            yield return coroutine.Current;
+            await assetBundleLoader[type].Load(storage);
+            return assetBundleLoader[type].instance;
         }
 
-        public IEnumerator LoadAudioFromBundle(string storage, string bundle)
+        public async TRTaskAudio LoadAudioFromBundle(string storage, string bundle)
         {
-            yield return assetBundleList[bundle].LoadAsset<AudioClip>(storage);
+            AssetBundleRequest request = assetBundleList[bundle].LoadAssetAsync<AudioClip>(storage);
+            return (AudioClip)request.asset;
         }
 
         public IEnumerator LoadTextFromBundle(string storage, string bundle)

@@ -1,10 +1,18 @@
 ﻿#if !TR_PARSEONLY
- using UnityEngine;
- using UnityEngine.UI;
+using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.U2D;
 using UnityEngine.Networking;
 using SpriteDicing;
 using DG.Tweening;
+using Cysharp.Threading.Tasks;
+
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
 #endif
 
 using System;
@@ -29,14 +37,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
             hasSync = true;
-        }
-
 #if !TR_PARSEONLY
-        public override IEnumerator TagSyncFunction()
-        {
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
             Image _image;
@@ -109,7 +113,7 @@ namespace Trionfi
             else
             {
                 TRResourceType type = GetResourceType();
-                yield return Trionfi.Instance.LoadImage(tagParam, type);
+                _image.sprite = await Trionfi.Instance.LoadImage(tagParam, type);
             }
 
             if (updatePos)
@@ -117,7 +121,6 @@ namespace Trionfi
 
             if (!string.IsNullOrEmpty(storage))
             {
-
                 if (tagParam.ContainsKey("width") || tagParam.ContainsKey("height"))
                 {
                     Vector2 size = TRSystemConfig.Instance.screenSize;
@@ -145,8 +148,11 @@ namespace Trionfi
                                 1.0f,
                                 time
                                );
-                yield return new WaitWhile(_tweener.IsPlaying);
+
+                await UniTask.WaitWhile(() => _tweener.IsPlaying());
             }
+
+            return string.Empty;
         }
 #endif
 	}
@@ -163,10 +169,10 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
-			Image _image;
+            Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
 
@@ -174,6 +180,7 @@ namespace Trionfi
             _image.enabled = false;
             _image.sprite = null;
 #endif
+            return string.Empty;
 		}
     }
 
@@ -191,16 +198,17 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			Image _image;
+            Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
 
-			//ToDo:
+            //ToDo:
 #endif
+            return string.Empty;
 		}
     }
 
@@ -219,10 +227,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			Image _image;
+            Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -233,6 +241,7 @@ namespace Trionfi
 
             _image.color = color;
 #endif
+            return string.Empty;
 		}
     }
 
@@ -250,10 +259,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			Image _image;
+            Image _image;
 
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             _image = Trionfi.Instance.layerInstance[id].instance;
@@ -269,6 +278,7 @@ namespace Trionfi
             seq.Join(_image.rectTransform.DORotate(rotate, time));
             seq.Play();
 #endif
+            return string.Empty;
 		}
     }
 
@@ -289,7 +299,7 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             Material mat = null;
@@ -324,8 +334,8 @@ namespace Trionfi
 			{
                 PostEffect.Instance.effect = mat;
 			}
-
 #endif
+            return string.Empty;
         }
     }
 
@@ -343,10 +353,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			Trionfi.Instance.rawImage.color = Color.white;
+            Trionfi.Instance.rawImage.color = Color.white;
             Trionfi.Instance.targetCamera.targetTexture = Trionfi.Instance.captureBuffer;
             Trionfi.Instance.targetCamera.Render();
             /*
@@ -362,17 +372,15 @@ namespace Trionfi
             //Write to a file in the project folder
             File.WriteAllBytes(Application.dataPath + "/../SavedScreen.png", bytes);
             */
-#endif
-        }
 
-#if !TR_PARSEONLY
-        public override IEnumerator TagSyncFunction()
-        {
-            yield return new WaitForEndOfFrame();
+
+            await UniTask.WaitForEndOfFrame(Trionfi.Instance);
+
             Trionfi.Instance.targetCamera.targetTexture = null;
             Trionfi.Instance.rawImage.gameObject.SetActive(true);
-        }
 #endif
+            return string.Empty;
+        }
 	}
 
     [Serializable]
@@ -390,26 +398,23 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
-#if !TR_PARSEONLY
-			//default is "sync" = true.
-			isSync = tagParam["sync", true];
+            //default is "sync" = true.
+            isSync = tagParam["sync", true];
 
             if(!isSync)
-                Trionfi.Instance.StartCoroutine(FadeFunction());
-#endif
-		}
+                FadeFunction().Forget();
 
-#if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
-        {
             if (isSync)
-                yield return (FadeFunction());
+                await (FadeFunction());
+
+            return string.Empty;
         }
 
-        IEnumerator FadeFunction()
+        async TRTask FadeFunction()
         {
+#if !TR_PARSEONLY
             int timeMsec = tagParam["time", (int)(TRSystemConfig.Instance.defaultEffectTime * 1000.0f)];
             float time = timeMsec / 1000.0f;
 
@@ -434,7 +439,7 @@ namespace Trionfi
                                 wait = true;
                             });
 
-                yield return new WaitUntil( () => wait);
+                await UniTask.WaitWhile(() => wait);
             }
             else
             {
@@ -454,7 +459,7 @@ namespace Trionfi
                 while (timeCount < time && !TRGameConfig.configData.effectSkip)
                 {
                     maskFader.Range = timeCount / time;
-                    yield return new WaitForEndOfFrame();
+                    await UniTask.WaitForEndOfFrame(Trionfi.Instance);
                     timeCount += Time.deltaTime;
                 }
 
@@ -465,12 +470,10 @@ namespace Trionfi
             int waitTime = tagParam["time", 0];
 
             if (waitTime > 0)
-                yield return new WaitForSeconds((float)waitTime / 1000.0f);
-
-            yield return null;
-        }
+                await UniTask.Delay(timeMsec);
 #endif
-	}
+        }
+    }
 
     [Serializable]
     public class QuakeComponent : AbstractComponent
@@ -488,19 +491,18 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
-        {
-
-        }
-
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        protected override async TRTaskString TagFunction()
         {
             if (isSync)
-                yield return (ShakeFunction());
+                await (ShakeFunction());
+            else
+                ShakeFunction().Forget();
+
+            return string.Empty;
         }
 
-        IEnumerator ShakeFunction()
+        async TRTask ShakeFunction()
         {
             RectTransform _rect = null;
 
@@ -520,7 +522,7 @@ namespace Trionfi
 
             Tweener _tween = _rect.GetComponent<RectTransform>().DOShakePosition(time, strength, vibratio, 90.0f, false, false);
 
-            yield return new WaitWhile(_tween.IsPlaying);
+            await UniTask.WaitWhile(() => _tween.IsPlaying());
         }
 #endif
 	}

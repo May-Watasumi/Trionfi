@@ -4,6 +4,15 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.U2D;
 using DG.Tweening;
+using Cysharp.Threading.Tasks;
+
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
+
 #endif
 
 using System;
@@ -26,24 +35,25 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
             hasSync = true;
-        }
-
 #if !TR_PARSEONLY
-        public override IEnumerator TagSyncFunction()
-        {
             string storage = tagParam["storage"].Literal();
 
             if (!string.IsNullOrEmpty(storage))
             {
-                var coroutine = TRResourceLoader.Instance.LoadText(storage);
-                yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
-                TRVirtualMachine.Instance.currentTagInstance.ReadTextData((string)coroutine.Current);
+                string mes = await TRResourceLoader.Instance.LoadText(storage, GetResourceType());
+
+                if (string.IsNullOrEmpty(mes))
+                    return "リソースエラー:" + storage; 
+                
+                TRVirtualMachine.Instance.currentTagInstance.ReadTextData(mes);
+
+                return string.Empty;
             }
 
-            yield return null;
+            return "エラー：必須パラメータstorageがない";
         }
 #endif
     }
@@ -61,7 +71,7 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             string id = tagParam["lang"].Literal();
@@ -91,6 +101,7 @@ namespace Trionfi
                     break;
             }
 #endif
+            return string.Empty;
         }
     }
     
@@ -110,7 +121,7 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             Trionfi.Instance.SetStandLayerTone();
@@ -149,13 +160,8 @@ namespace Trionfi
             }
             
             Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
-#endif
-		}
 
-#if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
-        {
-            yield return new WaitWhile(() => (Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None) && (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run));
+            await UniTask.WaitWhile(() => (Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None) && (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run));
 
             if (TRSystemConfig.Instance.isNovelMode)
             {
@@ -165,8 +171,9 @@ namespace Trionfi
             // メッセージの初期化は新しいメッセージを表示する直前にするのでここではしない\\
             //            else
             //                Trionfi.Instance.messageWindow.ClearMessage();
-        }
 #endif
+            return string.Empty;
+		}
     }
 
     //[name val="なまえ" face="表情"]
@@ -183,10 +190,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			string name = tagParam["val"].Literal();
+            string name = tagParam["val"].Literal();
 
             string emb2 = "#(.*)#";
             var regex2 = new Regex(emb2);
@@ -209,6 +216,7 @@ namespace Trionfi
                 Trionfi.Instance.messageWindow.currentSpeaker = name;
             }
 #endif
+            return string.Empty;
 		}
     }
 
@@ -225,12 +233,13 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			float ratio = tagParam["ratio", 1.0f];
+            float ratio = tagParam["ratio", 1.0f];
             Trionfi.Instance.messageWindow.speedRatio = ratio;
 #endif
+            return string.Empty;
 		}
     }
 
@@ -248,11 +257,11 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			//振幅
-			int strength = tagParam["strength", 5];
+            //振幅
+            int strength = tagParam["strength", 5];
             //振動頻度
             int vibratio = tagParam["vibrato", 20];
 
@@ -260,6 +269,7 @@ namespace Trionfi
 
             Trionfi.Instance.messageWindow.tweener = _rect.GetComponent<RectTransform>().DOShakePosition(1.0f, strength, vibratio, 90.0f, false, false).SetLoops(-1);
 #endif
+            return string.Empty;
 		}
     }
 
@@ -278,14 +288,15 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			Trionfi.Instance.messageWindow.gameObject.SetActive(false);
+            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
             Trionfi.Instance.messageWindow = Trionfi.Instance.messageWindowList[tagParam["id"].Int()];
             Trionfi.Instance.messageWindow.ClearMessage();
             Trionfi.Instance.messageWindow.gameObject.SetActive(true);
 #endif
+            return string.Empty;
 		}
     }
 
@@ -322,27 +333,26 @@ namespace Trionfi
     [Serializable]
     public class PComponent : AbstractComponent
     {
-        protected override void TagFunction()
-        {
-        }
 
-#if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        protected override async TRTaskString TagFunction()
         {
-            yield return Trionfi.Instance.messageWindow.Wait();
-        }
+#if !TR_PARSEONLY
+            await Trionfi.Instance.messageWindow.Wait();
 #endif
-	}
+            return string.Empty;
+        }
+    }
 
     //メッセージクリア
     [Serializable]
     public class CmComponent : AbstractComponent
     {
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			Trionfi.Instance.messageWindow.ClearMessage();
+            Trionfi.Instance.messageWindow.ClearMessage();
 #endif
+            return string.Empty;
 		}
     }
 
@@ -361,16 +371,17 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
-			int size = tagParam["size", TRSystemConfig.Instance.fontSize];
+            int size = tagParam["size", TRSystemConfig.Instance.fontSize];
             uint colorValue = tagParam["color", 0xFFFFFFFF];
 
             Color color = TRVariableDictionary.ToRGB(colorValue);
             Trionfi.Instance.messageWindow.currentMessage.fontSize = size;
             Trionfi.Instance.messageWindow.currentMessage.color = color;
 #endif
+            return string.Empty;
 		}
 	}
 }

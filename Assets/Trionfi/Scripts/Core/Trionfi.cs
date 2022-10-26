@@ -7,9 +7,18 @@ using Newtonsoft.Json;
 
 #if !TR_PARSEONLY
 using UnityEngine;
- using UnityEngine.UI;
- using UnityEngine.EventSystems;
+using UnityEngine.UI;
+using UnityEngine.EventSystems;
  using DG.Tweening;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+using TRTaskAudio = Cysharp.Threading.Tasks.UniTask<UnityEngine.AudioClip>;
+using TRTaskTexture = Cysharp.Threading.Tasks.UniTask<UnityEngine.Texture2D>;
+using TRTaskSprite = Cysharp.Threading.Tasks.UniTask<UnityEngine.Sprite>;
+using TRTaskAssetBundle = Cysharp.Threading.Tasks.UniTask<UnityEngine.AssetBundle>;
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
 #endif
 
 using TRVariable = Jace.Operations.VariableCalcurator;
@@ -81,7 +90,7 @@ namespace Trionfi
         public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
 
         [Serializable]
-        public class TRAudioInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRAudioID, TRAudio>
+        public class TRAudioInstance : SerializableDictionary<TRAudioID, TRAudio>
         {
             public void Reset()
             {
@@ -121,7 +130,7 @@ namespace Trionfi
         }
 
         [Serializable]
-        public class TRImageInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<TRLayerID, TRLayer>
+        public class TRImageInstance : SerializableDictionary<TRLayerID, TRLayer>
         {
             public void Reset()
             {
@@ -161,7 +170,7 @@ namespace Trionfi
             }
         }
 
-        public class TRScriptInstance : SerializableDictionary/*TRMediaInstanceDictionary*/<string, TRScript>
+        public class TRScriptInstance : SerializableDictionary<string, TRScript>
         {
             /*
             public void Reset()
@@ -322,24 +331,23 @@ namespace Trionfi
         }
 
         //スタック等を使わない簡易実行。
-        public IEnumerator ExecuteTagArray(AbstractComponent[] tagComponent)
+        public async TRTask ExecuteTagArray(AbstractComponent[] tagComponent)
         {
             foreach(AbstractComponent tag in  tagComponent)
 			{
-                yield return tag.Execute();
+                await tag.Execute();
 			}
         }
 
-        public IEnumerator LoadScript(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool run = false)
+        public async TRTaskString LoadScript(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool run = false)
         {
-            var _coroutine = TRResourceLoader.Instance.LoadText(storage);
-            yield return StartCoroutine(_coroutine);
+            string script = await TRResourceLoader.Instance.LoadText(storage, type);
 
-            if (!string.IsNullOrEmpty((string)_coroutine.Current))
+            if (!string.IsNullOrEmpty((string)script))
             {
                 TRTagInstance _instance = new TRTagInstance();
 
-                _instance.CompileScriptString((string)_coroutine.Current);
+                _instance.CompileScriptString(script);
 
                 if (!flagDatas.ContainsKey(storage))
                 {
@@ -365,42 +373,41 @@ namespace Trionfi
             }
 
             if (run)
-                StartCoroutine(TRVirtualMachine.instance.Run(storage));
+                TRVirtualMachine.instance.Run(storage);
 
-            yield return _coroutine.Current;
+            return script;
         }
 
-        public IEnumerator LoadAudio(TRVariableDictionary tagParam, TRResourceType type )//int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
+        public async TRTaskAudio LoadAudio(TRVariableDictionary tagParam, TRResourceType type )//int ch, string storage, TRResourceType type = TRResourceLoader.defaultResourceType)
         {
             TRAudioID id = (TRAudioID)tagParam["buf", 0];
             string storage = tagParam["storage", string.Empty];
 
-            var _coroutine = TRResourceLoader.Instance.LoadAudio(storage, type);
-            yield return StartCoroutine(_coroutine);
+            AudioClip clip = await TRResourceLoader.Instance.LoadAudio(storage, type);
 
-            if(_coroutine.Current != null)
+            if(clip != null)
             {
-                audioInstance[id].instance.clip = (AudioClip)_coroutine.Current;
+                audioInstance[id].instance.clip = clip;
                 audioInstance[id].tagParam = tagParam;
             }
-            yield return _coroutine.Current;
+
+            return clip;
         }
 
-        public IEnumerator LoadImage(TRVariableDictionary tagParam, TRResourceType type)
+        public async TRTaskSprite LoadImage(TRVariableDictionary tagParam, TRResourceType type)
         {
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             string storage = tagParam["storage", string.Empty];
 
-            var _coroutine = TRResourceLoader.Instance.LoadSprite(storage, type);
-            yield return StartCoroutine(_coroutine);
+            Sprite sprite = await TRResourceLoader.Instance.LoadSprite(storage, type);
 
-            if (_coroutine.Current != null)
+            if (sprite!= null)
             {
-                layerInstance[id].instance.sprite = (Sprite)_coroutine.Current;
+                layerInstance[id].instance.sprite = sprite;
                 layerInstance[id].tagParam = tagParam;
             }
- 
-            yield return _coroutine.Current;
+
+            return sprite;
         }
 
         public void Init(int subRenderCount = 0, bool changeLayerOrder = false)
@@ -569,7 +576,7 @@ namespace Trionfi
                 titleWindow.gameObject.SetActive(false);
 
             if (!string.IsNullOrEmpty(scriptName))
-                StartCoroutine(LoadScript(scriptName, type, true));
+                LoadScript(scriptName, type, true);
         }
 
         public void InitKAGAlias()

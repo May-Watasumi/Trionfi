@@ -52,7 +52,7 @@ namespace Trionfi
                 if (tagComponent != null)
                 {
                     consoleLog += ("Tag: " + tagComponent.tagName + "\n");
-                    Trionfi.Instance.StartCoroutine(tagComponent.Execute());
+                    tagComponent.Execute();
                 }
                 else
                     consoleLog += ("Invalid Tag!\n");

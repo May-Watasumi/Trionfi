@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
 
 namespace Trionfi
 {
@@ -59,7 +62,7 @@ namespace Trionfi
             return JsonConvert.SerializeObject(this);
         }
 
-        public IEnumerator Deserialize()
+        public async TRTask Deserialize()
         {
             layerParam = JsonConvert.DeserializeObject<SerializableDictionary<int, TRVariableDictionary>>(layerJson);
             audioParam = JsonConvert.DeserializeObject<SerializableDictionary<int, TRVariableDictionary>>(audioJson);
@@ -77,7 +80,7 @@ namespace Trionfi
                 {
                     ImageComponent executer = new ImageComponent();
                     executer.tagParam = instance.Value;
-                    yield return executer.TagSyncFunction();
+                    await executer.Execute();
                 }
 
             }
@@ -88,14 +91,14 @@ namespace Trionfi
                 {
                     AudioComponent executer = new AudioComponent();
                     executer.tagParam = instance.Value;
-                    yield return executer.TagSyncFunction();
+                    await executer.Execute();
                 }
             }
 
             foreach (KeyValuePair<string, TRVariableDictionary> instance in scriptParam)
             {
                 if (instance.Value.Count != 0)
-                    yield return Trionfi.Instance.LoadScript(instance.Key);
+                    await Trionfi.Instance.LoadScript(instance.Key);
             }
 
             if (variable != null)

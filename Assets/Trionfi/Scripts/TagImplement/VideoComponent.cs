@@ -3,10 +3,16 @@
  using UnityEngine.UI;
  using UnityEngine.Networking;
  using DG.Tweening;
+ using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
 #endif
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Trionfi
@@ -24,15 +30,12 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
-//            hasSync = true;
-        }
-
 #if !TR_PARSEONLY
-        public override IEnumerator TagSyncFunction()
-        {
-			string storage = tagParam["url"].Literal();
+            //            hasSync = true;
+
+            string storage = tagParam["url"].Literal();
             //            float playDelay = tagParam.Float("delay");
             string url = Application.dataPath;
 
@@ -57,7 +60,7 @@ namespace Trionfi
 
             Trionfi.Instance.videoPlayer.Prepare();
 
-            yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.isPrepared);
+            await UniTask.WaitWhile(() => !Trionfi.Instance.videoPlayer.isPrepared);
 
             if (Trionfi.Instance.nowLoading != null)
                 Trionfi.Instance.nowLoading.gameObject.SetActive(false);
@@ -66,7 +69,7 @@ namespace Trionfi
 
             // ２回目以後の動画を再生する時、実際再生開始するまでは直前の最後のフレームが表示されるので、
             // 実際動画が再生するのを確認したら動画表示を開始する
-            yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.frame < 1);
+            await UniTask.WaitWhile(() => Trionfi.Instance.videoPlayer.frame < 1);
 
             _image.enabled = true;
 
@@ -79,16 +82,18 @@ namespace Trionfi
             if (hasSync)
             {
                 //Trionfi.Instance.CloseAllUI();
-                yield return new WaitWhile(() => Trionfi.Instance.videoPlayer.isPlaying);
+                await UniTask.WaitWhile(() => Trionfi.Instance.videoPlayer.isPlaying);
                 _image.enabled = false;
                 //Trionfi.Instance.OpenAllUI();
             }
+#endif
+            return string.Empty;
 
-            yield return null;
         }
 
         static public void StopFunc()
 		{
+#if !TR_PARSEONLY
             Trionfi.Instance.ClickEvent -= StopFunc;
 
             if (Trionfi.Instance.videoPlayer.isPlaying || Trionfi.Instance.videoPlayer.isPaused)
@@ -96,8 +101,8 @@ namespace Trionfi
 
             RawImage _image = Trionfi.Instance.movieTexture;
             _image.enabled = false;
-        }
 #endif
+        }
     }
 
     //[audiostop type=bgm delay=0]
@@ -112,12 +117,13 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             VideoplayComponent.StopFunc();
 #endif
-		}
+            return string.Empty;
+        }
     }
 
     //[audiostop type=bgm delay=0]
@@ -132,15 +138,17 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			//            float delay = tagParam.Float("delay");
+            //            float delay = tagParam.Float("delay");
 
-			if (Trionfi.Instance.videoPlayer.isPlaying)
+            if (Trionfi.Instance.videoPlayer.isPlaying)
                 Trionfi.Instance.videoPlayer.Pause();
+
 #endif
-		}
+            return string.Empty;
+        }
     }
 
     //[audiostop type=bgm delay=0]
@@ -156,14 +164,15 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			//            float delay = tagParam.Float("delay");
+            //            float delay = tagParam.Float("delay");
 
-			if (Trionfi.Instance.videoPlayer.isPrepared && !Trionfi.Instance.videoPlayer.isPlaying)
+            if (Trionfi.Instance.videoPlayer.isPrepared && !Trionfi.Instance.videoPlayer.isPlaying)
                 Trionfi.Instance.videoPlayer.Play();
 #endif
+            return string.Empty;
 		}
     }
 }

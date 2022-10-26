@@ -2,11 +2,16 @@
 using System.Collections;
 using System.Collections.Generic;
 
-using Jace.Operations;
-
 #if !TR_PARSEONLY
- using UnityEngine;
- using DG.Tweening;
+using UnityEngine;
+using DG.Tweening;
+
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+#else
+using System.Threading.Tasks;
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
 #endif
 
 
@@ -29,14 +34,12 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
+
         {
             hasSync = true;
-        }
 
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
-        {
             TRAudioID id = (TRAudioID)tagParam["buf", 0];
             string storage = tagParam["storage"].Literal();
             int playDelaymsec = tagParam["delay", 0];
@@ -46,17 +49,11 @@ namespace Trionfi
             float fadeTime = (float)fadeTimemsec / 1000.0f;
             bool loop = tagParam["loop", false];
 
-//            yield return TRResourceLoader.Instance.LoadAudio(storage);
-
             if (!string.IsNullOrEmpty(storage))
             {
                 TRResourceType type = GetResourceType();
 
-                var coroutine = Trionfi.Instance.LoadAudio(tagParam, type);
-
-                yield return TRResourceLoader.Instance.StartCoroutine(coroutine);
-
-                AudioClip _clip = (AudioClip)coroutine.Current;
+                AudioClip _clip = await Trionfi.Instance.LoadAudio(tagParam, type);
 
                 if (_clip != null)
                 {
@@ -66,8 +63,8 @@ namespace Trionfi
 
                     _source.volume = 0.0f;
 
-                    if (playDelay > 0.0f)
-                        yield return new WaitForSeconds(playDelay);
+//                    if (playDelay > 0.0f)
+//                        yield return new WaitForSeconds(playDelay);
 
                     float volume = 0.0f;
 
@@ -110,8 +107,7 @@ namespace Trionfi
                     }
                 }
             }
-
-            yield return null;
+            return string.Empty;
         }
 #endif
 	}
@@ -130,10 +126,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			TRAudioID id = (TRAudioID)tagParam["buf", 0];
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
 
@@ -142,7 +138,9 @@ namespace Trionfi
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Stop();
 #endif
-		}
+            return string.Empty;
+        }
+
     }
 
     [Serializable]
@@ -158,10 +156,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			TRAudioID id = (TRAudioID)tagParam["buf", 0];
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             int fadeTimemsec = tagParam["time", 0];
 
@@ -170,6 +168,7 @@ namespace Trionfi
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.Pause();
 #endif
+            return string.Empty;
 		}
     }
 
@@ -187,10 +186,10 @@ namespace Trionfi
 #endif
         }
 
-        protected override void TagFunction()
+        protected virtual async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			TRAudioID id = (TRAudioID)tagParam["buf", 0];
+            TRAudioID id = (TRAudioID)tagParam["buf", 0];
 
             //            float delay = tagParam.Float("delay");
             //            float fadeTime = tagParam.Float("time");
@@ -198,6 +197,7 @@ namespace Trionfi
             AudioSource _source = Trionfi.Instance.audioInstance[id].instance;
             _source.UnPause();
 #endif
+            return string.Empty;
 		}
     }
 

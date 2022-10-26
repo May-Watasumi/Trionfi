@@ -1,11 +1,18 @@
-﻿using System;
+﻿#if !TR_PARSEONLY
+using UnityEngine;
+using UnityEngine.SceneManagement;
+using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
+#endif
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
-
-#if !TR_PARSEONLY
- using UnityEngine;
- using UnityEngine.SceneManagement;
-#endif
 
 using Jace.Operations;
 
@@ -22,9 +29,10 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
             System.Diagnostics.Debug.WriteLine(tagParam["text"].Literal());
+            return string.Empty;
         }
     }
 
@@ -39,10 +47,10 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			string className = "Trionfi." + TRParserBase.tf.ToTitleCase(tagParam["tag"].Literal()) + "Component";
+            string className = "Trionfi." + TRParserBase.tf.ToTitleCase(tagParam["tag"].Literal()) + "Component";
 
             // リフレクションで動的型付け
             Type masterType = Type.GetType(className);
@@ -58,6 +66,7 @@ namespace Trionfi {
                 TRVirtualMachine.Instance.aliasTagInstance[tagParam["name"].Literal()] = _component;
             }
 #endif
+            return string.Empty;
 		}
     }
 
@@ -70,11 +79,12 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             Trionfi.Instance.ActivateAllCanvas(true);
 #endif
+            return string.Empty;
         }
     }
 
@@ -87,11 +97,12 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			Trionfi.Instance.ActivateAllCanvas(false);
+            Trionfi.Instance.ActivateAllCanvas(false);
 #endif
+            return string.Empty;
 		}
     }
 
@@ -106,9 +117,11 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
             ErrorLogger.Log("Label:"+tagParam["name"].Literal());
+
+            return string.Empty;
         }
     }
 
@@ -123,11 +136,12 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-	        TRSerializeManager.Instance.SaveData(tagParam["file"].Int());
+            TRSerializeManager.Instance.SaveData(tagParam["file"].Int());
 #endif
+            return string.Empty;
 		}
     }
 
@@ -144,11 +158,9 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction() {  }
-
-#if !TR_PARSEONLY
-        public override IEnumerator TagSyncFunction()
+        protected override async TRTaskString TagFunction()
         {
+#if !TR_PARSEONLY
             string target = string.Empty;
             string file = string.Empty;
 
@@ -163,7 +175,9 @@ namespace Trionfi {
             {
                 TRResourceType type = GetResourceType();
 
-                yield return Trionfi.Instance.LoadScript(file, type);
+                string script = await TRResourceLoader.Instance.LoadText(file, type);
+
+                await Trionfi.Instance.LoadScript(file, type);
 
                 //スタックをすべて削除する
 //                TRVirtualMachine.RemoveAllStacks();
@@ -194,9 +208,10 @@ namespace Trionfi {
 
                 ErrorLogger.Log("jump : file=\"" + TRVirtualMachine.Instance.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.Instance.currentCallStack.currentPos + "\"");
             }
-        }
 #endif
-	}
+            return string.Empty;
+        }
+    }
 
     //コールスタックに保存されるジャンプ。いわゆるサブルーチン
     [Serializable]
@@ -213,9 +228,7 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction() { }
-
-        public override IEnumerator TagSyncFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             string target = string.Empty;
@@ -231,7 +244,9 @@ namespace Trionfi {
             {
                 TRResourceType type = GetResourceType();
 
-                yield return Trionfi.Instance.LoadScript(file, type);
+                string script = await TRResourceLoader.Instance.LoadText(file, type);
+
+                await Trionfi.Instance.LoadScript(file, type);
 
                 FunctionalObjectInstance func = new FunctionalObjectInstance(FunctionalObjectType.Script, file, 0, 0);
 
@@ -240,7 +255,7 @@ namespace Trionfi {
 
                 ErrorLogger.Log("call : file=\"" + TRVirtualMachine.Instance.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.Instance.currentCallStack.currentPos + "\"");
 
-                yield return TRVirtualMachine.Instance.Execute(func, tagParam);
+                await TRVirtualMachine.Instance.Execute(func, tagParam);
 
             }
             //Local Call
@@ -258,11 +273,10 @@ namespace Trionfi {
 
                 ErrorLogger.Log("call : file=\"" + TRVirtualMachine.Instance.currentCallStack.scriptName + "\" " + "index=\"" + TRVirtualMachine.Instance.currentCallStack.currentPos + "\"");
 
-                yield return TRVirtualMachine.Instance.Execute(func, tagParam);
+                await TRVirtualMachine .Instance.Execute(func, tagParam);
             }
-#else
-            yield return null;
 #endif
+            return string.Empty;
         }
     }
 
@@ -278,14 +292,15 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
-            if(TRVirtualMachine.Instance.callStack.Count <= 1)
+            if (TRVirtualMachine.Instance.callStack.Count <= 1)
                 ErrorLogger.Log("callとreturnの不整合");
             else
                 TRVirtualMachine.Instance.currentCallStack.currentPos = TRVirtualMachine.Instance.currentCallStack.endPos + 1;
 #endif
+            return string.Empty;
 		}
 	}
 
@@ -301,24 +316,17 @@ namespace Trionfi {
 #endif
         }
 
-#if !TR_PARSEONLY
-        AsyncOperation syncState;
-#endif
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
-//			string file = tagParam.Identifier("file");
-//            SceneManager.LoadScene(file, LoadSceneMode.Additive);
-        }
-
+            //			string file = tagParam.Identifier("file");
+            //            SceneManager.LoadScene(file, LoadSceneMode.Additive);
 #if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
-        {
             string file = tagParam["file"].Literal();
-            syncState = SceneManager.LoadSceneAsync(file, LoadSceneMode.Additive);
-            yield return new WaitUntil(() => syncState.isDone);
-        }
+            await SceneManager.LoadSceneAsync(file, LoadSceneMode.Additive);
 #endif
-	}
+            return string.Empty;
+        }
+    }
 
     [Serializable]
     public class EvalComponent : AbstractComponent {
@@ -330,13 +338,13 @@ namespace Trionfi {
 			};
 #endif
         }
-
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
-			string exp = tagParam["exp"].Literal();
+            string exp = tagParam["exp"].Literal();
             VariableCalcurator result = TRVirtualMachine.Instance.Evaluation(exp);
 #endif
+            return string.Empty;
 		}
     }
 
@@ -352,10 +360,10 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
-			string exp = tagParam["exp"].Literal();
+            string exp = tagParam["exp"].Literal();
 
             VariableCalcurator result = TRVirtualMachine.Instance.Evaluation(exp);
 
@@ -368,6 +376,7 @@ namespace Trionfi {
                 _cuttentStack.currentPos--;
             }
 #endif
+            return string.Empty;
 		}
     }
 
@@ -384,10 +393,10 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
-			bool _stack = TRVirtualMachine.Instance.ifStack.Pop();
+            bool _stack = TRVirtualMachine.Instance.ifStack.Pop();
 
             //直前が真の場合はelseifは実行されない
             if (_stack)
@@ -414,6 +423,7 @@ namespace Trionfi {
                 }
             }
 #endif
+            return string.Empty;
 		}
     }
 
@@ -428,10 +438,10 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
-			bool _stack = TRVirtualMachine.Instance.ifStack.Peek();
+            bool _stack = TRVirtualMachine.Instance.ifStack.Peek();
 
             //直前が真の場合はelseは実行されない
             if (_stack)
@@ -440,6 +450,7 @@ namespace Trionfi {
                 _cuttentStack.SkipTo<EndifComponent>();
             }
 #endif
+            return string.Empty;
 		}
     }
 
@@ -454,8 +465,8 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if !TR_PARSEONLY
             //ToDo:コールスタックチェック
             if (TRVirtualMachine.Instance.ifStack.Count == 0)
@@ -463,6 +474,7 @@ namespace Trionfi {
             else
     			TRVirtualMachine.Instance.ifStack.Pop();
 #endif
+            return string.Empty;
 		}
     }
 
@@ -472,12 +484,15 @@ namespace Trionfi {
     public class SComponent : AbstractComponent {
 		public SComponent() { }
 
-		protected override void TagFunction() {
-			//StatusManager.Instance.InfiniteStop();
+        protected override async TRTaskString TagFunction()
+        {
             //ToDo:SyncWait
             //その他 enableNextOrder が来るまで進めない
+
+            return string.Empty;
         }
     }
+
 
     //変数の中身をデバックコンソールで確認することができます。
     [Serializable]
@@ -491,11 +506,12 @@ namespace Trionfi {
 #endif
         }
 
-        protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if UNITY_EDITOR && TR_DEBUG
             System.Diagnostics.Debug.WriteLine(TRVirtualMachine.Instance.globalVariableInstance[tagParam["exp"].Literal()]);
 #endif
+            return string.Empty;
         }
     }
 
@@ -514,21 +530,19 @@ namespace Trionfi {
         }
 
         //時間を止める。
-        protected override void TagFunction()
-        {
-		}
 
-#if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
+        protected override async TRTaskString TagFunction()
         {
+#if !TR_PARSEONLY
             int timeMsec = tagParam["time", 0];
 
-            float _time = (float)timeMsec / 1000.0f;
-
-            yield return new WaitForSeconds(_time);
-        }
+            //            float _time = (float)timeMsec / 1000.0f;
+ 
+            await UniTask.Delay(timeMsec);
 #endif
-	}
+            return string.Empty;
+        }
+    }
 
     //title=Webページヘジャンプします。
     [Serializable]
@@ -542,12 +556,13 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-			string url = tagParam["url"].Literal();
+            string url = tagParam["url"].Literal();
 			Application.OpenURL(url);
 #endif
+            return string.Empty;
 		}
 	}
 
@@ -563,11 +578,12 @@ namespace Trionfi {
 #endif
         }
 
-		protected override void TagFunction()
-		{
+        protected override async TRTaskString TagFunction()
+        {
 #if UNITY_EDITOR && TR_DEBUG
             TRVirtualMachine.Instance.globalVariableInstance.Clear();
 #endif
+            return string.Empty;
         }
     }   
 }

@@ -3,6 +3,9 @@ using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
 using DG.Tweening;
+using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
 
 namespace Trionfi
 {
@@ -87,18 +90,18 @@ namespace Trionfi
                 state = MessageState.None;
         }
 
+        bool isSuspend = false;
+
         public void Pause()
         {
             if (state == MessageState.OnShow)
-                StopCoroutine(_waitCoroutine);
+                isSuspend = true;
         }
 
         public void Restart()
         {
             if (state == MessageState.OnShow)
-            {
-                StartCoroutine(_waitCoroutine);
-            }
+                isSuspend = false;
         }
 
         public void ClearMessage()
@@ -134,7 +137,7 @@ namespace Trionfi
                 systemWindow.SetActive(false);
         }
 
-        public IEnumerator _waitCoroutine = null;
+        //        public IEnumerator _waitCoroutine = null;
 
         public static string MatchEvaluatorFunc(Match m)
         {
@@ -165,16 +168,17 @@ namespace Trionfi
             text = /*_subText*/ regex2.Replace(text, MatchEvaluatorFunc);
 
             state = MessageState.OnShow;
-
-            if (useUguiText)
-                _waitCoroutine = ShowMessageUguiSub(text, mesCurrentWait);
-            else
-                _waitCoroutine = ShowMessageSub(text, mesCurrentWait);
-
-            StartCoroutine(_waitCoroutine);
+            /*
+            //            if (useUguiText)
+            //                _waitCoroutine = ShowMessageUguiSub(text, mesCurrentWait);
+            //            else
+            //                _waitCoroutine = ShowMessageSub(text, mesCurrentWait);
+            //            StartCoroutine(_waitCoroutine);
+            */
+            ShowMessageSub(text, mesCurrentWait).Forget();
         }
 
-        private IEnumerator ShowMessageSub(string message, float mesCurrentWait)
+        private async TRTask ShowMessageSub(string message, float mesCurrentWait)
         {
             currentMessage.Font = TRSystemConfig.Instance.defaultFont;
 
@@ -224,15 +228,22 @@ namespace Trionfi
 
                 for (int i = currentMessage.VisibleLength; i < currentMessage.MaxIndex; i++)
                 {
+                    while (isSuspend)
+                    {
+                        await UniTask.DelayFrame(1);
+                    }
+
+                    //リロード等
                     if (TRVirtualMachine.Instance.state != TRVirtualMachine.State.Run)
-                        yield break;
+                        return;
 
                     if (state == MessageState.OnShow && !enableSkip)
                         currentMessage.VisibleLength++;
                     else
                         break;
 
-                    yield return new WaitForSeconds(mesWait);
+                    await UniTask.Delay((int)(mesWait * 1000.0f));
+//                    yield return new WaitForSeconds(mesWait);
                 }
             }
             else
@@ -240,9 +251,9 @@ namespace Trionfi
 
             currentMessage.VisibleLength = TRSystemConfig.Instance.isNovelMode ? currentMessage.text.Length : -1;
 
-            yield return Wait();
+            await Wait();
         }
-
+        /*
         private IEnumerator ShowMessageUguiSub(string message, float mesCurrentWait)
         {
             float mesWait = mesCurrentWait / speedRatio;
@@ -289,13 +300,12 @@ namespace Trionfi
 
             yield return Wait();
         }
-
-
+        */
         Tweener _sequence = null;
 
         // autoWaitの入力がない場合はTRGameConfigの数値を使う
         // これのためautoWaitの基本値を1.0fから-1.0fのマイナス数値に修正
-        public IEnumerator Wait(WaitIcon icon = WaitIcon.Alpha, float autoWait = -1.0f)
+        public async TRTask Wait(WaitIcon icon = WaitIcon.Alpha, float autoWait = -1.0f)
         {
             if (tweener != null)
                 tweener.Kill();
@@ -311,22 +321,22 @@ namespace Trionfi
 
                 // オート待機中オートを解除した場合の処理追加
                 if (onAuto)
-                    yield return new WaitForSeconds(autoWait);
+                    await UniTask.Delay((int)(autoWait*1000.0f));
+//                    yield return new WaitForSeconds(autoWait);
                 else
-                    yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip);
+                    await UniTask.WaitWhile(() => state == MessageState.OnWait && !enableSkip);
+
                 {
                     // yield return new WaitForSeconds(autoWait);
 
                     while (autoWait > 0.0f && onAuto)
                     {
                         if (TRVirtualMachine.Instance.state != TRVirtualMachine.State.Run)
-                            yield break;
+                            return;
 
                         // テキスト表示、ボイス再生共に終わった後からautoWaitの減算実施
                         if (!Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.isPlaying)
                             autoWait -= Time.deltaTime;
-
-                        yield return null;
                     }
                 }
 
@@ -335,19 +345,18 @@ namespace Trionfi
 
                 // オートじゃない時と、オート待機途中オートを解除した時両方ユーザー入力を待つ必要があるので、条件修正
                 if (!onAuto)
-                    yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip && !onAuto);
+                    await UniTask.WaitWhile(() => state == MessageState.OnWait && !enableSkip && !onAuto);
             }
             else
                 state = MessageState.None;
-
         }
 
         public void WaitCursor(WaitIcon icon)
         {
-            StartCoroutine(WaitCusorSub(icon));
+            WaitCusorSub(icon).Forget();
         }
 
-        public IEnumerator WaitCusorSub(WaitIcon icon, float loopTime = 1.2f)
+        public async TRTask WaitCusorSub(WaitIcon icon, float loopTime = 1.2f)
         {
             waitCursor.color = new Color(waitCursor.color.r, waitCursor.color.g, waitCursor.color.b, 1.0f);
 
@@ -373,7 +382,7 @@ namespace Trionfi
                     break;
             }
 
-            yield return new WaitWhile(() => state == MessageState.OnWait && !enableSkip);
+            await UniTask.WaitWhile(() => state == MessageState.OnWait && !enableSkip);
 
             _sequence.Kill();
             _sequence = null;

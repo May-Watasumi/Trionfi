@@ -1,5 +1,11 @@
 ﻿#if !TR_PARSEONLY
- using UnityEngine;
+using UnityEngine;
+using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
 #endif
 
 using System;
@@ -21,11 +27,12 @@ namespace Trionfi
 #endif
         }
 
-		protected override void TagFunction()
+		protected override async TRTaskString TagFunction()
 		{
 #if !TR_PARSEONLY
 			Trionfi.Instance.selectWindow.Add(tagParam["text"].Literal(), tagParam["target"].Literal());
 #endif
+			return string.Empty;
 		}
     }
 
@@ -34,17 +41,12 @@ namespace Trionfi
 	{
 		public SelectComponent() {	}
 
-		protected override void TagFunction()
+		protected override async TRTaskString TagFunction()
 		{
 #if !TR_PARSEONLY
 			Trionfi.Instance.selectWindow.Begin();
-#endif
-		}
 
-#if !TR_PARSEONLY
-		public override IEnumerator TagSyncFunction()
-        {
-            yield return new WaitWhile(() => Trionfi.Instance.selectWindow.onWait && TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run);
+			await UniTask.WaitWhile(() => Trionfi.Instance.selectWindow.onWait && TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run);
 
 			if (TRVirtualMachine.Instance.state != TRVirtualMachine.State.Run)
 			{
@@ -59,7 +61,8 @@ namespace Trionfi
 			{
 				ErrorLogger.Log("No Jump target:" + TRSelectWindow.Instance.result);
 			}
-        }
 #endif
+			return string.Empty;
+		}
 	}
 }

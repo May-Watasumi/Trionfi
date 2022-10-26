@@ -5,6 +5,19 @@ using Jace;
 using Jace.Execution;
 using Jace.Tokenizer;
 using Jace.Operations;
+
+#if !TR_PARSEONLY
+using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
+using TRTaskFunc = Cysharp.Threading.Tasks.UniTask<Trionfi.FunctionalObjectInstance>;
+
+using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+
+#else
+using TRTask = System.Threading.Tasks.Task;
+using TRTaskString = System.Threading.Tasks.Task<string>;
+#endif
+
 using TRVariable = Jace.Operations.VariableCalcurator;
 
 namespace Trionfi
@@ -108,9 +121,9 @@ namespace Trionfi
         //スクリプトコンパイルの副産物なのでSerializeの必要はないはず。
         public Dictionary<string, FunctionalObjectInstance> functionalObjects = new Dictionary<string, FunctionalObjectInstance>();
 
-        public  Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
+        public Dictionary<string, AbstractComponent> aliasTagInstance = new Dictionary<string, AbstractComponent>();
 
-        public IEnumerator Run(string storage, Dictionary<string, VariableCalcurator> param = null)
+        public async TRTask Run(string storage, Dictionary<string, VariableCalcurator> param = null)
         {
             if (Trionfi.instance.scriptInstance.ContainsKey(storage))
             {
@@ -120,10 +133,7 @@ namespace Trionfi
 BEGINLOOP:
                 do
                 {
-                    var coroutine = Execute(_func, param);
-                    yield return StartCoroutine(coroutine);
-                   _func = (FunctionalObjectInstance)coroutine.Current;
-
+                    _func = await Execute(_func, param);
                 } while (callStack.Count > 0);
 
                 ErrorLogger.Log("End of Script");
@@ -140,7 +150,7 @@ BEGINLOOP:
                         case ResumeTaskType.RELOAD:
                             PrepareReboot();
                             Trionfi.instance.scriptInstance.Remove(resumeTask.instance.scriptName);
-                            yield return Trionfi.instance.LoadScript(resumeTask.instance.scriptName);
+                            await Trionfi.instance.LoadScript(resumeTask.instance.scriptName);
                             _func = new FunctionalObjectInstance(FunctionalObjectType.Script, resumeTask.instance.scriptName, 0, 0);
                             break;
                     }
@@ -149,7 +159,7 @@ BEGINLOOP:
                     {
                         PrepareReboot();
                         TRSerializeData info =  TRSerializeManager.instance.DeserializeFromFile(resumeTask.type - ResumeTaskType.LOAD_DATA0);
-                        yield return info.Deserialize();
+                        await info.Deserialize();
                         _func = info.callStack[0];//   callStack.Peek();   
                     }
 
@@ -163,7 +173,7 @@ BEGINLOOP:
                 ErrorLogger.Log("not find script file:" + storage);
         }
 
-        public IEnumerator Execute(FunctionalObjectInstance _func, Dictionary<string, VariableCalcurator>  _param)
+        public async TRTaskFunc Execute(FunctionalObjectInstance _func, Dictionary<string, VariableCalcurator>  _param)
         {
             callStack.Push(_func);
 
@@ -181,7 +191,7 @@ BEGINLOOP:
                 if (_func.type == FunctionalObjectType.Macro && _tagComponent is MacroendComponent)
                     break;
 
-                yield return _tagComponent.Execute();
+                await _tagComponent.Execute();
 
                 _func.currentPos++;
 
@@ -190,7 +200,7 @@ BEGINLOOP:
             if (_param != null)
                 vstack.Pop();
 
-            yield return callStack.Pop();
+            return callStack.Pop();
         }
 
         readonly TokenReader tokenReader = new TokenReader(System.Globalization.CultureInfo.InvariantCulture);
