@@ -40,7 +40,7 @@ namespace Trionfi
             PlayerPrefs.Save();
         }
 
-        private void OnGUI()
+        private async void OnGUI()
         {
             GUILayout.Label("1-line script(without [])");
 
@@ -52,7 +52,7 @@ namespace Trionfi
                 if (tagComponent != null)
                 {
                     consoleLog += ("Tag: " + tagComponent.tagName + "\n");
-                    tagComponent.Execute();
+                    await tagComponent.Execute();
                 }
                 else
                     consoleLog += ("Invalid Tag!\n");

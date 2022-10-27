@@ -135,15 +135,15 @@ namespace Trionfi
         [SerializeField]
         int pageCount = 1;
         [SerializeField]
-        Text pageText;// = new Text[dataCount];
+        Text pageText = null;// = new Text[dataCount];
         [SerializeField]
-        Text modeText;// = new Text[dataCount];
+        Text modeText = null;// = new Text[dataCount];
         [SerializeField]
-        Text[] dateText;// = new Text[dataCount];
+        Text[] dateText = null;// = new Text[dataCount];
         [SerializeField]
-        Text[] infoText;// = new Text[dataCount];
+        Text[] infoText = null;// = new Text[dataCount];
         [SerializeField]
-        Button[] infoButton;// = new Text[dataCount];
+        Button[] infoButton = null;// = new Text[dataCount];
 
         public void Begin(Mode mode)
         {

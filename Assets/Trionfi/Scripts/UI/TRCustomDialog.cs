@@ -39,11 +39,11 @@ public abstract class ICustomDialog : MonoBehaviour
 
 public class TRCustomDialog : ICustomDialog {
     [SerializeField]
-    Text notice;
+    Text notice = null;
     [SerializeField]
-    Button buttonYes;
+    Button buttonYes = null;
     [SerializeField]
-    Button buttonNo;
+    Button buttonNo = null;
 
     public override void Init(string text, TRDialogType type)
     {

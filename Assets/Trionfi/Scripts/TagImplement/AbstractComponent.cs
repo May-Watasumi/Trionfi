@@ -164,7 +164,7 @@ namespace Trionfi
 
             string mes = await TagFunction();
 
-            if (string.IsNullOrEmpty(mes))
+            if (!string.IsNullOrEmpty(mes))
                 ErrorLogger.Log(mes);
         }
     }

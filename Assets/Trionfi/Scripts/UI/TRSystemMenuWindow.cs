@@ -6,19 +6,19 @@ namespace Trionfi
     public class TRSystemMenuWindow : SingletonMonoBehaviour<TRSystemMenuWindow>
     {
         [SerializeField]
-        Text closeButtonText;
+        Text closeButtonText = null;
         [SerializeField]
-        Text saveButtonText;
+        Text saveButtonText = null;
         [SerializeField]
-        Text loadButtonText;
+        Text loadButtonText = null;
         [SerializeField]
-        Text skipButtonText;
+        Text skipButtonText = null;
         [SerializeField]
-        Text autoButtonText;
+        Text autoButtonText = null;
         [SerializeField]
-        Text logButtonText;
+        Text logButtonText = null;
         [SerializeField]
-        Text configButtonText;
+        Text configButtonText = null;
 
         // Use this for initialization
         void Start()

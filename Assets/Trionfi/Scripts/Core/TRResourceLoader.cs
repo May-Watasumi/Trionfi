@@ -33,7 +33,10 @@ namespace Trionfi
     public abstract class IAssetLoader<T>
     {
         public T instance;
-        public virtual async Cysharp.Threading.Tasks.UniTask<T> Load(string storage) { return instance; }
+        public virtual async Cysharp.Threading.Tasks.UniTask<T> Load(string storage)
+        {
+            return instance;
+        }
     }
 
     public class TRDefaultTextLoader : IAssetLoader<string>

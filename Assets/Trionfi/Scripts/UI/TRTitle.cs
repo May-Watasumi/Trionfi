@@ -9,13 +9,13 @@ namespace Trionfi
     public class TRTitle : SingletonMonoBehaviour<TRTitle>
     {
         [SerializeField]
-        Text logoText;
+        Text logoText = null;
         [SerializeField]
-        Text buttonText;
+        Text buttonText = null;
         [SerializeField]
-        string scriptName;
+        string scriptName = null;
         [SerializeField]
-        Image fader;
+        Image fader = null;
 
 		public void Initialize()
         {

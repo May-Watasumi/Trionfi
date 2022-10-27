@@ -186,7 +186,7 @@ namespace Trionfi
 #endif
         }
 
-        protected virtual async TRTaskString TagFunction()
+        protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
             TRAudioID id = (TRAudioID)tagParam["buf", 0];

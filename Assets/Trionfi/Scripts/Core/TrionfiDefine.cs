@@ -59,7 +59,6 @@ namespace Trionfi
         STAND9 = 9,
         EVENT = 10,
         MESICON = 98,
-        MOVIE = 99,
         UI = 100
     }
 
@@ -146,7 +145,6 @@ namespace Trionfi
     [Serializable]
     public class TRLayer : TRMediaInstance<Image>
     {
-        [SerializeField]
         public string actor;
     }
 #endif

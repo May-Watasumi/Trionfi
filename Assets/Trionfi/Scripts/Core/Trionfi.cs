@@ -42,7 +42,7 @@ namespace Trionfi
         public string titleName = "Example";
 
         [SerializeField]
-        string bootScriptName;
+        string bootScriptName = string.Empty;
         [SerializeField]
         public RawImage movieTexture;
         [SerializeField]
@@ -228,7 +228,6 @@ namespace Trionfi
         public bool enableEndCallback = true;
 
         protected TRTagParser tagParser = new TRTagParser(string.Empty);
-
         protected TRCrypterBase crypter = null;
 
         //コールバック。

@@ -10,40 +10,40 @@ namespace Trionfi
         const string prefsKey = "GameConfigs";
 
         [SerializeField]
-        Slider mastervolumeSlider;
+        Slider mastervolumeSlider = null;
         [SerializeField]
-        Slider bgmvolumeSlider;
+        Slider bgmvolumeSlider = null;
         [SerializeField]
-        Slider sevolumeSlider;
+        Slider sevolumeSlider = null;
         [SerializeField]
-        Slider voicevolumeSlider;
+        Slider voicevolumeSlider = null;
         [SerializeField]
-        Slider textspeedSlider;
+        Slider textspeedSlider = null;
         [SerializeField]
-        Slider autotextwaitSlider;
+        Slider autotextwaitSlider = null;
         [SerializeField]
-        Toggle effectSkipToggle;
+        Toggle effectSkipToggle = null;
         [SerializeField]
-        Toggle readTextSkipToggle;
+        Toggle readTextSkipToggle = null;
 
         [SerializeField]
-        Text mastervolumeSliderText;
+        Text mastervolumeSliderText = null;
         [SerializeField]
-        Text bgmvolumeSliderText;
+        Text bgmvolumeSliderText = null;
         [SerializeField]
-        Text sevolumeSliderText;
+        Text sevolumeSliderText = null;
         [SerializeField]
-        Text voicevolumeSliderText;
+        Text voicevolumeSliderText = null;
         [SerializeField]
-        Text textspeedSliderText;
+        Text textspeedSliderText = null;
         [SerializeField]
-        Text autotextwaitSliderText;
+        Text autotextwaitSliderText = null;
         [SerializeField]
-        Text effectSkipToggleText;
+        Text effectSkipToggleText = null;
         [SerializeField]
-        Text readTextSkipToggleText;
+        Text readTextSkipToggleText = null;
         [SerializeField]
-        Text InitializeButtonText;
+        Text InitializeButtonText = null;
 
         public void OnChangeSlider(int type)
         {

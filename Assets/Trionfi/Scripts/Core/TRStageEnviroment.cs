@@ -289,7 +289,7 @@ namespace Trionfi
         public TextAsset CharacterEmotionPatternListCSV;
 
         [SerializeField]
-        TRActorParamAsset actorInfoInstance;
+        TRActorParamAsset actorInfoInstance = null;
 
         public TRMultiLanguageText uiText;
 
