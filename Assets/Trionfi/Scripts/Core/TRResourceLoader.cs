@@ -45,12 +45,6 @@ namespace Trionfi
             instance = text.text;
 
             return instance;
-            /*
-            if (text != null)
-                return text.text;
-            else
-                return string.Empty;
-            */
         }
     }
 
@@ -205,12 +199,12 @@ namespace Trionfi
     {
         public override async TRTaskAssetBundle Load(string storage)
         {
-            instance = AssetBundle.LoadFromFile(Path.Combine(Application.streamingAssetsPath, storage));
+            instance = await AssetBundle.LoadFromFileAsync(Path.Combine(Application.streamingAssetsPath, storage));
             return instance;
         }
     }
 
-    public class TRResourceLoader  : SingletonMonoBehaviour<TRResourceLoader>
+    public class TRResourceLoader : MonoBehaviour
 	{
         /*
                 public string MakeStoragePath(string file, TRAssetType dataType)
@@ -227,15 +221,15 @@ namespace Trionfi
 
         public const TRResourceType defaultResourceType = TRResourceType.LocalStatic;
 
-        public Dictionary<string, AssetBundle> assetBundleList;
+        public static Dictionary<string, AssetBundle> assetBundleList;
 
-        public Dictionary<TRResourceType, IAssetLoader<AudioClip>> audioLoader = new Dictionary<TRResourceType, IAssetLoader<AudioClip>>();
-        public Dictionary<TRResourceType, IAssetLoader<Texture2D>> textureLoader = new Dictionary<TRResourceType, IAssetLoader<Texture2D>>();
-        public Dictionary<TRResourceType, IAssetLoader<Sprite>> spriteLoader = new Dictionary<TRResourceType, IAssetLoader<Sprite>>();
-        public Dictionary<TRResourceType, IAssetLoader<string>> textLoader = new Dictionary<TRResourceType, IAssetLoader<string>>();
-        public Dictionary<TRResourceType, IAssetLoader<AssetBundle>> assetBundleLoader = new Dictionary<TRResourceType, IAssetLoader<AssetBundle>>();
+        public static Dictionary<TRResourceType, IAssetLoader<AudioClip>> audioLoader = new Dictionary<TRResourceType, IAssetLoader<AudioClip>>();
+        public static Dictionary<TRResourceType, IAssetLoader<Texture2D>> textureLoader = new Dictionary<TRResourceType, IAssetLoader<Texture2D>>();
+        public static Dictionary<TRResourceType, IAssetLoader<Sprite>> spriteLoader = new Dictionary<TRResourceType, IAssetLoader<Sprite>>();
+        public static Dictionary<TRResourceType, IAssetLoader<string>> textLoader = new Dictionary<TRResourceType, IAssetLoader<string>>();
+        public static Dictionary<TRResourceType, IAssetLoader<AssetBundle>> assetBundleLoader = new Dictionary<TRResourceType, IAssetLoader<AssetBundle>>();
 
-        public void Initialize()
+        public static void Initialize()
         {
             audioLoader[TRResourceType.LocalStatic] = new TRDefaultAudioLoader();
             audioLoader[TRResourceType.WWW] = new TRWebAudioLoader();
@@ -257,25 +251,25 @@ namespace Trionfi
             assetBundleLoader[TRResourceType.LocalStreaming] = new TRStreamAssetBundleLoader();
         }
 
-        public async TRTaskAudio LoadAudio(string storage, TRResourceType type = defaultResourceType)
+        public static async TRTaskAudio LoadAudio(string storage, TRResourceType type = defaultResourceType)
         {
             await audioLoader[type].Load(storage);
             return audioLoader[type].instance;
         }
 
-        public async TRTaskString LoadText(string storage, TRResourceType type = defaultResourceType)
+        public static async TRTaskString LoadText(string storage, TRResourceType type = defaultResourceType)
         {
             await textLoader[type].Load(storage);
             return textLoader[type].instance;
         }
 
-        public async TRTaskTexture LoadTexture(string storage, TRResourceType type = defaultResourceType)
+        public static async TRTaskTexture LoadTexture(string storage, TRResourceType type = defaultResourceType)
         {
             await textureLoader[type].Load(storage); ;
             return textureLoader[type].instance;
         }
 
-        public async TRTaskSprite LoadSprite(string storage, TRResourceType type = defaultResourceType)
+        public static async TRTaskSprite LoadSprite(string storage, TRResourceType type = defaultResourceType)
         {
             Sprite instance = null;
             if (type == TRResourceType.LocalStatic)
@@ -291,38 +285,28 @@ namespace Trionfi
             return instance;
         }
 
-        public async TRTaskAssetBundle LoadAssetBundle(string storage, TRResourceType type = defaultResourceType)
+        public static async TRTaskAssetBundle LoadAssetBundle(string storage, TRResourceType type = defaultResourceType)
         {
             await assetBundleLoader[type].Load(storage);
             return assetBundleLoader[type].instance;
         }
 
-        public async TRTaskAudio LoadAudioFromBundle(string storage, string bundle)
+        public static async TRTaskAudio LoadAudioFromBundle(string storage, string bundle)
         {
-            AssetBundleRequest request = assetBundleList[bundle].LoadAssetAsync<AudioClip>(storage);
-            return (AudioClip)request.asset;
+            var request = await assetBundleList[bundle].LoadAssetAsync<AudioClip>(storage);
+            return request as AudioClip;
         }
 
-        public IEnumerator LoadTextFromBundle(string storage, string bundle)
+        public static async TRTaskString  LoadTextFromBundle(string storage, string bundle)
         {
-            yield return assetBundleList[bundle].LoadAsset<TextAsset>(storage).text;
+            var request = await assetBundleList[bundle].LoadAssetAsync<TextAsset>(storage);
+            return (request as TextAsset).text;
         }
 
-        public IEnumerator LoadTextureFromBundle(string storage, string bundle)
+        public static async TRTaskTexture LoadTextureFromBundle(string storage, string bundle)
         {
-            yield return assetBundleList[bundle].LoadAsset<Texture2D>(storage);
+            var request = await assetBundleList[bundle].LoadAssetAsync<Texture2D>(storage);
+            return request as Texture2D;
         }
-
-        new protected void Awake()
-        {
-            base.Awake();
-            Initialize();
-        }
-/*
-		private void Start()
-        {
-            Initialize();
-        }
-*/
     }
 }

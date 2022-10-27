@@ -6,7 +6,7 @@ using UnityEngine.UI;
 namespace Trionfi
 {
 //Singleton
-    public class TRGameConfig : MonoBehaviour
+    public class TRGameConfig
     {
         const string prefsKey = "GameConfigs";
 
@@ -29,7 +29,6 @@ namespace Trionfi
             public bool readtextSkip = false;
         }
 
-        [SerializeField]
         public static GameConfigData configData = new GameConfigData();
 
         public static void Save()
@@ -61,14 +60,6 @@ namespace Trionfi
             configData.readtextSkip = false;
         }
 
-        public void Awake()
-        {
-            Load();
-        }
-
-        public void OnDestroy()
-        {
-            Save();
-        }
+        public static void Initialize() { Load(); }
     }
 }

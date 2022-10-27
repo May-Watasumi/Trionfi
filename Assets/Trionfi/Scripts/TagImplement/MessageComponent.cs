@@ -43,7 +43,7 @@ namespace Trionfi
 
             if (!string.IsNullOrEmpty(storage))
             {
-                string mes = await TRResourceLoader.Instance.LoadText(storage, GetResourceType());
+                string mes = await TRResourceLoader.LoadText(storage, GetResourceType());
 
                 if (string.IsNullOrEmpty(mes))
                     return "リソースエラー:" + storage; 

@@ -341,7 +341,7 @@ namespace Trionfi
 
         public async TRTaskString LoadScript(string storage, TRResourceType type = TRResourceLoader.defaultResourceType, bool run = false)
         {
-            string script = await TRResourceLoader.Instance.LoadText(storage, type);
+            string script = await TRResourceLoader.LoadText(storage, type);
 
             if (!string.IsNullOrEmpty((string)script))
             {
@@ -383,7 +383,7 @@ namespace Trionfi
             TRAudioID id = (TRAudioID)tagParam["buf", 0];
             string storage = tagParam["storage", string.Empty];
 
-            AudioClip clip = await TRResourceLoader.Instance.LoadAudio(storage, type);
+            AudioClip clip = await TRResourceLoader.LoadAudio(storage, type);
 
             if(clip != null)
             {
@@ -399,7 +399,7 @@ namespace Trionfi
             TRLayerID id = (TRLayerID)tagParam["layer", 0];
             string storage = tagParam["storage", string.Empty];
 
-            Sprite sprite = await TRResourceLoader.Instance.LoadSprite(storage, type);
+            Sprite sprite = await TRResourceLoader.LoadSprite(storage, type);
 
             if (sprite!= null)
             {
@@ -474,6 +474,8 @@ namespace Trionfi
             TRVirtualMachine.instance.functionRegistry.RegisterFunction("random", (Func<VariableCalcurator>)(() => new VariableCalcurator(UnityEngine.Random.value)));
 
             TRStageEnviroment.instance.Initialize();
+            TRGameConfig.Initialize();
+            TRResourceLoader.Initialize();
 
             if (TRTitle.instance != null)
             {
@@ -710,6 +712,7 @@ namespace Trionfi
                 subRenderBuffer[0].Release();
 
             SaveReadFlag();
+            TRGameConfig.Save();
         }
     }
 }

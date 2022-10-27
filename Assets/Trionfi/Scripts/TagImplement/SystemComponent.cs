@@ -175,7 +175,7 @@ namespace Trionfi {
             {
                 TRResourceType type = GetResourceType();
 
-                string script = await TRResourceLoader.Instance.LoadText(file, type);
+                string script = await TRResourceLoader.LoadText(file, type);
 
                 await Trionfi.Instance.LoadScript(file, type);
 
@@ -244,7 +244,7 @@ namespace Trionfi {
             {
                 TRResourceType type = GetResourceType();
 
-                string script = await TRResourceLoader.Instance.LoadText(file, type);
+                string script = await TRResourceLoader.LoadText(file, type);
 
                 await Trionfi.Instance.LoadScript(file, type);
 
