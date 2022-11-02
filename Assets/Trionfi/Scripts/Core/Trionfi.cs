@@ -136,11 +136,10 @@ namespace Trionfi
             {
                 foreach (KeyValuePair<TRLayerID, TRLayer> pair in this)
                 {
-                    pair.Value.instance.rectTransform.anchoredPosition = new Vector2(pair.Value.instance.rectTransform.anchoredPosition.x, 0.0f);
-                    pair.Value.instance = null;
-                    pair.Value.actor = string.Empty;
-                    pair.Value.instance.color = Color.white;
                     pair.Value.tagParam.Clear();
+                    pair.Value.actor = string.Empty;
+                    pair.Value.instance.rectTransform.anchoredPosition = new Vector2(pair.Value.instance.rectTransform.anchoredPosition.x, 0.0f);
+                    pair.Value.instance.color = Color.white;
                     pair.Value.instance.enabled = false;
                 }
             }
@@ -465,6 +464,7 @@ namespace Trionfi
                 InitKAGAlias();
 
             LoadReadFlag();
+//            TRSerializeManager.instance.LoadInfo();
 
             UnityEngine.Random.InitState(System.DateTime.Now.Millisecond);
 
@@ -712,6 +712,7 @@ namespace Trionfi
 
             SaveReadFlag();
             TRGameConfig.Save();
+            TRSerializeManager.instance.SaveInfo();
         }
     }
 }
