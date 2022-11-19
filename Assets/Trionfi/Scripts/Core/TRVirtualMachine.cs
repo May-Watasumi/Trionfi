@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using Jace;
 using Jace.Execution;
 using Jace.Tokenizer;
@@ -104,6 +105,8 @@ namespace Trionfi
     //ToDo:refactoring
     public class TRVirtualMachine : SingletonMonoBehaviour<TRVirtualMachine>
     {
+        public CancellationTokenSource tokenSource;
+
         public enum State { Sleep, Run, Reboot, Load }
 
         public State state = State.Sleep;
@@ -134,11 +137,13 @@ BEGINLOOP:
                 do
                 {
                     _func = await Execute(_func, param);
-                } while (callStack.Count > 0);
+                } while (callStack.Count > 0 && !tokenSource.IsCancellationRequested);
 
                 ErrorLogger.Log("End of Script");
 
-                if (nextTempFunc.Count != 0)
+                if (tokenSource.IsCancellationRequested)
+                    return;
+                else if (nextTempFunc.Count != 0)
                 {
                     ResumeTask resumeTask = (nextTempFunc.Dequeue());
 
@@ -255,6 +260,7 @@ BEGINLOOP:
 
         private void Start()
         {
+            tokenSource = new CancellationTokenSource();
             astBuilder = new Jace.AstBuilder(functionRegistry, false);
             vstack.Push(globalVariableInstance);
         }
@@ -266,5 +272,10 @@ BEGINLOOP:
                BeginReboot();
             }
         }
-    }
+
+		public void OnDestroy()
+		{
+            tokenSource.Cancel();
+		}
+	}
 }

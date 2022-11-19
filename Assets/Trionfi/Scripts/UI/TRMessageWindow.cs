@@ -402,6 +402,12 @@ namespace Trionfi
             onSkip = false;
         }
 
+        // LCTRLでスキップ中画面移動などが発生した時、スキップを無効化しても次のセリフはスキップされる問題に対応
+         private void OnEnable()
+        {
+            forceSkip = false;
+        }
+
         public void Update()
         {
             if (Input.GetKey(KeyCode.LeftControl))
