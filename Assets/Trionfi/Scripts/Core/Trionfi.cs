@@ -712,7 +712,6 @@ namespace Trionfi
 
             SaveReadFlag();
             TRGameConfig.Save();
-            TRSerializeManager.instance.SaveInfo();
         }
     }
 }

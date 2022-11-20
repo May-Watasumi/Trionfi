@@ -154,7 +154,7 @@ namespace Trionfi
 
         void OnGUI()
         {
-            GUILayout.Label("Project Path");
+            GUILayout.Label("Project Name");
             GUI.SetNextControlName("ForcusField");
 
             _input = GUILayout.TextField(_input);
