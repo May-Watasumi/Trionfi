@@ -10,131 +10,129 @@
 [trans  wait = 750]
 [macroend]
 
-*開始位置
+*begin
 
 [image layer=0 storage=black]
 [snapshot]
 [image layer=0 storage=sprite/bg/schoolroomhibig130901]
 
-[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000 actor=こはく]
-[image layer=2 storage=portrait_yuko_01 dicedatlas=sprite/character/yuko pos=right yoff =-41 time=1000 actor=ゆうこ]
+[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000 actor=Kohaku]
+[image layer=2 storage=portrait_yuko_01 dicedatlas=sprite/character/yuko pos=right yoff =-41 time=1000 actor=Yuko]
 [trans rule=rule/030  wait = 750]
 
-[initscene]
 
-[audio buf=0 storage=sound/bgm/c3 time=1000]
+【Kohaku】
+This is a sample script for a general novel game and conversation scene.
 
-【こはく】
-一般的なノベルゲーム、会話シーンのサンプルスクリプトです。
+【Kohaku】
+Lines enclosed in single-byte [] are recognized as tags (instructions).
 
-【こはく】
-半角[]で括られた行はタグ（命令）として認識します。
+【Kohaku】
+Kirikiri Kiriri/KAG (commonly used in PC games) KAGEX)
+It has a compatible format and instruction system.
 
-【こはく】
-ＰＣゲームによく使われる吉里吉里／ＫＡＧ（ＫＡＧＥＸ）に
-互換性のあるフォーマット、命令体系を持っています。
+【Kohaku】
+Lines beginning with ; (half-width) or / (half-width) are ignored as comments.
 
-//コメント１
-;コメント２
+【Kohaku】
+The difference between the two is whether they are recognized as "comment tags" or not.
+It is either completely removed. It is mainly for debugging purposes.
 
-【こはく】
-；（半角）や／／（半角）で始まる行はコメントとして無視されます。
+【Yuko】
+The name is displayed in the name display area by enclosing it in【】
 
-【こはく】
-両者の違いは、”コメントタグ”として認識されるか、
-完全に削除するかです。主にデバッグ用途ですね。
+【Yuko】
+The string of text other than the tag that follows is displayed in the message area.
 
-【ゆうこ】
-名前を【】で括ることにより、名前表示エリアに表示されます。
+[Voice of Heaven/Yuko]
+When the speaker and the display are different, separate them with a single-byte /.
+When using the Releaser features, such as voice assignments, you can use the
+Refer to the speaker.
 
-【ゆうこ】
-その後に続くタグ以外の文字列をメッセージエリアに表示します。
+【Yuko】
+If there is a blank line, it will wait there for a click (tap).
 
-【天の声/ゆうこ】
-話者と表示が違うときは半角／で区切ります。
-ボイス割り当て等、Releaserの機能を使う時は、
-話者を参照します。
+【Kohaku】
+Rich text is left to Unity (uGUI) tags.
+<> is the tag (sorry for the complication, ......).
 
-【ゆうこ】
-空行があると、そこでクリック（タップ）待ちになります。
+【Kohaku】
+For example, <color value=#00FF00>color</color> or <size=48> like this
+You can even change the font size</size>.
 
-【こはく】
-リッチテキストはUnity（uGUI）のタグ任せになるので、
-＜＞がタグになります（ややこしくてすみません……）。
+【Yuko】
+In addition to < i>italicized</i> and <b>bold</b
+<ruby value=ruby>ruby</ruby> and <ruby value=ruby>ruby</ruby>, which are not supported by the Unity standard.
+There is also a <s>strikeout line</s>.
 
-【こはく】
-たとえばこんな風に、<color value=#00FF00>色</color>や<size=48>
-フォントサイズの変更</size>もできちゃいます。
+【Kohaku】
+The following is a sample of the choices.
+As with Kirikiri, it jumps to the defined label.
+The label definition is also * (one-byte character) as in Kirikiri.
 
-【ゆうこ】
-<i>斜体</i>と<b>太字</b>に加えて、
-Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
-<s>打ち消し線</s>もあります。
+[seladd target=*answer1 text=choice1]
+[seladd target=*answer2 text=choice2]
+[seladd target=*answer3 text=choice3]
+[select].
 
-【こはく】
-次は選択肢のサンプルです。
-吉里吉里同様、定義したラベルへジャンプします。
-ラベルの定義も吉里吉里同様＊（半角）です。
+*answer1
 
-[seladd target=*答１ text=選択肢１]
-[seladd target=*答２ text=選択肢２]
-[seladd target=*答３ text=選択肢３]
-[select]
+【Kohaku】
+Option1.
 
-*答１
-【こはく】
-選択肢１。
+[jump target=*Join]
 
-[jump target=*合流]
+*answer2
 
-*答２
-【こはく】
-選択肢２。
+【Kohaku】
+Option2.
 
-[jump target=*合流]
+[jump target=*Join]
 
-*答３
-【こはく】
-選択肢３。
+*answer3
 
-*合流
+【Kohaku】
+Option 3.
 
-【こはく】
-うまくいきましたね。
+*Join
 
-【ゆうこ】
-変数について。システム変数（sf）、一時変数（tf）、といった
-区分けがありません。すべてがゲーム変数の扱いです。
+【Kohaku】
+It worked out well.
 
-【ゆうこ】
-それ以外はKAGとほぼ同じ名前のルールです。
+【Yuko】
+About Variables. System variables (sf), temporary variables (tf), such as
+There is no classification. Everything is treated as a game variable.
 
-【こはく】
-・半角英数、アンダーバーが使用可能（全角は不可です）
-・ただし、先頭に半角の数字が来ることはできない
-であれば、自由に名前をつけることが出来ます。
+【Yuko】
+Other than that, the rules are almost the same name as KAG.
 
-【こはく】
-変数の表示は変数名を#で囲むことで行います。
-次の文章がそのサンプルです。
+【Kohaku】
+Alphanumeric characters and underscores can be used (double-byte characters are not allowed).
+However, a single-byte number cannot come at the beginning.
+You are free to name it if it is
 
-[eval exp=myoji='大鳥']
-[eval exp=name='こはく']
+【Kohaku】
+Variables are displayed by enclosing the variable name with #.
+The following text is a sample.
 
-【#name#】
-わたしの名前は#myoji#こはくだよ。
+[eval exp=myoji='Ohtori']
+[eval exp=name='Kohaku'].
 
-【こはく】
-こんな感じです。
+[#name#]
+My name is #myoji# Kohaku.
 
-【ゆうこ】
-次は分岐について説明します。
+【Kohaku】
+It looks like this.
 
-【ゆうこ】
-吉里吉里同様、Ｊｕｍｐタグで
-他のファイルを含むラベルに遷移します。
+【Yuko】
+The next section describes the branching.
 
-【ゆうこ】
-次のメッセージから別ファイルになります。
+【Yuko】
+Like Kirikiri(吉里吉里) with Jump tag.
+Transitions to labels containing other files.
+
+【Yuko】
+It will be a separate file from the next message.
 
 [jump storage=scenario/tutorial1_2]
+

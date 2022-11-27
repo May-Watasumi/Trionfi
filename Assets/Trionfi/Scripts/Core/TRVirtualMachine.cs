@@ -196,6 +196,9 @@ BEGINLOOP:
                 if (_func.type == FunctionalObjectType.Macro && _tagComponent is MacroendComponent)
                     break;
 
+                if (tokenSource.IsCancellationRequested)
+                    return callStack.Pop();
+
                 await _tagComponent.Execute();
 
                 _func.currentPos++;

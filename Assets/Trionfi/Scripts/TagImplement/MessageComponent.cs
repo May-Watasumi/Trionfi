@@ -149,7 +149,10 @@ namespace Trionfi
                     Trionfi.Instance.messageWindow.onSkip = false;
                 }
 
-                TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid] = true;
+                if (TRVirtualMachine.Instance.tokenSource == null || TRVirtualMachine.Instance.tokenSource.IsCancellationRequested)
+                    return string.Empty;
+                else
+                    TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid] = true;
             }
 
             Trionfi.Instance.ActivateAllCanvas(true);
