@@ -137,4 +137,4 @@ Unity標準だと対応していない<ruby value=るび>ルビ</ruby>や
 【ゆうこ】
 次のメッセージから別ファイルになります。
 
-[jump storage=scenario/tutorial1_2]
+[jump storage=scenario/tutorial1_2_JP]

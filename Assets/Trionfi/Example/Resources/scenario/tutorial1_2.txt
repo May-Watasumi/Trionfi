@@ -4,18 +4,16 @@
 //[shake layer=message time=1000]
 //[fadeout]
 
-【こはく】
-次のファイルに移動しました。
+【Kohaku】
+We have moved next file.
 
-【こはく】
-サブルーチンやマクロは吉里吉里と
-同じ書き方で使うこと出来ます。
+【Kohaku】
+Subroutines and macros can be written in the same way
+You can use them in the same way as Kirikiri Kirikiri.
 
-【ゆうこ】
-その他のタグについては付属の簡易リファレンスや
-公式サイトのオンラインリファレンスを
-参照してください。
+【Yuko】
+For other tags, please refer to the attached simple reference or the online reference on the official website.
 
-【ゆうこ】
-このチュートリアルは以上でおしまいです。
+【Kohaku】
+That's all for this tutorial.
 
