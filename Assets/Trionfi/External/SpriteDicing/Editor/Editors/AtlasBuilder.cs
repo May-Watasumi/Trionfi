@@ -55,7 +55,7 @@ namespace SpriteDicing.Editors
 
         private List<DicedTexture> DiceTextures (IReadOnlyList<SourceTexture> sourceTextures)
         {
-            var dicer = new TextureDicer(UnitSize, Padding);
+            var dicer = new TextureDicer(UnitSize, Padding, TrimTransparent);
             var dicedTextures = new List<DicedTexture>();
             for (int i = 0; i < sourceTextures.Count; i++)
             {
@@ -72,7 +72,7 @@ namespace SpriteDicing.Editors
             DeleteExistingAtlasTextures();
             var basePath = atlasPath.Substring(0, atlasPath.LastIndexOf(".", StringComparison.Ordinal));
             var serializer = new TextureSerializer(basePath, textureSettings);
-            var packer = new TexturePacker(serializer, UVInset, ForceSquare, AtlasSizeLimit, UnitSize, Padding);
+            var packer = new TexturePacker(serializer, UVInset, ForceSquare, ForcePot, AtlasSizeLimit, UnitSize, Padding);
             var atlasTextures = packer.Pack(dicedTextures);
             SaveAtlasTextures(atlasTextures);
             return atlasTextures;
