@@ -1,4 +1,4 @@
-Trionfi　copyright(c) 渡澄萌衣/2019
+Trionfi　copyright(c) 渡澄萌衣/2023
 
 ■Trionfi（とりおんふぃ）とは？
 ノベルゲームや、その他ゲームにおけるいわゆる会話パートを構築するためのオープンソース（MITライセンス）のスクリプトエンジンです。
@@ -17,7 +17,6 @@ Trionfi repository (github)  https://github.com/May-ClearBlue/Trionfi
 個人twitter　https://twitter.com/mahiru_hiroba
 
 ■ToDo
-・セーブロード機能
 ・Live2D、E-mote対応
 ・”宴”エクスポーター（スクリプトコンバータ）もしくはダイレクトな命令置換実行（需要により）
 

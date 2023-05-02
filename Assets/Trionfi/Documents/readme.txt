@@ -1,4 +1,4 @@
-Trionfi is copyright(c)2019 渡澄萌衣(May-ClearBlue)
+Trionfi is copyright(c)2023 渡澄萌衣(May-ClearBlue)
 
 Trionfi
 -------------------------------------------------------------
@@ -21,9 +21,6 @@ Trionfi repository (github)  https://github.com/May-ClearBlue/Trionfi
 May-ClearBlue twitter　https://twitter.com/mahiru_hiroba
 
 FUTURE 
--Releaser(create assetbundle)
--Serialize UserGameData
--Output PDF Script with voice number(automatic)
 -Live2D and E-mote
 -"Utage" converter
 
