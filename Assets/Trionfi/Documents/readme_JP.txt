@@ -11,6 +11,12 @@ Trionfi　copyright(c) 渡澄萌衣/2023
 プロジェクト名/Resources/scenarioにあるstart.txtにメインシナリオとタグを追加していきます。
 必要に応じて他のシナリオファイルも作成してください。
 
+■ボイス台本作成ツール”Mira”
+こちらからダウンロード後、解凍してMira.exeを実行してください。
+http://cybernetic-cute.sakura.ne.jp/trionfi/Mira.zip
+
+
+
 ■関連リンク
 Trionfi website(オンラインドキュメント)  http://cybernetic-cute.sakura.ne.jp/trionfi
 Trionfi repository (github)  https://github.com/May-ClearBlue/Trionfi
@@ -25,6 +31,7 @@ Trionfi repository (github)  https://github.com/May-ClearBlue/Trionfi
 ・TinyCSVParser
 ・LetterWriter
 ・UniTask
+・SpriteDicing
 
 ■サンプル素材
 びたちー素材館様

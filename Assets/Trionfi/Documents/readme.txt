@@ -14,6 +14,10 @@ GETTING STARTED
 -Open "Tools/ Trionfi/New Project", and custom project setting(project name(path), reference resolution).
 - You can edit  'project name'/Resources/scenario/start.txt. (It's boot script file).  And you can create  other scenario file if you need.
 
+VoiceScript(PDF)Tool -"Mira”
+Please download from this URL, and execute Mira.exe.
+http://cybernetic-cute.sakura.ne.jp/trionfi/Mira.zip
+
 LINKS
 -------------------------------------------------------------
 Trionfi website(documentation, tutorial, etc)  http://cybernetic-cute.sakura.ne.jp/trionfi
@@ -29,3 +33,4 @@ EXTERNAL LIBRARY (ALL MIT LICENSE) customized for Trionfi
 -TinyCSVParser
 -LetterWriter
 -UniTask
+-SpriteDicing
