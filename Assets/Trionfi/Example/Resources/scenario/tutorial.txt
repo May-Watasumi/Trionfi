@@ -20,6 +20,9 @@
 [image layer=2 storage=portrait_yuko_01 dicedatlas=sprite/character/yuko pos=right yoff =-41 time=1000 actor=Yuko]
 [trans rule=rule/030  wait = 750]
 
+[initscene]
+
+[audio buf=0 storage=sound/bgm/c3 time=1000]
 
 【Kohaku】
 This is a sample script for a general novel game and conversation scene.
