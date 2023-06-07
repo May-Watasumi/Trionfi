@@ -526,4 +526,62 @@ namespace Trionfi
         }
 #endif
 	}
+
+    [Serializable]
+    public class PrefabComponent : AbstractComponent
+    {
+        public PrefabComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+                "storage",
+                "layer"
+            };
+#endif
+        }
+
+        protected override async TRTaskString TagFunction()
+        {
+#if !TR_PARSEONLY
+            TRResourceType type = GetResourceType();
+            await Trionfi.Instance.LoadPrefab(tagParam, type);
+
+            return string.Empty;
+        }
+#endif
+    }
+
+    [Serializable]
+    public class PrefabfreeComponent : AbstractComponent
+    {
+        public PrefabfreeComponent()
+        {
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string>
+            {
+                "layer"
+            };
+#endif
+        }
+
+        protected override async TRTaskString TagFunction()
+        {
+#if !TR_PARSEONLY
+            GameObject instance;
+
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
+
+            instance = Trionfi.Instance.prefabInstance[id].instance;
+
+            GameObject child = instance.transform.GetChild(0).gameObject;
+
+            if(child != null)
+                GameObject.Destroy(child);
+            Trionfi.Instance.prefabInstance[id].instance = null;
+#endif
+            return string.Empty;
+        }
+    }
 }

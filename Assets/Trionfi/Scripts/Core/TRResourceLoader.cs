@@ -16,6 +16,7 @@ using TRTaskTexture = Cysharp.Threading.Tasks.UniTask<UnityEngine.Texture2D>;
 using TRTaskSprite = Cysharp.Threading.Tasks.UniTask<UnityEngine.Sprite>;
 using TRTaskAssetBundle = Cysharp.Threading.Tasks.UniTask<UnityEngine.AssetBundle>;
 using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+using TRTaskPrefab = Cysharp.Threading.Tasks.UniTask<UnityEngine.GameObject>;
 #else
 using System.Threading.Tasks;
 
@@ -26,6 +27,8 @@ using TRTaskTexture = System.Threading.Tasks.Task<UnityEngine.Texture2D>;
 using TRTaskSprite = System.Threading.Tasks.Task<UnityEngine.Sprite>;
 using TRTaskAssetBundle = System.Threading.Tasks.Task<UnityEngine.AssetBundle>;
 using TRTaskString = System.Threading.Tasks.Task<string>;
+using TRTaskPrefab = System.Threading.Tasks.Task<UnityEngine.GameObject>;
+
 #endif
 
 namespace Trionfi
@@ -33,7 +36,7 @@ namespace Trionfi
     public abstract class IAssetLoader<T>
     {
         public T instance;
-        public virtual async Cysharp.Threading.Tasks.UniTask<T> Load(string storage)
+        public virtual async Cysharp.Threading.Tasks.UniTask<T> Load(string storage, string bundle = null)
         {
             return instance;
         }
@@ -41,7 +44,7 @@ namespace Trionfi
 
     public class TRDefaultTextLoader : IAssetLoader<string>
     {
-        public override async TRTaskString Load(string storage)
+        public override async TRTaskString Load(string storage, string bundle = null)
         {
             TextAsset text = await Resources.LoadAsync<TextAsset>(storage) as TextAsset ;
 
@@ -53,7 +56,7 @@ namespace Trionfi
 
     public class TRDefaultAudioLoader : IAssetLoader<AudioClip>
     {
-        public override async TRTaskAudio Load(string storage)
+        public override async TRTaskAudio Load(string storage, string bundle = null)
         {
             instance = await Resources.LoadAsync<AudioClip>(storage) as AudioClip;
             return instance;
@@ -62,7 +65,7 @@ namespace Trionfi
 
     public class TRDefaultTextureLoader : IAssetLoader<Texture2D>
     {
-        public override async TRTaskTexture Load(string storage)
+        public override async TRTaskTexture Load(string storage, string bundle = null)
         {
             instance = await Resources.LoadAsync<Texture2D>(storage) as Texture2D;
             return instance;
@@ -71,7 +74,7 @@ namespace Trionfi
 
     public class TRDefaultSpriteLoader : IAssetLoader<Sprite>
     {
-        public override async TRTaskSprite Load(string storage)
+        public override async TRTaskSprite Load(string storage, string bundle = null)
         {
             instance = await Resources.LoadAsync<Sprite>(storage) as Sprite;
             return instance;
@@ -80,16 +83,24 @@ namespace Trionfi
 
     public class TRDefaultAssetBundleLoader : IAssetLoader<AssetBundle>
     {
-        public override async TRTaskAssetBundle Load(string storage)
+        public override async TRTaskAssetBundle Load(string storage, string bundle = null)
         {
             instance = await Resources.LoadAsync<AssetBundle>(storage) as AssetBundle;
+            return instance;
+        }
+    }
+    public class TRDefaultPrefabLoader : IAssetLoader<GameObject>
+    {
+        public override async TRTaskPrefab Load(string storage, string bundle = null)
+        {
+            instance = await Resources.LoadAsync(storage) as GameObject;
             return instance;
         }
     }
 
     public class TRWebTextLoader : IAssetLoader<string>
     {
-        public override async TRTaskString Load(string storage)
+        public override async TRTaskString Load(string storage, string bundle = null)
         {
             instance = null;
 
@@ -107,7 +118,6 @@ namespace Trionfi
                 instance = request.downloadHandler.text;
 
             return instance;
-
         }
     }
 
@@ -120,7 +130,7 @@ namespace Trionfi
             { "ogg", AudioType.OGGVORBIS },
         };
 
-        public override async TRTaskAudio Load(string storage)
+        public override async TRTaskAudio Load(string storage, string bundle = null)
         {
            instance = null;
 
@@ -145,7 +155,7 @@ namespace Trionfi
 
     public class TRWebTextureLoader : IAssetLoader<Texture2D>
     {
-        public override async TRTaskTexture Load(string storage)
+        public override async TRTaskTexture Load(string storage, string bundle = null)
         {
             instance = null;
 
@@ -167,7 +177,7 @@ namespace Trionfi
 
     public class TRWebAssetBundleLoader : IAssetLoader<AssetBundle>
     {
-        public override async TRTaskAssetBundle Load(string storage)
+        public override async TRTaskAssetBundle Load(string storage, string bundle = null)
         {
             instance = null;
 
@@ -190,7 +200,7 @@ namespace Trionfi
 
     public class TRStreamTextLoader : IAssetLoader<string>
     {
-        public override async TRTaskString Load(string storage)
+        public override async TRTaskString Load(string storage, string bundle = null)
         {
             string fullPath = Application.streamingAssetsPath + storage;
             instance = File.ReadAllText(fullPath);
@@ -200,7 +210,7 @@ namespace Trionfi
 
     public class TRStreamAssetBundleLoader : IAssetLoader<AssetBundle>
     {
-        public override async TRTaskAssetBundle Load(string storage)
+        public override async TRTaskAssetBundle Load(string storage, string bundle = null)
         {
             instance = await AssetBundle.LoadFromFileAsync(Path.Combine(Application.streamingAssetsPath, storage));
             return instance;
@@ -231,6 +241,7 @@ namespace Trionfi
         public static Dictionary<TRResourceType, IAssetLoader<Sprite>> spriteLoader = new Dictionary<TRResourceType, IAssetLoader<Sprite>>();
         public static Dictionary<TRResourceType, IAssetLoader<string>> textLoader = new Dictionary<TRResourceType, IAssetLoader<string>>();
         public static Dictionary<TRResourceType, IAssetLoader<AssetBundle>> assetBundleLoader = new Dictionary<TRResourceType, IAssetLoader<AssetBundle>>();
+        public static Dictionary<TRResourceType, IAssetLoader<GameObject>> prefabLoader = new Dictionary<TRResourceType, IAssetLoader<GameObject>>();
 
         public static void Initialize()
         {
@@ -247,6 +258,8 @@ namespace Trionfi
 
             assetBundleLoader[TRResourceType.LocalStatic] = new TRDefaultAssetBundleLoader();
             assetBundleLoader[TRResourceType.WWW] = new TRWebAssetBundleLoader();
+
+            prefabLoader[TRResourceType.LocalStatic] = new TRDefaultPrefabLoader();
 
             audioLoader[TRResourceType.LocalStreaming] = new TRWebAudioLoader();
             textureLoader[TRResourceType.LocalStreaming] = new TRWebTextureLoader();
@@ -268,8 +281,14 @@ namespace Trionfi
 
         public static async TRTaskTexture LoadTexture(string storage, TRResourceType type = defaultResourceType)
         {
-            await textureLoader[type].Load(storage); ;
+            await textureLoader[type].Load(storage);
             return textureLoader[type].instance;
+        }
+
+        public static async TRTaskPrefab LoadPrefab(string storage, string bundle, TRResourceType type = defaultResourceType)
+        {
+            await prefabLoader[type].Load(storage, bundle);
+            return prefabLoader[type].instance;
         }
 
         public static async TRTaskSprite LoadSprite(string storage, TRResourceType type = defaultResourceType)

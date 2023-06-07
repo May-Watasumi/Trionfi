@@ -27,11 +27,11 @@ namespace Trionfi
     [Serializable]
     public enum TRStandPosition
     {
-        CENTER = 0,
-        LEFT = 1,
-        RIGHT = 2,
-        LEFT_CENTER = 3,
-        RIGHT_CENTER
+        CENTER = 1,
+        LEFT = 2,
+        RIGHT = 3,
+        LEFT_CENTER = 4,
+        RIGHT_CENTER = 5
     }
 
     [Serializable]
@@ -94,8 +94,16 @@ namespace Trionfi
         Unknown
     };
 
-#if !TR_PARSEONLY
     [Serializable]
+    public enum TRPrefabType
+    {
+        Mesh = 0,
+        Live2D,
+        Emote
+    };
+
+#if !TR_PARSEONLY
+        [Serializable]
     public class TRMediaInstance<T>
     {
         [SerializeField]
@@ -147,5 +155,13 @@ namespace Trionfi
     {
         public string actor;
     }
+
+    [Serializable]
+    public class TRPrefab : TRMediaInstance<GameObject>
+    {
+        TRPrefabType prefabType;
+        public string actor;
+    }
+
 #endif
 }

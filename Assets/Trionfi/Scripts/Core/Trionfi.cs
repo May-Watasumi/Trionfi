@@ -16,6 +16,7 @@ using TRTaskAudio = Cysharp.Threading.Tasks.UniTask<UnityEngine.AudioClip>;
 using TRTaskTexture = Cysharp.Threading.Tasks.UniTask<UnityEngine.Texture2D>;
 using TRTaskSprite = Cysharp.Threading.Tasks.UniTask<UnityEngine.Sprite>;
 using TRTaskAssetBundle = Cysharp.Threading.Tasks.UniTask<UnityEngine.AssetBundle>;
+using TRTaskPrefab = Cysharp.Threading.Tasks.UniTask<UnityEngine.GameObject>;
 #else
 using TRTask = System.Threading.Tasks.Task;
 using TRTaskString = System.Threading.Tasks.Task<string>;
@@ -169,6 +170,45 @@ namespace Trionfi
             }
         }
 
+        [Serializable]
+        public class TRPrefabInstance : SerializableDictionary<TRLayerID, TRPrefab>
+        {
+            public void Reset()
+            {
+                foreach (KeyValuePair<TRLayerID, TRPrefab> pair in this)
+                {
+                    pair.Value.tagParam.Clear();
+                    pair.Value.actor = string.Empty;
+                    pair.Value.instance.transform.localPosition = pair.Value.instance.transform.localPosition;
+//                    pair.Value.instance.enabled = false;
+                }
+            }
+
+            public SerializableDictionary<int, TRVariableDictionary> Serialize()
+            {
+                SerializableDictionary<int, TRVariableDictionary> tagParams = new SerializableDictionary<int, TRVariableDictionary>();
+
+                {
+                    foreach (KeyValuePair<TRLayerID, TRPrefab> pair in this)
+                    {
+                        tagParams[(int)pair.Key] = pair.Value.tagParam;
+                    }
+                }
+
+                return tagParams;
+            }
+
+            public void Deserialize(SerializableDictionary<int, TRVariableDictionary> tagParams)
+            {
+                Reset();
+
+                foreach (KeyValuePair<TRLayerID, TRPrefab> pair in this)
+                {
+                    pair.Value.tagParam = tagParams[(int)pair.Key];
+                }
+            }
+        }
+
         public class TRScriptInstance : SerializableDictionary<string, TRScript>
         {
             /*
@@ -222,7 +262,10 @@ namespace Trionfi
         [SerializeField]
         public TRImageInstance layerInstance = new TRImageInstance();
         [SerializeField]
+        public TRPrefabInstance prefabInstance = new TRPrefabInstance();
+        [SerializeField]
         public TRScriptInstance scriptInstance = new TRScriptInstance();
+
         [SerializeField]
         public bool enableEndCallback = true;
 
@@ -407,6 +450,48 @@ namespace Trionfi
 
             return sprite;
         }
+
+        public async TRTaskPrefab LoadPrefab(TRVariableDictionary tagParam, TRResourceType type)
+        {
+            TRLayerID id = (TRLayerID)tagParam["layer", 0];
+            string storage = tagParam["storage", string.Empty];
+            string bundle = tagParam["bundle", string.Empty];
+
+            GameObject prefab = await TRResourceLoader.LoadPrefab(storage, bundle, type);
+
+            if (prefab != null)
+            {
+                GameObject instance = Instantiate(prefab, prefabInstance[id].instance.transform);
+//                prefabInstance[id].instance = instance;
+                layerInstance[id].tagParam = tagParam;
+
+                Vector3 pos = Vector3.zero;
+
+                if (tagParam.ContainsKey("x"))
+                {
+                    pos.x = tagParam["x"].Float();
+                }
+
+                if (tagParam.ContainsKey("y"))
+                {
+                    pos.y = tagParam["y"].Float();
+                }
+
+                if (tagParam.ContainsKey("z"))
+                {
+                    pos.z = tagParam["z"].Float();
+                }
+
+                instance.transform.localPosition = pos;
+
+                //話者セット
+                string actor = tagParam["actor", string.Empty];
+                prefabInstance[id].actor = actor;
+            }
+
+            return prefab;
+        }
+
 
         public void Init(int subRenderCount = 0, bool changeLayerOrder = false)
         {
