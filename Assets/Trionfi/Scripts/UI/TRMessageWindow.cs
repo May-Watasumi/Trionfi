@@ -219,8 +219,8 @@ namespace Trionfi
             if (Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.isPlaying)
                 currentVoice = Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.clip;
 
-            if(logWindow != null)
-                logWindow.AddLogData(currentMessage.text, nameString, currentVoice);
+            if (Trionfi.Instance.messageLogwindow != null)
+                Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, nameString, currentVoice);
 
             if (!enableSkip && mesWait > 0.0f)
             {

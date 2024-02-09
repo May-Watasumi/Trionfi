@@ -79,6 +79,7 @@ namespace Trionfi {
             gameObject.SetActive(false);
             Trionfi.Instance.messageWindow.gameObject.SetActive(true);
             Trionfi.Instance.systemMenuWindow.gameObject.SetActive(true);
+            Trionfi.Instance.globalTap.SetActive(true);
             Trionfi.Instance.messageWindow.Restart();
         }
 

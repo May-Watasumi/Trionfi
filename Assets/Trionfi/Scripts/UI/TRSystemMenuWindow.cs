@@ -82,8 +82,8 @@ namespace Trionfi
             Trionfi.Instance.messageWindow.Pause();
             Trionfi.Instance.messageWindow.gameObject.SetActive(false);
             Trionfi.Instance.messageLogwindow.gameObject.SetActive(true);
+            Trionfi.Instance.globalTap.SetActive(false);
             gameObject.SetActive(false);
-            //            Trionfi.Instance.OpenUI(Trionfi.Instance.messageLogwindow.gameObject);
         }
 
         public void OnOptionButton()
