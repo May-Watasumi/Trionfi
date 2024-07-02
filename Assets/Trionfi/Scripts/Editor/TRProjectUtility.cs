@@ -131,10 +131,10 @@ namespace Trionfi
 
             trionfiInstandce.titleName = _input;
             trionfiInstandce.titleWindow = instanceList[0].GetComponent<TRTitle>() ?? prefabList[0].GetComponent<TRTitle>();
-            trionfiInstandce.messageWindowList = new List<TRMessageWindow>();
+            trionfiInstandce.messageWindowList = new List<TRMessageWindowBase>();
             trionfiInstandce.messageWindowList.Add(instanceList[1].GetComponent<TRMessageWindow>() ?? prefabList[1].GetComponent<TRMessageWindow>());
             trionfiInstandce.messageWindowList.Add(instanceList[2].GetComponent<TRMessageWindow>() ?? prefabList[2].GetComponent<TRMessageWindow>());
-            trionfiInstandce.messageWindow = trionfiInstandce.messageWindowList[0];
+            trionfiInstandce.currentMessageWindow = trionfiInstandce.messageWindowList[0];
 
             trionfiInstandce.messageLogwindow = instanceList[3].GetComponent<TRMessageLogWindow>() ?? prefabList[3].GetComponent<TRMessageLogWindow>();
             trionfiInstandce.globalTap = instanceList[4] ?? prefabList[4];

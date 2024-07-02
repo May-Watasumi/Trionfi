@@ -1,5 +1,5 @@
 ﻿using UnityEngine;
-using System.Collections.Generic;
+using TMPro;
 
 namespace Trionfi
 {
@@ -73,6 +73,9 @@ namespace Trionfi
         [Range(3, 10)]
         public int standObjectCount = 3;
 
+        [SerializeField]
+        public TMP_FontAsset fontAsset;
+        
         [SerializeField]
         public Font defaultFont = null;
 

@@ -73,6 +73,8 @@ namespace Trionfi
         [SerializeField]
         public TRMessageWindow messageWindow;
         [SerializeField]
+        public TRMessageWindowTMPro messageWindowTMPro;
+        [SerializeField]
         public GameObject globalTap;
         [SerializeField]
         public TRSelectWindow selectWindow;
@@ -88,8 +90,10 @@ namespace Trionfi
         public TRSerializeManager serializer;
 
         [SerializeField]
-        public List<TRMessageWindow> messageWindowList = new List<TRMessageWindow>();
+        public List<TRMessageWindowBase> messageWindowList = new List<TRMessageWindowBase>();
 
+        public TRMessageWindowBase currentMessageWindow;
+        
         [Serializable]
         public class TRAudioInstance : SerializableDictionary<TRAudioID, TRAudio>
         {
@@ -709,8 +713,8 @@ namespace Trionfi
 
         public void ResetInstance(int mesWindowID = 0)
         {
-            messageWindow = messageWindowList[mesWindowID];
-            messageWindow.ClearMessage();
+            currentMessageWindow = messageWindowList[mesWindowID];
+            currentMessageWindow.ClearMessage();
 
             layerInstance.Reset();
             audioInstance.Reset();

@@ -206,14 +206,14 @@ namespace Trionfi
                 string[] nameInfo = name.Split('/');
 
                 //            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
-                nameInfo[0] = regex2.Replace(nameInfo[0], TRMessageWindow.MatchEvaluatorFunc);
+                nameInfo[0] = regex2.Replace(nameInfo[0], TRMessageWindowBase.MatchEvaluatorFunc);
 
                 Trionfi.Instance.messageWindow.ShowName(nameInfo[0]);
                 Trionfi.Instance.messageWindow.currentSpeaker = nameInfo[1];
             }
             else
             {
-                name = regex2.Replace(name, TRMessageWindow.MatchEvaluatorFunc);
+                name = regex2.Replace(name, TRMessageWindowBase.MatchEvaluatorFunc);
 
                 Trionfi.Instance.messageWindow.ShowName(name);
                 Trionfi.Instance.messageWindow.currentSpeaker = name;
@@ -294,10 +294,10 @@ namespace Trionfi
         protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-            Trionfi.Instance.messageWindow.gameObject.SetActive(false);
-            Trionfi.Instance.messageWindow = Trionfi.Instance.messageWindowList[tagParam["id"].Int()];
-            Trionfi.Instance.messageWindow.ClearMessage();
-            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+            Trionfi.Instance.currentMessageWindow.gameObject.SetActive(false);
+            Trionfi.Instance.currentMessageWindow = Trionfi.Instance.messageWindowList[tagParam["id"].Int()];
+            Trionfi.Instance.currentMessageWindow.ClearMessage();
+            Trionfi.Instance.currentMessageWindow.gameObject.SetActive(true);
 #endif
             return string.Empty;
 		}
