@@ -154,9 +154,9 @@ namespace Trionfi
         public void End()
         {
             gameObject.SetActive(false);
-            Trionfi.Instance.messageWindow.gameObject.SetActive(true);
+            Trionfi.Instance.currentMessageWindow.gameObject.SetActive(true);
             Trionfi.Instance.systemMenuWindow.gameObject.SetActive(true);
-            Trionfi.Instance.messageWindow.Restart();
+            Trionfi.Instance.currentMessageWindow.Restart();
         }
 
         public void UpdatePage()

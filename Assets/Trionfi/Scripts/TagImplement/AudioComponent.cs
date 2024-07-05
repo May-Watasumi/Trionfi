@@ -93,7 +93,7 @@ namespace Trionfi
 
                     if (fadeTime > 0.09f)
                     {
-                        if (!(Trionfi.Instance.messageWindow.onSkip && id == TRAudioID.VOICE1))
+                        if (!(Trionfi.Instance.currentMessageWindow.onSkip && id == TRAudioID.VOICE1))
                             _source.Play();
 
                         _source.DOFade(volume, fadeTime);
@@ -102,7 +102,7 @@ namespace Trionfi
                     {
                         _source.volume = volume;
 
-                        if (!(Trionfi.Instance.messageWindow.onSkip && id == TRAudioID.VOICE1))
+                        if (!(Trionfi.Instance.currentMessageWindow.onSkip && id == TRAudioID.VOICE1))
                             _source.Play();
                     }
                 }

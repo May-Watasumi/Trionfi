@@ -1,4 +1,5 @@
-﻿using System.Text.RegularExpressions;
+﻿using System;
+using System.Text.RegularExpressions;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,8 +10,9 @@ using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
 
 namespace Trionfi
 {
-    public class TRMessageWindowBase : MonoBehaviour
+    public abstract class TRMessageWindowBase : MonoBehaviour
     {
+        public abstract string currentText { get; set; }
         public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait, OnClose }
         public enum WaitIcon { None, Alpha, Rotate }
 
@@ -51,13 +53,12 @@ namespace Trionfi
 
         public GameObject systemWindow;
 
-        protected TRMessageLogWindow logWindow;
+//        protected TRMessageLogWindowBase logWindow;
 
         public string nameString = string.Empty;
 
         public virtual void Start()
         {
-
 //            if (currentUguiMessage != null)
 //                currentUguiMessage.fontSize = TRSystemConfig.Instance.fontSize;
 
@@ -67,7 +68,7 @@ namespace Trionfi
 //                currentMessage.color = TRSystemConfig.Instance.fontColor;
 //            }
 
-            logWindow = Trionfi.Instance.messageLogwindow;
+//            logWindow = Trionfi.Instance.messageLogwindow;
 
             Trionfi.Instance.ClickEvent += OnClick;
         }

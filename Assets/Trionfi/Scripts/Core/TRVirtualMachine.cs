@@ -229,8 +229,8 @@ BEGINLOOP:
 
         public void PrepareReboot()
         {
-            Trionfi.instance.messageWindow.ClearMessage();
-            Trionfi.instance.messageWindow.CloseWindow();
+            Trionfi.instance.currentMessageWindow.ClearMessage();
+            Trionfi.instance.currentMessageWindow.CloseWindow();
             Trionfi.instance.ActivateAllCanvas(false);
             Trionfi.instance.layerInstance.Reset();
             Trionfi.instance.audioInstance.Reset();

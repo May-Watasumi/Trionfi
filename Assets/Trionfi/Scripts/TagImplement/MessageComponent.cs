@@ -144,9 +144,9 @@ namespace Trionfi
                 int flagid = tagParam["flagid"].Int();
 
                 //未読スキップをしない＆未読のときはスキップ解除
-                if (Trionfi.Instance.messageWindow.onSkip  && !TRGameConfig.configData.readtextSkip && !TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid])
+                if (Trionfi.Instance.currentMessageWindow.onSkip  && !TRGameConfig.configData.readtextSkip && !TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid])
                 {
-                    Trionfi.Instance.messageWindow.onSkip = false;
+                    Trionfi.Instance.currentMessageWindow.onSkip = false;
                 }
 
                 if (TRVirtualMachine.Instance.tokenSource == null || TRVirtualMachine.Instance.tokenSource.IsCancellationRequested)
@@ -157,23 +157,23 @@ namespace Trionfi
 
             Trionfi.Instance.ActivateAllCanvas(true);
 
-            if (!Trionfi.Instance.messageWindow.gameObject.activeSelf)
+            if (!Trionfi.Instance.currentMessageWindow.gameObject.activeSelf)
             {
-                Trionfi.Instance.messageWindow.OpenWindow();
+                Trionfi.Instance.currentMessageWindow.OpenWindow();
             }
             
-            Trionfi.Instance.messageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
+            Trionfi.Instance.currentMessageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
 
-            await UniTask.WaitWhile(() => (Trionfi.Instance.messageWindow.state != TRMessageWindow.MessageState.None) && (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run));
+            await UniTask.WaitWhile(() => (Trionfi.Instance.currentMessageWindow.state != TRMessageWindowBase.MessageState.None) && (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run));
 
             if (TRSystemConfig.Instance.isNovelMode)
             {
-                Trionfi.Instance.messageWindow.nameString = string.Empty;
-                Trionfi.Instance.messageWindow.currentMessage.text += "\r";
+                Trionfi.Instance.currentMessageWindow.nameString = string.Empty;
+                Trionfi.Instance.currentMessageWindow.currentText += "\r";
             }
             // メッセージの初期化は新しいメッセージを表示する直前にするのでここではしない\\
             //            else
-            //                Trionfi.Instance.messageWindow.ClearMessage();
+            //                Trionfi.Instance.currentMessageWindow.ClearMessage();
 #endif
             return string.Empty;
 		}
@@ -208,15 +208,15 @@ namespace Trionfi
                 //            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
                 nameInfo[0] = regex2.Replace(nameInfo[0], TRMessageWindowBase.MatchEvaluatorFunc);
 
-                Trionfi.Instance.messageWindow.ShowName(nameInfo[0]);
-                Trionfi.Instance.messageWindow.currentSpeaker = nameInfo[1];
+                Trionfi.Instance.currentMessageWindow.ShowName(nameInfo[0]);
+                Trionfi.Instance.currentMessageWindow.currentSpeaker = nameInfo[1];
             }
             else
             {
                 name = regex2.Replace(name, TRMessageWindowBase.MatchEvaluatorFunc);
 
-                Trionfi.Instance.messageWindow.ShowName(name);
-                Trionfi.Instance.messageWindow.currentSpeaker = name;
+                Trionfi.Instance.currentMessageWindow.ShowName(name);
+                Trionfi.Instance.currentMessageWindow.currentSpeaker = name;
             }
 #endif
             return string.Empty;
@@ -240,7 +240,7 @@ namespace Trionfi
         {
 #if !TR_PARSEONLY
             float ratio = tagParam["ratio", 1.0f];
-            Trionfi.Instance.messageWindow.speedRatio = ratio;
+            Trionfi.Instance.currentMessageWindow.speedRatio = ratio;
 #endif
             return string.Empty;
 		}
@@ -268,9 +268,9 @@ namespace Trionfi
             //振動頻度
             int vibratio = tagParam["vibrato", 20];
 
-            RectTransform _rect = Trionfi.Instance.messageWindow.gameObject.GetComponent<RectTransform>();
+            RectTransform _rect = Trionfi.Instance.currentMessageWindow.gameObject.GetComponent<RectTransform>();
 
-            Trionfi.Instance.messageWindow.tweener = _rect.GetComponent<RectTransform>().DOShakePosition(1.0f, strength, vibratio, 90.0f, false, false).SetLoops(-1);
+            Trionfi.Instance.currentMessageWindow.tweener = _rect.GetComponent<RectTransform>().DOShakePosition(1.0f, strength, vibratio, 90.0f, false, false).SetLoops(-1);
 #endif
             return string.Empty;
 		}
@@ -327,7 +327,7 @@ namespace Trionfi
 
         public override IEnumerator TagAsyncWait()
         {
-            yield return TRUIInstance.Instance.messageWindow.Wait();
+            yield return TRUIInstance.Instance.currentMessageWindow.Wait();
         }
     }
     */
@@ -340,7 +340,7 @@ namespace Trionfi
         protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-            await Trionfi.Instance.messageWindow.Wait();
+            await Trionfi.Instance.currentMessageWindow.Wait();
 #endif
             return string.Empty;
         }
@@ -353,7 +353,7 @@ namespace Trionfi
         protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-            Trionfi.Instance.messageWindow.ClearMessage();
+            Trionfi.Instance.currentMessageWindow.ClearMessage();
 #endif
             return string.Empty;
 		}
@@ -377,12 +377,12 @@ namespace Trionfi
         protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-            int size = tagParam["size", TRSystemConfig.Instance.fontSize];
+            int size = tagParam["size", 32];
             uint colorValue = tagParam["color", 0xFFFFFFFF];
-
             Color color = TRVariableDictionary.ToRGB(colorValue);
-            Trionfi.Instance.messageWindow.currentMessage.fontSize = size;
-            Trionfi.Instance.messageWindow.currentMessage.color = color;
+
+            TRSystemConfig.Instance.fontSize = size;
+            TRSystemConfig.Instance.fontColor = color;
 #endif
             return string.Empty;
 		}

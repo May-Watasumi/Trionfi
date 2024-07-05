@@ -9,7 +9,7 @@ using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
- using DG.Tweening;
+using DG.Tweening;
 using TRTask = Cysharp.Threading.Tasks.UniTask;
 using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
 using TRTaskAudio = Cysharp.Threading.Tasks.UniTask<UnityEngine.AudioClip>;
@@ -38,10 +38,11 @@ namespace Trionfi
         public RenderTexture movieBuffer;
         [NonSerialized]
         public RenderTexture[] subRenderBuffer = new RenderTexture[1];
+        [NonSerialized]
+        public TRMessageWindowBase currentMessageWindow;
 
         [SerializeField]
         public string titleName = "Example";
-
         [SerializeField]
         string bootScriptName = string.Empty;
         [SerializeField]
@@ -51,14 +52,9 @@ namespace Trionfi
         [SerializeField]
         public UnityEngine.Audio.AudioMixer audioMixer;
         [SerializeField]
-        public GameObject otherComponent;
-
-        [SerializeField]
         public RawImage rawImage;
         [SerializeField]
         public Camera targetCamera;
-        [SerializeField]
-        public Camera subCamera;
         [SerializeField]
         public Canvas layerCanvas;
         [SerializeField]
@@ -67,32 +63,26 @@ namespace Trionfi
         public RectMask2D layerMask;
 
         [SerializeField]
-        public TRTitle titleWindow;
-        [SerializeField]
-        public TRMessageLogWindow messageLogwindow;
-        [SerializeField]
-        public TRMessageWindow messageWindow;
-        [SerializeField]
-        public TRMessageWindowTMPro messageWindowTMPro;
+        public TRTitleBase titleWindow;
         [SerializeField]
         public GameObject globalTap;
         [SerializeField]
         public TRSelectWindow selectWindow;
         [SerializeField]
-        public TRSystemMenuWindow systemMenuWindow;
+        public TRSystemMenuWindowBase systemMenuWindow;
         [SerializeField]
         public TRGameConfigWindow configWindow;
         [SerializeField]
-        public TRCustomDialog dialogWindow;
+        public ICustomDialog dialogWindow;
         [SerializeField]
         public GameObject nowLoading;
         [SerializeField]
         public TRSerializeManager serializer;
 
         [SerializeField]
+        public TRMessageLogWindowLegacy messageLogwindow;
+        [SerializeField]
         public List<TRMessageWindowBase> messageWindowList = new List<TRMessageWindowBase>();
-
-        public TRMessageWindowBase currentMessageWindow;
         
         [Serializable]
         public class TRAudioInstance : SerializableDictionary<TRAudioID, TRAudio>
@@ -231,7 +221,6 @@ namespace Trionfi
                         tagParams[pair.Key] = pair.Value.tagParam;
                     }
                 }
-
                 return tagParams;
             }
 
@@ -273,8 +262,8 @@ namespace Trionfi
         [SerializeField]
         public bool enableEndCallback = true;
 
-        protected TRTagParser tagParser = new TRTagParser(string.Empty);
-        protected TRCrypterBase crypter = null;
+        private TRTagParser tagParser = new TRTagParser(string.Empty);
+        private TRCrypterBase crypter = null;
 
         //コールバック。
         public delegate void SystemEvent();
@@ -282,7 +271,7 @@ namespace Trionfi
         public SystemEvent SleepTrionfi;
 
         //public Dictionary<string, string> flagDatas = new Dictionary<string, string>();
-        public Dictionary<string, List<bool>> flagDatas;
+        private Dictionary<string, List<bool>> flagDatas;
 
         public void SaveReadFlag()
         {
@@ -362,12 +351,12 @@ namespace Trionfi
 
         public void DefaultEndScriptCallBack()
         {
-            messageWindow.CloseWindow();               
+            currentMessageWindow.CloseWindow();               
         }
 
         public void DefaultBeginScriptCallBack()
         {
-            messageWindow.OpenWindow();
+            currentMessageWindow.OpenWindow();
         }
 
         public AbstractComponent GetTagComponent(string tagString)
@@ -451,7 +440,6 @@ namespace Trionfi
                 layerInstance[id].instance.sprite = sprite;
                 layerInstance[id].tagParam = tagParam;
             }
-
             return sprite;
         }
 
@@ -492,7 +480,6 @@ namespace Trionfi
                 string actor = tagParam["actor", string.Empty];
                 prefabInstance[id].actor = actor;
             }
-
             return prefab;
         }
 
@@ -507,11 +494,10 @@ namespace Trionfi
             captureBuffer = new RenderTexture(Screen.width, Screen.height, 32);
             movieBuffer = new RenderTexture(Screen.width, Screen.height, 32);
 
-            if (subCamera != null)
-            {
-                subRenderBuffer[0] = new RenderTexture(Screen.width, Screen.height, 32);
-                subCamera.targetTexture = subRenderBuffer[0];
-            }
+            currentMessageWindow = messageWindowList[0];
+
+            if (!TRSystemConfig.Instance.isNovelMode)
+                currentMessageWindow.systemWindow = systemMenuWindow.gameObject;
 
             rawImage.texture = captureBuffer;
 
@@ -565,9 +551,9 @@ namespace Trionfi
             TRGameConfig.Initialize();
             TRResourceLoader.Initialize();
 
-            if (TRTitle.instance != null)
+            if (TRTitleBase.instance != null)
             {
-                TRTitle.instance.Initialize();
+                TRTitleBase.instance.Initialize();
             }
             else if (!string.IsNullOrEmpty(bootScriptName))
             {
@@ -619,18 +605,18 @@ namespace Trionfi
             if (currentUI != null)
                 currentUI.SetActive(false);
 
-            if(messageWindow.gameObject.activeSelf)
-                messageWindow.Restart();
+            if(currentMessageWindow.gameObject.activeSelf)
+                currentMessageWindow.Restart();
 
             ClickEvent -= PopWindow;
         }
 
         public void CloseAllUI(GameObject ui = null)
         {
-            messageWindow.Pause();
+            currentMessageWindow.Pause();
 
             HideObject(configWindow.gameObject);
-            HideObject(messageWindow.gameObject);
+            HideObject(currentMessageWindow.gameObject);
             HideObject(systemMenuWindow.gameObject);
             HideObject(messageLogwindow.gameObject);
 
@@ -738,7 +724,7 @@ namespace Trionfi
                 if (instance.Value.instance == null || instance.Key < TRLayerID.STAND1 || instance.Key > (TRLayerID)10)
                     continue;
 
-                if (instance.Value.actor != messageWindow.currentSpeaker )
+                if (instance.Value.actor != currentMessageWindow.currentSpeaker )
                     instance.Value.instance.color = Color.gray;
                 else
                     instance.Value.instance.color = Color.white;
@@ -769,8 +755,8 @@ namespace Trionfi
                 globalTap.GetComponent<RectTransform>().sizeDelta = canvasSize;
             if (messageLogwindow != null)
                 messageLogwindow.gameObject.SetActive(false);
-            if (messageWindow != null)
-                messageWindow.gameObject.SetActive(false);
+            if (currentMessageWindow != null)
+                currentMessageWindow.gameObject.SetActive(false);
             if(selectWindow != null)
                 selectWindow.gameObject.SetActive(false);
             if(systemMenuWindow != null)
@@ -781,10 +767,7 @@ namespace Trionfi
                 dialogWindow.gameObject.SetActive(false);
             if(nowLoading != null)
                 nowLoading.gameObject.SetActive(false);
-
-            if (!TRSystemConfig.Instance.isNovelMode)
-                messageWindow.systemWindow = systemMenuWindow.gameObject;
-
+            
             Init();
         }
 

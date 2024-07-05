@@ -35,13 +35,13 @@ namespace Trionfi
         {
             Trionfi.Instance.selectWindow.onWait = true;
 
-            Trionfi.Instance.messageWindow.Pause();
+            Trionfi.Instance.currentMessageWindow.Pause();
             Trionfi.Instance.HideObject(Trionfi.Instance.globalTap);
 
             if(Trionfi.Instance.configWindow != null)
                 Trionfi.Instance.HideObject(Trionfi.Instance.configWindow.gameObject);
 
-            Trionfi.Instance.HideObject(Trionfi.Instance.messageWindow.gameObject);
+            Trionfi.Instance.HideObject(Trionfi.Instance.currentMessageWindow.gameObject);
             Trionfi.Instance.HideObject(Trionfi.Instance.systemMenuWindow.gameObject);
             Trionfi.Instance.HideObject(Trionfi.Instance.messageLogwindow.gameObject);
 

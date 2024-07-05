@@ -10,6 +10,11 @@ namespace Trionfi
 {
     public class TRMessageWindowTMPro : TRMessageWindowBase
     {
+        public override string currentText
+        {
+            get { return currentMessage  .text; } set{ currentMessage.text = value;  }
+        }
+
         [SerializeField]
         public　RubyTextMeshProUGUI/*RubyTextMeshPro*/ currentMessage;
 

@@ -513,7 +513,7 @@ namespace Trionfi
             int vibratio = tagParam["vibrato", 20];
 
             if ( tagParam["layer", string.Empty] == "message")
-                _rect = Trionfi.Instance.messageWindow.gameObject.GetComponent<RectTransform>();
+                _rect = Trionfi.Instance.currentMessageWindow.gameObject.GetComponent<RectTransform>();
             else
                 _rect = Trionfi.Instance.layerInstance[(TRLayerID)tagParam["layer", 0]].instance.gameObject.GetComponent<RectTransform>();
 

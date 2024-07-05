@@ -20,6 +20,8 @@ namespace Trionfi
         string _trionfiPath = "Assets/Trionfi";
         string _x = 1280.ToString();
         string _y = 720.ToString();
+        private bool useTextMeshPro = true;
+        private bool isNoveMode = false;
 
         [MenuItem("Tools/Trionfi/New Project")]
         private static void Open()
@@ -130,25 +132,27 @@ namespace Trionfi
             }
 
             trionfiInstandce.titleName = _input;
-            trionfiInstandce.titleWindow = instanceList[0].GetComponent<TRTitle>() ?? prefabList[0].GetComponent<TRTitle>();
+            trionfiInstandce.titleWindow = instanceList[0].GetComponent<TRTitleBase>() ?? prefabList[0].GetComponent<TRTitleBase>();
             trionfiInstandce.messageWindowList = new List<TRMessageWindowBase>();
-            trionfiInstandce.messageWindowList.Add(instanceList[1].GetComponent<TRMessageWindow>() ?? prefabList[1].GetComponent<TRMessageWindow>());
-            trionfiInstandce.messageWindowList.Add(instanceList[2].GetComponent<TRMessageWindow>() ?? prefabList[2].GetComponent<TRMessageWindow>());
+            trionfiInstandce.messageWindowList.Add(instanceList[1].GetComponent<TRMessageWindowBase>() ?? prefabList[1].GetComponent<TRMessageWindowBase>());
+            trionfiInstandce.messageWindowList.Add(instanceList[2].GetComponent<TRMessageWindowBase>() ?? prefabList[2].GetComponent<TRMessageWindowBase>());
             trionfiInstandce.currentMessageWindow = trionfiInstandce.messageWindowList[0];
 
-            trionfiInstandce.messageLogwindow = instanceList[3].GetComponent<TRMessageLogWindow>() ?? prefabList[3].GetComponent<TRMessageLogWindow>();
+            trionfiInstandce.messageLogwindow = instanceList[3].GetComponent<TRMessageLogWindowLegacy>() ?? prefabList[3].GetComponent<TRMessageLogWindowLegacy>();
             trionfiInstandce.globalTap = instanceList[4] ?? prefabList[4];
             trionfiInstandce.selectWindow = instanceList[5].GetComponent<TRSelectWindow>() ?? prefabList[5].GetComponent<TRSelectWindow>();
             trionfiInstandce.configWindow = instanceList[6].GetComponent<TRGameConfigWindow>() ?? prefabList[6].GetComponent<TRGameConfigWindow>();
-            trionfiInstandce.systemMenuWindow = instanceList[7].GetComponent<TRSystemMenuWindow>() ?? prefabList[7].GetComponent<TRSystemMenuWindow>();
+            trionfiInstandce.systemMenuWindow = instanceList[7].GetComponent<TRSystemMenuWindowBase>() ?? prefabList[7].GetComponent<TRSystemMenuWindowBase>();
             trionfiInstandce.serializer = instanceList[8].GetComponent<TRSerializeManager>() ?? prefabList[7].GetComponent<TRSerializeManager>();
-            trionfiInstandce.dialogWindow = instanceList[9].GetComponent<TRCustomDialog>() ?? prefabList[8].GetComponent<TRCustomDialog>();
+            trionfiInstandce.dialogWindow = instanceList[9].GetComponent<ICustomDialog>() ?? prefabList[8].GetComponent<ICustomDialog>();
             trionfiInstandce.nowLoading = instanceList[10] ?? prefabList[9];
+
             /*
                         AssetDatabase.Refresh();
                         AssetDatabase.SaveAssets();
 
             */
+
             EditorSceneManager.SaveScene(scene);
         }
 
@@ -176,6 +180,11 @@ namespace Trionfi
 
             GUILayout.Space(10f);
 
+            GUILayout.Label("TextWindow Type");
+            
+            useTextMeshPro = GUILayout.Toggle(useTextMeshPro, "TextMeshPro");
+            isNoveMode = GUILayout.Toggle(isNoveMode, "NovelMode");
+            
             // 何かしら入力しないとOKボタンを押せないようにするDisableGroup
             EditorGUI.BeginDisabledGroup(string.IsNullOrEmpty(_input) || !int.TryParse(_x, out width) || !int.TryParse(_y, out height));
             GUILayout.BeginHorizontal();
