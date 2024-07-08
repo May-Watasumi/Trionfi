@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -6,19 +7,21 @@ namespace Trionfi
 {
     public class TRSelectWindow : SingletonMonoBehaviour<TRSelectWindow>
     {
+        [NonSerialized]
         public string result;
+        [NonSerialized]
         public int resutNum;
-
+        [NonSerialized]
         int activeSelector = 0;
-
+        [NonSerialized]
         public bool onWait = false;
 
         [SerializeField]
-        List<TRSelectButton> selectorList = new List<TRSelectButton>();
-
-//        [Range(1, 10)]
-//        readonly int maxSelectorCount = 5;
-
+        private GameObject selectorPrefab;
+        [SerializeField] [Range(1, 10)]
+        private int selectorCount = 5;
+        [SerializeField]
+        List<TRSelectButtonBase> selectorList = new List<TRSelectButtonBase>();
         [SerializeField]
         public AudioSource decisionSound;
 
@@ -59,6 +62,18 @@ namespace Trionfi
             activeSelector = 0;
 
             Trionfi.Instance.OpenUI(Trionfi.Instance.selectWindow.gameObject);
+        }
+
+        public void Start()
+        {
+            for(int a = 0;a < selectorCount; a++)
+            {
+                GameObject obj = Instantiate(selectorPrefab, transform);
+                TRSelectButtonBase button = obj.GetComponent<TRSelectButtonBase>();
+                button.resultNum = a;
+                button.gameObject.SetActive(false);
+                selectorList.Add(button);
+            }
         }
     }
 }

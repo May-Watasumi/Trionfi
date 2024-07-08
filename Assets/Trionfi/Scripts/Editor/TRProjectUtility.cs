@@ -141,9 +141,9 @@ namespace Trionfi
             trionfiInstandce.messageLogwindow = instanceList[3].GetComponent<TRMessageLogWindowLegacy>() ?? prefabList[3].GetComponent<TRMessageLogWindowLegacy>();
             trionfiInstandce.globalTap = instanceList[4] ?? prefabList[4];
             trionfiInstandce.selectWindow = instanceList[5].GetComponent<TRSelectWindow>() ?? prefabList[5].GetComponent<TRSelectWindow>();
-            trionfiInstandce.configWindow = instanceList[6].GetComponent<TRGameConfigWindow>() ?? prefabList[6].GetComponent<TRGameConfigWindow>();
+            trionfiInstandce.configWindow = instanceList[6].GetComponent<TRGameConfigWindowBase>() ?? prefabList[6].GetComponent<TRGameConfigWindowBase>();
             trionfiInstandce.systemMenuWindow = instanceList[7].GetComponent<TRSystemMenuWindowBase>() ?? prefabList[7].GetComponent<TRSystemMenuWindowBase>();
-            trionfiInstandce.serializer = instanceList[8].GetComponent<TRSerializeManager>() ?? prefabList[7].GetComponent<TRSerializeManager>();
+            trionfiInstandce.serializer = instanceList[8].GetComponent<TRSerializerWindowBase>() ?? prefabList[7].GetComponent<TRSerializerWindowBase>();
             trionfiInstandce.dialogWindow = instanceList[9].GetComponent<ICustomDialog>() ?? prefabList[8].GetComponent<ICustomDialog>();
             trionfiInstandce.nowLoading = instanceList[10] ?? prefabList[9];
 

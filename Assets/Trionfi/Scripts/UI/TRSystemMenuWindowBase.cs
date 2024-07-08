@@ -10,7 +10,7 @@ namespace Trionfi
             Trionfi.Instance.currentMessageWindow.Pause();
             Trionfi.Instance.currentMessageWindow.gameObject.SetActive(false);
             Trionfi.Instance.serializer.gameObject.SetActive(true);
-            TRSerializeManager.Instance.Begin(TRSerializeManager.Mode.Save);
+            Trionfi.Instance.serializer.Begin(TRSerializerWindowBase.Mode.Save);
             gameObject.SetActive(false);
         }
 
@@ -19,7 +19,7 @@ namespace Trionfi
             Trionfi.Instance.currentMessageWindow.Pause();
             Trionfi.Instance.currentMessageWindow.gameObject.SetActive(false);
             Trionfi.Instance.serializer.gameObject.SetActive(true);
-            TRSerializeManager.instance.Begin(TRSerializeManager.Mode.Load);
+            Trionfi.Instance.serializer.Begin(TRSerializerWindowBase.Mode.Load);
             gameObject.SetActive(false);
         }
 

@@ -71,13 +71,13 @@ namespace Trionfi
         [SerializeField]
         public TRSystemMenuWindowBase systemMenuWindow;
         [SerializeField]
-        public TRGameConfigWindow configWindow;
+        public TRGameConfigWindowBase configWindow;
         [SerializeField]
         public ICustomDialog dialogWindow;
         [SerializeField]
         public GameObject nowLoading;
         [SerializeField]
-        public TRSerializeManager serializer;
+        public TRSerializerWindowBase serializer;
 
         [SerializeField]
         public TRMessageLogWindowLegacy messageLogwindow;

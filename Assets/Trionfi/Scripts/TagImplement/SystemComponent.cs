@@ -139,7 +139,7 @@ namespace Trionfi {
         protected override async TRTaskString TagFunction()
         {
 #if !TR_PARSEONLY
-            TRSerializeManager.Instance.SaveData(tagParam["file"].Int());
+            Trionfi.Instance.serializer.SaveData(tagParam["file"].Int());
 #endif
             return string.Empty;
 		}

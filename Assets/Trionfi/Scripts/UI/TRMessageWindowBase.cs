@@ -16,19 +16,22 @@ namespace Trionfi
         public enum MessageState { None, OnShow, /*OnSkip, OnAuto,*/ OnWait, OnClose }
         public enum WaitIcon { None, Alpha, Rotate }
 
+        [NonSerialized]
         public bool forceSkip = false;
-
+        [NonSerialized]
         public bool onSkip = false;
+        [NonSerialized]
         public bool onAuto = false;
 
         public bool enableSkip { get { return forceSkip || onSkip; } }
 
+        [NonSerialized]
         public string currentSpeaker = string.Empty;
-
+        [NonSerialized]
         public MessageState state = MessageState.None;
-
+        [NonSerialized]
         public float speedRatio = 1.0f;
-
+        [NonSerialized]
         public Tweener tweener = null;
 /*
         [SerializeField]
@@ -55,6 +58,7 @@ namespace Trionfi
 
 //        protected TRMessageLogWindowBase logWindow;
 
+        [NonSerialized]
         public string nameString = string.Empty;
 
         public virtual void Start()
@@ -92,6 +96,7 @@ namespace Trionfi
                 state = MessageState.None;
         }
 
+        [NonSerialized]
         public bool isSuspend = false;
 
         public void Pause()

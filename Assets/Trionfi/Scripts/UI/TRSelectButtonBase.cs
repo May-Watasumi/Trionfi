@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Trionfi
 {
-    public class TRSelectButton : MonoBehaviour {
+    abstract public class TRSelectButtonBase : MonoBehaviour {
         //ジャンプ先ラベル@KAG仕様
         public string targetLabel;
         public int resultNum;
@@ -44,13 +44,15 @@ namespace Trionfi
 
             TRSelectWindow.Instance.onWait = false;
         }
-
-        public Text contentText;
+        
+        abstract protected void SetText(string text);
 
         public void Set(string content, string label, int result)
         {
-            if(contentText != null)
-                contentText.text = content;
+            SetText(content);
+
+//            if(contentText != null)
+//                contentText.text = content;
 
             targetLabel = label;
 

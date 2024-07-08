@@ -2,6 +2,7 @@
 using System.IO;
 using System.Collections;
 using System.Collections.Generic;
+using System.Data;
 using Newtonsoft.Json;
 using UnityEngine;
 using UnityEngine.UI;
@@ -11,143 +12,39 @@ using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
 
 namespace Trionfi
 {
-
     [Serializable]
-    public class TRSerializeData
-    {
-        [SerializeField]
-        SerializableDictionary<int, TRVariableDictionary> layerParam = new SerializableDictionary<int, TRVariableDictionary>();
-        [SerializeField]
-        SerializableDictionary<int, TRVariableDictionary> audioParam = new SerializableDictionary<int, TRVariableDictionary>();
-        [SerializeField]
-        SerializableDictionary<string, TRVariableDictionary> scriptParam = new SerializableDictionary<string, TRVariableDictionary>();
-
-        [SerializeField]
-        public string layerJson;
-        [SerializeField]
-        public string audioJson;
-        [SerializeField]
-        public string scriptJson;
-
-        [SerializeField]
-        public FunctionalObjectInstance[] callStack;
-        [SerializeField]
-        public TRVariableDictionary variable;
-
-        public string Serialize()
-        {
-            foreach (KeyValuePair<TRLayerID, TRLayer> instance in Trionfi.Instance.layerInstance)
-            {
-                layerParam[instance.Key] = instance.Value.tagParam;
-            }
-
-            foreach (KeyValuePair<TRAudioID, TRAudio> instance in Trionfi.Instance.audioInstance)
-            {
-                audioParam[instance.Key] = instance.Value.tagParam;
-            }
-
-            foreach (KeyValuePair<string, TRScript> instance in Trionfi.Instance.scriptInstance)
-            {
-                scriptParam[instance.Key] = instance.Value.tagParam;
-            }
-
-            callStack = TRVirtualMachine.Instance.callStack.ToArray();
-            variable = TRVirtualMachine.Instance.globalVariableInstance;
-
-            layerJson = JsonConvert.SerializeObject(layerParam);
-            audioJson = JsonConvert.SerializeObject(audioParam);
-            scriptJson = JsonConvert.SerializeObject(scriptParam);
-
-            //            return JsonUtility.ToJson(this);
-            return JsonConvert.SerializeObject(this);
-        }
-
-        public async TRTask Deserialize()
-        {
-            layerParam = JsonConvert.DeserializeObject<SerializableDictionary<int, TRVariableDictionary>>(layerJson);
-            audioParam = JsonConvert.DeserializeObject<SerializableDictionary<int, TRVariableDictionary>>(audioJson);
-            scriptParam = JsonConvert.DeserializeObject<SerializableDictionary<string, TRVariableDictionary>>(scriptJson);
-
-            TRVirtualMachine.Instance.callStack.Clear();
-
-            //トップスタックは本体側で入る
-            for (int count = 0; count < callStack.Length - 1; count++)
-                TRVirtualMachine.Instance.callStack.Push(callStack[count]);
-
-            foreach (KeyValuePair<int, TRVariableDictionary> instance in layerParam)
-            {
-                if (instance.Value.Count != 0)
-                {
-                    ImageComponent executer = new ImageComponent();
-                    executer.tagParam = instance.Value;
-                    await executer.Execute();
-                }
-
-            }
-
-            foreach (KeyValuePair<int, TRVariableDictionary> instance in audioParam)
-            {
-                if (instance.Value.Count != 0)
-                {
-                    AudioComponent executer = new AudioComponent();
-                    executer.tagParam = instance.Value;
-                    await executer.Execute();
-                }
-            }
-
-            foreach (KeyValuePair<string, TRVariableDictionary> instance in scriptParam)
-            {
-                if (instance.Value.Count != 0)
-                    await Trionfi.Instance.LoadScript(instance.Key);
-            }
-
-            if (variable != null)
-                TRVirtualMachine.Instance.globalVariableInstance = variable;
-        }
-    }
-
-    [Serializable]
-    public class TRSaveDataInfo
-    {
-        public string date;
-        public string subject;
-    }
-
-    [Serializable]
-    public class TRSerializeManager : SingletonMonoBehaviour<TRSerializeManager>
+    public abstract class TRSerializerWindowBase : SingletonMonoBehaviour<TRSerializerWindowBase>
     {
         public enum Mode { Save, Load }
 
-		const string SaveDataNameBase = "SaveData";
-        const string fileName = "saveinfo.bin";
+        protected const string SaveDataNameBase = "SaveData";
+        protected const string fileName = "saveinfo.bin";
         //        string fullPath;
 
         public string subjectText = "SaveData";
 
-        GZCrypter gzCrypter = new GZCrypter();
-        TRCrypterBase crypter = null;
+        protected GZCrypter gzCrypter = new GZCrypter();
+        protected TRCrypterBase crypter = null;
 
-        int currentPage = 0;
-        Mode currentMode = Mode.Load;
+        protected int currentPage = 0;
+        protected Mode currentMode = Mode.Load;
 
         [SerializeField]
-        int dataCount = 10;
+        protected int dataCount = 10;
         [SerializeField]
-        int pageCount = 1;
+        protected int pageCount = 1;
+
         [SerializeField]
-        Text pageText = null;// = new Text[dataCount];
-        [SerializeField]
-        Text modeText = null;// = new Text[dataCount];
-        [SerializeField]
-        Text[] dateText = null;// = new Text[dataCount];
-        [SerializeField]
-        Text[] infoText = null;// = new Text[dataCount];
-        [SerializeField]
-        Button[] infoButton = null;// = new Text[dataCount];
+        protected Button[] infoButton;
+        
+        public abstract string pageString { get; set; }
+        public abstract string modeString { get; set; }
+        protected abstract void SetDateText(int a, string text);
+        protected abstract void SetInfoText(int a, string text);
 
         public void Begin(Mode mode)
         {
-            modeText.text = mode == Mode.Load ? "Load" : "Save";
+            modeString = mode == Mode.Load ? "Load" : "Save";
             currentMode = mode;
             UpdatePage();
         }
@@ -169,21 +66,20 @@ namespace Trionfi
                 //                DateTime date = DateTime.TryParse(info.date);
                 if (info != null)
                 {
-                    dateText[a].text = info.date;
-                    infoText[a].text = info.subject;
+                    SetDateText(a, info.date);
+                    SetInfoText(a, info.subject);
                     infoButton[a].enabled = true;
                 }
                 else
                 {
-//                    dateText[a].text = info.date;
-                    infoText[a].text = "No Data";
-
-                    if(currentMode == Mode.Load)
-                        infoButton[a].enabled = false;
+                    SetInfoText(a, "No Data");
+                    SetDateText(a, string.Empty);
+                    
+                    infoButton[a].enabled = currentMode == Mode.Save ? true : false;
                 }
             }
 
-            pageText.text = "Page " + (currentPage + 1).ToString() + "/" + pageCount.ToString();
+            pageString = "Page " + (currentPage + 1).ToString() + "/" + pageCount.ToString();
         }
 
         [SerializeField]
@@ -306,7 +202,7 @@ namespace Trionfi
             if (currentPage <= 0)
                 return;
 
-            currentPage++;
+            currentPage--;
 
             UpdatePage();
         }
@@ -316,7 +212,7 @@ namespace Trionfi
             if (currentPage + 1 >= pageCount)
                 return;
 
-            currentPage--;
+            currentPage++;
 
             UpdatePage();      
         }

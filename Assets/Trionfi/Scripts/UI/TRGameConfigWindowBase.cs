@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace Trionfi
 {
-    public class TRGameConfigWindow : SingletonMonoBehaviour<TRGameConfigWindow>
+    abstract public class TRGameConfigWindowBase : SingletonMonoBehaviour<TRGameConfigWindowBase>
     {
         const string prefsKey = "GameConfigs";
 
@@ -26,24 +26,15 @@ namespace Trionfi
         [SerializeField]
         Toggle readTextSkipToggle = null;
 
-        [SerializeField]
-        Text mastervolumeSliderText = null;
-        [SerializeField]
-        Text bgmvolumeSliderText = null;
-        [SerializeField]
-        Text sevolumeSliderText = null;
-        [SerializeField]
-        Text voicevolumeSliderText = null;
-        [SerializeField]
-        Text textspeedSliderText = null;
-        [SerializeField]
-        Text autotextwaitSliderText = null;
-        [SerializeField]
-        Text effectSkipToggleText = null;
-        [SerializeField]
-        Text readTextSkipToggleText = null;
-        [SerializeField]
-        Text InitializeButtonText = null;
+        protected abstract string mastervolumeSliderString { get; set; }
+        protected abstract string bgmvolumeSliderString { get; set; }
+        protected abstract string sevolumeSliderString { get; set; }
+        protected abstract string voicevolumeSliderString { get; set; }
+        protected abstract string textspeedSliderString { get; set; }
+        protected abstract string autotextwaitSliderString { get; set; }
+        protected abstract string effectSkipToggleString { get; set; }
+        protected abstract string readTextSkipToggleString { get; set; }
+        protected abstract string initializeButtonString { get; set; }
 
         public void OnChangeSlider(int type)
         {
@@ -125,16 +116,16 @@ namespace Trionfi
 
         void Start()
         {
-            mastervolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_MASTERVOLUME);
-            bgmvolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_BGMVOLUME);
-            sevolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_SEVOLUME);
-            voicevolumeSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_VOICEVOLUME);
-            textspeedSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_TEXTSPEED);
-            autotextwaitSliderText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_AUTOWAIT);
-            effectSkipToggleText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_EFFECTSKIP);
-            readTextSkipToggleText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_READSKIP);
-            InitializeButtonText.text = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_INITIALIZE);
-
+            mastervolumeSliderString = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_MASTERVOLUME);
+            bgmvolumeSliderString = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_BGMVOLUME);
+            sevolumeSliderString = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_SEVOLUME);
+            voicevolumeSliderString = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_VOICEVOLUME);
+            textspeedSliderString = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_TEXTSPEED);
+            autotextwaitSliderString= TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_AUTOWAIT);
+            effectSkipToggleString = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_EFFECTSKIP);
+            readTextSkipToggleString= TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_READSKIP);
+            initializeButtonString = TRStageEnviroment.instance.GetUIText(TR_UITEXTID.CONFIG_INITIALIZE);
+                
             UpdateAll(false);
         }
     }
