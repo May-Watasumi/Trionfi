@@ -47,7 +47,6 @@ namespace Trionfi
         
         protected override async TRTask ShowMessageSub(string message, float mesCurrentWait)
         {
-            string tempString = currentMessage.text;
             int index = 0;
 
             void AddString()
@@ -57,19 +56,17 @@ namespace Trionfi
                     int endIndex = message.IndexOf('>', index);
                     if(endIndex != -1)
                     {
-                        tempString += message.Substring(index, endIndex - index + 1);
+                        currentMessage.text += message.Substring(index, endIndex - index + 1);
                         index = endIndex + 1;
                     }
                     else
                     {
-                        tempString += message[index];
-                        index++;
+                        currentMessage.text += message[index++];
                     }
                 }
                 else
                 {
-                    tempString += message[index];
-                    index++;
+                    currentMessage.text += message[index++];
                 }
             }
             

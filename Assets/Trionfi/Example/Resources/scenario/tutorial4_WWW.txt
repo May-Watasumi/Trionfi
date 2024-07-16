@@ -1,0 +1,30 @@
+[macro name=fadeout]     
+[snapshot]
+[image layer=10 color=black]
+[trans  wait = 750]
+[macroend]
+
+[macro name=fadein]
+[snapshot]
+[imagefree layer=10]
+[trans  wait = 750]
+[macroend]
+
+*begin
+
+[image layer=0 storage=black]
+[snapshot]
+[image layer=0 storage=bg04001 url=http://cybernetic-cute.sakura.ne.jp/Trionfi/Assets/WWW]
+
+[prefab layer=1 storage=35-rp_sophia_animated_003_idling_fbx/rp_sophia_animated_003_idling x=-0.6 y=-0.75]
+[image layer=2 storage=portrait_yuko_01 dicedatlas=sprite/character/yuko pos=right yoff =-41 time=1000 actor=Yuko]
+[trans rule=rule/030  wait = 750]
+
+[initscene]
+
+[audio buf=0 storage=bg04001 url=http://cybernetic-cute.sakura.ne.jp/Trionfi/Assets/WWW]
+
+【Kohaku】
+This is test for data loading.
+
+[prefabfree layer=1]
