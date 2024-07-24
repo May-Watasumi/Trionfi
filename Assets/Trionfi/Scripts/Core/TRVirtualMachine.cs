@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
+using System.Text.Json.Serialization;
 using Jace;
 using Jace.Execution;
 using Jace.Tokenizer;
