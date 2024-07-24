@@ -2,7 +2,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using System.Text.Json.Serialization;
 using Jace;
 using Jace.Execution;
 using Jace.Tokenizer;
@@ -12,12 +11,12 @@ using Jace.Operations;
 using Cysharp.Threading.Tasks;
 using TRTask = Cysharp.Threading.Tasks.UniTask;
 using TRTaskFunc = Cysharp.Threading.Tasks.UniTask<Trionfi.FunctionalObjectInstance>;
-
 using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
-
 #else
+using System.Threading.Tasks;
 using TRTask = System.Threading.Tasks.Task;
 using TRTaskString = System.Threading.Tasks.Task<string>;
+using TRTaskFunc = System.Threading.Tasks.Task<Trionfi.FunctionalObjectInstance>;
 #endif
 
 using TRVariable = Jace.Operations.VariableCalcurator;
