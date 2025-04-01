@@ -33,6 +33,8 @@ namespace Trionfi
         {
             string _newPath = "Assets/" + _input;
             string _templatePath = _trionfiPath + "/Template";
+            string _prefabPath = useTextMeshPro ? "TMPro/" : "Legacy/";
+
 
             AssetDatabase.CopyAsset(_templatePath, _newPath);
 
@@ -98,17 +100,17 @@ namespace Trionfi
             GameObject.DestroyImmediate(trionfiInstandce.dialogWindow.gameObject);          //9
             GameObject.DestroyImmediate(trionfiInstandce.nowLoading.gameObject);            //10
 
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/TitleBase.prefab", typeof(GameObject)) as GameObject);                //0
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageWindowBase.prefab", typeof(GameObject)) as GameObject);        //1
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageFullScreenWindow.prefab", typeof(GameObject)) as GameObject);  //2
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/MessageLogWindowBase.prefab", typeof(GameObject)) as GameObject);     //3
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "Title.prefab", typeof(GameObject)) as GameObject);                //0
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "MessageWindow.prefab", typeof(GameObject)) as GameObject);        //1
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "MessageFullScreenWindow.prefab", typeof(GameObject)) as GameObject);  //2
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "MessageLogWindow.prefab", typeof(GameObject)) as GameObject);     //3
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);                //4
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SelectWindowBase.prefab", typeof(GameObject)) as GameObject);         //5
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GameConfigBase.prefab", typeof(GameObject)) as GameObject);           //6
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/SystemMenuBase.prefab", typeof(GameObject)) as GameObject);           //7
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/Serializer.prefab", typeof(GameObject)) as GameObject);               //8
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/DialogBase.prefab", typeof(GameObject)) as GameObject);               //9
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/NowLoadingBase.prefab", typeof(GameObject)) as GameObject);           //10
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "SelectWindow.prefab", typeof(GameObject)) as GameObject);         //5
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "GameConfig.prefab", typeof(GameObject)) as GameObject);           //6
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "SystemMenu.prefab", typeof(GameObject)) as GameObject);           //7
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "Serializer.prefab", typeof(GameObject)) as GameObject);               //8
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "Dialog.prefab", typeof(GameObject)) as GameObject);               //9
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "NowLoading.prefab", typeof(GameObject)) as GameObject);           //10
 
             int count = 0;
             foreach (GameObject _object in prefabList)
