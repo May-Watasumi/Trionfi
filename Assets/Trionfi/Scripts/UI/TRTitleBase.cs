@@ -10,7 +10,7 @@ namespace Trionfi
         protected abstract string logoString{ get; set; }
         
         [SerializeField]
-        string scriptName = null;
+        protected string scriptName = null;
         [SerializeField]
         Image fader = null;
 
