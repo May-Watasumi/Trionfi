@@ -104,15 +104,21 @@ namespace Trionfi
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "MessageWindow.prefab", typeof(GameObject)) as GameObject);        //1
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "MessageFullScreenWindow.prefab", typeof(GameObject)) as GameObject);  //2
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "MessageLogWindow.prefab", typeof(GameObject)) as GameObject);     //3
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);                //4
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/GlobalTap.prefab", typeof(GameObject)) as GameObject);                               //4
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "SelectWindow.prefab", typeof(GameObject)) as GameObject);         //5
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "GameConfig.prefab", typeof(GameObject)) as GameObject);           //6
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "SystemMenu.prefab", typeof(GameObject)) as GameObject);           //7
-            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "Serializer.prefab", typeof(GameObject)) as GameObject);               //8
+            prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "Serializer.prefab", typeof(GameObject)) as GameObject);           //8
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "Dialog.prefab", typeof(GameObject)) as GameObject);               //9
             prefabList.Add(AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "NowLoading.prefab", typeof(GameObject)) as GameObject);           //10
 
-            int count = 0;
+			GameObject logData = (AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "MessageLogData.prefab", typeof(GameObject)) as GameObject);       //11
+			GameObject selectButton = (AssetDatabase.LoadAssetAtPath(_newPath + "/Prefabs/" + _prefabPath + "SelectButton.prefab", typeof(GameObject)) as GameObject);         //12
+
+            prefabList[3].GetComponent<TRMessageLogWindowBase>().logContentPrefab = logData;
+            prefabList[5].GetComponent<TRSelectWindow>().selectorPrefab = selectButton;
+
+			int count = 0;
             foreach (GameObject _object in prefabList)
             {
                 if (_object == null)
@@ -133,7 +139,8 @@ namespace Trionfi
                 }
             }
 
-            trionfiInstandce.titleName = _input;
+
+			trionfiInstandce.titleName = _input;
             trionfiInstandce.titleWindow = instanceList[0].GetComponent<TRTitleBase>() ?? prefabList[0].GetComponent<TRTitleBase>();
             trionfiInstandce.messageWindowList = new List<TRMessageWindowBase>();
             trionfiInstandce.messageWindowList.Add(instanceList[1].GetComponent<TRMessageWindowBase>() ?? prefabList[1].GetComponent<TRMessageWindowBase>());
@@ -141,9 +148,13 @@ namespace Trionfi
             trionfiInstandce.currentMessageWindow = trionfiInstandce.messageWindowList[0];
 
             trionfiInstandce.messageLogwindow = instanceList[3].GetComponent<TRMessageLogWindowBase>() ?? prefabList[3].GetComponent<TRMessageLogWindowBase>();
-            trionfiInstandce.globalTap = instanceList[4] ?? prefabList[4];
+//            trionfiInstandce.messageLogwindow.logContentPrefab = logData;
+
+			trionfiInstandce.globalTap = instanceList[4] ?? prefabList[4];
             trionfiInstandce.selectWindow = instanceList[5].GetComponent<TRSelectWindow>() ?? prefabList[5].GetComponent<TRSelectWindow>();
-            trionfiInstandce.configWindow = instanceList[6].GetComponent<TRGameConfigWindowBase>() ?? prefabList[6].GetComponent<TRGameConfigWindowBase>();
+//            trionfiInstandce.selectWindow.selectorPrefab = selectButton;
+
+			trionfiInstandce.configWindow = instanceList[6].GetComponent<TRGameConfigWindowBase>() ?? prefabList[6].GetComponent<TRGameConfigWindowBase>();
             trionfiInstandce.systemMenuWindow = instanceList[7].GetComponent<TRSystemMenuWindowBase>() ?? prefabList[7].GetComponent<TRSystemMenuWindowBase>();
             trionfiInstandce.serializer = instanceList[8].GetComponent<TRSerializerWindowBase>() ?? prefabList[7].GetComponent<TRSerializerWindowBase>();
             trionfiInstandce.dialogWindow = instanceList[9].GetComponent<ICustomDialog>() ?? prefabList[8].GetComponent<ICustomDialog>();

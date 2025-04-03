@@ -17,7 +17,7 @@ namespace Trionfi
         public bool onWait = false;
 
         [SerializeField]
-        private GameObject selectorPrefab;
+        public GameObject selectorPrefab;
         [SerializeField] [Range(1, 10)]
         private int selectorCount = 5;
         [SerializeField]
