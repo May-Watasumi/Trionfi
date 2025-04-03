@@ -14,7 +14,7 @@ public abstract class TRMessageLogDataBase : MonoBehaviour
     [SerializeField]
     public AudioClip voice;
 
-    public void SetLogData(string sentence, string name, AudioClip _voice)
+    public virtual void SetLogData(string sentence, string name, AudioClip _voice)
     {
         logString = sentence;
         nameString = name;

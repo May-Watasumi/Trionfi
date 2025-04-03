@@ -95,7 +95,7 @@ namespace Trionfi
                 currentVoice = Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.clip;
 
             if (Trionfi.Instance.messageLogwindow != null)
-                Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, nameString, currentVoice);
+                Trionfi.Instance.messageLogwindow.AddLogData(currentMessage.text, currentName.text, currentVoice);
 
             if (!enableSkip && mesWait > 0.0f)
             {

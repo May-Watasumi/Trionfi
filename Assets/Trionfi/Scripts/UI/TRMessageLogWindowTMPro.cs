@@ -1,4 +1,4 @@
 ﻿namespace Trionfi {
-    public class TRMessageLogWindowTMPro : TRMessageLogWindowBase<TRMessageLogDataTMPro>
+    public class TRMessageLogWindowTMPro : TRMessageLogWindowBase
     { };
 }

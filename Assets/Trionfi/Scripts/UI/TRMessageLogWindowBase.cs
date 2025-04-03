@@ -4,7 +4,7 @@ using System;
 
 namespace Trionfi {
     //	[Serializable]
-    public class TRMessageLogWindowBase<T> : SingletonMonoBehaviour<TRMessageLogWindowBase<T>> where T : TRMessageLogDataBase
+    public class TRMessageLogWindowBase : SingletonMonoBehaviour<TRMessageLogWindowBase> 
     {
         [SerializeField]
         public GameObject logContentPrefab;
@@ -26,9 +26,9 @@ namespace Trionfi {
 		{
             GameObject _temp = GameObject.Instantiate(logContentPrefab);
 
-            //_temp.hideFlags = HideFlags.HideInHierarchy;
+			//_temp.hideFlags = HideFlags.HideInHierarchy;
 
-            T logData = _temp.GetComponent<T>();
+			TRMessageLogDataBase logData = _temp.GetComponent<TRMessageLogDataBase>();
 
             logData.SetLogData(message, name,voice);
 

@@ -80,7 +80,7 @@ namespace Trionfi
         public TRSerializerWindowBase serializer;
 
         [SerializeField]
-        public TRMessageLogWindowLegacy messageLogwindow;
+        public TRMessageLogWindowBase messageLogwindow;
         [SerializeField]
         public List<TRMessageWindowBase> messageWindowList = new List<TRMessageWindowBase>();
         
