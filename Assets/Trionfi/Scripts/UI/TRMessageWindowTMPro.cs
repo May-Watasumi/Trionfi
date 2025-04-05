@@ -48,6 +48,7 @@ namespace Trionfi
         protected override async TRTask ShowMessageSub(string message, float mesCurrentWait)
         {
             int index = 0;
+            string tempString = string.Empty;
 
             void AddString()
             {
@@ -56,18 +57,19 @@ namespace Trionfi
                     int endIndex = message.IndexOf('>', index);
                     if(endIndex != -1)
                     {
-                        currentMessage.text += message.Substring(index, endIndex - index + 1);
+						currentMessage.uneditedText += message.Substring(index, endIndex - index + 1);
                         index = endIndex + 1;
                     }
                     else
                     {
-                        currentMessage.text += message[index++];
+						currentMessage.uneditedText += message[index++];
                     }
                 }
                 else
                 {
-                    currentMessage.text += message[index++];
+					currentMessage.uneditedText += message[index++];
                 }
+
             }
             
             if(fontAsset != null)
@@ -80,13 +82,13 @@ namespace Trionfi
             float mesWait = mesCurrentWait / speedRatio;
 
             if (!enableSkip && !TRSystemConfig.Instance.isNovelMode)
-                currentMessage.text = string.Empty;         
+				currentMessage.uneditedText = string.Empty;         
 
             if (currentName != null)
-                currentName.text = nameString;
+                currentName.uneditedText = nameString;
             else if (!string.IsNullOrEmpty(nameString))
             {
-                currentMessage.text += nameString + "\r\n";
+				currentMessage.uneditedText += nameString + "\r\n";
 
 //                if (TRSystemConfig.Instance.isNovelMode)
 //                    currentMessage.VisibleLength = currentMessage.MaxIndex-1;
@@ -94,14 +96,14 @@ namespace Trionfi
 
             // ClearMessage()を呼び出すと１フレーム間何もないのを表示するので、
             // 名前とメッセージの初期化はここで実行する                        
-            else if (currentName != null) currentName.text = string.Empty;
+            else if (currentName != null) currentName.uneditedText = string.Empty;
 
             nameString = ""; //ClearMessageを呼ばないと直前の名前が残っているのでここで初期化
 
             if (TRSystemConfig.Instance.isNovelMode)
             {
-                if(!string.IsNullOrEmpty(currentName.text))
-                   currentMessage.text += "【" + currentName.text + "】";
+                if(!string.IsNullOrEmpty(currentName.uneditedText))
+					currentMessage.uneditedText += "【" + currentName.uneditedText + "】";
                 //currentMessage.text +=  message;
             }
             //else
@@ -113,7 +115,7 @@ namespace Trionfi
                 currentVoice = Trionfi.Instance.audioInstance[TRAudioID.VOICE1].instance.clip;
 
             if (Trionfi.Instance.messageLogwindow != null)
-                Trionfi.Instance.messageLogwindow.AddLogData(message, currentName.text, currentVoice);
+                Trionfi.Instance.messageLogwindow.AddLogData(message, currentName.uneditedText, currentVoice);
 
             if (!enableSkip && mesWait > 0.0f)
             {

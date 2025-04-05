@@ -4,14 +4,14 @@ public class TRMessageLogDataTMPro : TRMessageLogDataBase
 {
     protected override string nameString
     {
-        get { return nameText.text;  }
-        set { nameText.text = value; }
+        get { return nameText.uneditedText;  }
+        set { nameText.uneditedText = value; }
     }
 
     protected override string logString
     {
-        get { return sentenceText.text; }
-        set { sentenceText.text = value; }
+        get { return sentenceText.uneditedText; }
+        set { sentenceText.uneditedText = value; }
     }
 
     [SerializeField]
