@@ -1,0 +1,140 @@
+[macro name=fadeout]     
+[snapshot]
+[image layer=10 color=black]
+[trans  wait = 750]
+[macroend]
+
+[macro name=fadein]
+[snapshot]
+[imagefree layer=10]
+[trans  wait = 750]
+[macroend]
+
+*開始位置
+
+[image layer=0 storage=black]
+[snapshot]
+[image layer=0 storage=sprite/bg/schoolroomhibig130901]
+
+[image layer=1 storage=sprite/character/portrait_kohaku_01 pos=left yoff =-41 time=1000 actor=こはく]
+[image layer=2 storage=portrait_yuko_01 dicedatlas=sprite/character/yuko pos=right yoff =-41 time=1000 actor=ゆうこ]
+[trans rule=rule/030  wait = 750]
+
+[initscene]
+
+[audio buf=0 storage=sound/bgm/c3 time=1000]
+
+【こはく】
+一般的なノベルゲーム、会話シーンのサンプルスクリプトです。
+
+【こはく】
+半角[]で括られた行はタグ（命令）として認識します。
+
+【こはく】
+ＰＣゲームによく使われる吉里吉里／ＫＡＧ（ＫＡＧＥＸ）に
+互換性のあるフォーマット、命令体系を持っています。
+
+//コメント１
+;コメント２
+
+【こはく】
+；（半角）や／／（半角）で始まる行はコメントとして無視されます。
+
+【こはく】
+両者の違いは、”コメントタグ”として認識されるか、
+完全に削除するかです。主にデバッグ用途ですね。
+
+【ゆうこ】
+名前を【】で括ることにより、名前表示エリアに表示されます。
+
+【ゆうこ】
+その後に続くタグ以外の文字列をメッセージエリアに表示します。
+
+【天の声/ゆうこ】
+話者と表示が違うときは半角／で区切ります。
+ボイス割り当て等、Releaserの機能を使う時は、
+話者を参照します。
+
+【ゆうこ】
+空行があると、そこでクリック（タップ）待ちになります。
+
+【こはく】
+リッチテキストはUnity（uGUI）のタグ任せになるので、
+＜＞がタグになります（ややこしくてすみません……）。
+
+【こはく】
+たとえばこんな風に、<color=#00FF00>色</color>や<size=40>
+フォントサイズの変更</size>もできちゃいます。
+
+【ゆうこ】
+<i>斜体</i>と<b>太字</b>に加えて、
+Unity標準だと対応していない<ruby=るび>ルビ</ruby>や
+<s>打ち消し線</s>もあります。
+
+【こはく】
+次は選択肢のサンプルです。
+吉里吉里同様、定義したラベルへジャンプします。
+ラベルの定義も吉里吉里同様＊（半角）です。
+
+[seladd target=*答１ text=選択肢１]
+[seladd target=*答２ text=選択肢２]
+[seladd target=*答３ text=選択肢３]
+[select]
+
+*答１
+【こはく】
+選択肢１。
+
+[jump target=*合流]
+
+*答２
+【こはく】
+選択肢２。
+
+[jump target=*合流]
+
+*答３
+【こはく】
+選択肢３。
+
+*合流
+
+【こはく】
+うまくいきましたね。
+
+【ゆうこ】
+変数について。システム変数（sf）、一時変数（tf）、といった
+区分けがありません。すべてがゲーム変数の扱いです。
+
+【ゆうこ】
+それ以外はKAGとほぼ同じ名前のルールです。
+
+【こはく】
+・半角英数、アンダーバーが使用可能（全角は不可です）
+・ただし、先頭に半角の数字が来ることはできない
+であれば、自由に名前をつけることが出来ます。
+
+【こはく】
+変数の表示は変数名を#で囲むことで行います。
+次の文章がそのサンプルです。
+
+[eval exp=myoji='大鳥']
+[eval exp=name='こはく']
+
+【#name#】
+わたしの名前は#myoji#こはくだよ。
+
+【こはく】
+こんな感じです。
+
+【ゆうこ】
+次は分岐について説明します。
+
+【ゆうこ】
+吉里吉里同様、Ｊｕｍｐタグで
+他のファイルを含むラベルに遷移します。
+
+【ゆうこ】
+次のメッセージから別ファイルになります。
+
+[jump storage=scenario/tutorial1_2_JP]
