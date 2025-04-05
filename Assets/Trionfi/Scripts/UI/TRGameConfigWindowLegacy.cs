@@ -28,8 +28,13 @@ namespace Trionfi
             get { return voicevolumeSliderText.text;}
             set { voicevolumeSliderText.text = value; }
         }
+		protected override string systemvoicevolumeSliderString
+		{
+			get { return systemvoicevolumeSliderText.text; }
+			set { systemvoicevolumeSliderText.text = value; }
+		}
 
-        protected override string textspeedSliderString
+		protected override string textspeedSliderString
         {
             get { return textspeedSliderText.text; }
             set { textspeedSliderText.text = value; }
@@ -67,7 +72,9 @@ namespace Trionfi
         Text sevolumeSliderText = null;
         [SerializeField]
         Text voicevolumeSliderText = null;
-        [SerializeField]
+		[SerializeField]
+		Text systemvoicevolumeSliderText = null;
+		[SerializeField]
         Text textspeedSliderText = null;
         [SerializeField]
         Text autotextwaitSliderText = null;

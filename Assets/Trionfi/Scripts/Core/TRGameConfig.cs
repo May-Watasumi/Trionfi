@@ -21,7 +21,9 @@ namespace Trionfi
             public float sevolume = 0.8f;
             [Range(0.0f, 1.0f)]
             public float voicevolume = 0.8f;
-            [Range(0.0f, 1.0f)]
+			[Range(0.0f, 1.0f)]
+			public float systemvoicevolume = 1.0f;
+			[Range(0.0f, 1.0f)]
             public float textspeed = 0.1f;
             [Range(0.0f, 10.0f)]
             public float autotextWait = 3.0f;
@@ -54,6 +56,7 @@ namespace Trionfi
             configData.bgmvolume = 0.6f;
             configData.sevolume = 0.75f;
             configData.voicevolume = 0.75f;
+            configData.systemvoicevolume = 1.0f;
             configData.textspeed = 0.1f;
             configData.autotextWait = 5.0f;
             configData.effectSkip = false;

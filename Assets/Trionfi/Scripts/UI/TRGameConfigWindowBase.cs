@@ -17,11 +17,13 @@ namespace Trionfi
         Slider sevolumeSlider = null;
         [SerializeField]
         Slider voicevolumeSlider = null;
-        [SerializeField]
+		[SerializeField]
+		Slider systemvoicevolumeSlider = null;
+		[SerializeField]
         Slider textspeedSlider = null;
         [SerializeField]
         Slider autotextwaitSlider = null;
-        [SerializeField]
+		[SerializeField]
         Toggle effectSkipToggle = null;
         [SerializeField]
         Toggle readTextSkipToggle = null;
@@ -29,8 +31,9 @@ namespace Trionfi
         protected abstract string mastervolumeSliderString { get; set; }
         protected abstract string bgmvolumeSliderString { get; set; }
         protected abstract string sevolumeSliderString { get; set; }
-        protected abstract string voicevolumeSliderString { get; set; }
-        protected abstract string textspeedSliderString { get; set; }
+		protected abstract string voicevolumeSliderString { get; set; }
+		protected abstract string systemvoicevolumeSliderString { get; set; }
+		protected abstract string textspeedSliderString { get; set; }
         protected abstract string autotextwaitSliderString { get; set; }
         protected abstract string effectSkipToggleString { get; set; }
         protected abstract string readTextSkipToggleString { get; set; }
@@ -71,8 +74,14 @@ namespace Trionfi
                 case 5:
                     TRGameConfig.configData.autotextWait = autotextwaitSlider.value;
                     break;
-            }
-        }
+                case 6:
+					TRGameConfig.configData.systemvoicevolume = systemvoicevolumeSlider.value;
+					Trionfi.instance.systemVoice.volume = TRGameConfig.configData.systemvoicevolume * TRGameConfig.configData.mastervolume;
+                    break;
+
+
+			}
+		}
 
         public void OnChangeEffectSkip()
         {
@@ -94,6 +103,7 @@ namespace Trionfi
             autotextwaitSlider.value = TRGameConfig.configData.autotextWait;
             effectSkipToggle.isOn = TRGameConfig.configData.effectSkip;
             readTextSkipToggle.isOn = TRGameConfig.configData.readtextSkip;
+            systemvoicevolumeSlider.value = TRGameConfig.configData.systemvoicevolume;
 
             if (updateAudio)
             {

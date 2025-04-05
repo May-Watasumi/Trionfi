@@ -4,6 +4,8 @@ using System.Collections;
 using System.Collections.Generic;
 using Jace.Operations;
 using Newtonsoft.Json;
+using Cysharp.Threading.Tasks;
+
 
 #if !TR_PARSEONLY
 using UnityEngine;
@@ -38,6 +40,9 @@ namespace Trionfi
         public RenderTexture movieBuffer;
         [NonSerialized]
         public RenderTexture[] subRenderBuffer = new RenderTexture[1];
+
+        [SerializeField]
+        public AudioSource systemVoice;
         [NonSerialized]
         public TRMessageWindowBase currentMessageWindow;
 
@@ -407,7 +412,7 @@ namespace Trionfi
             }
 
             if (run)
-                TRVirtualMachine.instance.Run(storage);
+                TRVirtualMachine.instance.Run(storage).Forget();
 
             return script;
         }
