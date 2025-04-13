@@ -107,6 +107,8 @@ namespace Trionfi
                 dataDict = new SerializableDictionary<int, TRSaveDataInfo>();
                 dataDict = JsonConvert.DeserializeObject<SerializableDictionary<int, TRSaveDataInfo>>(jsonData);
             }
+
+            UpdatePage();
         }
 
         public void SaveInfo()
@@ -162,6 +164,8 @@ namespace Trionfi
 				return;
 
 			File.Delete(path);
+
+            dataDict.Remove(num);
 
             UpdatePage();
 		}
