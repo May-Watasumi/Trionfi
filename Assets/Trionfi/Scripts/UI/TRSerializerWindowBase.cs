@@ -28,6 +28,7 @@ namespace Trionfi
 
         protected int currentPage = 0;
         protected Mode currentMode = Mode.Load;
+        protected bool deletMode = false;
 
         [SerializeField]
         protected int dataCount = 10;
@@ -92,7 +93,7 @@ namespace Trionfi
 
         public void LoadInfo()
         {
-            string path = Application.persistentDataPath + "/" + Trionfi.instance.titleName + "/" + fileName;
+            string path = Application.persistentDataPath + "/" + Trionfi.Instance.titleName + "/" + fileName;
 
             if (!File.Exists(path))
                 return;
@@ -110,9 +111,9 @@ namespace Trionfi
 
         public void SaveInfo()
         {
-            Directory.CreateDirectory(Application.persistentDataPath + "/" + Trionfi.instance.titleName);
+            Directory.CreateDirectory(Application.persistentDataPath + "/" + Trionfi.Instance.titleName);
 
-            string path = Application.persistentDataPath + "/" + Trionfi.instance.titleName + "/" + fileName;
+            string path = Application.persistentDataPath + "/" + Trionfi.Instance.titleName + "/" + fileName;
 
             string jsonData = JsonConvert.SerializeObject(dataDict);
 
@@ -137,9 +138,9 @@ namespace Trionfi
             {
                 byte[] binData = crypter.Encrypt(jsonData);
 
-                Directory.CreateDirectory(Application.persistentDataPath + "/" + Trionfi.instance.titleName);
+                Directory.CreateDirectory(Application.persistentDataPath + "/" + Trionfi.Instance.titleName);
 
-                File.WriteAllBytes(Application.persistentDataPath + "/" + Trionfi.instance.titleName + "/" + SaveDataNameBase + num.ToString("D3") + ".bin", binData);
+                File.WriteAllBytes(Application.persistentDataPath + "/" + Trionfi.Instance.titleName + "/" + SaveDataNameBase + num.ToString("D3") + ".bin", binData);
                 //            PlayerPrefs.SetString(name, data);
 
                 //Info
@@ -153,15 +154,27 @@ namespace Trionfi
             }
         }
 
-        public void LoadData(int num)
+        protected void DeleteData(int num)
         {
-            TRVirtualMachine.instance.BeginLoad(num);
+            string path = Application.persistentDataPath + "/" + Trionfi.Instance.titleName + "/" + SaveDataNameBase + num.ToString("D3") + ".bin";
+
+			if (!File.Exists(path))
+				return;
+
+			File.Delete(path);
+
+            UpdatePage();
+		}
+
+		public void LoadData(int num)
+        {
+            TRVirtualMachine.Instance.BeginLoad(num);
             gameObject.SetActive(false);
         }
 
         public TRSerializeData DeserializeFromFile(int num)
         {
-            byte[] binData = File.ReadAllBytes(Application.persistentDataPath + "/" + Trionfi.instance.titleName + "/" + SaveDataNameBase + num.ToString("D3") + ".bin");
+            byte[] binData = File.ReadAllBytes(Application.persistentDataPath + "/" + Trionfi.Instance.titleName + "/" + SaveDataNameBase + num.ToString("D3") + ".bin");
 
             if (crypter == null)
                 crypter = new GZCrypter();
@@ -187,14 +200,25 @@ namespace Trionfi
         {
             int num = currentPage * dataCount + id;
 
-            if (currentMode == Mode.Load)
-            {
-                LoadData(num);  
-            }
+            if (deletMode)
+                DeleteData(num);
             else
-			{
-                SaveData(num);
-			}
+            {
+                if (currentMode == Mode.Load)
+                {
+                    LoadData(num);
+                }
+                else
+                {
+                    SaveData(num);
+                }
+            }
+        }
+
+        public void OnDeleteButton()
+        {
+            deletMode = !deletMode;
+        
         }
 
         public void PageDown()

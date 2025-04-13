@@ -40,17 +40,17 @@ namespace Trionfi
         public RenderTexture movieBuffer;
         [NonSerialized]
         public RenderTexture[] subRenderBuffer = new RenderTexture[1];
-
-        [SerializeField]
-        public AudioSource systemVoice;
         [NonSerialized]
         public TRMessageWindowBase currentMessageWindow;
+
 
         [SerializeField]
         public string titleName = "Example";
         [SerializeField]
         string bootScriptName = string.Empty;
-        [SerializeField]
+		[SerializeField]
+		public AudioSource systemVoice;
+		[SerializeField]
         public RawImage movieTexture;
         [SerializeField]
         public UnityEngine.Video.VideoPlayer videoPlayer;
@@ -555,6 +555,7 @@ namespace Trionfi
             TRStageEnviroment.instance.Initialize();
             TRGameConfig.Initialize();
             TRResourceLoader.Initialize();
+            selectWindow.Initialize();
 
             if (TRTitleBase.instance != null)
             {

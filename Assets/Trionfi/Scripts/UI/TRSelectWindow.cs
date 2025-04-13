@@ -36,7 +36,7 @@ namespace Trionfi
 
         public void Begin()
         {
-            Trionfi.Instance.selectWindow.onWait = true;
+            /*Trionfi.Instance.selectWindow.*/onWait = true;
 
             Trionfi.Instance.currentMessageWindow.Pause();
             Trionfi.Instance.HideObject(Trionfi.Instance.globalTap);
@@ -61,10 +61,10 @@ namespace Trionfi
 
             activeSelector = 0;
 
-            Trionfi.Instance.OpenUI(Trionfi.Instance.selectWindow.gameObject);
+            Trionfi.Instance.OpenUI(/*Trionfi.Instance.selectWindow.*/gameObject);
         }
 
-        public void Start()
+        public void Initialize()
         {
             for(int a = 0;a < selectorCount; a++)
             {
