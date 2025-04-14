@@ -249,10 +249,5 @@ namespace Trionfi
         {
             LoadInfo();
         }
-
-        public void OnDestroy()
-        {
-            SaveInfo();
-        }
     }
 }

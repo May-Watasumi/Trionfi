@@ -164,7 +164,10 @@ namespace Trionfi
             
             Trionfi.Instance.currentMessageWindow.ShowMessage(message, TRGameConfig.configData.textspeed);
 
-            await UniTask.WaitWhile(() => (Trionfi.Instance.currentMessageWindow.state != TRMessageWindowBase.MessageState.None) && (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run));
+
+            var token = Trionfi.Instance.GetCancellationTokenOnDestroy();
+
+			await UniTask.WaitWhile(() => (Trionfi.Instance.currentMessageWindow.state != TRMessageWindowBase.MessageState.None) && (TRVirtualMachine.Instance.state == TRVirtualMachine.State.Run), PlayerLoopTiming.Update, token);
 
             if (TRSystemConfig.Instance.isNovelMode)
             {

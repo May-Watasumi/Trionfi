@@ -790,6 +790,7 @@ namespace Trionfi
 
             SaveReadFlag();
             TRGameConfig.Save();
+            serializer.SaveInfo();
         }
     }
 }
