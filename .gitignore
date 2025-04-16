@@ -1,4 +1,5 @@
 #フォルダ
+.vs/
 Library/
 Logs/
 Temp/
@@ -7,6 +8,7 @@ obj/Release/
 Mira/Mira/obj/
 Mira/Mira/obj/Debug/
 Mira/Mira/obj/Release/
+Assets/MobileDependencyResolver/
 Assets/Game/AssetBundlesAndroid/
 Assets/Game/AssetBundlesIOS/
 Assets/Game/AssetBundlesStandalone/
@@ -25,3 +27,4 @@ JSonData.meta
 .vs/Trionfi/v17/DocumentLayout.json
 .vs/Trionfi/FileContentIndex/b635dfdc-8efa-487b-acd7-d172f2eb398a.vsidx
 .vsconfig
+Assets/MobileDependencyResolver.meta
