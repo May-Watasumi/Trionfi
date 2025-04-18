@@ -71,19 +71,7 @@ namespace Trionfi
 
         [SerializeField]
         [Range(3, 10)]
-        public int standObjectCount = 3;
-
-        [SerializeField]
-        public TMP_FontAsset fontAsset;
-        
-        [SerializeField]
-        public Font defaultFont = null;
-
-        [SerializeField]
-        public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-        [SerializeField]
-        public int fontSize = 26;
+        public int standObjectCount = 3;      
 
         [SerializeField]
         public Color imageDefaultColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
@@ -98,11 +86,6 @@ namespace Trionfi
         private int frame = 0;
         private float frameRate = 0f;
         private const float INTERVAL = 0.5f;
-
-        private void Start()
-        {
-            defaultFont = defaultFont ?? Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
-        }
 
         void Update() {
 			if(showFPS)

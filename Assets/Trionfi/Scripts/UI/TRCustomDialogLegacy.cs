@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
 
 public class TRCustomDialogLegacy : ICustomDialog {
     [SerializeField]
@@ -19,6 +20,6 @@ public class TRCustomDialogLegacy : ICustomDialog {
         buttonYes.gameObject.SetActive(!typeok);
         buttonNo.gameObject.SetActive(!typeok);
         buttonOK.gameObject.SetActive(typeok);
-        //        yield return Wait();
-    }
+        Wait().Forget();
+	}
 }

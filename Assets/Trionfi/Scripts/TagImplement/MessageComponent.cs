@@ -384,8 +384,8 @@ namespace Trionfi
             uint colorValue = tagParam["color", 0xFFFFFFFF];
             Color color = TRVariableDictionary.ToRGB(colorValue);
 
-            TRSystemConfig.Instance.fontSize = size;
-            TRSystemConfig.Instance.fontColor = color;
+            Trionfi.Instance.currentMessageWindow.fontSize = size;
+            Trionfi.Instance.currentMessageWindow.fontColor = color;
 #endif
             return string.Empty;
 		}

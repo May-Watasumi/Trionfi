@@ -16,23 +16,13 @@ namespace Trionfi
         }
 
         [SerializeField]
-        public　RubyTextMeshProUGUI/*RubyTextMeshPro*/ currentMessage;
+        public　RubyTextMeshProUGUI currentMessage;
 
         [SerializeField]
         public TMP_FontAsset fontAsset;
 
         [SerializeField]
         public RubyTextMeshProUGUI currentName;
-        public override void Start()
-        {
-            if (currentMessage != null)
-            {
-                currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
-                currentMessage.color = TRSystemConfig.Instance.fontColor;
-            }
-            
-            base.Start();
-        }
         
         public override void ClearMessage()
         {
@@ -72,7 +62,9 @@ namespace Trionfi
 
             }
             
-            if(fontAsset != null)
+            currentMessage.fontSize = fontSize;
+
+			if (fontAsset != null)
                 currentMessage.font = fontAsset;
             
             // TRSystemConfig.Instance.defaultFont;

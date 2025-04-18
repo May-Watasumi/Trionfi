@@ -1,6 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 using Cysharp.Threading.Tasks;
+using System;
 public enum TRDialogType
 {
     OK,
@@ -19,14 +20,15 @@ public abstract class ICustomDialog : MonoBehaviour
 {
     delegate void DialogCallBack();
 
+    [NonSerialized]
     public TRDialogResult result = TRDialogResult.NONE;
     public virtual void OnClickYes() { result = TRDialogResult.YES; }
     public virtual void OnClickNo() { result = TRDialogResult.NO; }
 
     public abstract void Init(string text, TRDialogType type);
 
-    public IEnumerator Wait()
+    public async UniTask Wait()
     {
-        yield return new WaitWhile(() => result == TRDialogResult.NONE);
+        await UniTask.WaitWhile(() => result == TRDialogResult.NONE);
     }
 }

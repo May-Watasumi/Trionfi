@@ -13,6 +13,9 @@ namespace Trionfi
     {
         public override string currentText { get{ return currentMessage.text;} set{ currentMessage.text = value;}}
 
+		[SerializeField]
+		public Font defaultFont = null;
+		
         [SerializeField]
         public bool useUguiText = false;
 
@@ -25,24 +28,13 @@ namespace Trionfi
         [SerializeField]
         public Text currentName;
 
-        //    [SerializeField]
-        //    private Image MessageFrameImage;
-
-        override public void Start()
-        {
-            if (currentUguiMessage != null)
-                currentUguiMessage.fontSize = TRSystemConfig.Instance.fontSize;
-
-            if (currentMessage != null)
-            {
-                currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
-                currentMessage.color = TRSystemConfig.Instance.fontColor;
-            }
-            
+		protected override void Start()
+		{
+			defaultFont = defaultFont ?? Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
             base.Start();
-        }
+		}
 
-        override public void ClearMessage()
+		override public void ClearMessage()
         {
             if (currentUguiMessage != null)
                 currentUguiMessage.text = string.Empty;
@@ -55,9 +47,10 @@ namespace Trionfi
 
         override protected async TRTask ShowMessageSub(string message, float mesCurrentWait)
         {
-            currentMessage.Font = TRSystemConfig.Instance.defaultFont;
+            //currentMessage.Font;
+            currentMessage.fontSize = fontSize;
 
-            float mesWait = mesCurrentWait / speedRatio;
+			float mesWait = mesCurrentWait / speedRatio;
 
             if (!enableSkip && !TRSystemConfig.Instance.isNovelMode)
                 currentMessage.VisibleLength = 0;         

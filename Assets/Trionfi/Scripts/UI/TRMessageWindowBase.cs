@@ -7,6 +7,7 @@ using DG.Tweening;
 using Cysharp.Threading.Tasks;
 using TRTask = Cysharp.Threading.Tasks.UniTask;
 using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+using TMPro;
 
 namespace Trionfi
 {
@@ -25,7 +26,9 @@ namespace Trionfi
 
         public bool enableSkip { get { return forceSkip || onSkip; } }
 
-        [NonSerialized]
+		[NonSerialized]
+		public string nameString = string.Empty;
+		[NonSerialized]
         public string currentSpeaker = string.Empty;
         [NonSerialized]
         public MessageState state = MessageState.None;
@@ -33,47 +36,20 @@ namespace Trionfi
         public float speedRatio = 1.0f;
         [NonSerialized]
         public Tweener tweener = null;
-/*
-        [SerializeField]
-        public bool useUguiText = false;
 
-        [SerializeField]
-        public LetterWriter.Unity.Components.LetterWriterText currentMessage;
-
-        [SerializeField]
-        public Text currentUguiMessage;
-
-        [SerializeField]
-        public Text currentName;
-        //    [SerializeField]
-        //    private Image MessageFrameImage;
-*/
-        [SerializeField]
+		[SerializeField]
+		public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+		[SerializeField]
+		public int fontSize = 40;
+		[SerializeField]
         public Image faceIcon;
-
         [SerializeField]
         public Image waitCursor;
 
         public GameObject systemWindow;
 
-//        protected TRMessageLogWindowBase logWindow;
-
-        [NonSerialized]
-        public string nameString = string.Empty;
-
-        public virtual void Start()
+        protected virtual void Start()
         {
-//            if (currentUguiMessage != null)
-//                currentUguiMessage.fontSize = TRSystemConfig.Instance.fontSize;
-
-//            if (currentMessage != null)
-//            {
-//                currentMessage.fontSize = TRSystemConfig.Instance.fontSize;
-//                currentMessage.color = TRSystemConfig.Instance.fontColor;
-//            }
-
-//            logWindow = Trionfi.Instance.messageLogwindow;
-
             Trionfi.Instance.ClickEvent += OnClick;
         }
 
@@ -113,12 +89,6 @@ namespace Trionfi
 
         public virtual void ClearMessage()
         {
-//            if (currentUguiMessage != null)
-//                currentUguiMessage.text = string.Empty;
-//            if (currentMessage != null)
-//                currentMessage.text = string.Empty;
-//            if (currentName != null)
-//                currentName.text = string.Empty;
             if (faceIcon != null)
                 faceIcon.enabled = false;
 
@@ -157,6 +127,7 @@ namespace Trionfi
 
             return result;
         }
+
         public void ShowMessage(string text, float mesCurrentWait = 0)
         {
             Trionfi.Instance.SetStandLayerTone();
@@ -174,10 +145,7 @@ namespace Trionfi
             ShowMessageSub(text, mesCurrentWait).Forget();
         }
 
-        protected virtual TRTask ShowMessageSub(string message, float mesCurrentWait)
-        {
-            return TRTask.CompletedTask;
-        }
+        protected abstract TRTask ShowMessageSub(string message, float mesCurrentWait);
 
         protected Tweener _sequence = null;
 

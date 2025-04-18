@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using Cysharp.Threading.Tasks;
+
 public class TRCustomDialogTMPro : ICustomDialog {
     [SerializeField]
     TextMeshProUGUI notice = null;
@@ -19,6 +21,6 @@ public class TRCustomDialogTMPro : ICustomDialog {
         buttonYes.gameObject.SetActive(!typeok);
         buttonNo.gameObject.SetActive(!typeok);
         buttonOK.gameObject.SetActive(typeok);
-        //        yield return Wait();
+        Wait().Forget();
     }
 }
