@@ -13,7 +13,7 @@ public class TRCustomDialogTMPro : ICustomDialog {
     [SerializeField]
     Button buttonOK = null;
 
-    public override void Init(string text, TRDialogType type)
+    public override async UniTask Open(string text, TRDialogType type)
     {
         bool typeok = TRDialogType.OK == type ? true : false;
 
@@ -21,6 +21,6 @@ public class TRCustomDialogTMPro : ICustomDialog {
         buttonYes.gameObject.SetActive(!typeok);
         buttonNo.gameObject.SetActive(!typeok);
         buttonOK.gameObject.SetActive(typeok);
-        Wait().Forget();
-    }
+        await  Wait();
+	}
 }

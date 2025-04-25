@@ -11,11 +11,11 @@ namespace Trionfi
 {
     public class TRMessageWindowLegacy : TRMessageWindowBase
     {
-        public override string currentText { get{ return currentMessage.text;} set{ currentMessage.text = value;}}
+        public override string currentText { get { return currentMessage.text; } set { currentMessage.text = value; } }
 
-		[SerializeField]
-		public Font defaultFont = null;
-		
+        [SerializeField]
+        public Font defaultFont = null;
+
         [SerializeField]
         public bool useUguiText = false;
 
@@ -28,13 +28,13 @@ namespace Trionfi
         [SerializeField]
         public Text currentName;
 
-		protected override void Start()
-		{
-			defaultFont = defaultFont ?? Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
+        protected override void Start()
+        {
+            defaultFont = defaultFont ?? Resources.GetBuiltinResource(typeof(Font), "Arial.ttf") as Font;
             base.Start();
-		}
+        }
 
-		override public void ClearMessage()
+        override public void ClearMessage()
         {
             if (currentUguiMessage != null)
                 currentUguiMessage.text = string.Empty;
@@ -50,10 +50,10 @@ namespace Trionfi
             //currentMessage.Font;
             currentMessage.fontSize = fontSize;
 
-			float mesWait = mesCurrentWait / speedRatio;
+            float mesWait = mesCurrentWait / speedRatio;
 
             if (!enableSkip && !TRSystemConfig.Instance.isNovelMode)
-                currentMessage.VisibleLength = 0;         
+                currentMessage.VisibleLength = 0;
 
             if (currentName != null)
                 currentName.text = nameString;
@@ -62,7 +62,7 @@ namespace Trionfi
                 currentMessage.text += nameString + "\r\n";
 
                 if (TRSystemConfig.Instance.isNovelMode)
-                    currentMessage.VisibleLength = currentMessage.MaxIndex-1;
+                    currentMessage.VisibleLength = currentMessage.MaxIndex - 1;
             }
 
             // ClearMessage()を呼び出すと１フレーム間何もないのを表示するので、
@@ -74,9 +74,9 @@ namespace Trionfi
 
             if (TRSystemConfig.Instance.isNovelMode)
             {
-                if(!string.IsNullOrEmpty(currentName.text))
-                   currentMessage.text += "【" + currentName.text + "】";
-                currentMessage.text +=  message;
+                if (!string.IsNullOrEmpty(currentName.text))
+                    currentMessage.text += "【" + currentName.text + "】";
+                currentMessage.text += message;
 
             }
             else
@@ -111,63 +111,15 @@ namespace Trionfi
                         break;
 
                     await UniTask.Delay((int)(mesWait * 1000.0f));
-//                    yield return new WaitForSeconds(mesWait);
+                    //                    yield return new WaitForSeconds(mesWait);
                 }
             }
             else
-              state = MessageState.None;
+                state = MessageState.None;
 
             currentMessage.VisibleLength = TRSystemConfig.Instance.isNovelMode ? currentMessage.text.Length : -1;
 
             await Wait();
         }
-        /*
-        private IEnumerator ShowMessageUguiSub(string message, float mesCurrentWait)
-        {
-            float mesWait = mesCurrentWait / speedRatio;
-
-            string tempString = string.Empty;
-
-            if (!enableSkip)
-            {
-                for (int a = 0; a < message.Length; a++)
-                {
-                    if (message[a] == '\n' || message[a] == '\r')
-                        tempString += message[a];
-                    else
-                        tempString += "@" + a.ToString();
-                }
-            }
-
-            //            currentUguiMessage.text = tempString;
-
-            if (currentName != null)
-                currentName.text = nameString;
-            else if (!string.IsNullOrEmpty(nameString))
-                currentMessage.text = nameString + "\r";
-
-            if (TRSystemConfig.Instance.isNovelMode)
-                message = "【" + nameString + "】" + message;
-
-            logWindow.AddLogData(message, nameString);
-
-            if (!enableSkip && mesWait > 0.0f)
-            {
-                for (int i = 0; i < message.Length; i++)
-                {
-                    if (state == MessageState.OnShow && !enableSkip)
-                        currentUguiMessage.text += message[i].ToString(); //.Replace("@" + i.ToString(), message[i].ToString());
-                    else
-                        break;
-
-                    yield return new WaitForSeconds(mesWait);
-                }
-            }
-
-            currentUguiMessage.text = message;
-
-            yield return Wait();
-        }
-        */
     }
 }

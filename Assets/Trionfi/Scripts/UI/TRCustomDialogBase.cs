@@ -25,10 +25,11 @@ public abstract class ICustomDialog : MonoBehaviour
     public virtual void OnClickYes() { result = TRDialogResult.YES; }
     public virtual void OnClickNo() { result = TRDialogResult.NO; }
 
-    public abstract void Init(string text, TRDialogType type);
+    public abstract UniTask Open(string text, TRDialogType type);
 
     public async UniTask Wait()
     {
         await UniTask.WaitWhile(() => result == TRDialogResult.NONE);
-    }
+		gameObject.SetActive(false);
+	}
 }

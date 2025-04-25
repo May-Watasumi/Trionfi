@@ -135,11 +135,16 @@ namespace Trionfi
 //            string emb = "<emb exp=\"(.*)\">";
 //            var regex = new Regex(emb);
 
+            //変数は##でくくる
             string emb2 = "#(.*)#";
             var regex2 = new Regex(emb2);
 
 //            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
             text = /*_subText*/ regex2.Replace(text, MatchEvaluatorFunc);
+
+            if (TRSystemConfig.Instance.adjustTextSpace && (text[0] == '「' || text[0] == '（'))
+                text = text.Replace("\n", "\n　");
+
 
             state = MessageState.OnShow;
             ShowMessageSub(text, mesCurrentWait).Forget();

@@ -50,8 +50,12 @@ namespace Trionfi
         //trueの時は自動でクリック待ち（メッセージクリアは手動）falseの時は自動でPタグ（クリック待ち＋メッセージクリア）
         [SerializeField]
         public bool isNovelMode = false;
+        //「」（）の文は二行目以降を段落ちさせる
+		[SerializeField]
+		public bool adjustTextSpace = true;
 
-        [SerializeField]
+
+		[SerializeField]
         public Vector2 screenSize = new Vector2(1280, 720);
 
         [SerializeField]
