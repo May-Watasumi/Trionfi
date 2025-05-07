@@ -1,15 +1,16 @@
 ﻿using System;
 using System.Text;
-using TinyCsvParser.Tokenizer;
 using System.Collections;
 using System.Collections.Generic;
 #if !TR_PARSEONLY
  using UnityEngine;
 #endif
 using System.Linq;
-using TinyCsvParser;
-using TinyCsvParser.Mapping;
-using TinyCsvParser.Tokenizer.RFC4180;
+using System.IO;
+using System.Globalization;
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.Configuration.Attributes;
 
 namespace Trionfi
 {
@@ -69,7 +70,9 @@ namespace Trionfi
     [Serializable]
     public class TRTextData
     {
+        [Name("id")]
         public int id { get; set; }
+        [Name("text")]
         public string textJP { get; set; }
         public string textEN { get; set; }
 
@@ -87,26 +90,21 @@ namespace Trionfi
         }
     }
 
-    public class CsvTextDataMapping : CsvMapping<TRTextData>
-    {
-        public CsvTextDataMapping()
-        {
-            MapProperty(0, x => x.id);
-            MapProperty(1, x => x.textJP);
-            MapProperty(2, x => x.textEN);
-        }
-    }
-
 
     [System.Serializable]
     public class TRActorInfo
     {
         public int imageID = -1;
         public int emotionID = -1;
-
+        [Name("prefix")]
         public string prefix { get; set; }
+        [Name("hasvoice")]
         public bool hasVoice { get; set; }
+        [Name("name")]
         public string displayNameJP { get; set; }
+        [Name("textcolor")]
+        public string textColor { get; set; }
+
         public string displayNameEN { get; set; }
 
         //Unity依存しない
@@ -126,21 +124,12 @@ namespace Trionfi
         }
     }
 
-    public class CsvActorMapping : CsvMapping<TRActorInfo>
-    {
-        public CsvActorMapping()
-        {
-            MapProperty(0, x => x.prefix);
-            MapProperty(1, x => x.hasVoice);
-            MapProperty(2, x => x.displayNameJP);
-            MapProperty(3, x => x.displayNameEN);
-        }
-    }
-
     [Serializable]
     public class TRActPatternInfo
     {
+        [Name("suffix")]
         public string suffix { get; set; }
+        [Name("name")]
         public string aliasJP { get; set; }
         public string aliasEN { get; set; }
 
@@ -159,82 +148,65 @@ namespace Trionfi
     }
 
 
-    public class CsvActPatternMapping : CsvMapping<TRActPatternInfo>
-    {
-        public CsvActPatternMapping()
-        {
-            MapProperty(0, x => x.suffix);
-            MapProperty(1, x => x.aliasJP);
-            MapProperty(2, x => x.aliasEN);
-        }
-    }
-
     public class TREnviromentCSVLoader
     {
-        static CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-        static CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
+        static CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
+        {
+            HasHeaderRecord = true,
+        };
 
         static public TRMultiLanguageText LoadTextData(string text)
         {
-            CsvTextDataMapping csvMapper = new CsvTextDataMapping();
-
-            TRMultiLanguageText textData = new TRMultiLanguageText();
-
-            if (!string.IsNullOrEmpty(text))
+            StringReader sr = new StringReader(text);
+            var reader = new CsvReader(sr, config);
             {
-                CsvParser<TRTextData> csvParser = new CsvParser<TRTextData>(csvParserOptions, csvMapper);
+                var infoes = reader.GetRecords<TRTextData>();
+                TRMultiLanguageText textData = new TRMultiLanguageText();
 
-                var result = csvParser.ReadFromString(csvReaderOptions, text).ToList();
-
-                foreach (var _info in result)
+                foreach (var info in infoes)
                 {
-                    textData[_info.Result.id] = _info.Result;
+                    textData[info.id] = info;
+
                 }
                 return textData;
             }
-            return null;
         }
 
-        static public TRActorInfoes LoadActorInfo(LocalizeID id, string nameList)
+        static public TRActorInfoes LoadActorInfo(LocalizeID id, string actorCSV)
         {
-            CsvActorMapping csvMapper = new CsvActorMapping();
-
-            TRActorInfoes actorInfoes = new TRActorInfoes();
-
-            if (!string.IsNullOrEmpty(nameList))
+            StringReader sr = new StringReader(actorCSV);
+              
+            var reader = new CsvReader(sr, config);
             {
-                CsvParser<TRActorInfo> csvParser = new CsvParser<TRActorInfo>(csvParserOptions, csvMapper);
+                var infoes = reader.GetRecords<TRActorInfo>();
 
-                var result = csvParser.ReadFromString(csvReaderOptions, nameList).ToList();
-                foreach (var _info in result)
+                TRActorInfoes actorInfo = new TRActorInfoes();
+                foreach (var info in infoes)
                 {
-                    actorInfoes[_info.Result.GetActorName(id)] = _info.Result;
+                    actorInfo[info.GetActorName(id)] = info;
                 }
-                return actorInfoes;
+                return actorInfo;
             }
-            return null;
         }
 
-        static public TRActPatternAlias LoadEmotionList(LocalizeID id, string emotionList)
+        static public TRActPatternAlias LoadEmotionList(LocalizeID id, string emotionCSV)
         {
-            CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-            CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
-            CsvActPatternMapping csvMapper2 = new CsvActPatternMapping();
+            StringReader sr = new StringReader(emotionCSV);
 
-            TRActPatternAlias actPatternAlias = new TRActPatternAlias();
-            
-            if (string.IsNullOrEmpty(emotionList))
+            var reader = new CsvReader(sr, config);
             {
-                CsvParser<TRActPatternInfo> csvParser = new CsvParser<TRActPatternInfo>(csvParserOptions, csvMapper2);
+                TRActPatternAlias actPatternAlias = new TRActPatternAlias();
 
-                var result = csvParser.ReadFromString(csvReaderOptions, emotionList).ToList();
-                foreach (var _info in result)
+                var infoes = reader.GetRecords<TRActPatternInfo>();
+
+                foreach (var info in infoes)
                 {
-                    actPatternAlias[_info.Result.GetPatternName(id)] = _info.Result.suffix;
+                    actPatternAlias[info.GetPatternName(id)] = info.suffix;
                 }
+
                 return actPatternAlias;
             }
-            return null;
+
         }
     }
 
@@ -306,8 +278,10 @@ namespace Trionfi
         {
             if (actorInfoInstance != null)
                 actorInfoes = actorInfoInstance.actorInfo;
+
+
             if (UITextCSV != null)
-                uiText = TREnviromentCSVLoader.LoadTextData(UITextCSV.text);
+               uiText = TREnviromentCSVLoader.LoadTextData(UITextCSV.text);
         }
 
         // Update is called once per frame

@@ -1,13 +1,11 @@
 ﻿using System;
 using System.IO;
-using TinyCsvParser.Tokenizer;
 using UnityEngine;
 using UnityEditor;
 using System.Linq;
-using TinyCsvParser;
-using TinyCsvParser.Mapping;
-using TinyCsvParser.Tokenizer.RFC4180;
-
+using CsvHelper;
+using CsvHelper.Configuration;
+using CsvHelper.Configuration.Attributes;
 namespace Trionfi
 {
     [CustomEditor(typeof(TRActorParamAsset))]
@@ -32,21 +30,11 @@ namespace Trionfi
                 {
                     string fileContent = File.ReadAllText(path);
 
-                    CsvParserOptions csvParserOptions = new CsvParserOptions(true, ',');
-                    CsvReaderOptions csvReaderOptions = new CsvReaderOptions(new[] { Environment.NewLine });
-                    CsvActorMapping csvMapper = new CsvActorMapping();
+                    var list = TREnviromentCSVLoader.LoadActorInfo(LocalizeID.JAPAN, fileContent);
 
-                    if (!string.IsNullOrEmpty(fileContent))
+                    foreach (var info in list)
                     {
-                        CsvParser<TRActorInfo> csvParser = new CsvParser<TRActorInfo>(csvParserOptions, csvMapper);
-
-                        asset.actorInfo.Clear();
-
-                        var result = csvParser.ReadFromString(csvReaderOptions, fileContent).ToList();
-                        foreach (var _info in result)
-                        {
-                            asset.actorInfo[_info.Result.displayNameJP] = _info.Result;
-                        }
+                        asset.actorInfo[info.Key] = info.Value;
                     }
                 }
             }
