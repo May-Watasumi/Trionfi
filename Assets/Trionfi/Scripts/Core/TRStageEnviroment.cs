@@ -70,14 +70,19 @@ namespace Trionfi
     [Serializable]
     public class TRTextData
     {
-        [Name("id")]
+        [Index(0)]
         public int id { get; set; }
-        [Name("text")]
-        public string textJP { get; set; }
-        public string textEN { get; set; }
+		[Index(1)]
+		public string textJP { get; set; }
+		[Index(2)]
+		public string textEN { get; set; }
+		[Index(3)]
+		public string textCH { get; set; }
+		[Index(4)]
+		public string textKR { get; set; }
 
-        //Localizer
-        public string GetText(LocalizeID id)
+		//Localizer
+		public string GetText(LocalizeID id)
         {
             switch (id)
             {
@@ -96,16 +101,16 @@ namespace Trionfi
     {
         public int imageID = -1;
         public int emotionID = -1;
-        [Name("prefix")]
+		[Name("name")]
+		public string name { get; set; }
+		[Name("prefix")]
         public string prefix { get; set; }
         [Name("hasvoice")]
         public bool hasVoice { get; set; }
-        [Name("name")]
-        public string displayNameJP { get; set; }
         [Name("textcolor")]
         public string textColor { get; set; }
 
-        public string displayNameEN { get; set; }
+        public string en { get; set; }
 
         //Unity依存しない
 //        public Sprite logIcon;
@@ -117,9 +122,9 @@ namespace Trionfi
             {
                 case LocalizeID.JAPAN:
                 default:
-                    return displayNameJP;
+                    return name;
                 case LocalizeID.ENGLISH:
-                    return displayNameEN;
+                    return en;
             }
         }
     }
@@ -150,24 +155,34 @@ namespace Trionfi
 
     public class TREnviromentCSVLoader
     {
-        static CsvConfiguration config = new CsvConfiguration(CultureInfo.InvariantCulture)
-        {
-            HasHeaderRecord = true,
+        static CsvConfiguration config = new CsvConfiguration(System.Globalization.CultureInfo.CurrentCulture)
+		{
+			PrepareHeaderForMatch = args => args.Header.ToLower(),
+			HasHeaderRecord = true,
         };
 
         static public TRMultiLanguageText LoadTextData(string text)
         {
+
             StringReader sr = new StringReader(text);
             var reader = new CsvReader(sr, config);
             {
-                var infoes = reader.GetRecords<TRTextData>();
-                TRMultiLanguageText textData = new TRMultiLanguageText();
+				TRMultiLanguageText textData = new TRMultiLanguageText();
 
-                foreach (var info in infoes)
-                {
-                    textData[info.id] = info;
+				reader.Read();
+				//ヘッダを読み込みます
+				reader.ReadHeader();
+				//行毎に読み込みと処理を行います
+				while (reader.Read())
+				{
+					var record = reader.GetRecord<TRTextData>();
+					textData[record.id] = record;
 
-                }
+					Debug.Log(record.textJP);
+				}
+
+//				var infoes = reader.GetRecords<TRTextData>();
+
                 return textData;
             }
         }
@@ -178,13 +193,20 @@ namespace Trionfi
               
             var reader = new CsvReader(sr, config);
             {
-                var infoes = reader.GetRecords<TRActorInfo>();
+				TRActorInfoes actorInfo = new TRActorInfoes();
 
-                TRActorInfoes actorInfo = new TRActorInfoes();
-                foreach (var info in infoes)
-                {
-                    actorInfo[info.GetActorName(id)] = info;
-                }
+				reader.Read();
+				//ヘッダを読み込みます
+				reader.ReadHeader();
+				//行毎に読み込みと処理を行います
+				while (reader.Read())
+				{
+					var record = reader.GetRecord<TRActorInfo>();
+					actorInfo[record.GetActorName(id)] = record;
+				}
+
+//				var infoes = reader.GetRecords<TRActorInfo>();
+
                 return actorInfo;
             }
         }
@@ -260,9 +282,6 @@ namespace Trionfi
         [SerializeField]
         public TextAsset CharacterEmotionPatternListCSV;
 
-        [SerializeField]
-        TRActorParamAsset actorInfoInstance = null;
-
         public TRMultiLanguageText uiText;
 
         public TRActPatternAlias actPatternAlias = new TRActPatternAlias();
@@ -276,8 +295,8 @@ namespace Trionfi
 
         public void Initialize()
         {
-            if (actorInfoInstance != null)
-                actorInfoes = actorInfoInstance.actorInfo;
+            if (CharacterNameListCSV != null)
+                actorInfoes = TREnviromentCSVLoader.LoadActorInfo(TRSystemConfig.Instance.localizeID, CharacterNameListCSV.text);
 
 
             if (UITextCSV != null)

@@ -38,7 +38,11 @@ namespace Trionfi
         public Tweener tweener = null;
 
 		[SerializeField]
-		public Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+		public Color fontDefaultColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+		[SerializeField]
+		public Color fontHeroColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
+		[SerializeField]
+		public Color fontMobColor = new Color(0.0f, 0.0f, 0.0f, 0.0f);
 		[SerializeField]
 		public int fontSize = 40;
 		[SerializeField]

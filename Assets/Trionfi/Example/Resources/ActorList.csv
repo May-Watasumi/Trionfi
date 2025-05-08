@@ -1,4 +1,4 @@
-prefix,ボイス有無,JP,EN
-kohaku,true,こはく,Kohaku
-misaki,true,みさき,Misaki
-yuko,true,ゆうこ,Yuko
+name,prefix,hasvoice,textcolor,en
+こはく,ko,true,FF0000FF,Kohaku
+みさきi,mi,true,00FF00FF,Misaki
+ゆうこ,yu,true,0000FFFF,Yuko

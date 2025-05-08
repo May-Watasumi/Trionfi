@@ -385,7 +385,7 @@ namespace Trionfi
             Color color = TRVariableDictionary.ToRGB(colorValue);
 
             Trionfi.Instance.currentMessageWindow.fontSize = size;
-            Trionfi.Instance.currentMessageWindow.fontColor = color;
+            Trionfi.Instance.currentMessageWindow.fontDefaultColor = color;
 #endif
             return string.Empty;
 		}

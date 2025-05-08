@@ -5,6 +5,7 @@ using DG.Tweening;
 using Cysharp.Threading.Tasks;
 using TRTask = Cysharp.Threading.Tasks.UniTask;
 using TRTaskString = Cysharp.Threading.Tasks.UniTask<string>;
+using System.Text.RegularExpressions;
 
 namespace Trionfi
 {
@@ -71,7 +72,41 @@ namespace Trionfi
 
             currentName.font = currentMessage.font;
 
-            float mesWait = mesCurrentWait / speedRatio;
+            //Actor情報で色変え
+            Color32 color32 = fontDefaultColor;
+
+            if (string.IsNullOrEmpty(nameString))
+            {
+                color32 = fontDefaultColor;
+            }
+            else if (TRStageEnviroment.Instance.actorInfoes.ContainsKey(nameString))
+            {
+                Color color;
+
+                if (ColorUtility.TryParseHtmlString("#" + TRStageEnviroment.Instance.actorInfoes[nameString].textColor, out color))
+                {
+                    color32 = TRUtility.ColorExtensions.FromHex(TRStageEnviroment.Instance.actorInfoes[nameString].textColor);
+                }
+
+            }
+            else
+            {
+                color32 = fontMobColor;
+            }
+
+			currentMessage.faceColor = color32;
+            currentName.faceColor = color32;
+
+			//変数は##でくくる
+			string emb2 = "#(.*)#";
+			var regex2 = new Regex(emb2);
+
+			//            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
+			nameString = /*_subText*/ regex2.Replace(nameString, MatchEvaluatorFunc);
+
+
+			//
+			float mesWait = mesCurrentWait / speedRatio;
 
             if (!enableSkip && !TRSystemConfig.Instance.isNovelMode)
 				currentMessage.uneditedText = string.Empty;         

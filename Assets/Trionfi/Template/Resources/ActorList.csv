@@ -1,5 +1,4 @@
-name,prefix,hasvoice
-男性１,male,false
-女性１,female,false
-子供１,child,false
-
+name,prefix,hasvoice,textcolor,en
+男性１,male,false,000000ff,man
+女性１,female,false,ffffffff,woman
+子供１,child,false,000000ff,child
