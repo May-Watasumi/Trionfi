@@ -585,5 +585,28 @@ namespace Trionfi {
 #endif
             return string.Empty;
         }
-    }   
+    }
+
+	[Serializable]
+	public class ScenechangeComponent : AbstractComponent
+	{
+		public ScenechangeComponent()
+		{
+#if UNITY_EDITOR && TR_DEBUG
+            //必須項目
+            essentialParams = new List<string> {
+				"scene"
+			};
+#endif
+		}
+
+		protected override async TRTaskString TagFunction()
+		{
+#if !TR_PARSEONLY
+            await SceneManager.LoadSceneAsync(tagParam["scene"].Literal());
+#endif
+			return string.Empty;
+		}
+	}
+
 }
