@@ -117,34 +117,16 @@ namespace Trionfi
             if (systemWindow != null)
                 systemWindow.SetActive(false);
         }
-        
-        public static string MatchEvaluatorFunc(Match m)
-        {
-            // Match m にはパターンにマッチした結果が来るので、
-            // その中のデータを取り出して、自由に加工できる。
-            // 関数の戻り値の文字列が、Replaceの置換結果となる。
-
-            // m.Groups[0].Valueはﾏｯﾁした全体の文字列
-            var Exp = m.Groups[1].Value;
-
-            string result = TRVirtualMachine.Instance.vstack.GetInstance(Exp).Literal();
-
-            return result;
-        }
 
         public void ShowMessage(string text, float mesCurrentWait = 0)
         {
             Trionfi.Instance.SetStandLayerTone();
 
-//            string emb = "<emb exp=\"(.*)\">";
-//            var regex = new Regex(emb);
+            //変数は#でくくる
+            //string emb2 = "#([a-zA-z0-9-_]+)#";
+            //var regex2 = new Regex(emb2);
 
-            //変数は##でくくる
-            string emb2 = "#(.*)#";
-            var regex2 = new Regex(emb2);
-
-//            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
-            text = /*_subText*/ regex2.Replace(text, MatchEvaluatorFunc);
+            text = TRUtility.GetVariableString(text);//  regex2.Replace(text, TRUtility.MatchEvaluatorFunc);
 
             if (TRSystemConfig.Instance.adjustTextSpace && (text[0] == '「' || text[0] == '（'))
                 text = text.Replace("\n", "\n　");

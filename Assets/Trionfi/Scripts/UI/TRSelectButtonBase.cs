@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using Cysharp.Threading.Tasks;
+using TRTask = Cysharp.Threading.Tasks.UniTask;
 
 namespace Trionfi
 {
@@ -10,24 +12,26 @@ namespace Trionfi
         public string targetLabel;
         public int resultNum;
 
+        public TRSelectWindow parent;
+
         [SerializeField]
         public AudioSource decisionSound;
 
         public void OnSelected()
         {
-            TRSelectWindow.Instance.result = targetLabel;
-            TRSelectWindow.Instance.resutNum = resultNum;
+            parent.result = targetLabel;
+            parent.resutNum = resultNum;
 
             AudioSource audio = null;
             if (decisionSound != null && decisionSound.clip != null)
                 audio = decisionSound;
-            else if (TRSelectWindow.Instance.decisionSound != null && TRSelectWindow.Instance.decisionSound.clip != null)
-                audio = TRSelectWindow.Instance.decisionSound;
+            else if (parent.decisionSound != null && parent.decisionSound.clip != null)
+                audio = parent.decisionSound;
 
-            StartCoroutine(EndSelector(audio));
+            EndSelector(audio).Forget();
         }
 
-        IEnumerator EndSelector(AudioSource audio)
+        async TRTask EndSelector(AudioSource audio)
         {
             float volume = TRGameConfig.configData.mastervolume * TRGameConfig.configData.sevolume;
 
@@ -35,20 +39,22 @@ namespace Trionfi
             {
                 audio.volume = volume;
                 audio.Play();
-                yield return new WaitWhile(() => audio.isPlaying);
+                await UniTask.WaitWhile(() => audio.isPlaying);
             }
 
-            yield return new WaitForEndOfFrame();
+            await UniTask.WaitForFixedUpdate();
 
             Trionfi.Instance.PopWindow();
 
-            TRSelectWindow.Instance.onWait = false;
+            parent.onWait = false;
         }
         
         abstract protected void SetText(string text);
 
-        public void Set(string content, string label, int result)
+        public void Set(string content, string label, int result, TRSelectWindow _parent)
         {
+            parent = _parent;
+
             SetText(content);
 
 //            if(contentText != null)

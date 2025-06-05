@@ -152,8 +152,15 @@ namespace Trionfi
                 if (TRVirtualMachine.Instance.tokenSource == null || TRVirtualMachine.Instance.tokenSource.IsCancellationRequested)
                     return string.Empty;
                 else
-                    TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid] = true;
-            }
+                {
+                    if (flagid >= TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags.Count)
+                    {
+                        TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags.Add(false);
+						TRVirtualMachine.Instance.currentTagInstance.isJMessageReadFlags[flagid] = true;
+                    }
+
+				}
+			}
 
             Trionfi.Instance.ActivateAllCanvas(true);
 
@@ -201,22 +208,15 @@ namespace Trionfi
 #if !TR_PARSEONLY
             string name = tagParam["val"].Literal();
 
-            string emb2 = "#(.*)#";
-            var regex2 = new Regex(emb2);
-
             if (name.Contains("/"))
             {
                 string[] nameInfo = name.Split('/');
-
-                //            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
-                nameInfo[0] = regex2.Replace(nameInfo[0], TRMessageWindowBase.MatchEvaluatorFunc);
 
                 Trionfi.Instance.currentMessageWindow.ShowName(nameInfo[0]);
                 Trionfi.Instance.currentMessageWindow.currentSpeaker = nameInfo[1];
             }
             else
             {
-                name = regex2.Replace(name, TRMessageWindowBase.MatchEvaluatorFunc);
 
                 Trionfi.Instance.currentMessageWindow.ShowName(name);
                 Trionfi.Instance.currentMessageWindow.currentSpeaker = name;

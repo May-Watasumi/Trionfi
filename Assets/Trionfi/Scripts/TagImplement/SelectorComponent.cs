@@ -55,11 +55,11 @@ namespace Trionfi
 			}
 			else if (tagParam.ContainsKey("var"))
 			{
-				TRVirtualMachine.Instance.globalVariableInstance[tagParam["var"].Literal()] = new TRVariable(TRSelectWindow.Instance.resutNum);
+				TRVirtualMachine.Instance.globalVariableInstance[tagParam["var"].Literal()] = new TRVariable(Trionfi.Instance.selectWindow.resutNum);
 			}
-			else if (!TRVirtualMachine.Instance.currentCallStack.LocalJump(TRSelectWindow.Instance.result))
+			else if (!TRVirtualMachine.Instance.currentCallStack.LocalJump(Trionfi.Instance.selectWindow.result))
 			{
-				ErrorLogger.Log("No Jump target:" + TRSelectWindow.Instance.result);
+				ErrorLogger.Log("No Jump target:" + Trionfi.Instance.selectWindow.result);
 			}
 #endif
 			return string.Empty;

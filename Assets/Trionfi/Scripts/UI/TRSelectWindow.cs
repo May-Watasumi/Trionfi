@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 namespace Trionfi
 {
-    public class TRSelectWindow : SingletonMonoBehaviour<TRSelectWindow>
+    public class TRSelectWindow : MonoBehaviour
     {
         [NonSerialized]
         public string result;
@@ -30,7 +30,7 @@ namespace Trionfi
 
         public void Add(string content, string label)
         {
-            selectorList[activeSelector].Set(content, label, activeSelector);
+            selectorList[activeSelector].Set(content, label, activeSelector, this);
             activeSelector++;
         }
 

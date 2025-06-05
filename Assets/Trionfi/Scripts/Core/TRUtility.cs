@@ -2,12 +2,37 @@ using System;
 using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
+using System.Text.RegularExpressions;
 
 namespace Trionfi
 {
     public class TRUtility
     {
-        private static readonly Dictionary<string, Color> _colorTable = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase)
+        public static string GetVariableString(string source)
+        {
+			//変数は#でくくる
+			string emb2 = "#([a-zA-z0-9-_]+)#";
+			var regex2 = new Regex(emb2);
+
+			return regex2.Replace(source, TRUtility.MatchEvaluatorFunc);
+		}
+
+
+		public static string MatchEvaluatorFunc(Match m)
+		{
+			// Match m にはパターンにマッチした結果が来るので、
+			// その中のデータを取り出して、自由に加工できる。
+			// 関数の戻り値の文字列が、Replaceの置換結果となる。
+
+			// m.Groups[0].Valueはﾏｯﾁした全体の文字列
+			var Exp = m.Groups[1].Value;
+
+			string result = TRVirtualMachine.Instance.vstack.GetInstance(Exp).Literal(string.Empty);
+
+			return result;
+		}
+
+		private static readonly Dictionary<string, Color> _colorTable = new Dictionary<string, Color>(StringComparer.OrdinalIgnoreCase)
         {
             {"red", new Color(1f, 0.0f, 0.0f, 1f)},
             {"green", new Color(0.0f, 1f, 0.0f, 1f)},

@@ -98,12 +98,10 @@ namespace Trionfi
             currentName.faceColor = color32;
 
 			//変数は##でくくる
-			string emb2 = "#(.*)#";
-			var regex2 = new Regex(emb2);
+			//string emb2 = "#([a-zA-z0-9-_]+)#";
+			//var regex2 = new Regex(emb2);
 
-			//            text = /*_subText*/ regex.Replace(text, MatchEvaluatorFunc);
-			nameString = /*_subText*/ regex2.Replace(nameString, MatchEvaluatorFunc);
-
+			nameString = TRUtility.GetVariableString(nameString);//  regex2.Replace(text, TRUtility.MatchEvaluatorFunc);
 
 			//
 			float mesWait = mesCurrentWait / speedRatio;

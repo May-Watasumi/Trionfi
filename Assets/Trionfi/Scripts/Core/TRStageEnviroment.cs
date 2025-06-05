@@ -177,8 +177,6 @@ namespace Trionfi
 				{
 					var record = reader.GetRecord<TRTextData>();
 					textData[record.id] = record;
-
-					Debug.Log(record.textJP);
 				}
 
 //				var infoes = reader.GetRecords<TRTextData>();
